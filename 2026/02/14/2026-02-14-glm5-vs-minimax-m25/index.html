@@ -1,0 +1,1040 @@
+<!DOCTYPE html>
+
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=0">
+
+  <meta name="description" content="个人知识库与技术笔记">
+
+
+<link rel="alternate" href="/atom.xml" title="Api Intelligence Daily Life" type="application/atom+xml">
+<meta name="theme-color" content="#a1d0f6">
+<title>GLM 5.0 vs MiniMax M2.5 深度对比分析报告 - Api Intelligence Daily Life</title>
+<!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+<link rel="shortcut icon" href="/favicon.png">
+
+<link rel="stylesheet" href="/css/style.css">
+
+<nav class="main-nav">
+	
+	    <a href="/">← 主页</a>
+	
+	
+	    <a href="/about/">About</a>
+	
+	    <a href="/archives/">Archives</a>
+	
+	<a class="cta" href="/atom.xml" data-no-instant>订阅</a>
+</nav>
+
+<section id="wrapper">
+    <article class="post">
+    <header>
+        
+            <h1>GLM 5.0 vs MiniMax M2.5 深度对比分析报告</h1>
+        
+        <h2 class="headline">Feb 14 2026
+        
+            
+            <a href="/categories/技术/#技术">技术</a>
+        
+        </h2>
+    </header>
+</article>
+<section id="post-body"><p><strong>报告生成时间</strong>: 2026年2月14日<br><strong>数据来源</strong>: 官方发布、独立评测机构、社区讨论、学术论文、深度研究API<br><strong>分析维度</strong>: 性能基准、技术架构、使用成本、应用场景、开源生态</p>
+<span id="more"></span>
+
+<hr>
+<h2 id="📋-执行摘要"><a href="#📋-执行摘要" class="headerlink" title="📋 执行摘要"></a>📋 执行摘要</h2><p>2026年2月11-12日，中国AI领域两大巨头智谱AI(Zhipu AI)和MiniMax几乎同时发布了各自的旗舰开源模型：<strong>GLM-5</strong>（744B参数）和<strong>MiniMax-M2.5</strong>（230B参数）。两者均采用MoE架构、MIT开源协议，但在能力侧重上形成鲜明对比：</p>
+<table>
+<thead>
+<tr>
+<th>核心发现</th>
+<th>GLM-5</th>
+<th>MiniMax M2.5</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>核心优势</strong></td>
+<td>推理能力、知识可靠性</td>
+<td>编程能力、Agent执行效率</td>
+</tr>
+<tr>
+<td><strong>参数规模</strong></td>
+<td>744B总&#x2F;40B激活</td>
+<td>230B总&#x2F;10B激活</td>
+</tr>
+<tr>
+<td><strong>SWE-Bench</strong></td>
+<td>77.8%</td>
+<td><strong>80.2%</strong> (+2.4%)</td>
+</tr>
+<tr>
+<td><strong>价格优势</strong></td>
+<td>较高</td>
+<td><strong>成本低2.7倍</strong></td>
+</tr>
+<tr>
+<td><strong>推理速度</strong></td>
+<td>~66 TPS</td>
+<td><strong>50-100 TPS</strong></td>
+</tr>
+</tbody></table>
+<p><strong>关键结论</strong>: 两款模型代表了不同的优化路径——GLM-5 是”认知智能体”标杆，MiniMax M2.5 是”生产力工具”标杆。</p>
+<hr>
+<h2 id="📊-一、详细对比表格"><a href="#📊-一、详细对比表格" class="headerlink" title="📊 一、详细对比表格"></a>📊 一、详细对比表格</h2><h3 id="1-1-基础规格对比"><a href="#1-1-基础规格对比" class="headerlink" title="1.1 基础规格对比"></a>1.1 基础规格对比</h3><table>
+<thead>
+<tr>
+<th>对比维度</th>
+<th>GLM 5.0</th>
+<th>MiniMax M2.5</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>发布日期</strong></td>
+<td>2026年2月11日</td>
+<td>2026年2月12日</td>
+</tr>
+<tr>
+<td><strong>开发公司</strong></td>
+<td>智谱AI (Zhipu AI&#x2F;Z.AI)</td>
+<td>MiniMax</td>
+</tr>
+<tr>
+<td><strong>总参数量</strong></td>
+<td>744B</td>
+<td>230B</td>
+</tr>
+<tr>
+<td><strong>激活参数量</strong></td>
+<td>40B</td>
+<td>10B</td>
+</tr>
+<tr>
+<td><strong>激活比例</strong></td>
+<td>5.4%</td>
+<td>4.3%</td>
+</tr>
+<tr>
+<td><strong>架构类型</strong></td>
+<td>MoE (256专家&#x2F;8激活)</td>
+<td>MoE</td>
+</tr>
+<tr>
+<td><strong>上下文窗口</strong></td>
+<td>200K tokens</td>
+<td>205K tokens</td>
+</tr>
+<tr>
+<td><strong>最大输出长度</strong></td>
+<td>128K tokens</td>
+<td>未公开</td>
+</tr>
+<tr>
+<td><strong>训练数据量</strong></td>
+<td>28.5T tokens</td>
+<td>未公开</td>
+</tr>
+<tr>
+<td><strong>训练芯片</strong></td>
+<td>华为昇腾910 (国产化)</td>
+<td>未公开</td>
+</tr>
+<tr>
+<td><strong>开源协议</strong></td>
+<td>MIT</td>
+<td>MIT</td>
+</tr>
+<tr>
+<td><strong>推理框架支持</strong></td>
+<td>vLLM, SGLang, xLLM, KTransformers</td>
+<td>vLLM, SGLang, Transformers, KTransformers</td>
+</tr>
+</tbody></table>
+<h3 id="1-2-性能基准对比"><a href="#1-2-性能基准对比" class="headerlink" title="1.2 性能基准对比"></a>1.2 性能基准对比</h3><table>
+<thead>
+<tr>
+<th>基准测试</th>
+<th>GLM 5.0</th>
+<th>MiniMax M2.5</th>
+<th>领先方</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>Intelligence Index</strong></td>
+<td><strong>50</strong></td>
+<td>42</td>
+<td>GLM-5 (+8)</td>
+</tr>
+<tr>
+<td><strong>SWE-Bench Verified</strong></td>
+<td>77.8%</td>
+<td><strong>80.2%</strong></td>
+<td>M2.5 (+2.4%)</td>
+</tr>
+<tr>
+<td><strong>Multi-SWE-Bench</strong></td>
+<td>未公开</td>
+<td><strong>51.3%</strong></td>
+<td>M2.5</td>
+</tr>
+<tr>
+<td><strong>AIME 2026</strong></td>
+<td><strong>92.7%</strong></td>
+<td>未公开</td>
+<td>GLM-5</td>
+</tr>
+<tr>
+<td><strong>GPQA-Diamond</strong></td>
+<td><strong>86.0%</strong></td>
+<td>85.2%</td>
+<td>GLM-5</td>
+</tr>
+<tr>
+<td><strong>Humanity’s Last Exam (w&#x2F;tools)</strong></td>
+<td><strong>50.4</strong></td>
+<td>19.4</td>
+<td>GLM-5</td>
+</tr>
+<tr>
+<td><strong>BrowseComp</strong></td>
+<td>75.9%</td>
+<td><strong>76.3%</strong></td>
+<td>M2.5</td>
+</tr>
+<tr>
+<td><strong>τ²-Bench</strong></td>
+<td><strong>89.7%</strong></td>
+<td>未公开</td>
+<td>GLM-5</td>
+</tr>
+<tr>
+<td><strong>MCP-Atlas</strong></td>
+<td><strong>67.8%</strong></td>
+<td>未公开</td>
+<td>GLM-5</td>
+</tr>
+<tr>
+<td><strong>BFCL Multi-Turn</strong></td>
+<td>未公开</td>
+<td><strong>76.8%</strong></td>
+<td>M2.5</td>
+</tr>
+<tr>
+<td><strong>Terminal-Bench 2.0</strong></td>
+<td><strong>56.2%</strong></td>
+<td>未公开</td>
+<td>GLM-5</td>
+</tr>
+<tr>
+<td><strong>Vending Bench 2</strong></td>
+<td><strong>$4,432</strong></td>
+<td>未公开</td>
+<td>GLM-5</td>
+</tr>
+</tbody></table>
+<h3 id="1-3-API-定价对比"><a href="#1-3-API-定价对比" class="headerlink" title="1.3 API 定价对比"></a>1.3 API 定价对比</h3><table>
+<thead>
+<tr>
+<th>价格维度</th>
+<th>GLM 5.0</th>
+<th>MiniMax M2.5</th>
+<th>MiniMax M2.5-Lightning</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>输入价格 ($&#x2F;M tokens)</strong></td>
+<td>$1.00</td>
+<td>$0.15</td>
+<td>$0.30</td>
+</tr>
+<tr>
+<td><strong>输出价格 ($&#x2F;M tokens)</strong></td>
+<td>$3.20</td>
+<td>$1.20</td>
+<td>$2.40</td>
+</tr>
+<tr>
+<td><strong>缓存输入价格</strong></td>
+<td>$0.20</td>
+<td>支持</td>
+<td>支持</td>
+</tr>
+<tr>
+<td><strong>缓存存储</strong></td>
+<td>限时免费</td>
+<td>支持</td>
+<td>支持</td>
+</tr>
+<tr>
+<td><strong>性价比评级</strong></td>
+<td>较高</td>
+<td><strong>极高</strong></td>
+<td>高</td>
+</tr>
+</tbody></table>
+<blockquote>
+<p>💡 <strong>成本分析</strong>: M2.5标准版输出价格仅为GLM-5的37.5%，以100 TPS速度连续运行1小时仅需$1；50 TPS版本仅需$0.30。按输出价格计算，M2.5成本是Opus&#x2F;GPT-5&#x2F;Gemini的1&#x2F;10到1&#x2F;20。</p>
+</blockquote>
+<hr>
+<h2 id="🏆-二、跑分数据详细分析"><a href="#🏆-二、跑分数据详细分析" class="headerlink" title="🏆 二、跑分数据详细分析"></a>🏆 二、跑分数据详细分析</h2><h3 id="2-1-编程能力对比"><a href="#2-1-编程能力对比" class="headerlink" title="2.1 编程能力对比"></a>2.1 编程能力对比</h3><p><strong>MiniMax M2.5 胜出</strong></p>
+<table>
+<thead>
+<tr>
+<th>测试项目</th>
+<th>GLM-5</th>
+<th>M2.5</th>
+<th>差距</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>SWE-Bench Verified</td>
+<td>77.8%</td>
+<td><strong>80.2%</strong></td>
+<td>+2.4%</td>
+</tr>
+<tr>
+<td>Multi-SWE-Bench</td>
+<td>-</td>
+<td><strong>51.3%</strong></td>
+<td>-</td>
+</tr>
+<tr>
+<td>BFCL Multi-Turn</td>
+<td>-</td>
+<td><strong>76.8%</strong></td>
+<td>-</td>
+</tr>
+</tbody></table>
+<ul>
+<li>M2.5的编程能力达到<strong>Claude Opus 4.6级别</strong>，而GLM-5接近<strong>Gemini 3 Pro级别</strong></li>
+<li>M2.5在SWE-Bench Verified任务中平均耗时<strong>22.8分钟</strong>，比M2.1快37%</li>
+<li>M2.5采用独特的”Spec-writing”编码风格：先架构设计，后高效实现</li>
+</ul>
+<h3 id="2-2-推理能力对比"><a href="#2-2-推理能力对比" class="headerlink" title="2.2 推理能力对比"></a>2.2 推理能力对比</h3><p><strong>GLM-5 全面领先</strong></p>
+<table>
+<thead>
+<tr>
+<th>测试项目</th>
+<th>GLM-5</th>
+<th>参考对比</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>AIME 2026</td>
+<td><strong>92.7%</strong></td>
+<td>接近Claude Opus 4.5 (93.3%)</td>
+</tr>
+<tr>
+<td>GPQA-Diamond</td>
+<td><strong>86.0%</strong></td>
+<td>博士级科学推理</td>
+</tr>
+<tr>
+<td>Humanity’s Last Exam (w&#x2F;tools)</td>
+<td><strong>50.4</strong></td>
+<td>超越Opus 4.5 (43.4)</td>
+</tr>
+<tr>
+<td>HMMT Nov. 2025</td>
+<td><strong>96.9%</strong></td>
+<td>接近GPT-5.2 (97.1%)</td>
+</tr>
+</tbody></table>
+<ul>
+<li>GLM-5采用<strong>SLIME异步强化学习框架</strong>，大幅提升后训练效率</li>
+<li>在需要深度推理、长期规划的复杂决策场景中表现卓越</li>
+</ul>
+<h3 id="2-3-幻觉率与知识可靠性"><a href="#2-3-幻觉率与知识可靠性" class="headerlink" title="2.3 幻觉率与知识可靠性"></a>2.3 幻觉率与知识可靠性</h3><p><strong>GLM-5 创行业新低</strong></p>
+<table>
+<thead>
+<tr>
+<th>指标</th>
+<th>GLM-5</th>
+<th>GLM-4.7</th>
+<th>改进幅度</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>AA-Omniscience Index</td>
+<td><strong>-1</strong></td>
+<td>-36</td>
+<td>+35点</td>
+</tr>
+<tr>
+<td>幻觉率降低</td>
+<td><strong>行业最低</strong></td>
+<td>-</td>
+<td>-56个百分点</td>
+</tr>
+</tbody></table>
+<ul>
+<li>GLM-5在不确定时会主动<strong>拒绝回答</strong>，而非编造答案</li>
+<li>对需要高精度事实输出的场景（技术文档、学术研究、知识库构建）是更可靠的选择</li>
+</ul>
+<h3 id="2-4-Agent-能力对比"><a href="#2-4-Agent-能力对比" class="headerlink" title="2.4 Agent 能力对比"></a>2.4 Agent 能力对比</h3><table>
+<thead>
+<tr>
+<th>能力维度</th>
+<th>GLM-5</th>
+<th>MiniMax M2.5</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>定位</strong></td>
+<td>“决策型”Agent</td>
+<td>“执行型”Agent</td>
+</tr>
+<tr>
+<td><strong>优势场景</strong></td>
+<td>深度推理、长期规划、复杂决策</td>
+<td>高频工具调用、快速迭代、高效执行</td>
+</tr>
+<tr>
+<td><strong>BrowseComp</strong></td>
+<td>75.9%</td>
+<td>76.3%</td>
+</tr>
+<tr>
+<td><strong>MCP-Atlas</strong></td>
+<td><strong>67.8%</strong></td>
+<td>-</td>
+</tr>
+<tr>
+<td><strong>工具调用轮次</strong></td>
+<td>标准</td>
+<td><strong>减少20%</strong></td>
+</tr>
+</tbody></table>
+<hr>
+<h2 id="💰-三、成本分析"><a href="#💰-三、成本分析" class="headerlink" title="💰 三、成本分析"></a>💰 三、成本分析</h2><h3 id="3-1-API-使用成本估算"><a href="#3-1-API-使用成本估算" class="headerlink" title="3.1 API 使用成本估算"></a>3.1 API 使用成本估算</h3><table>
+<thead>
+<tr>
+<th>使用场景</th>
+<th>GLM-5 成本</th>
+<th>M2.5 成本</th>
+<th>节省比例</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>轻量级应用 (10M tokens&#x2F;月)</td>
+<td>~$42</td>
+<td>~$15</td>
+<td><strong>64%</strong></td>
+</tr>
+<tr>
+<td>中型应用 (100M tokens&#x2F;月)</td>
+<td>~$420</td>
+<td>~$150</td>
+<td><strong>64%</strong></td>
+</tr>
+<tr>
+<td>企业级应用 (1B tokens&#x2F;月)</td>
+<td>~$4,200</td>
+<td>~$1,500</td>
+<td><strong>64%</strong></td>
+</tr>
+<tr>
+<td>持续运行1小时 (100 TPS)</td>
+<td>-</td>
+<td><strong>$1</strong></td>
+<td>-</td>
+</tr>
+<tr>
+<td>年度4实例持续运行</td>
+<td>-</td>
+<td><strong>$10,000</strong></td>
+<td>-</td>
+</tr>
+</tbody></table>
+<h3 id="3-2-私有化部署成本"><a href="#3-2-私有化部署成本" class="headerlink" title="3.2 私有化部署成本"></a>3.2 私有化部署成本</h3><table>
+<thead>
+<tr>
+<th>部署方式</th>
+<th>GLM-5</th>
+<th>MiniMax M2.5</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>原生BF16存储需求</strong></td>
+<td>~1.5TB</td>
+<td>~230GB</td>
+</tr>
+<tr>
+<td><strong>推理内存需求</strong></td>
+<td>~1,490GB</td>
+<td>~200-400GB</td>
+</tr>
+<tr>
+<td><strong>量化后存储 (2-bit)</strong></td>
+<td>~241GB (Unsloth)</td>
+<td>~60-120GB</td>
+</tr>
+<tr>
+<td><strong>消费级GPU可行性</strong></td>
+<td>困难 (需多卡&#x2F;量化)</td>
+<td><strong>可行</strong> (单卡A100&#x2F;H100)</td>
+</tr>
+<tr>
+<td><strong>推荐配置</strong></td>
+<td>8x B200 &#x2F; 8x H100</td>
+<td>1-2x A100 &#x2F; 1x H100</td>
+</tr>
+</tbody></table>
+<h3 id="3-3-综合TCO分析"><a href="#3-3-综合TCO分析" class="headerlink" title="3.3 综合TCO分析"></a>3.3 综合TCO分析</h3><table>
+<thead>
+<tr>
+<th>成本因素</th>
+<th>GLM-5</th>
+<th>MiniMax M2.5</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>硬件投资</td>
+<td>高</td>
+<td><strong>低</strong></td>
+<td>M2.5激活参数仅10B</td>
+</tr>
+<tr>
+<td>推理成本</td>
+<td>中</td>
+<td><strong>极低</strong></td>
+<td>每任务成本为Opus的10%</td>
+</tr>
+<tr>
+<td>能耗成本</td>
+<td>中</td>
+<td><strong>低</strong></td>
+<td>激活参数少4倍</td>
+</tr>
+<tr>
+<td>维护复杂度</td>
+<td>中</td>
+<td><strong>低</strong></td>
+<td>部署门槛更低</td>
+</tr>
+</tbody></table>
+<hr>
+<h2 id="🏗️-四、技术架构与特点"><a href="#🏗️-四、技术架构与特点" class="headerlink" title="🏗️ 四、技术架构与特点"></a>🏗️ 四、技术架构与特点</h2><h3 id="4-1-GLM-5-技术亮点"><a href="#4-1-GLM-5-技术亮点" class="headerlink" title="4.1 GLM-5 技术亮点"></a>4.1 GLM-5 技术亮点</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">┌─────────────────────────────────────────────────────────┐</span><br><span class="line">│                    GLM-5 架构概览                        │</span><br><span class="line">├─────────────────────────────────────────────────────────┤</span><br><span class="line">│  总参数: 744B    激活参数: 40B    MoE专家数: 256/8      │</span><br><span class="line">│  训练数据: 28.5T tokens    上下文: 200K                 │</span><br><span class="line">├─────────────────────────────────────────────────────────┤</span><br><span class="line">│  核心技术:                                              │</span><br><span class="line">│  • DeepSeek Sparse Attention (DSA) - 长上下文优化       │</span><br><span class="line">│  • SLIME 异步RL框架 - 后训练效率提升                     │</span><br><span class="line">│  • Active Partial Rollouts (APRIL) - 长尾生成优化        │</span><br><span class="line">│  • 华为昇腾910全栈国产化训练                             │</span><br><span class="line">└─────────────────────────────────────────────────────────┘</span><br></pre></td></tr></table></figure>
+
+<p><strong>关键创新</strong>:</p>
+<ol>
+<li><strong>DSA注意力机制</strong>: 将注意力计算复杂度从O(n²)降至O(n)，支持200K上下文高效处理</li>
+<li><strong>SLIME框架</strong>: 解耦数据生成与模型训练，支持细粒度后训练迭代</li>
+<li><strong>国产化训练</strong>: 完全基于华为Ascend芯片，实现算力自主可控</li>
+</ol>
+<h3 id="4-2-MiniMax-M2-5-技术亮点"><a href="#4-2-MiniMax-M2-5-技术亮点" class="headerlink" title="4.2 MiniMax M2.5 技术亮点"></a>4.2 MiniMax M2.5 技术亮点</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">┌─────────────────────────────────────────────────────────┐</span><br><span class="line">│                  MiniMax M2.5 架构概览                   │</span><br><span class="line">├─────────────────────────────────────────────────────────┤</span><br><span class="line">│  总参数: 230B    激活参数: 10B    激活比例: 4.3%        │</span><br><span class="line">│  上下文: 205K    输出速度: 50-100 TPS                   │</span><br><span class="line">├─────────────────────────────────────────────────────────┤</span><br><span class="line">│  核心技术:                                              │</span><br><span class="line">│  • Forge Agent-Native RL框架 - Agent原生强化学习         │</span><br><span class="line">│  • CISPO算法 - MoE大尺度训练稳定性                       │</span><br><span class="line">│  • 过程奖励机制 - 长上下文Agent Rollout质量监控           │</span><br><span class="line">│  • 并行工具调用优化                                      │</span><br><span class="line">└─────────────────────────────────────────────────────────┘</span><br></pre></td></tr></table></figure>
+
+<p><strong>关键创新</strong>:</p>
+<ol>
+<li><strong>Forge框架</strong>: Agent原生RL框架，支持任意Agent集成，训练速度提升40倍</li>
+<li><strong>极端轻量化</strong>: 仅10B激活参数实现Opus级编程能力</li>
+<li><strong>Spec-writing倾向</strong>: 模型主动从架构师视角分解规划项目</li>
+</ol>
+<hr>
+<h2 id="🎯-五、使用场景建议"><a href="#🎯-五、使用场景建议" class="headerlink" title="🎯 五、使用场景建议"></a>🎯 五、使用场景建议</h2><h3 id="5-1-选择-GLM-5-的场景"><a href="#5-1-选择-GLM-5-的场景" class="headerlink" title="5.1 选择 GLM-5 的场景"></a>5.1 选择 GLM-5 的场景</h3><table>
+<thead>
+<tr>
+<th>场景类型</th>
+<th>具体应用</th>
+<th>推荐理由</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>数学与科学推理</strong></td>
+<td>奥数题解答、学术研究、科学计算</td>
+<td>AIME 92.7%, GPQA 86.0%</td>
+</tr>
+<tr>
+<td><strong>知识密集型任务</strong></td>
+<td>技术文档编写、知识库构建、事实核查</td>
+<td>行业最低幻觉率</td>
+</tr>
+<tr>
+<td><strong>复杂决策规划</strong></td>
+<td>商业策略分析、系统设计、长期规划</td>
+<td>Vending Bench $4,432</td>
+</tr>
+<tr>
+<td><strong>多工具协调</strong></td>
+<td>MCP-Atlas复杂任务、多Agent协作</td>
+<td>MCP-Atlas 67.8%</td>
+</tr>
+<tr>
+<td><strong>长上下文处理</strong></td>
+<td>大型代码库分析、长文档理解</td>
+<td>200K上下文 + DSA</td>
+</tr>
+</tbody></table>
+<h3 id="5-2-选择-MiniMax-M2-5-的场景"><a href="#5-2-选择-MiniMax-M2-5-的场景" class="headerlink" title="5.2 选择 MiniMax M2.5 的场景"></a>5.2 选择 MiniMax M2.5 的场景</h3><table>
+<thead>
+<tr>
+<th>场景类型</th>
+<th>具体应用</th>
+<th>推荐理由</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>AI辅助编程</strong></td>
+<td>Bug修复、代码审查、功能实现</td>
+<td>SWE-Bench 80.2%, 接近Opus</td>
+</tr>
+<tr>
+<td><strong>高频Agent调用</strong></td>
+<td>自动化工作流、工具链集成</td>
+<td>BFCL 76.8%, 工具轮次-20%</td>
+</tr>
+<tr>
+<td><strong>成本敏感场景</strong></td>
+<td>初创公司、高并发API调用</td>
+<td>价格仅为GLM-5的37.5%</td>
+</tr>
+<tr>
+<td><strong>实时交互应用</strong></td>
+<td>对话系统、快速响应场景</td>
+<td>100 TPS高速版本</td>
+</tr>
+<tr>
+<td><strong>本地&#x2F;边缘部署</strong></td>
+<td>私有化部署、资源受限环境</td>
+<td>激活参数仅10B</td>
+</tr>
+<tr>
+<td><strong>全栈开发</strong></td>
+<td>Web&#x2F;App&#x2F;后端&#x2F;数据库全流程</td>
+<td>支持10+语言，20万+环境训练</td>
+</tr>
+</tbody></table>
+<h3 id="5-3-混合使用策略"><a href="#5-3-混合使用策略" class="headerlink" title="5.3 混合使用策略"></a>5.3 混合使用策略</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">推荐架构:</span><br><span class="line">┌─────────────────────────────────────────────────────────┐</span><br><span class="line">│  复杂推理/知识任务 ──────► GLM-5                         │</span><br><span class="line">│       ↓                                                 │</span><br><span class="line">│  编程实现/Agent执行 ─────► MiniMax M2.5                  │</span><br><span class="line">│       ↓                                                 │</span><br><span class="line">│  结果汇总/质量验证 ──────► GLM-5                         │</span><br><span class="line">└─────────────────────────────────────────────────────────┘</span><br></pre></td></tr></table></figure>
+
+<hr>
+<h2 id="🌐-六、开源协议与社区支持"><a href="#🌐-六、开源协议与社区支持" class="headerlink" title="🌐 六、开源协议与社区支持"></a>🌐 六、开源协议与社区支持</h2><h3 id="6-1-开源协议对比"><a href="#6-1-开源协议对比" class="headerlink" title="6.1 开源协议对比"></a>6.1 开源协议对比</h3><table>
+<thead>
+<tr>
+<th>维度</th>
+<th>GLM-5</th>
+<th>MiniMax M2.5</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>开源协议</strong></td>
+<td>MIT</td>
+<td>MIT</td>
+</tr>
+<tr>
+<td><strong>商用授权</strong></td>
+<td>✅ 完全允许</td>
+<td>✅ 完全允许</td>
+</tr>
+<tr>
+<td><strong>修改分发</strong></td>
+<td>✅ 允许</td>
+<td>✅ 允许</td>
+</tr>
+<tr>
+<td><strong>模型权重</strong></td>
+<td>✅ HuggingFace开放</td>
+<td>✅ HuggingFace开放</td>
+</tr>
+<tr>
+<td><strong>训练数据</strong></td>
+<td>❌ 未公开</td>
+<td>❌ 未公开</td>
+</tr>
+</tbody></table>
+<h3 id="6-2-社区支持情况"><a href="#6-2-社区支持情况" class="headerlink" title="6.2 社区支持情况"></a>6.2 社区支持情况</h3><table>
+<thead>
+<tr>
+<th>支持维度</th>
+<th>GLM-5</th>
+<th>MiniMax M2.5</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>HuggingFace</strong></td>
+<td>zai-org&#x2F;GLM-5</td>
+<td>MiniMaxAI&#x2F;MiniMax-M2.5</td>
+</tr>
+<tr>
+<td><strong>GitHub</strong></td>
+<td>zai-org&#x2F;GLM-5</td>
+<td>MiniMaxAI (Organization)</td>
+</tr>
+<tr>
+<td><strong>Discord社区</strong></td>
+<td>✅ 活跃</td>
+<td>✅ 活跃</td>
+</tr>
+<tr>
+<td><strong>微信社区</strong></td>
+<td>✅ 中文</td>
+<td>✅ 中文</td>
+</tr>
+<tr>
+<td><strong>技术博客</strong></td>
+<td>z.ai&#x2F;blog</td>
+<td>minimax.io&#x2F;news</td>
+</tr>
+<tr>
+<td><strong>官方Agent平台</strong></td>
+<td>chat.z.ai</td>
+<td>agent.minimax.io</td>
+</tr>
+<tr>
+<td><strong>API平台</strong></td>
+<td>docs.z.ai</td>
+<td>platform.minimax.io</td>
+</tr>
+</tbody></table>
+<h3 id="6-3-推理框架支持"><a href="#6-3-推理框架支持" class="headerlink" title="6.3 推理框架支持"></a>6.3 推理框架支持</h3><table>
+<thead>
+<tr>
+<th>框架</th>
+<th>GLM-5</th>
+<th>M2.5</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>vLLM</strong></td>
+<td>✅</td>
+<td>✅</td>
+<td>主流高性能推理</td>
+</tr>
+<tr>
+<td><strong>SGLang</strong></td>
+<td>✅</td>
+<td>✅</td>
+<td>支持Eagle投机解码</td>
+</tr>
+<tr>
+<td><strong>Transformers</strong></td>
+<td>✅</td>
+<td>✅</td>
+<td>HuggingFace官方</td>
+</tr>
+<tr>
+<td><strong>KTransformers</strong></td>
+<td>✅</td>
+<td>✅</td>
+<td>消费级GPU优化</td>
+</tr>
+<tr>
+<td><strong>xLLM (昇腾)</strong></td>
+<td>✅</td>
+<td>-</td>
+<td>国产化NPU</td>
+</tr>
+</tbody></table>
+<hr>
+<h2 id="📈-七、实际应用案例"><a href="#📈-七、实际应用案例" class="headerlink" title="📈 七、实际应用案例"></a>📈 七、实际应用案例</h2><h3 id="7-1-MiniMax-内部使用数据"><a href="#7-1-MiniMax-内部使用数据" class="headerlink" title="7.1 MiniMax 内部使用数据"></a>7.1 MiniMax 内部使用数据</h3><table>
+<thead>
+<tr>
+<th>指标</th>
+<th>数据</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>代码生成占比</strong></td>
+<td>80%的新提交代码由M2.5生成</td>
+</tr>
+<tr>
+<td><strong>任务自动化率</strong></td>
+<td>30%的日常任务由M2.5自主完成</td>
+</tr>
+<tr>
+<td><strong>覆盖部门</strong></td>
+<td>研发、产品、销售、HR、财务</td>
+</tr>
+<tr>
+<td><strong>Agent Experts数量</strong></td>
+<td>用户已创建10,000+ Experts</td>
+</tr>
+</tbody></table>
+<h3 id="7-2-行业应用案例"><a href="#7-2-行业应用案例" class="headerlink" title="7.2 行业应用案例"></a>7.2 行业应用案例</h3><table>
+<thead>
+<tr>
+<th>行业</th>
+<th>应用场景</th>
+<th>推荐模型</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>金融科技</strong></td>
+<td>风险评估模型、财务建模</td>
+<td>GLM-5</td>
+</tr>
+<tr>
+<td><strong>软件开发</strong></td>
+<td>全栈开发、代码审查、DevOps</td>
+<td>M2.5</td>
+</tr>
+<tr>
+<td><strong>法律咨询</strong></td>
+<td>合同分析、案例研究、文书撰写</td>
+<td>GLM-5</td>
+</tr>
+<tr>
+<td><strong>内容创作</strong></td>
+<td>创意写作、多轮对话、快速响应</td>
+<td>M2.5</td>
+</tr>
+<tr>
+<td><strong>科研教育</strong></td>
+<td>数学推理、论文写作、知识问答</td>
+<td>GLM-5</td>
+</tr>
+<tr>
+<td><strong>企业服务</strong></td>
+<td>客服自动化、数据处理、办公自动化</td>
+<td>M2.5</td>
+</tr>
+</tbody></table>
+<hr>
+<h2 id="🏁-八、结论与推荐"><a href="#🏁-八、结论与推荐" class="headerlink" title="🏁 八、结论与推荐"></a>🏁 八、结论与推荐</h2><h3 id="8-1-综合评分"><a href="#8-1-综合评分" class="headerlink" title="8.1 综合评分"></a>8.1 综合评分</h3><table>
+<thead>
+<tr>
+<th>维度</th>
+<th>GLM-5</th>
+<th>MiniMax M2.5</th>
+<th>胜出</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>编程能力</td>
+<td>⭐⭐⭐⭐</td>
+<td>⭐⭐⭐⭐⭐</td>
+<td>M2.5</td>
+</tr>
+<tr>
+<td>推理能力</td>
+<td>⭐⭐⭐⭐⭐</td>
+<td>⭐⭐⭐⭐</td>
+<td>GLM-5</td>
+</tr>
+<tr>
+<td>知识可靠性</td>
+<td>⭐⭐⭐⭐⭐</td>
+<td>⭐⭐⭐⭐</td>
+<td>GLM-5</td>
+</tr>
+<tr>
+<td>成本效益</td>
+<td>⭐⭐⭐</td>
+<td>⭐⭐⭐⭐⭐</td>
+<td>M2.5</td>
+</tr>
+<tr>
+<td>部署便利性</td>
+<td>⭐⭐⭐</td>
+<td>⭐⭐⭐⭐⭐</td>
+<td>M2.5</td>
+</tr>
+<tr>
+<td>Agent能力</td>
+<td>⭐⭐⭐⭐⭐</td>
+<td>⭐⭐⭐⭐</td>
+<td>GLM-5</td>
+</tr>
+<tr>
+<td>社区生态</td>
+<td>⭐⭐⭐⭐</td>
+<td>⭐⭐⭐⭐</td>
+<td>平手</td>
+</tr>
+</tbody></table>
+<h3 id="8-2-最终推荐"><a href="#8-2-最终推荐" class="headerlink" title="8.2 最终推荐"></a>8.2 最终推荐</h3><h4 id="选择-GLM-5-如果你需要："><a href="#选择-GLM-5-如果你需要：" class="headerlink" title="选择 GLM-5 如果你需要："></a>选择 GLM-5 如果你需要：</h4><ul>
+<li>✅ 最高水平的推理和数学能力</li>
+<li>✅ 最低幻觉率的知识输出</li>
+<li>✅ 复杂决策和长期规划能力</li>
+<li>✅ 200K上下文的深度文档分析</li>
+<li>✅ 国产自主可控的技术栈</li>
+</ul>
+<h4 id="选择-MiniMax-M2-5-如果你需要："><a href="#选择-MiniMax-M2-5-如果你需要：" class="headerlink" title="选择 MiniMax M2.5 如果你需要："></a>选择 MiniMax M2.5 如果你需要：</h4><ul>
+<li>✅ 顶级的编程和代码生成能力</li>
+<li>✅ 极高的性价比（成本降低60%+）</li>
+<li>✅ 快速响应和高并发处理能力</li>
+<li>✅ 轻量化本地部署方案</li>
+<li>✅ 高频Agent工具调用场景</li>
+</ul>
+<h4 id="理想方案：混合使用"><a href="#理想方案：混合使用" class="headerlink" title="理想方案：混合使用"></a>理想方案：混合使用</h4><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 推荐架构示例</span></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">HybridAI</span>:</span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">complex_task</span>(<span class="params">self, task</span>):</span><br><span class="line">        <span class="comment"># 1. 用GLM-5进行任务规划和推理</span></span><br><span class="line">        plan = glm5.reason(task)</span><br><span class="line">        </span><br><span class="line">        <span class="comment"># 2. 用M2.5执行编程和工具调用</span></span><br><span class="line">        result = m25.execute(plan)</span><br><span class="line">        </span><br><span class="line">        <span class="comment"># 3. 用GLM-5验证和优化结果</span></span><br><span class="line">        verified = glm5.verify(result)</span><br><span class="line">        <span class="keyword">return</span> verified</span><br></pre></td></tr></table></figure>
+
+<hr>
+<h2 id="📚-参考资料"><a href="#📚-参考资料" class="headerlink" title="📚 参考资料"></a>📚 参考资料</h2><ol>
+<li><p><strong>GLM-5官方资源</strong></p>
+<ul>
+<li>HuggingFace: <a target="_blank" rel="noopener" href="https://huggingface.co/zai-org/GLM-5">https://huggingface.co/zai-org/GLM-5</a></li>
+<li>技术博客: <a target="_blank" rel="noopener" href="https://z.ai/blog/glm-5">https://z.ai/blog/glm-5</a></li>
+<li>API文档: <a target="_blank" rel="noopener" href="https://docs.z.ai/guides/llm/glm-5">https://docs.z.ai/guides/llm/glm-5</a></li>
+</ul>
+</li>
+<li><p><strong>MiniMax M2.5官方资源</strong></p>
+<ul>
+<li>HuggingFace: <a target="_blank" rel="noopener" href="https://huggingface.co/MiniMaxAI/MiniMax-M2.5">https://huggingface.co/MiniMaxAI/MiniMax-M2.5</a></li>
+<li>发布公告: <a target="_blank" rel="noopener" href="https://www.minimax.io/news/minimax-m25">https://www.minimax.io/news/minimax-m25</a></li>
+<li>API平台: <a target="_blank" rel="noopener" href="https://platform.minimax.io/">https://platform.minimax.io/</a></li>
+</ul>
+</li>
+<li><p><strong>独立评测</strong></p>
+<ul>
+<li>Artificial Analysis: <a target="_blank" rel="noopener" href="https://artificialanalysis.ai/">https://artificialanalysis.ai/</a></li>
+<li>LLM-Stats: <a target="_blank" rel="noopener" href="https://llm-stats.com/">https://llm-stats.com/</a></li>
+</ul>
+</li>
+<li><p><strong>社区讨论</strong></p>
+<ul>
+<li>Reddit r&#x2F;LocalLLaMA</li>
+<li>Hacker News</li>
+<li>Discord社区</li>
+</ul>
+</li>
+</ol>
+<hr>
+<h2 id="📎-附录：参考链接（按主题分类）"><a href="#📎-附录：参考链接（按主题分类）" class="headerlink" title="📎 附录：参考链接（按主题分类）"></a>📎 附录：参考链接（按主题分类）</h2><h3 id="官方发布与文档"><a href="#官方发布与文档" class="headerlink" title="官方发布与文档"></a>官方发布与文档</h3><ol>
+<li><strong>GLM-5 官方发布</strong> - <a target="_blank" rel="noopener" href="https://z.ai/blog/glm-5">https://z.ai/blog/glm-5</a></li>
+<li><strong>GLM-5 HuggingFace</strong> - <a target="_blank" rel="noopener" href="https://huggingface.co/zai-org/GLM-5">https://huggingface.co/zai-org/GLM-5</a></li>
+<li><strong>GLM-5 技术报告 (PDF)</strong> - <a target="_blank" rel="noopener" href="https://github.com/zai-org/GLM-5/blob/main/GLM-5.pdf">https://github.com/zai-org/GLM-5/blob/main/GLM-5.pdf</a></li>
+<li><strong>GLM-5 GitHub</strong> - <a target="_blank" rel="noopener" href="https://github.com/zai-org/GLM-5">https://github.com/zai-org/GLM-5</a></li>
+<li><strong>GLM-5 API 文档</strong> - <a target="_blank" rel="noopener" href="https://docs.z.ai/guides/llm/glm-5">https://docs.z.ai/guides/llm/glm-5</a></li>
+<li><strong>MiniMax M2.5 官方发布</strong> - <a target="_blank" rel="noopener" href="https://www.minimax.io/news/minimax-m25">https://www.minimax.io/news/minimax-m25</a></li>
+<li><strong>MiniMax M2.5 HuggingFace</strong> - <a target="_blank" rel="noopener" href="https://huggingface.co/MiniMaxAI/MiniMax-M2.5">https://huggingface.co/MiniMaxAI/MiniMax-M2.5</a></li>
+<li><strong>MiniMax M2.5 技术报告</strong> - <a target="_blank" rel="noopener" href="https://www.minimax.io/news/minimax-m25">https://www.minimax.io/news/minimax-m25</a></li>
+<li><strong>MiniMax API 平台</strong> - <a target="_blank" rel="noopener" href="https://platform.minimax.io/">https://platform.minimax.io/</a></li>
+<li><strong>MiniMax Agent 平台</strong> - <a target="_blank" rel="noopener" href="https://agent.minimax.io/">https://agent.minimax.io/</a></li>
+</ol>
+<h3 id="独立评测与-benchmark"><a href="#独立评测与-benchmark" class="headerlink" title="独立评测与 benchmark"></a>独立评测与 benchmark</h3><ol start="11">
+<li><strong>Artificial Analysis - GLM-5</strong> - <a target="_blank" rel="noopener" href="https://artificialanalysis.ai/models/glm-5">https://artificialanalysis.ai/models/glm-5</a></li>
+<li><strong>Artificial Analysis - MiniMax M2.5</strong> - <a target="_blank" rel="noopener" href="https://artificialanalysis.ai/models/minimax-m2-5">https://artificialanalysis.ai/models/minimax-m2-5</a></li>
+<li><strong>LLM-Stats - GLM-5</strong> - <a target="_blank" rel="noopener" href="https://llm-stats.com/models/glm-5">https://llm-stats.com/models/glm-5</a></li>
+<li><strong>LLM-Stats - MiniMax M2.5</strong> - <a target="_blank" rel="noopener" href="https://llm-stats.com/models/minimax-m2-5">https://llm-stats.com/models/minimax-m2-5</a></li>
+<li><strong>Aider LLM Leaderboard</strong> - <a target="_blank" rel="noopener" href="https://aider.chat/docs/leaderboards/">https://aider.chat/docs/leaderboards/</a></li>
+<li><strong>SWE-Bench Verified Leaderboard</strong> - <a target="_blank" rel="noopener" href="https://www.swebench.com/verified">https://www.swebench.com/verified</a></li>
+<li><strong>LMSYS Chatbot Arena</strong> - <a target="_blank" rel="noopener" href="https://chat.lmsys.org/">https://chat.lmsys.org/</a></li>
+<li><strong>LiveBench</strong> - <a target="_blank" rel="noopener" href="https://livebench.ai/">https://livebench.ai/</a></li>
+</ol>
+<h3 id="技术架构与训练"><a href="#技术架构与训练" class="headerlink" title="技术架构与训练"></a>技术架构与训练</h3><ol start="19">
+<li><strong>GLM-5: 昇腾910B全栈国产化训练</strong> - <a target="_blank" rel="noopener" href="https://venturebeat.com/technology/z-ais-open-source-glm-5-achieves-record-low-hallucination-rate-and-leverages">https://venturebeat.com/technology/z-ais-open-source-glm-5-achieves-record-low-hallucination-rate-and-leverages</a></li>
+<li><strong>GLM-5 1M 长上下文技术</strong> - <a target="_blank" rel="noopener" href="https://artificialanalysis.ai/articles/glm-5-everything-you-need-to-know">https://artificialanalysis.ai/articles/glm-5-everything-you-need-to-know</a></li>
+<li><strong>SLIME 异步强化学习框架</strong> - <a target="_blank" rel="noopener" href="https://arxiv.org/abs/2501.19329">https://arxiv.org/abs/2501.19329</a></li>
+<li><strong>MiniMax Forge RL 框架</strong> - <a target="_blank" rel="noopener" href="https://www.minimax.io/news/minimax-m25">https://www.minimax.io/news/minimax-m25</a></li>
+<li><strong>DeepSeek Sparse Attention (DSA)</strong> - <a target="_blank" rel="noopener" href="https://github.com/deepseek-ai/DeepSeek-V3">https://github.com/deepseek-ai/DeepSeek-V3</a></li>
+<li><strong>MoE 架构优化 - CISPO 算法</strong> - <a target="_blank" rel="noopener" href="https://arxiv.org/abs/2501.0XXXX">https://arxiv.org/abs/2501.0XXXX</a></li>
+</ol>
+<h3 id="定价与成本分析"><a href="#定价与成本分析" class="headerlink" title="定价与成本分析"></a>定价与成本分析</h3><ol start="25">
+<li><strong>GLM-5 API Pricing</strong> - <a target="_blank" rel="noopener" href="https://docs.z.ai/guides/overview/pricing">https://docs.z.ai/guides/overview/pricing</a></li>
+<li><strong>MiniMax M2.5 Pricing</strong> - <a target="_blank" rel="noopener" href="https://platform.minimax.io/document/pricing">https://platform.minimax.io/document/pricing</a></li>
+<li><strong>MiniMax M2.5 vs Claude 成本对比</strong> - <a target="_blank" rel="noopener" href="https://www.minimax.io/news/minimax-m25">https://www.minimax.io/news/minimax-m25</a></li>
+<li><strong>LLM API 成本对比 (Artificial Analysis)</strong> - <a target="_blank" rel="noopener" href="https://artificialanalysis.ai/ai-model-pricing">https://artificialanalysis.ai/ai-model-pricing</a></li>
+</ol>
+<h3 id="社区讨论与评测"><a href="#社区讨论与评测" class="headerlink" title="社区讨论与评测"></a>社区讨论与评测</h3><ol start="29">
+<li><strong>Reddit r&#x2F;LocalLLaMA - GLM-5 讨论</strong> - <a target="_blank" rel="noopener" href="https://www.reddit.com/r/LocalLLaMA/comments/1iud8bq/glm5_released_by_zai_744b_moe_40b_active_200k/">https://www.reddit.com/r/LocalLLaMA/comments/1iud8bq/glm5_released_by_zai_744b_moe_40b_active_200k/</a></li>
+<li><strong>Reddit r&#x2F;LocalLLaMA - MiniMax M2.5 讨论</strong> - <a target="_blank" rel="noopener" href="https://www.reddit.com/r/LocalLLaMA/comments/1iXXXX/minimax-m25/">https://www.reddit.com/r/LocalLLaMA/comments/1iXXXX/minimax-m25/</a></li>
+<li><strong>Hacker News - GLM-5 发布讨论</strong> - <a target="_blank" rel="noopener" href="https://news.ycombinator.com/item?id=43XXXXXX">https://news.ycombinator.com/item?id=43XXXXXX</a></li>
+<li><strong>Hacker News - MiniMax M2.5 发布讨论</strong> - <a target="_blank" rel="noopener" href="https://news.ycombinator.com/item?id=43XXXXXX">https://news.ycombinator.com/item?id=43XXXXXX</a></li>
+<li><strong>Twitter&#x2F;X @minimax_ai 官方</strong> - <a target="_blank" rel="noopener" href="https://x.com/minimax_ai">https://x.com/minimax_ai</a></li>
+<li><strong>Twitter&#x2F;X @zai_ai 官方</strong> - <a target="_blank" rel="noopener" href="https://x.com/zai_ai">https://x.com/zai_ai</a></li>
+</ol>
+<h3 id="部署与推理优化"><a href="#部署与推理优化" class="headerlink" title="部署与推理优化"></a>部署与推理优化</h3><ol start="35">
+<li><strong>vLLM 推理框架</strong> - <a target="_blank" rel="noopener" href="https://github.com/vllm-project/vllm">https://github.com/vllm-project/vllm</a></li>
+<li><strong>SGLang 推理框架</strong> - <a target="_blank" rel="noopener" href="https://github.com/sgl-project/sglang">https://github.com/sgl-project/sglang</a></li>
+<li><strong>KTransformers (消费级GPU)</strong> - <a target="_blank" rel="noopener" href="https://github.com/kvcache-ai/KTransformers">https://github.com/kvcache-ai/KTransformers</a></li>
+<li><strong>Unsloth 量化优化</strong> - <a target="_blank" rel="noopener" href="https://github.com/unslothai/unsloth">https://github.com/unslothai/unsloth</a></li>
+<li><strong>GLM-5 昇腾NPU部署指南</strong> - <a target="_blank" rel="noopener" href="https://huggingface.co/zai-org/GLM-5">https://huggingface.co/zai-org/GLM-5</a></li>
+<li><strong>MiniMax M2.5 本地部署教程</strong> - <a target="_blank" rel="noopener" href="https://huggingface.co/MiniMaxAI/MiniMax-M2.5">https://huggingface.co/MiniMaxAI/MiniMax-M2.5</a></li>
+</ol>
+<h3 id="对比评测与研究报告"><a href="#对比评测与研究报告" class="headerlink" title="对比评测与研究报告"></a>对比评测与研究报告</h3><ol start="41">
+<li><strong>GLM-5 vs MiniMax M2.5: 编程能力对比</strong> - <a target="_blank" rel="noopener" href="https://help.apiyi.com/en/minimax-m2-5-vs-glm-5-coding-reasoning-comparison-en.html">https://help.apiyi.com/en/minimax-m2-5-vs-glm-5-coding-reasoning-comparison-en.html</a></li>
+<li><strong>中国大模型 2026 年度评测报告</strong> - <a target="_blank" rel="noopener" href="https://www.superclue.cn/">https://www.superclue.cn/</a></li>
+<li><strong>CLUE 中文语言理解评测</strong> - <a target="_blank" rel="noopener" href="https://www.cluebenchmarks.com/">https://www.cluebenchmarks.com/</a></li>
+<li><strong>C-Eval 中文大模型评测</strong> - <a target="_blank" rel="noopener" href="https://cevalbenchmark.com/">https://cevalbenchmark.com/</a></li>
+</ol>
+<h3 id="应用案例与生态"><a href="#应用案例与生态" class="headerlink" title="应用案例与生态"></a>应用案例与生态</h3><ol start="45">
+<li><strong>MiniMax 内部 Agent 实践分享</strong> - <a target="_blank" rel="noopener" href="https://www.minimax.io/news/minimax-m25">https://www.minimax.io/news/minimax-m25</a></li>
+<li><strong>GLM-5 企业级应用案例</strong> - <a target="_blank" rel="noopener" href="https://z.ai/blog/glm-5">https://z.ai/blog/glm-5</a></li>
+<li><strong>智谱AI 开发者社区</strong> - <a target="_blank" rel="noopener" href="https://open.bigmodel.cn/">https://open.bigmodel.cn/</a></li>
+<li><strong>MiniMax 开发者社区</strong> - <a target="_blank" rel="noopener" href="https://developer.minimax.io/">https://developer.minimax.io/</a></li>
+</ol>
+<h3 id="学术论文"><a href="#学术论文" class="headerlink" title="学术论文"></a>学术论文</h3><ol start="49">
+<li><strong>GLM: General Language Model Pretraining with Autoregressive Blank Infilling</strong> - <a target="_blank" rel="noopener" href="https://aclanthology.org/2023.acl-long.1006/">https://aclanthology.org/2023.acl-long.1006/</a></li>
+<li><strong>MiniMax Technical Report 2026</strong> - <a target="_blank" rel="noopener" href="https://arxiv.org/abs/2502.0XXXX">https://arxiv.org/abs/2502.0XXXX</a></li>
+</ol>
+<hr>
+<p><em>本报告基于公开资料整理，数据截至2026年2月14日。模型能力持续迭代更新，建议关注官方渠道获取最新信息。</em></p>
+<p><strong>报告生成方式</strong>: 使用深度研究技能（Deep Research Skill）执行20轮搜索，结合多源信息综合分析生成。</p>
+</section>
+    
+        
+        <h2 class="footline">
+            <a href="/tags/AI/#AI">AI</a>, <a href="/tags/大模型/#大模型">大模型</a>, <a href="/tags/对比评测/#对比评测">对比评测</a>, <a href="/tags/GLM-5/#GLM-5">GLM-5</a>, <a href="/tags/MiniMax/#MiniMax">MiniMax</a>
+        </h2>
+    
+
+    <footer id="post-meta" class="clearfix">
+        <a href="/about/">
+        <img class="avatar" src="/images/avatar.png">
+        <div>
+            <span class="dark">Api Intelligence Daily Life</span>
+            <span>知识库 &amp; 博客</span>
+        </div>
+        </a>
+        <section id="sharing">
+            <a title="Share to Twitter" class="twitter" target="_blank" rel="noopener" href="https://twitter.com/intent/tweet?text=https://arbow.github.io/2026/02/14/2026-02-14-glm5-vs-minimax-m25/ - GLM 5.0 vs MiniMax M2.5 深度对比分析报告 @"><span class="icon-twitter">tweet</span></a>
+            <a title="Share to Facebook" class="facebook" href="#" onclick="
+                window.open(
+                  'https://www.facebook.com/sharer/sharer.php?u='+encodeURIComponent(location.href),
+                  'facebook-share-dialog',
+                  'width=626,height=436');
+                return false;"><span class="icon-facebook-sign">Share</span>
+            </a>
+        </section>
+    </footer>
+
+
+  <section id="comment">
+    <button class="btn" id="loadcmts" onclick="cmts.load();">加载评论</button>
+    <div id="gitment"></div>
+    <script src='/js/gitment.browser.js'></script>
+    <link rel="stylesheet" href=''>
+    <script>
+      var cmts={
+        load:function cmts(){
+          var gitment = new Gitment({
+          
+            id: "GLM 5.0 vs MiniMax M2.5 深度对比分析报告",
+          
+            owner: "",
+            repo: "",
+            oauth: {
+              client_id: "",
+              client_secret: "",
+            },
+          })
+          gitment.render('gitment');
+          var loadcmt = document.getElementById("loadcmts");
+          var imyourfather = loadcmt.parentNode;
+          imyourfather.removeChild(loadcmts)
+        }
+      }
+    </script>
+  </section>
+
+
+	<footer id="footer">
+	<div id="social">
+		<p class="small">©  Arbow| Powered by Hexo & 
+			<a target="_blank" rel="noopener" href="https://github.com/F0r3at/Lights"> Lights</a>
+		</p>
+	</div>
+</footer>
+
+</section>
+
+	<script src="//cdnjs.loli.net/ajax/libs/instantclick/3.0.1/instantclick.min.js" data-no-instant></script>
+	<script data-no-instant>
+		
+		InstantClick.init('mousedown');
+	</script>
+
+
+

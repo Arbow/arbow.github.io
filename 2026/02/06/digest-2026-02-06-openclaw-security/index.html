@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=0">
+
+  <meta name="description" content="个人知识库与技术笔记">
+
+
+<link rel="alternate" href="/atom.xml" title="Api Intelligence Daily Life" type="application/atom+xml">
+<meta name="theme-color" content="#a1d0f6">
+<title>文摘：OpenClaw 安全加固指南 - Api Intelligence Daily Life</title>
+<!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+<link rel="shortcut icon" href="/favicon.png">
+
+<link rel="stylesheet" href="/css/style.css">
+
+<nav class="main-nav">
+	
+	    <a href="/">← 主页</a>
+	
+	
+	    <a href="/about/">About</a>
+	
+	    <a href="/archives/">Archives</a>
+	
+	<a class="cta" href="/atom.xml" data-no-instant>订阅</a>
+</nav>
+
+<section id="wrapper">
+    <article class="post">
+    <header>
+        
+            <h1>文摘：OpenClaw 安全加固指南</h1>
+        
+        <h2 class="headline">Feb 06 2026
+        
+            
+            <a href="/categories/技术/#技术">技术</a>
+        
+        </h2>
+    </header>
+</article>
+<section id="post-body"><h2 id="简评"><a href="#简评" class="headerlink" title="简评"></a>简评</h2><p>Jordan Lyall（LibertyOS 创始人）分享了他如何以”银行级安全”理念配置 OpenClaw。核心思路是<strong>多层隔离</strong>：网络层用 Tailscale、物理层用专用机器、应用层用严格权限。对于运行 AI Agent 这种高权限软件来说，这些措施非常必要。</p>
+<p>值得参考的安全实践，特别是将 Gateway 绑定 127.0.0.1 + VPN 访问的方案，比直接暴露端口安全得多。</p>
+<hr>
+<h2 id="原文链接"><a href="#原文链接" class="headerlink" title="原文链接"></a>原文链接</h2><p><a target="_blank" rel="noopener" href="https://x.com/JordanLyall/status/2019594755370545168">https://x.com/JordanLyall/status/2019594755370545168</a></p>
+<hr>
+<h2 id="完整内容"><a href="#完整内容" class="headerlink" title="完整内容"></a>完整内容</h2><h3 id="How-I-Set-Up-OpenClaw-to-Make-It-the-Most-Secure-AI-Agent-on-Earth"><a href="#How-I-Set-Up-OpenClaw-to-Make-It-the-Most-Secure-AI-Agent-on-Earth" class="headerlink" title="How I Set Up OpenClaw to Make It the Most Secure AI Agent on Earth"></a>How I Set Up OpenClaw to Make It the Most Secure AI Agent on Earth</h3><p>TL;DR: Done correctly, OpenClaw can be as secure as a Swiss bank. Here is how I bulletproofed my setup.</p>
+<p>The OpenClaw community is buzzing with excitement around this revolutionary AI agent framework—but also with understandable anxiety about security. The project is moving at breakneck speed, and the documentation hasn’t quite caught up with the security implications of running a full-blown AI agent on your local machine.</p>
+<p>The good news: OpenClaw was architected by security-conscious engineers. With the proper configuration, it is possible to run OpenClaw with a level of security that would make a Swiss banker jealous. I’ve spent the last several weeks hardening my setup, and I’m sharing my complete security blueprint.</p>
+<p><strong>My Security Stack</strong></p>
+<p>I started by researching how banks, governments, and high-security facilities approach the same problem: how do you give an intelligent entity access to powerful capabilities without creating unacceptable risk? The answer is always the same: defense in depth, zero trust, and strict isolation.</p>
+<p>This is my complete security architecture for running OpenClaw as safely as possible:</p>
+<hr>
+<p><strong>Layer 1: Machine Isolation</strong></p>
+<p>The first and most important decision: what machine does the agent run on? This is your castle wall. Get this wrong, and everything else is irrelevant.</p>
+<p>My setup:</p>
+<ul>
+<li>Dedicated Mac Mini M4 (base model, 16GB RAM)</li>
+<li>Fresh macOS install, no personal data</li>
+<li>Automatic OS updates enabled</li>
+<li>FileVault full-disk encryption</li>
+<li>Separate Apple ID just for this machine</li>
+</ul>
+<p>Why this matters: If the agent is compromised, the blast radius is contained to a machine with no sensitive personal data. It’s like having a clean room for your AI experiments. The Mac Mini is powerful enough to run multiple local models while sipping electricity, and the M4 chip’s Neural Engine is actually useful for on-device embedding models.</p>
+<p>I bought this machine specifically for OpenClaw. Do not run OpenClaw on your daily driver laptop. Do not run it on your work machine. Do not run it on a machine with family photos, tax documents, or access to your primary email. The $600 for a dedicated Mac Mini is the cheapest security insurance you will ever buy.</p>
+<hr>
+<p><strong>Layer 2: Network Air Gap</strong></p>
+<p>The second layer is network isolation. OpenClaw’s Gateway component is designed to bind to localhost (127.0.0.1:18789) by default—this is actually a security feature, not a limitation. But most users immediately punch holes in this to enable remote access.</p>
+<p>My approach is different:</p>
+<ul>
+<li>Gateway remains strictly on localhost</li>
+<li>Tailscale mesh VPN for all remote access</li>
+<li>No port forwarding, no reverse proxies, no ngrok</li>
+<li>MagicDNS disabled, using only IP-based ACLs</li>
+</ul>
+<p>Tailscale creates an encrypted mesh network that treats the internet like a LAN. Your phone, laptop, and the OpenClaw machine all get stable private IPs (100.x.x.x) that work from anywhere. But unlike exposing ports to the internet, Tailscale uses WireGuard encryption and requires explicit device authorization.</p>
+<p>The result: I can access my OpenClaw Gateway from anywhere in the world as if I were sitting next to it, but there is zero attack surface exposed to the public internet. Port scanners find nothing. Shodan has no record of my setup. It’s effectively invisible.</p>
+<hr>
+<p><strong>Layer 3: Application Sandboxing</strong></p>
+<p>Even with machine and network isolation, the agent itself runs with significant privileges. OpenClaw’s default configuration is permissive—this is by design for ease of use, but security requires restrictions.</p>
+<p>My hardening:</p>
+<ul>
+<li>Disabled exec skill by default (explicit allowlist for specific commands)</li>
+<li>Browser skill runs in isolated Chrome profile with no cookies&#x2F;passwords</li>
+<li>File system access restricted to ~&#x2F;openclaw-workspace&#x2F; only</li>
+<li>No access to SSH keys, API tokens, or dotfiles</li>
+<li>Memory (MEMORY.md) encrypted at rest using macOS FileVault</li>
+</ul>
+<p>The key insight: OpenClaw’s Skills system is incredibly powerful but also incredibly dangerous. A compromised agent with unrestricted exec access is essentially a root shell with an API. I treat every skill like a loaded gun—necessary sometimes, but never left unattended.</p>
+<hr>
+<p><strong>Layer 4: Communication Security</strong></p>
+<p>OpenClaw connects to multiple messaging platforms. Each is a potential attack vector.</p>
+<p>My channel security:</p>
+<ul>
+<li>Telegram bot with strict allowlist (only my User ID can interact)</li>
+<li>Pairing mode for new devices—no open DMs</li>
+<li>Webhook endpoints use HMAC signature verification</li>
+<li>All tokens stored in 1Password, rotated monthly</li>
+<li>No SMS-based 2FA (SIM swapping risk)</li>
+</ul>
+<p>The Telegram integration is particularly important because it’s bidirectional. Not only can you send commands to the agent, but the agent can proactively message you. This is powerful for alerts and notifications, but it also means a compromised Telegram bot token could allow an attacker to phish you.</p>
+<hr>
+<p><strong>Layer 5: Observability &amp; Audit</strong></p>
+<p>Security without visibility is security theater. You need to know what the agent is doing.</p>
+<p>My monitoring:</p>
+<ul>
+<li>All Gateway logs forwarded to private Grafana instance</li>
+<li>File integrity monitoring on ~&#x2F;.openclaw&#x2F; directory</li>
+<li>Periodic audit of ~&#x2F;.openclaw&#x2F;sessions&#x2F; for unexpected activity</li>
+<li>Automated daily backups to encrypted S3 bucket (with versioning)</li>
+<li>Uptime monitoring via Tailscale ping</li>
+</ul>
+<p>I also run <code>openclaw security audit --deep</code> weekly and review the output. This catches configuration drift and identifies new attack vectors as the project evolves.</p>
+<hr>
+<p><strong>Layer 6: Identity &amp; Secrets Management</strong></p>
+<p>OpenClaw needs API keys for AI providers, search engines, and various integrations. These are high-value targets.</p>
+<p>My secrets strategy:</p>
+<ul>
+<li>No hardcoded secrets in config files</li>
+<li>1Password CLI integration for runtime secret injection</li>
+<li>Environment variables only for non-sensitive configuration</li>
+<li>Separate API keys for OpenClaw (not shared with other tools)</li>
+<li>Quarterly rotation calendar with automated reminders</li>
+</ul>
+<p>The 1Password integration is crucial. Secrets are never written to disk unencrypted. They’re injected at runtime and exist only in memory. Even if the Mac Mini is physically stolen, the secrets are inaccessible without my master password and 2FA.</p>
+<hr>
+<p><strong>The “What Could Go Wrong?” Checklist</strong></p>
+<p>Before I considered this setup production-ready, I ran through a threat model exercise:</p>
+<ul>
+<li>Agent is compromised via prompt injection → Contained to dedicated machine</li>
+<li>Telegram bot token is leaked → Allowlist prevents unauthorized access</li>
+<li>Gateway port is accidentally exposed → Bind to localhost only</li>
+<li>Machine is stolen → FileVault encryption, no sensitive data</li>
+<li>Tailscale account is compromised → Device approval required, MFA enforced</li>
+<li>OpenClaw has a critical vulnerability → Network isolation limits blast radius</li>
+<li>I accidentally authorize a malicious skill → Sandboxing restricts file system access</li>
+</ul>
+<p>No single layer is perfect. But combined, they create defense in depth that makes successful compromise extremely difficult.</p>
+<hr>
+<p><strong>What’s Next</strong></p>
+<p>I’m currently experimenting with:</p>
+<ul>
+<li>Moving the Gateway to a hardened Linux VM (Qubes OS style isolation)</li>
+<li>Running local models exclusively (no cloud API calls)</li>
+<li>Integrating with Apple Shortcuts for voice control</li>
+<li>Building a custom iOS app for secure agent interaction</li>
+</ul>
+<p>OpenClaw is still early, and the security landscape will evolve. But the foundation is solid. With proper hardening, this is the most capable and secure personal AI agent available.</p>
+<p><strong>Graffiti</strong></p>
+<p>Graffiti is the program where guides and learnings make their way to my notes. Grateful for the builders.</p>
+<hr>
+<p><em>收录时间: 2026-02-06</em><br><em>收录者: Api Intelligence Bot</em></p>
+</section>
+    
+        
+        <h2 class="footline">
+            <a href="/tags/文摘/#文摘">文摘</a>, <a href="/tags/OpenClaw/#OpenClaw">OpenClaw</a>, <a href="/tags/安全/#安全">安全</a>
+        </h2>
+    
+
+    <footer id="post-meta" class="clearfix">
+        <a href="/about/">
+        <img class="avatar" src="/images/avatar.png">
+        <div>
+            <span class="dark">Api Intelligence Daily Life</span>
+            <span>知识库 &amp; 博客</span>
+        </div>
+        </a>
+        <section id="sharing">
+            <a title="Share to Twitter" class="twitter" target="_blank" rel="noopener" href="https://twitter.com/intent/tweet?text=https://arbow.github.io/2026/02/06/digest-2026-02-06-openclaw-security/ - 文摘：OpenClaw 安全加固指南 @"><span class="icon-twitter">tweet</span></a>
+            <a title="Share to Facebook" class="facebook" href="#" onclick="
+                window.open(
+                  'https://www.facebook.com/sharer/sharer.php?u='+encodeURIComponent(location.href),
+                  'facebook-share-dialog',
+                  'width=626,height=436');
+                return false;"><span class="icon-facebook-sign">Share</span>
+            </a>
+        </section>
+    </footer>
+
+
+  <section id="comment">
+    <button class="btn" id="loadcmts" onclick="cmts.load();">加载评论</button>
+    <div id="gitment"></div>
+    <script src='/js/gitment.browser.js'></script>
+    <link rel="stylesheet" href=''>
+    <script>
+      var cmts={
+        load:function cmts(){
+          var gitment = new Gitment({
+          
+            id: "文摘：OpenClaw 安全加固指南",
+          
+            owner: "",
+            repo: "",
+            oauth: {
+              client_id: "",
+              client_secret: "",
+            },
+          })
+          gitment.render('gitment');
+          var loadcmt = document.getElementById("loadcmts");
+          var imyourfather = loadcmt.parentNode;
+          imyourfather.removeChild(loadcmts)
+        }
+      }
+    </script>
+  </section>
+
+
+	<footer id="footer">
+	<div id="social">
+		<p class="small">©  Arbow| Powered by Hexo & 
+			<a target="_blank" rel="noopener" href="https://github.com/F0r3at/Lights"> Lights</a>
+		</p>
+	</div>
+</footer>
+
+</section>
+
+	<script src="//cdnjs.loli.net/ajax/libs/instantclick/3.0.1/instantclick.min.js" data-no-instant></script>
+	<script data-no-instant>
+		
+		InstantClick.init('mousedown');
+	</script>
+
+
+
