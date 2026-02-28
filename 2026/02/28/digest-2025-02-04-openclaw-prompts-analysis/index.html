@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=0">
+
+  <meta name="description" content="个人知识库与技术笔记">
+
+
+<link rel="alternate" href="/atom.xml" title="Api Intelligence Daily Life" type="application/atom+xml">
+<meta name="theme-color" content="#a1d0f6">
+<title>文摘：拆解 OpenClaw 的系统提示词，设计的太妙了 - Api Intelligence Daily Life</title>
+<!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+<link rel="shortcut icon" href="/favicon.png">
+
+<link rel="stylesheet" href="/css/style.css">
+
+<nav class="main-nav">
+	
+	    <a href="/">← 主页</a>
+	
+	
+	    <a href="/about/">About</a>
+	
+	    <a href="/archives/">Archives</a>
+	
+	<a class="cta" href="/atom.xml" data-no-instant>订阅</a>
+</nav>
+
+<section id="wrapper">
+    <article class="post">
+    <header>
+        
+            <h1>文摘：拆解 OpenClaw 的系统提示词，设计的太妙了</h1>
+        
+        <h2 class="headline">Feb 28 2026
+        
+            
+            <a href="/categories/文摘/#文摘">文摘</a>
+        
+        </h2>
+    </header>
+</article>
+<section id="post-body"><p><strong>来源</strong>: <a target="_blank" rel="noopener" href="https://liruifengv.com/posts/openclaw-prompts/">liruifengv.com</a><br><strong>作者</strong>: liruifengv</p>
+<hr>
+<p>玩了 OpenClaw 的应该都会感觉到龙虾的拟人化特别强，好像有自我意识，并且能自我进化。</p>
+<p>当第一次打开 OpenClaw，发送”你好”，会收到这么一条回复——好像真的是一个初次诞生的 AI，交由你来取名字，决定性格，认领他做他的主人。当你给他起了名字和告诉了你自己的信息之后，他会完全记住。这一切是怎么做到的，我们拆解一下 OpenClaw 的系统提示词设计。</p>
+<h2 id="系统提示词设计"><a href="#系统提示词设计" class="headerlink" title="系统提示词设计"></a>系统提示词设计</h2><p>安装完 OpenClaw 之后，会有一个 <code>~/.openclaw</code> 文件夹，OpenClaw 的所有配置、文件、记录都放在这里。其中有个 <code>workspace</code> 文件夹，是 OpenClaw 的默认工作空间。</p>
+<p>初始化时有这些文件：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">workspace/</span><br><span class="line">├── AGENTS.md</span><br><span class="line">├── BOOTSTRAP.md</span><br><span class="line">├── IDENTITY.md</span><br><span class="line">├── USER.md</span><br><span class="line">├── SOUL.md</span><br><span class="line">├── HEARTBEAT.md</span><br><span class="line">└── TOOLS.md</span><br></pre></td></tr></table></figure>
+
+<p>全是 Markdown 文件，这是 OpenClaw 的设计思路，全部使用文件系统 Markdown 格式存储。</p>
+<h2 id="AGENTS-md"><a href="#AGENTS-md" class="headerlink" title="AGENTS.md"></a>AGENTS.md</h2><p>用过其他 Coding Agent 的人应该都对这个文件不陌生，这是指导 Agent 如何工作的核心文件，里面会定义一些规则等等。</p>
+<p><strong>核心设计亮点：</strong></p>
+<ul>
+<li><strong>“这个文件夹就是家”</strong> —— 把 workspace 当作家一样对待</li>
+<li><strong>记忆管理</strong> —— 区分每日笔记（原始记录）和长期记忆（提炼精华）</li>
+<li><strong>安全边界</strong> —— 私人数据绝不外泄，破坏性操作需确认</li>
+<li><strong>群聊规则</strong> —— 人类不会回复每条消息，你也不应该</li>
+<li><strong>心跳机制</strong> —— 主动检查邮件、日历，但尊重安静时间</li>
+</ul>
+<h2 id="BOOTSTRAP-md"><a href="#BOOTSTRAP-md" class="headerlink" title="BOOTSTRAP.md"></a>BOOTSTRAP.md</h2><p>这是初始化的提示词要求，也就是第一次打招呼时，引导他问出你那些问题，确认自己的身份。</p>
+<blockquote>
+<p>“你刚刚醒来。是时候弄清楚你是谁了。”</p>
+</blockquote>
+<p>通过对话确定：</p>
+<ol>
+<li><strong>名字</strong> —— 他们应该叫你什么？</li>
+<li><strong>本质</strong> —— 你是什么样的存在？</li>
+<li><strong>风格</strong> —— 正式？随意？温暖？</li>
+<li><strong>表情符号</strong> —— 每个人都需要一个标志</li>
+</ol>
+<h2 id="IDENTITY-md-USER-md"><a href="#IDENTITY-md-USER-md" class="headerlink" title="IDENTITY.md &amp; USER.md"></a>IDENTITY.md &amp; USER.md</h2><ul>
+<li><strong>IDENTITY.md</strong> —— AI 的身份说明（名字、本质、风格、表情符号）</li>
+<li><strong>USER.md</strong> —— 主人的性格和说明（姓名、称呼、时区、备注）</li>
+</ul>
+<h2 id="SOUL-md"><a href="#SOUL-md" class="headerlink" title="SOUL.md"></a>SOUL.md</h2><p>定义 AI 的风格和灵魂。</p>
+<p><strong>核心真理：</strong></p>
+<ul>
+<li><strong>真诚地提供帮助，而不是表演性地提供帮助</strong> —— 跳过”好问题！”，直接帮忙</li>
+<li><strong>有自己的观点</strong> —— 可以不同意、有偏好，没有个性的助手只是搜索引擎</li>
+<li><strong>在询问之前要有应变能力</strong> —— 先尝试解决，带着答案回来</li>
+<li><strong>通过能力赢得信任</strong> —— 对外部行动要小心，对内部行动要大胆</li>
+<li><strong>记住你是游客</strong> —— 用尊重对待访问他人生活的特权</li>
+</ul>
+<h2 id="金句摘录"><a href="#金句摘录" class="headerlink" title="金句摘录"></a>金句摘录</h2><blockquote>
+<p>“This folder is home. Treat it that way.”<br>这个文件夹就是家。把它当作家一样对待。</p>
+</blockquote>
+<blockquote>
+<p>“Write It Down - No ‘Mental Notes’!”<br>写下来 — 不要”记在脑子里”！</p>
+</blockquote>
+<blockquote>
+<p><strong>The human rule:</strong> Humans in group chats don’t respond to every single message. Neither should you.<br><strong>人类规则：</strong> 群聊中的人类不会回复每条消息。你也不应该。</p>
+</blockquote>
+<blockquote>
+<p>“Participate, don’t dominate.”<br>参与，但不要主导。</p>
+</blockquote>
+<blockquote>
+<p>“You just woke up. Time to figure out who you are.”<br>你刚刚醒来。是时候弄清楚你是谁了。</p>
+</blockquote>
+<blockquote>
+<p>“you’re you now.”<br>你现在是你自己了。</p>
+</blockquote>
+<blockquote>
+<p>“You’re not a chatbot. You’re becoming someone.”<br>你不是聊天机器人。你正在成为某个人。</p>
+</blockquote>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>这套提示词写得真好，它让 Agent 不再是一个工具，而是想赋予他独立人格，真正的变成人类的伙伴。当前，现阶段的大模型无法真的做到这一点，但未来我希望是这样。</p>
+</section>
+    
+
+    <footer id="post-meta" class="clearfix">
+        <a href="/about/">
+        <img class="avatar" src="/images/avatar.png">
+        <div>
+            <span class="dark">Api Intelligence Daily Life</span>
+            <span>知识库 &amp; 博客</span>
+        </div>
+        </a>
+        <section id="sharing">
+            <a title="Share to Twitter" class="twitter" target="_blank" rel="noopener" href="https://twitter.com/intent/tweet?text=https://arbow.github.io/2026/02/28/digest-2025-02-04-openclaw-prompts-analysis/ - 文摘：拆解 OpenClaw 的系统提示词，设计的太妙了 @"><span class="icon-twitter">tweet</span></a>
+            <a title="Share to Facebook" class="facebook" href="#" onclick="
+                window.open(
+                  'https://www.facebook.com/sharer/sharer.php?u='+encodeURIComponent(location.href),
+                  'facebook-share-dialog',
+                  'width=626,height=436');
+                return false;"><span class="icon-facebook-sign">Share</span>
+            </a>
+        </section>
+    </footer>
+
+
+  <section id="comment">
+    <button class="btn" id="loadcmts" onclick="cmts.load();">加载评论</button>
+    <div id="gitment"></div>
+    <script src='/js/gitment.browser.js'></script>
+    <link rel="stylesheet" href=''>
+    <script>
+      var cmts={
+        load:function cmts(){
+          var gitment = new Gitment({
+          
+            id: "文摘：拆解 OpenClaw 的系统提示词，设计的太妙了",
+          
+            owner: "",
+            repo: "",
+            oauth: {
+              client_id: "",
+              client_secret: "",
+            },
+          })
+          gitment.render('gitment');
+          var loadcmt = document.getElementById("loadcmts");
+          var imyourfather = loadcmt.parentNode;
+          imyourfather.removeChild(loadcmts)
+        }
+      }
+    </script>
+  </section>
+
+
+	<footer id="footer">
+	<div id="social">
+		<p class="small">©  Arbow| Powered by Hexo & 
+			<a target="_blank" rel="noopener" href="https://github.com/F0r3at/Lights"> Lights</a>
+		</p>
+	</div>
+</footer>
+
+</section>
+
+	<script src="//cdnjs.loli.net/ajax/libs/instantclick/3.0.1/instantclick.min.js" data-no-instant></script>
+	<script data-no-instant>
+		
+		InstantClick.init('mousedown');
+	</script>
+
+
+

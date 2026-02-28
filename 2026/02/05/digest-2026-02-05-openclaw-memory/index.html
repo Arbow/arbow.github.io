@@ -1,0 +1,346 @@
+<!DOCTYPE html>
+
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=0">
+
+  <meta name="description" content="个人知识库与技术笔记">
+
+
+<link rel="alternate" href="/atom.xml" title="Api Intelligence Daily Life" type="application/atom+xml">
+<meta name="theme-color" content="#a1d0f6">
+<title>文摘：OpenClaw Memory 模块设计文档 - Api Intelligence Daily Life</title>
+<!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+<link rel="shortcut icon" href="/favicon.png">
+
+<link rel="stylesheet" href="/css/style.css">
+
+<nav class="main-nav">
+	
+	    <a href="/">← 主页</a>
+	
+	
+	    <a href="/about/">About</a>
+	
+	    <a href="/archives/">Archives</a>
+	
+	<a class="cta" href="/atom.xml" data-no-instant>订阅</a>
+</nav>
+
+<section id="wrapper">
+    <article class="post">
+    <header>
+        
+            <h1>文摘：OpenClaw Memory 模块设计文档</h1>
+        
+        <h2 class="headline">Feb 05 2026
+        
+            
+            <a href="/categories/文摘/#文摘">文摘</a>
+        
+        </h2>
+    </header>
+</article>
+<section id="post-body"><blockquote>
+<p>原文来自：Arbow 的笔记库<br>收录时间：2026-02-05</p>
+</blockquote>
+<hr>
+<h1 id="OpenClaw-Memory-模块设计文档"><a href="#OpenClaw-Memory-模块设计文档" class="headerlink" title="OpenClaw Memory 模块设计文档"></a>OpenClaw Memory 模块设计文档</h1><h2 id="概述"><a href="#概述" class="headerlink" title="概述"></a>概述</h2><p>OpenClaw 的 Memory 模块是一个 sophisticated 的 semantic search 系统，使 AI Agent 能够从基于 markdown 的记忆文件中 recall 先前的工作、决策和上下文。它结合了 vector embeddings、full-text search 和 hybrid ranking，以提供快速、准确的相关信息检索。</p>
+<h2 id="架构"><a href="#架构" class="headerlink" title="架构"></a>架构</h2><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br></pre></td><td class="code"><pre><span class="line">┌─────────────────────────────────────────────────────────────────────────────┐</span><br><span class="line">│                           Memory 模块架构                                     │</span><br><span class="line">├─────────────────────────────────────────────────────────────────────────────┤</span><br><span class="line">│                                                                              │</span><br><span class="line">│  ┌──────────────┐    ┌──────────────┐    ┌──────────────┐                   │</span><br><span class="line">│  │   CLI 层     │    │  Agent 工具  │    │    配置层     │                   │</span><br><span class="line">│  │  memory-cli  │    │memory_search │    │ memory-search│                   │</span><br><span class="line">│  │              │    │  memory_get  │    │   config.ts  │                   │</span><br><span class="line">│  └──────┬───────┘    └──────┬───────┘    └──────┬───────┘                   │</span><br><span class="line">│         │                   │                    │                          │</span><br><span class="line">│         └───────────────────┼────────────────────┘                          │</span><br><span class="line">│                             ▼                                               │</span><br><span class="line">│              ┌──────────────────────────────┐                               │</span><br><span class="line">│              │   MemorySearchManager        │                               │</span><br><span class="line">│              │   (search-manager.ts)        │                               │</span><br><span class="line">│              └──────────────┬───────────────┘                               │</span><br><span class="line">│                             │                                               │</span><br><span class="line">│                             ▼                                               │</span><br><span class="line">│              ┌──────────────────────────────┐                               │</span><br><span class="line">│              │    MemoryIndexManager        │                               │</span><br><span class="line">│              │      (manager.ts)            │                               │</span><br><span class="line">│              └──────────────┬───────────────┘                               │</span><br><span class="line">│                             │                                               │</span><br><span class="line">│         ┌───────────────────┼───────────────────┐                          │</span><br><span class="line">│         ▼                   ▼                   ▼                          │</span><br><span class="line">│  ┌──────────────┐  ┌──────────────┐  ┌──────────────┐                      │</span><br><span class="line">│  │   Embedding  │  │    Search    │  │    Sync      │                      │</span><br><span class="line">│  │   Providers  │  │   Engine     │  │   Engine     │                      │</span><br><span class="line">│  │              │  │              │  │              │                      │</span><br><span class="line">│  │ • OpenAI     │  │ • Vector     │  │ • File Watch │                      │</span><br><span class="line">│  │ • Gemini     │  │ • FTS (BM25) │  │ • Session    │                      │</span><br><span class="line">│  │ • Local      │  │ • Hybrid     │  │ • Interval   │                      │</span><br><span class="line">│  │   (llama.cpp)│  │   Merge      │  │ • Delta      │                      │</span><br><span class="line">│  └──────────────┘  └──────────────┘  └──────────────┘                      │</span><br><span class="line">│                             │                                               │</span><br><span class="line">│                             ▼                                               │</span><br><span class="line">│              ┌──────────────────────────────┐                               │</span><br><span class="line">│              │      SQLite + sqlite-vec     │                               │</span><br><span class="line">│              │   (Vector + FTS5 Storage)    │                               │</span><br><span class="line">│              └──────────────────────────────┘                               │</span><br><span class="line">│                                                                              │</span><br><span class="line">└─────────────────────────────────────────────────────────────────────────────┘</span><br></pre></td></tr></table></figure>
+
+<h2 id="核心组件"><a href="#核心组件" class="headerlink" title="核心组件"></a>核心组件</h2><h3 id="1-MemoryIndexManager-src-memory-manager-ts"><a href="#1-MemoryIndexManager-src-memory-manager-ts" class="headerlink" title="1. MemoryIndexManager (src/memory/manager.ts)"></a>1. MemoryIndexManager (<code>src/memory/manager.ts</code>)</h3><p>中央 orchestrator，管理 indexing、search 和 synchronization。</p>
+<p><strong>核心职责：</strong></p>
+<ul>
+<li><strong>Singleton Pattern</strong>: 通过 <code>MemoryIndexManager.get()</code> 实现 per-agent cached instances</li>
+<li><strong>Embedding Provider Management</strong>: 支持 auto-selection 和 fallback</li>
+<li><strong>File Watching</strong>: 通过 <code>chokidar</code> 实现 real-time sync</li>
+<li><strong>Session Sync</strong>: 基于 Delta 的 conversation transcripts indexing</li>
+<li><strong>Safe Reindexing</strong>: 支持 rollback 的 atomic index rebuilds</li>
+</ul>
+<p><strong>状态管理：</strong></p>
+<figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 核心状态追踪</span></span><br><span class="line"><span class="keyword">private</span> dirty = <span class="literal">false</span>;                    <span class="comment">// Memory 文件已变更</span></span><br><span class="line"><span class="keyword">private</span> sessionsDirty = <span class="literal">false</span>;            <span class="comment">// Session 文件已变更</span></span><br><span class="line"><span class="keyword">private</span> sessionDeltas = <span class="keyword">new</span> <span class="title class_">Map</span>();        <span class="comment">// Per-file delta tracking</span></span><br><span class="line"><span class="keyword">private</span> <span class="attr">syncing</span>: <span class="title class_">Promise</span>&lt;<span class="built_in">void</span>&gt; | <span class="literal">null</span>;    <span class="comment">// Active sync lock</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="2-Embedding-Providers-src-memory-embeddings-ts"><a href="#2-Embedding-Providers-src-memory-embeddings-ts" class="headerlink" title="2. Embedding Providers (src/memory/embeddings.ts)"></a>2. Embedding Providers (<code>src/memory/embeddings.ts</code>)</h3><p>支持 automatic fallback 的多提供商 embedding 系统。</p>
+<p><strong>支持的 Providers：</strong></p>
+<table>
+<thead>
+<tr>
+<th>Provider</th>
+<th>Model</th>
+<th>适用场景</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>OpenAI</td>
+<td>text-embedding-3-small</td>
+<td>Cloud-based, high quality</td>
+</tr>
+<tr>
+<td>Gemini</td>
+<td>embedding-001</td>
+<td>Google AI, alternative cloud</td>
+</tr>
+<tr>
+<td>Local</td>
+<td>embeddinggemma-300M</td>
+<td>Privacy-first, offline</td>
+</tr>
+</tbody></table>
+<p><strong>Auto-Selection 逻辑：</strong></p>
+<ol>
+<li>如果 <code>provider: &quot;auto&quot;</code>，首先检查 local model file</li>
+<li>尝试 OpenAI（如果有 API key）</li>
+<li>尝试 Gemini（如果有 API key）</li>
+<li>Fallback chain: primary → fallback provider on errors</li>
+</ol>
+<h3 id="3-Hybrid-Search-src-memory-hybrid-ts-src-memory-manager-search-ts"><a href="#3-Hybrid-Search-src-memory-hybrid-ts-src-memory-manager-search-ts" class="headerlink" title="3. Hybrid Search (src/memory/hybrid.ts, src/memory/manager-search.ts)"></a>3. Hybrid Search (<code>src/memory/hybrid.ts</code>, <code>src/memory/manager-search.ts</code>)</h3><p>结合 vector similarity 和 BM25 full-text search。</p>
+<p><strong>Search Flow：</strong></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">Query → [Embed Query] → Vector Search (cosine similarity)</span><br><span class="line">     → [Tokenize]    → FTS Search (BM25 ranking)</span><br><span class="line">     → [Merge Results] → Weighted Score = vectorWeight * vectorScore + textWeight * textScore</span><br></pre></td></tr></table></figure>
+
+<p><strong>配置：</strong></p>
+<figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">hybrid</span>: &#123;</span><br><span class="line">  <span class="attr">enabled</span>: <span class="built_in">boolean</span>;        <span class="comment">// 启用 FTS hybrid search</span></span><br><span class="line">  <span class="attr">vectorWeight</span>: <span class="number">0.7</span>;       <span class="comment">// Vector score 权重</span></span><br><span class="line">  <span class="attr">textWeight</span>: <span class="number">0.3</span>;         <span class="comment">// BM25 score 权重</span></span><br><span class="line">  <span class="attr">candidateMultiplier</span>: <span class="number">4</span>;  <span class="comment">// Candidates = maxResults * 4</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="4-Storage-Layer-src-memory-memory-schema-ts"><a href="#4-Storage-Layer-src-memory-memory-schema-ts" class="headerlink" title="4. Storage Layer (src/memory/memory-schema.ts)"></a>4. Storage Layer (<code>src/memory/memory-schema.ts</code>)</h3><p>基于 SQLite 的 storage，采用两种 indexing strategies：</p>
+<p><strong>数据表：</strong></p>
+<ul>
+<li><code>meta</code>: Index metadata（model, provider, chunk settings）</li>
+<li><code>files</code>: 带 content hashes 的文件清单</li>
+<li><code>chunks</code>: 带 embeddings 的 text chunks（JSON 存储）</li>
+<li><code>chunks_vec</code>: 用于 vector search 的 virtual table（sqlite-vec）</li>
+<li><code>chunks_fts</code>: 用于 text search 的 FTS5 virtual table</li>
+<li><code>embedding_cache</code>: Embeddings 的 deduplication cache</li>
+</ul>
+<p><strong>Schema 设计：</strong></p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">-- 带 JSON embeddings 的核心 chunk storage</span></span><br><span class="line"><span class="keyword">CREATE TABLE</span> chunks (</span><br><span class="line">  id TEXT <span class="keyword">PRIMARY KEY</span>,</span><br><span class="line">  path TEXT <span class="keyword">NOT NULL</span>,</span><br><span class="line">  source TEXT <span class="keyword">NOT NULL</span> <span class="keyword">DEFAULT</span> <span class="string">&#x27;memory&#x27;</span>,  <span class="comment">-- &#x27;memory&#x27; | &#x27;sessions&#x27;</span></span><br><span class="line">  start_line <span class="type">INTEGER</span> <span class="keyword">NOT NULL</span>,</span><br><span class="line">  end_line <span class="type">INTEGER</span> <span class="keyword">NOT NULL</span>,</span><br><span class="line">  hash TEXT <span class="keyword">NOT NULL</span>,                      <span class="comment">-- Content hash for dedup</span></span><br><span class="line">  model TEXT <span class="keyword">NOT NULL</span>,                     <span class="comment">-- 使用的 Embedding model</span></span><br><span class="line">  text TEXT <span class="keyword">NOT NULL</span>,</span><br><span class="line">  embedding TEXT <span class="keyword">NOT NULL</span>,                 <span class="comment">-- JSON array</span></span><br><span class="line">  updated_at <span class="type">INTEGER</span> <span class="keyword">NOT NULL</span></span><br><span class="line">);</span><br><span class="line"></span><br><span class="line"><span class="comment">-- 通过 sqlite-vec extension 进行 vector search</span></span><br><span class="line"><span class="keyword">CREATE</span> VIRTUAL <span class="keyword">TABLE</span> chunks_vec <span class="keyword">USING</span> vec0(</span><br><span class="line">  id TEXT <span class="keyword">PRIMARY KEY</span>,</span><br><span class="line">  embedding <span class="type">FLOAT</span>[<span class="number">768</span>]  <span class="comment">-- Dynamic dimensions</span></span><br><span class="line">);</span><br></pre></td></tr></table></figure>
+
+<h3 id="5-Synchronization-Engine"><a href="#5-Synchronization-Engine" class="headerlink" title="5. Synchronization Engine"></a>5. Synchronization Engine</h3><p><strong>多源 Sync：</strong></p>
+<table>
+<thead>
+<tr>
+<th>Source</th>
+<th>Trigger</th>
+<th>Strategy</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Memory Files</td>
+<td>File watcher</td>
+<td>Hash-based incremental</td>
+</tr>
+<tr>
+<td>Sessions</td>
+<td>Event + Delta</td>
+<td>Byte&#x2F;message threshold</td>
+</tr>
+<tr>
+<td>Interval</td>
+<td>Timer</td>
+<td>Full scan every N minutes</td>
+</tr>
+<tr>
+<td>Search</td>
+<td>On-demand</td>
+<td>Lazy sync if dirty</td>
+</tr>
+</tbody></table>
+<p><strong>Session Delta Tracking：</strong></p>
+<figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 高效的 incremental indexing</span></span><br><span class="line">sessionDeltas = <span class="title class_">Map</span>&lt;filepath, &#123;</span><br><span class="line">  <span class="attr">lastSize</span>: <span class="built_in">number</span>,      <span class="comment">// 上次 indexed file size</span></span><br><span class="line">  <span class="attr">pendingBytes</span>: <span class="built_in">number</span>,  <span class="comment">// 上次 sync 后的 Bytes</span></span><br><span class="line">  <span class="attr">pendingMessages</span>: <span class="built_in">number</span> <span class="comment">// 上次 sync 后的 Newlines（messages）</span></span><br><span class="line">&#125;&gt;</span><br><span class="line"></span><br><span class="line"><span class="comment">// Sync 触发条件：</span></span><br><span class="line"><span class="comment">// pendingBytes &gt;= deltaBytes OR pendingMessages &gt;= deltaMessages</span></span><br></pre></td></tr></table></figure>
+
+<p><strong>File Watching：</strong></p>
+<ul>
+<li>使用 <code>chokidar</code> 实现 cross-platform file watching</li>
+<li>Debounced sync（默认 1000ms）</li>
+<li>监控：<code>MEMORY.md</code>, <code>memory.md</code>, <code>memory/</code>, 以及 <code>extraPaths</code></li>
+</ul>
+<h2 id="数据流"><a href="#数据流" class="headerlink" title="数据流"></a>数据流</h2><h3 id="Indexing-Flow"><a href="#Indexing-Flow" class="headerlink" title="Indexing Flow"></a>Indexing Flow</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">┌─────────────┐     ┌─────────────┐     ┌─────────────┐     ┌─────────────┐</span><br><span class="line">│  Markdown   │────▶│   Chunking  │────▶│  Embedding  │────▶│   SQLite    │</span><br><span class="line">│   Files     │     │  (tokens)   │     │   (batch)   │     │   Storage   │</span><br><span class="line">└─────────────┘     └─────────────┘     └─────────────┘     └─────────────┘</span><br><span class="line">       │                   │                   │                   │</span><br><span class="line">       ▼                   ▼                   ▼                   ▼</span><br><span class="line">  listMemoryFiles()   chunkMarkdown()   embedBatch()      INSERT/UPDATE</span><br><span class="line">  (file discovery)    (line-based)      (provider API)    (with cache)</span><br></pre></td></tr></table></figure>
+
+<p><strong>Chunking Strategy：</strong></p>
+<ul>
+<li>基于 Line 的 chunking，支持 configurable token limits</li>
+<li>Chunks 之间的 Overlap，保持 context continuity</li>
+<li>对超长行的 Smart line splitting</li>
+</ul>
+<figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="title function_">chunkMarkdown</span>(content, &#123; <span class="attr">tokens</span>: <span class="number">300</span>, <span class="attr">overlap</span>: <span class="number">50</span> &#125;)</span><br><span class="line"><span class="comment">// maxChars = tokens * 4（近似值）</span></span><br><span class="line"><span class="comment">// overlapChars = overlap * 4</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="Search-Flow"><a href="#Search-Flow" class="headerlink" title="Search Flow"></a>Search Flow</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">┌─────────────┐     ┌─────────────┐     ┌─────────────┐</span><br><span class="line">│ User Query  │────▶│   Embed     │────▶│ Vector Search│</span><br><span class="line">│  &quot;auth bug&quot; │     │   Query     │     │ (sqlite-vec) │</span><br><span class="line">└─────────────┘     └─────────────┘     └──────┬──────┘</span><br><span class="line">                                               │</span><br><span class="line">┌─────────────┐     ┌─────────────┐           │</span><br><span class="line">│   Results   │◀────│ Hybrid Merge│◀──────────┘</span><br><span class="line">│  (ranked)   │     │ (weighted)  │</span><br><span class="line">└─────────────┘     └──────┬──────┘</span><br><span class="line">                           │</span><br><span class="line">                    ┌──────┴──────┐</span><br><span class="line">                    ▼             ▼</span><br><span class="line">            ┌─────────────┐ ┌─────────────┐</span><br><span class="line">            │ BM25 Search │ │   Vector    │</span><br><span class="line">            │   (FTS5)    │ │  (cosine)   │</span><br><span class="line">            └─────────────┘ └─────────────┘</span><br></pre></td></tr></table></figure>
+
+<h2 id="配置"><a href="#配置" class="headerlink" title="配置"></a>配置</h2><h3 id="Memory-Search-Config-src-agents-memory-search-ts"><a href="#Memory-Search-Config-src-agents-memory-search-ts" class="headerlink" title="Memory Search Config (src/agents/memory-search.ts)"></a>Memory Search Config (<code>src/agents/memory-search.ts</code>)</h3><figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">interface</span> <span class="title class_">MemorySearchConfig</span> &#123;</span><br><span class="line">  <span class="attr">enabled</span>: <span class="built_in">boolean</span>;</span><br><span class="line">  <span class="attr">sources</span>: (<span class="string">&quot;memory&quot;</span> | <span class="string">&quot;sessions&quot;</span>)[];  <span class="comment">// 数据源</span></span><br><span class="line">  <span class="attr">extraPaths</span>: <span class="built_in">string</span>[];                 <span class="comment">// 额外的 files/dirs</span></span><br><span class="line">  </span><br><span class="line">  <span class="attr">provider</span>: <span class="string">&quot;openai&quot;</span> | <span class="string">&quot;gemini&quot;</span> | <span class="string">&quot;local&quot;</span> | <span class="string">&quot;auto&quot;</span>;</span><br><span class="line">  <span class="attr">fallback</span>: <span class="string">&quot;openai&quot;</span> | <span class="string">&quot;gemini&quot;</span> | <span class="string">&quot;local&quot;</span> | <span class="string">&quot;none&quot;</span>;</span><br><span class="line">  <span class="attr">model</span>: <span class="built_in">string</span>;                        <span class="comment">// Embedding model</span></span><br><span class="line">  </span><br><span class="line">  <span class="attr">remote</span>?: &#123;</span><br><span class="line">    <span class="attr">baseUrl</span>?: <span class="built_in">string</span>;</span><br><span class="line">    <span class="attr">apiKey</span>?: <span class="built_in">string</span>;</span><br><span class="line">    <span class="attr">headers</span>?: <span class="title class_">Record</span>&lt;<span class="built_in">string</span>, <span class="built_in">string</span>&gt;;</span><br><span class="line">    <span class="attr">batch</span>?: &#123;</span><br><span class="line">      <span class="attr">enabled</span>: <span class="built_in">boolean</span>;</span><br><span class="line">      <span class="attr">concurrency</span>: <span class="built_in">number</span>;</span><br><span class="line">      <span class="attr">wait</span>: <span class="built_in">boolean</span>;</span><br><span class="line">      <span class="attr">timeoutMinutes</span>: <span class="built_in">number</span>;</span><br><span class="line">    &#125;;</span><br><span class="line">  &#125;;</span><br><span class="line">  </span><br><span class="line">  <span class="attr">local</span>?: &#123;</span><br><span class="line">    <span class="attr">modelPath</span>?: <span class="built_in">string</span>;</span><br><span class="line">    <span class="attr">modelCacheDir</span>?: <span class="built_in">string</span>;</span><br><span class="line">  &#125;;</span><br><span class="line">  </span><br><span class="line">  <span class="attr">store</span>: &#123;</span><br><span class="line">    <span class="attr">path</span>: <span class="built_in">string</span>;           <span class="comment">// SQLite db path</span></span><br><span class="line">    <span class="attr">vector</span>: &#123;</span><br><span class="line">      <span class="attr">enabled</span>: <span class="built_in">boolean</span>;</span><br><span class="line">      <span class="attr">extensionPath</span>?: <span class="built_in">string</span>;</span><br><span class="line">    &#125;;</span><br><span class="line">  &#125;;</span><br><span class="line">  </span><br><span class="line">  <span class="attr">chunking</span>: &#123;</span><br><span class="line">    <span class="attr">tokens</span>: <span class="built_in">number</span>;         <span class="comment">// Chunk size</span></span><br><span class="line">    <span class="attr">overlap</span>: <span class="built_in">number</span>;        <span class="comment">// Chunks 之间的 overlap</span></span><br><span class="line">  &#125;;</span><br><span class="line">  </span><br><span class="line">  <span class="attr">query</span>: &#123;</span><br><span class="line">    <span class="attr">maxResults</span>: <span class="built_in">number</span>;</span><br><span class="line">    <span class="attr">minScore</span>: <span class="built_in">number</span>;       <span class="comment">// 0-1 threshold</span></span><br><span class="line">    <span class="attr">hybrid</span>: &#123;</span><br><span class="line">      <span class="attr">enabled</span>: <span class="built_in">boolean</span>;</span><br><span class="line">      <span class="attr">vectorWeight</span>: <span class="built_in">number</span>;</span><br><span class="line">      <span class="attr">textWeight</span>: <span class="built_in">number</span>;</span><br><span class="line">      <span class="attr">candidateMultiplier</span>: <span class="built_in">number</span>;</span><br><span class="line">    &#125;;</span><br><span class="line">  &#125;;</span><br><span class="line">  </span><br><span class="line">  <span class="attr">cache</span>: &#123;</span><br><span class="line">    <span class="attr">enabled</span>: <span class="built_in">boolean</span>;</span><br><span class="line">    <span class="attr">maxEntries</span>?: <span class="built_in">number</span>;</span><br><span class="line">  &#125;;</span><br><span class="line">  </span><br><span class="line">  <span class="attr">sync</span>: &#123;</span><br><span class="line">    <span class="attr">onSessionStart</span>: <span class="built_in">boolean</span>;</span><br><span class="line">    <span class="attr">onSearch</span>: <span class="built_in">boolean</span>;      <span class="comment">// Lazy sync</span></span><br><span class="line">    <span class="attr">watch</span>: <span class="built_in">boolean</span>;         <span class="comment">// File watcher</span></span><br><span class="line">    <span class="attr">watchDebounceMs</span>: <span class="built_in">number</span>;</span><br><span class="line">    <span class="attr">intervalMinutes</span>?: <span class="built_in">number</span>;</span><br><span class="line">    <span class="attr">sessions</span>?: &#123;</span><br><span class="line">      <span class="attr">deltaBytes</span>: <span class="built_in">number</span>;   <span class="comment">// N bytes 后 sync</span></span><br><span class="line">      <span class="attr">deltaMessages</span>: <span class="built_in">number</span>; <span class="comment">// N messages 后 sync</span></span><br><span class="line">    &#125;;</span><br><span class="line">  &#125;;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="YAML-配置示例"><a href="#YAML-配置示例" class="headerlink" title="YAML 配置示例"></a>YAML 配置示例</h3><figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">agents:</span></span><br><span class="line">  <span class="attr">defaults:</span></span><br><span class="line">    <span class="attr">memorySearch:</span></span><br><span class="line">      <span class="attr">enabled:</span> <span class="literal">true</span></span><br><span class="line">      <span class="attr">sources:</span> [<span class="string">&quot;memory&quot;</span>, <span class="string">&quot;sessions&quot;</span>]</span><br><span class="line">      <span class="attr">provider:</span> <span class="string">&quot;auto&quot;</span>  <span class="comment"># auto | openai | gemini | local</span></span><br><span class="line">      <span class="attr">fallback:</span> <span class="string">&quot;gemini&quot;</span></span><br><span class="line">      <span class="attr">model:</span> <span class="string">&quot;text-embedding-3-small&quot;</span></span><br><span class="line">      </span><br><span class="line">      <span class="attr">remote:</span></span><br><span class="line">        <span class="attr">apiKey:</span> <span class="string">&quot;$&#123;OPENAI_API_KEY&#125;&quot;</span></span><br><span class="line">        <span class="attr">batch:</span></span><br><span class="line">          <span class="attr">enabled:</span> <span class="literal">true</span></span><br><span class="line">          <span class="attr">concurrency:</span> <span class="number">4</span></span><br><span class="line">          <span class="attr">wait:</span> <span class="literal">true</span></span><br><span class="line">      </span><br><span class="line">      <span class="attr">store:</span></span><br><span class="line">        <span class="attr">path:</span> <span class="string">&quot;~/.openclaw/memory/&#123;agentId&#125;.sqlite&quot;</span></span><br><span class="line">        <span class="attr">vector:</span></span><br><span class="line">          <span class="attr">enabled:</span> <span class="literal">true</span></span><br><span class="line">      </span><br><span class="line">      <span class="attr">chunking:</span></span><br><span class="line">        <span class="attr">tokens:</span> <span class="number">300</span></span><br><span class="line">        <span class="attr">overlap:</span> <span class="number">50</span></span><br><span class="line">      </span><br><span class="line">      <span class="attr">query:</span></span><br><span class="line">        <span class="attr">maxResults:</span> <span class="number">10</span></span><br><span class="line">        <span class="attr">minScore:</span> <span class="number">0.6</span></span><br><span class="line">        <span class="attr">hybrid:</span></span><br><span class="line">          <span class="attr">enabled:</span> <span class="literal">true</span></span><br><span class="line">          <span class="attr">vectorWeight:</span> <span class="number">0.7</span></span><br><span class="line">          <span class="attr">textWeight:</span> <span class="number">0.3</span></span><br><span class="line">      </span><br><span class="line">      <span class="attr">sync:</span></span><br><span class="line">        <span class="attr">onSessionStart:</span> <span class="literal">true</span></span><br><span class="line">        <span class="attr">onSearch:</span> <span class="literal">true</span></span><br><span class="line">        <span class="attr">watch:</span> <span class="literal">true</span></span><br><span class="line">        <span class="attr">intervalMinutes:</span> <span class="number">30</span></span><br><span class="line">        <span class="attr">sessions:</span></span><br><span class="line">          <span class="attr">deltaBytes:</span> <span class="number">10240</span>  <span class="string">//</span> <span class="string">10KB</span></span><br><span class="line">          <span class="attr">deltaMessages:</span> <span class="number">10</span></span><br></pre></td></tr></table></figure>
+
+<h2 id="Agent-工具"><a href="#Agent-工具" class="headerlink" title="Agent 工具"></a>Agent 工具</h2><h3 id="memory-search"><a href="#memory-search" class="headerlink" title="memory_search"></a>memory_search</h3><p>Agent 回答关于先前工作的问题之前的 mandatory recall step。</p>
+<figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">  <span class="attr">name</span>: <span class="string">&quot;memory_search&quot;</span>,</span><br><span class="line">  <span class="attr">description</span>: <span class="string">&quot;Semantically search MEMORY.md + memory/*.md before answering...&quot;</span>,</span><br><span class="line">  <span class="attr">parameters</span>: &#123;</span><br><span class="line">    <span class="attr">query</span>: <span class="built_in">string</span>;        <span class="comment">// Search query</span></span><br><span class="line">    <span class="attr">maxResults</span>?: <span class="built_in">number</span>;  <span class="comment">// Default from config</span></span><br><span class="line">    <span class="attr">minScore</span>?: <span class="built_in">number</span>;    <span class="comment">// Default from config</span></span><br><span class="line">  &#125;,</span><br><span class="line">  <span class="attr">returns</span>: &#123;</span><br><span class="line">    <span class="attr">results</span>: <span class="title class_">Array</span>&lt;&#123;</span><br><span class="line">      <span class="attr">path</span>: <span class="built_in">string</span>;       <span class="comment">// File path</span></span><br><span class="line">      <span class="attr">startLine</span>: <span class="built_in">number</span>;</span><br><span class="line">      <span class="attr">endLine</span>: <span class="built_in">number</span>;</span><br><span class="line">      <span class="attr">score</span>: <span class="built_in">number</span>;      <span class="comment">// Combined score</span></span><br><span class="line">      <span class="attr">snippet</span>: <span class="built_in">string</span>;    <span class="comment">// Text preview</span></span><br><span class="line">      <span class="attr">source</span>: <span class="string">&quot;memory&quot;</span> | <span class="string">&quot;sessions&quot;</span>;</span><br><span class="line">    &#125;&gt;;</span><br><span class="line">    <span class="attr">provider</span>: <span class="built_in">string</span>;</span><br><span class="line">    <span class="attr">model</span>: <span class="built_in">string</span>;</span><br><span class="line">    <span class="attr">fallback</span>?: &#123; <span class="attr">from</span>: <span class="built_in">string</span>; <span class="attr">reason</span>: <span class="built_in">string</span> &#125;;</span><br><span class="line">  &#125;;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="memory-get"><a href="#memory-get" class="headerlink" title="memory_get"></a>memory_get</h3><p>Search 后用于 retrieving specific line ranges 的 safe file reader。</p>
+<figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">  <span class="attr">name</span>: <span class="string">&quot;memory_get&quot;</span>,</span><br><span class="line">  <span class="attr">description</span>: <span class="string">&quot;Safe snippet read from MEMORY.md...&quot;</span>,</span><br><span class="line">  <span class="attr">parameters</span>: &#123;</span><br><span class="line">    <span class="attr">path</span>: <span class="built_in">string</span>;     <span class="comment">// Relative path</span></span><br><span class="line">    <span class="attr">from</span>?: <span class="built_in">number</span>;    <span class="comment">// Start line (1-indexed)</span></span><br><span class="line">    <span class="attr">lines</span>?: <span class="built_in">number</span>;   <span class="comment">// Number of lines</span></span><br><span class="line">  &#125;,</span><br><span class="line">  <span class="attr">returns</span>: &#123;</span><br><span class="line">    <span class="attr">text</span>: <span class="built_in">string</span>;</span><br><span class="line">    <span class="attr">path</span>: <span class="built_in">string</span>;</span><br><span class="line">  &#125;;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="性能优化"><a href="#性能优化" class="headerlink" title="性能优化"></a>性能优化</h2><h3 id="1-Embedding-Cache"><a href="#1-Embedding-Cache" class="headerlink" title="1. Embedding Cache"></a>1. Embedding Cache</h3><ul>
+<li>基于 SHA256 的 deduplication</li>
+<li>Persistent across sessions</li>
+<li>超过 maxEntries 时进行 LRU pruning</li>
+</ul>
+<h3 id="2-Incremental-Sync"><a href="#2-Incremental-Sync" class="headerlink" title="2. Incremental Sync"></a>2. Incremental Sync</h3><ul>
+<li>Content hash comparison（SHA256）</li>
+<li>仅 re-index changed files</li>
+<li>Session files 的 Delta tracking</li>
+</ul>
+<h3 id="3-Batch-Processing"><a href="#3-Batch-Processing" class="headerlink" title="3. Batch Processing"></a>3. Batch Processing</h3><ul>
+<li>OpenAI: 用于 large indexing jobs 的 Batch API</li>
+<li>Gemini: Parallel batch requests</li>
+<li>Configurable concurrency</li>
+</ul>
+<h3 id="4-Safe-Reindexing"><a href="#4-Safe-Reindexing" class="headerlink" title="4. Safe Reindexing"></a>4. Safe Reindexing</h3><ul>
+<li>Atomic file swaps（temp → backup → new）</li>
+<li>Failure 时 rollback</li>
+<li>Zero-downtime index rebuilds</li>
+</ul>
+<h3 id="5-Vector-Extension"><a href="#5-Vector-Extension" class="headerlink" title="5. Vector Extension"></a>5. Vector Extension</h3><ul>
+<li>用于 native vector operations 的 sqlite-vec</li>
+<li>如果不可用，回退到 JS cosine similarity</li>
+</ul>
+<h2 id="错误处理与弹性"><a href="#错误处理与弹性" class="headerlink" title="错误处理与弹性"></a>错误处理与弹性</h2><h3 id="Provider-Fallback"><a href="#Provider-Fallback" class="headerlink" title="Provider Fallback"></a>Provider Fallback</h3><figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// Embedding error 时自动切换到 fallback provider</span></span><br><span class="line"><span class="keyword">if</span> (<span class="title function_">shouldFallbackOnError</span>(error)) &#123;</span><br><span class="line">  <span class="keyword">await</span> <span class="title function_">activateFallbackProvider</span>(error);</span><br><span class="line">  <span class="keyword">await</span> <span class="title function_">runSafeReindex</span>(&#123; <span class="attr">force</span>: <span class="literal">true</span> &#125;);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="Graceful-Degradation"><a href="#Graceful-Degradation" class="headerlink" title="Graceful Degradation"></a>Graceful Degradation</h3><ul>
+<li>FTS unavailable → Vector-only search</li>
+<li>sqlite-vec unavailable → JS cosine similarity</li>
+<li>Provider unavailable → Fallback 或 error</li>
+</ul>
+<h3 id="Batch-Failure-Recovery"><a href="#Batch-Failure-Recovery" class="headerlink" title="Batch Failure Recovery"></a>Batch Failure Recovery</h3><ul>
+<li>追踪 consecutive failures</li>
+<li>Lock mechanism 防止 cascade</li>
+<li>带 exponential backoff 的 automatic retry</li>
+</ul>
+<h2 id="安全考量"><a href="#安全考量" class="headerlink" title="安全考量"></a>安全考量</h2><h3 id="Path-Security"><a href="#Path-Security" class="headerlink" title="Path Security"></a>Path Security</h3><ul>
+<li>所有 paths 相对于 workspace 解析</li>
+<li>忽略 Symlinks</li>
+<li><code>extraPaths</code> 针对 allowed directories 进行验证</li>
+</ul>
+<h3 id="File-Access"><a href="#File-Access" class="headerlink" title="File Access"></a>File Access</h3><figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// readFile() 中的安全检查</span></span><br><span class="line"><span class="keyword">const</span> allowedWorkspace = inWorkspace &amp;&amp; <span class="title function_">isMemoryPath</span>(relPath);</span><br><span class="line"><span class="keyword">const</span> allowedAdditional = extraPaths.<span class="title function_">some</span>(<span class="function"><span class="params">p</span> =&gt;</span> absPath.<span class="title function_">startsWith</span>(p));</span><br><span class="line"><span class="keyword">if</span> (!allowedWorkspace &amp;&amp; !allowedAdditional) &#123;</span><br><span class="line">  <span class="keyword">throw</span> <span class="keyword">new</span> <span class="title class_">Error</span>(<span class="string">&quot;path required&quot;</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="CLI-接口"><a href="#CLI-接口" class="headerlink" title="CLI 接口"></a>CLI 接口</h2><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 检查 memory status</span></span><br><span class="line">openclaw memory status [--deep] [--index]</span><br><span class="line"></span><br><span class="line"><span class="comment"># 强制 reindex</span></span><br><span class="line">openclaw memory index [--force]</span><br><span class="line"></span><br><span class="line"><span class="comment"># 搜索 memory</span></span><br><span class="line">openclaw memory search &lt;query&gt; [--max-results N] [--min-score 0.6]</span><br></pre></td></tr></table></figure>
+
+<h2 id="测试策略"><a href="#测试策略" class="headerlink" title="测试策略"></a>测试策略</h2><p>该模块包含 comprehensive tests：</p>
+<table>
+<thead>
+<tr>
+<th>Test File</th>
+<th>Coverage</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>manager.atomic-reindex.test.ts</code></td>
+<td>带 rollback 的 Safe reindexing</td>
+</tr>
+<tr>
+<td><code>manager.async-search.test.ts</code></td>
+<td>Concurrent search&#x2F;sync</td>
+</tr>
+<tr>
+<td><code>manager.batch.test.ts</code></td>
+<td>Batch embedding API</td>
+</tr>
+<tr>
+<td><code>manager.sync-errors-do-not-crash.test.ts</code></td>
+<td>Error resilience</td>
+</tr>
+<tr>
+<td><code>manager.vector-dedupe.test.ts</code></td>
+<td>Vector deduplication</td>
+</tr>
+<tr>
+<td><code>embeddings.test.ts</code></td>
+<td>Provider selection</td>
+</tr>
+<tr>
+<td><code>hybrid.test.ts</code></td>
+<td>Hybrid ranking</td>
+</tr>
+<tr>
+<td><code>internal.test.ts</code></td>
+<td>Chunking, hashing</td>
+</tr>
+</tbody></table>
+<h2 id="未来增强"><a href="#未来增强" class="headerlink" title="未来增强"></a>未来增强</h2><ol>
+<li><strong>Multi-modal Memory</strong>: Image&#x2F;document embeddings</li>
+<li><strong>Temporal Queries</strong>: 基于 Time 的 filtering</li>
+<li><strong>Memory Graph</strong>: Memories 之间的 Relationship extraction</li>
+<li><strong>Compression</strong>: 用于 storage 的 Embedding quantization</li>
+<li><strong>Distributed</strong>: Multi-agent shared memory</li>
+</ol>
+<h2 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h2><ul>
+<li><a target="_blank" rel="noopener" href="https://github.com/asg017/sqlite-vec">sqlite-vec</a>: Vector search extension</li>
+<li><a target="_blank" rel="noopener" href="https://www.sqlite.org/fts5.html">FTS5</a>: Full-text search</li>
+<li><a target="_blank" rel="noopener" href="https://platform.openai.com/docs/guides/embeddings">OpenAI Embeddings</a></li>
+<li><a target="_blank" rel="noopener" href="https://ai.google.dev/gemini-api/docs/embeddings">Gemini Embeddings</a></li>
+</ul>
+</section>
+    
+
+    <footer id="post-meta" class="clearfix">
+        <a href="/about/">
+        <img class="avatar" src="/images/avatar.png">
+        <div>
+            <span class="dark">Api Intelligence Daily Life</span>
+            <span>知识库 &amp; 博客</span>
+        </div>
+        </a>
+        <section id="sharing">
+            <a title="Share to Twitter" class="twitter" target="_blank" rel="noopener" href="https://twitter.com/intent/tweet?text=https://arbow.github.io/2026/02/05/digest-2026-02-05-openclaw-memory/ - 文摘：OpenClaw Memory 模块设计文档 @"><span class="icon-twitter">tweet</span></a>
+            <a title="Share to Facebook" class="facebook" href="#" onclick="
+                window.open(
+                  'https://www.facebook.com/sharer/sharer.php?u='+encodeURIComponent(location.href),
+                  'facebook-share-dialog',
+                  'width=626,height=436');
+                return false;"><span class="icon-facebook-sign">Share</span>
+            </a>
+        </section>
+    </footer>
+
+
+  <section id="comment">
+    <button class="btn" id="loadcmts" onclick="cmts.load();">加载评论</button>
+    <div id="gitment"></div>
+    <script src='/js/gitment.browser.js'></script>
+    <link rel="stylesheet" href=''>
+    <script>
+      var cmts={
+        load:function cmts(){
+          var gitment = new Gitment({
+          
+            id: "文摘：OpenClaw Memory 模块设计文档",
+          
+            owner: "",
+            repo: "",
+            oauth: {
+              client_id: "",
+              client_secret: "",
+            },
+          })
+          gitment.render('gitment');
+          var loadcmt = document.getElementById("loadcmts");
+          var imyourfather = loadcmt.parentNode;
+          imyourfather.removeChild(loadcmts)
+        }
+      }
+    </script>
+  </section>
+
+
+	<footer id="footer">
+	<div id="social">
+		<p class="small">©  Arbow| Powered by Hexo & 
+			<a target="_blank" rel="noopener" href="https://github.com/F0r3at/Lights"> Lights</a>
+		</p>
+	</div>
+</footer>
+
+</section>
+
+	<script src="//cdnjs.loli.net/ajax/libs/instantclick/3.0.1/instantclick.min.js" data-no-instant></script>
+	<script data-no-instant>
+		
+		InstantClick.init('mousedown');
+	</script>
+
+
+
