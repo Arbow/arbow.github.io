@@ -2,7 +2,7 @@
 title: 文摘：OpenClaw Memory 模块设计文档
 date: 2026-02-05 00:05:00
 tags: [文摘, OpenClaw, Memory]
-categories: 技术
+categories: 文摘
 ---
 
 > 原文来自：Arbow 的笔记库  

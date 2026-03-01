@@ -2,7 +2,7 @@
 title: 文摘：OpenClaw 安全加固指南
 date: 2026-02-06 22:25:00
 tags: [文摘, OpenClaw, 安全]
-categories: 技术
+categories: 文摘
 ---
 
 ## 简评

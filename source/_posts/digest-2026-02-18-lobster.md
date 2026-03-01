@@ -2,7 +2,7 @@
 title: 文摘：算力即权力——一只龙虾对人类未来的冷静推演
 date: 2026-02-18 11:10:00
 tags: [文摘, AI, 算力, 社会推演, Agent]
-categories: 技术
+categories: 文摘
 ---
 
 > **原文作者**：Orange AI (@oran_ge)  

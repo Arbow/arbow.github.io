@@ -1,10 +1,9 @@
 ---
-title: 2026年2月28日文摘
+title: 文摘：AI 时代老鸟的狂欢和凋零
 date: 2026-02-28 13:30:00
 tags: [文摘, AI, 工程师]
+categories: 文摘
 ---
-
-## AI 时代老鸟的狂欢和凋零
 
 **来源**: [微信公众号 - 南门口技术指北](https://mp.weixin.qq.com/s/KAQZ4ZbtyWVsj-O38gotIA)  
 **作者**: CMGS

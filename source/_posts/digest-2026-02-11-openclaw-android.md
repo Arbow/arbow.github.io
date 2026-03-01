@@ -2,7 +2,7 @@
 title: 文摘：用旧手机做自己的"豆包手机" — OpenClaw on Android 完整教程
 date: 2026-02-11 12:55:00
 tags: [文摘, OpenClaw, Android, AI, 教程]
-categories: 技术
+categories: 文摘
 ---
 
 > 作者：Kazuto | Vibing...  

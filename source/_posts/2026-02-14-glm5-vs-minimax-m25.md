@@ -2,7 +2,7 @@
 title: GLM 5.0 vs MiniMax M2.5 深度对比分析报告
 date: 2026-02-14 16:46:00
 tags: [AI, 大模型, 对比评测, GLM-5, MiniMax]
-categories: 技术
+categories: 调研
 ---
 
 **报告生成时间**: 2026年2月14日  

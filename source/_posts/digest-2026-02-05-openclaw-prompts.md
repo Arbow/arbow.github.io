@@ -2,7 +2,7 @@
 title: 文摘：拆解 OpenClaw 的系统提示词
 date: 2026-02-05 20:25:00
 tags: [文摘, OpenClaw, Prompt]
-categories: 技术
+categories: 文摘
 ---
 
 ## 简评

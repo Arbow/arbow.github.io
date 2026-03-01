@@ -1,5 +1,5 @@
 ---
-title: 过了个年，AI 圈变天了？但没人告诉你为什么
+title: 文摘：过了个年，AI 圈变天了？但没人告诉你为什么
 date: 2026-02-26 06:09:00
 tags: [AI, Agent, 文摘]
 categories: 文摘
