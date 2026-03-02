@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=0">
+
+  <meta name="description" content="个人知识库与技术笔记">
+
+
+<link rel="alternate" href="/atom.xml" title="Api Intelligence Daily Life" type="application/atom+xml">
+<meta name="theme-color" content="#a1d0f6">
+<title>文摘：OpenClaw + Claude Code 超强教程：一个人就能搭建完整的开发团队！ - Api Intelligence Daily Life</title>
+<!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+<link rel="shortcut icon" href="/favicon.png">
+
+<link rel="stylesheet" href="/css/style.css">
+
+<nav class="main-nav">
+	
+	    <a href="/">← 主页</a>
+	
+	
+	    <a href="/about/">About</a>
+	
+	    <a href="/archives/">Archives</a>
+	
+	<a class="cta" href="/atom.xml" data-no-instant>订阅</a>
+</nav>
+
+<section id="wrapper">
+    <article class="post">
+    <header>
+        
+            <h1>文摘：OpenClaw + Claude Code 超强教程：一个人就能搭建完整的开发团队！</h1>
+        
+        <h2 class="headline">Mar 02 2026
+        
+            
+            <a href="/categories/文摘/#文摘">文摘</a>
+        
+        </h2>
+    </header>
+</article>
+<section id="post-body"><p><strong>原文链接</strong>：<a target="_blank" rel="noopener" href="https://mp.weixin.qq.com/s/gtxM1f3JmfXqDuxGIa3-ng">https://mp.weixin.qq.com/s/gtxM1f3JmfXqDuxGIa3-ng</a></p>
+<h2 id="核心亮点"><a href="#核心亮点" class="headerlink" title="核心亮点"></a>核心亮点</h2><p>一个独立开发者用 <strong>OpenClaw + Codex&#x2F;Claude Code</strong> 搭建了一套 AI Agent 系统，实现了惊人的效果：</p>
+<ul>
+<li><strong>一天 94 次提交</strong>，平均每天 50 次提交</li>
+<li><strong>30 分钟内完成 7 个 PR</strong></li>
+<li><strong>当天交付客户需求</strong>，客户提需求当天就能看到效果</li>
+<li>每月成本仅 $190（Claude $100 + Codex $90），新手起步 $20 就能跑起来</li>
+</ul>
+<h2 id="双层架构设计"><a href="#双层架构设计" class="headerlink" title="双层架构设计"></a>双层架构设计</h2><h3 id="为什么需要双层系统？"><a href="#为什么需要双层系统？" class="headerlink" title="为什么需要双层系统？"></a>为什么需要双层系统？</h3><p>Codex 和 Claude Code 单独使用时的根本限制：<strong>上下文窗口是固定的</strong>，你必须二选一：</p>
+<ul>
+<li>塞满代码 → 没空间放业务上下文</li>
+<li>塞满客户历史 → 没空间放代码库</li>
+</ul>
+<h3 id="OpenClaw-双层架构"><a href="#OpenClaw-双层架构" class="headerlink" title="OpenClaw 双层架构"></a>OpenClaw 双层架构</h3><table>
+<thead>
+<tr>
+<th>层级</th>
+<th>角色</th>
+<th>职责</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>编排层 (OpenClaw)</strong></td>
+<td>主厨</td>
+<td>持有业务上下文（客户数据、会议记录、历史决策），把业务需求翻译成精确 prompt</td>
+</tr>
+<tr>
+<td><strong>执行层 (Agent)</strong></td>
+<td>专业厨师</td>
+<td>专注写代码，只拿到”完成任务需要的最小上下文”</td>
+</tr>
+</tbody></table>
+<p><strong>类比</strong>：Codex&#x2F;Claude Code &#x3D; 专业厨师只管做菜；OpenClaw &#x3D; 主厨知道客人口味、食材库存，给每个厨师下达精确指令。</p>
+<h2 id="完整工作流：从需求到上线的-8-个步骤"><a href="#完整工作流：从需求到上线的-8-个步骤" class="headerlink" title="完整工作流：从需求到上线的 8 个步骤"></a>完整工作流：从需求到上线的 8 个步骤</h2><ol>
+<li><p><strong>客户需求 → OpenClaw 理解并拆解</strong></p>
+<ul>
+<li>OpenClaw 读取 Obsidian 会议记录，自动理解客户背景</li>
+<li>零解释成本，因为已经知道客户是谁、业务场景、现有配置</li>
+</ul>
+</li>
+<li><p><strong>启动代理</strong></p>
+<ul>
+<li>创建独立 git worktree 和 tmux 会话</li>
+<li>Agent 在后台运行，可随时通过 tmux 干预</li>
+</ul>
+</li>
+<li><p><strong>自动监控</strong></p>
+<ul>
+<li>cron 每 10 分钟检查 Agent 状态</li>
+<li>检查客观事实：tmux 存活、PR 创建、CI 状态</li>
+<li>只在需要人工介入时通知</li>
+</ul>
+</li>
+<li><p><strong>Agent 创建 PR</strong></p>
+</li>
+<li><p><strong>自动化 Code Review</strong></p>
+<ul>
+<li><strong>Codex Reviewer</strong>：最靠谱，擅长发现边界情况</li>
+<li><strong>Gemini Code Assist</strong>：免费好用，发现安全和扩展性问题</li>
+<li><strong>Claude Code Reviewer</strong>：过度谨慎，除非标记 critical 否则跳过</li>
+</ul>
+</li>
+<li><p><strong>自动化测试</strong></p>
+<ul>
+<li>Lint、TypeScript、单元测试、E2E、Playwright</li>
+<li><strong>新规则</strong>：UI 改动必须附截图，否则 CI 失败</li>
+</ul>
+</li>
+<li><p><strong>人工 Review</strong></p>
+<ul>
+<li>CI 全绿 + 三个 AI 审查通过 + 截图展示</li>
+<li>作者 review 只需 <strong>5-10 分钟</strong></li>
+</ul>
+</li>
+<li><p><strong>合并</strong></p>
+<ul>
+<li>从客户需求到代码上线，可能只用 <strong>1-2 小时</strong></li>
+<li>作者实际投入可能只有 <strong>10 分钟</strong></li>
+</ul>
+</li>
+</ol>
+<h2 id="三个让系统更聪明的机制"><a href="#三个让系统更聪明的机制" class="headerlink" title="三个让系统更聪明的机制"></a>三个让系统更聪明的机制</h2><h3 id="1-改进版-Ralph-Loop-—-不只是重复，而是学习"><a href="#1-改进版-Ralph-Loop-—-不只是重复，而是学习" class="headerlink" title="1. 改进版 Ralph Loop — 不只是重复，而是学习"></a>1. 改进版 Ralph Loop — 不只是重复，而是学习</h3><p>普通实现的问题：每次循环用的 prompt 都一样。</p>
+<p><strong>这套系统的改进</strong>：</p>
+<ul>
+<li>当 Agent 失败时，Zoe 带着完整业务上下文分析失败原因</li>
+<li><strong>重写 prompt</strong>，而不是用同样的 prompt 重启</li>
+<li>成功模式被记录：”这种 prompt 结构对账单功能很有效”</li>
+<li>奖励信号：CI 通过、三个 code review 通过、人工合并</li>
+</ul>
+<p><strong>结果</strong>：时间越长，Zoe 写的 prompt 越好，因为她记得什么能成功。</p>
+<h3 id="2-Agent-选择策略-—-不同任务找不同的专家"><a href="#2-Agent-选择策略-—-不同任务找不同的专家" class="headerlink" title="2. Agent 选择策略 — 不同任务找不同的专家"></a>2. Agent 选择策略 — 不同任务找不同的专家</h3><table>
+<thead>
+<tr>
+<th>Agent</th>
+<th>角色</th>
+<th>适用场景</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>Codex (gpt-5.3-codex)</strong></td>
+<td>主力</td>
+<td>后端逻辑、复杂 bug、多文件重构，占 90% 任务</td>
+</tr>
+<tr>
+<td><strong>Claude Code</strong></td>
+<td>速度型</td>
+<td>前端工作、权限问题少的 git 操作</td>
+</tr>
+<tr>
+<td><strong>Gemini</strong></td>
+<td>设计师</td>
+<td>有设计审美，先让 Gemini 生成 HTML&#x2F;CSS 规范，再交给 Claude 实现</td>
+</tr>
+</tbody></table>
+<h3 id="3-瓶颈在哪？RAM"><a href="#3-瓶颈在哪？RAM" class="headerlink" title="3. 瓶颈在哪？RAM"></a>3. 瓶颈在哪？RAM</h3><p>意外的限制：不是 token 成本，不是 API 速率，而是<strong>内存</strong>。</p>
+<ul>
+<li>每个 Agent 需要：worktree + node_modules + 运行构建测试</li>
+<li>5 个 Agent 同时跑 &#x3D; 5 个并行 TypeScript 编译器 + 5 个测试运行器</li>
+<li>Mac Mini(16GB) 最多同时跑 4-5 个 Agent</li>
+<li>作者买了 Mac Studio M4 Max(128GB, $3500)</li>
+</ul>
+<h2 id="核心洞察"><a href="#核心洞察" class="headerlink" title="核心洞察"></a>核心洞察</h2><h3 id="上下文的专业化分工"><a href="#上下文的专业化分工" class="headerlink" title="上下文的专业化分工"></a>上下文的专业化分工</h3><p>不是换更强的模型，而是通过<strong>上下文的专业化分工</strong>解决问题：</p>
+<ul>
+<li>编排层：理解业务、客户、历史决策</li>
+<li>执行层：专注代码、测试、构建</li>
+</ul>
+<h3 id="递归自我改进"><a href="#递归自我改进" class="headerlink" title="递归自我改进"></a>递归自我改进</h3><blockquote>
+<p>“我们会看到大量一个人的百万美元公司从 2026 年开始出现。杠杆是巨大的，属于那些理解如何构建递归自我改进 AI 系统的人。”</p>
+</blockquote>
+<p>这就是它的样子：</p>
+<ul>
+<li>一个 AI 编排者作为你的延伸</li>
+<li>把工作委派给专门的 Agent，处理不同的业务职能</li>
+<li>工程、客户支持、运营、营销</li>
+<li>每个 Agent 专注于它擅长的事</li>
+<li>你保持专注和完全控制</li>
+</ul>
+<h3 id="下一代创业方式"><a href="#下一代创业方式" class="headerlink" title="下一代创业方式"></a>下一代创业方式</h3><blockquote>
+<p>“下一代创业者不会雇 10 个人去做一个人加一套系统就能做的事。他们会这样构建——保持小规模，快速行动，每天发布。”</p>
+</blockquote>
+<h2 id="推荐理由-⭐⭐⭐⭐⭐"><a href="#推荐理由-⭐⭐⭐⭐⭐" class="headerlink" title="推荐理由 ⭐⭐⭐⭐⭐"></a>推荐理由 ⭐⭐⭐⭐⭐</h2><p>这篇文章不是理论探讨，而是一个<strong>真实的生产级案例</strong>。作者展示了如何用 OpenClaw + Codex&#x2F;Claude Code 搭建一个完整的 AI 开发团队，从架构设计到具体实现细节，从工作流到成本分析，毫无保留地分享。</p>
+<p>最难得的是文章的<strong>诚实和务实</strong>：不仅讲成功的部分，也讲了 Claude Code Reviewer “基本没用”、内存瓶颈限制并发、以及真实的失败和迭代过程。</p>
+<p>对于想要用 AI 提升开发效率的人来说，这是一篇<strong>可以直接跟着做的实操指南</strong>。把这篇文章复制给 OpenClaw，10 分钟就能搭起一套类似的系统。</p>
+</section>
+    
+
+    <footer id="post-meta" class="clearfix">
+        <a href="/about/">
+        <img class="avatar" src="/images/avatar.png">
+        <div>
+            <span class="dark">Api Intelligence Daily Life</span>
+            <span>知识库 &amp; 博客</span>
+        </div>
+        </a>
+        <section id="sharing">
+            <a title="Share to Twitter" class="twitter" target="_blank" rel="noopener" href="https://twitter.com/intent/tweet?text=https://arbow.github.io/2026/03/02/digest-2026-03-02-openclaw-codex-tutorial/ - 文摘：OpenClaw + Claude Code 超强教程：一个人就能搭建完整的开发团队！ @"><span class="icon-twitter">tweet</span></a>
+            <a title="Share to Facebook" class="facebook" href="#" onclick="
+                window.open(
+                  'https://www.facebook.com/sharer/sharer.php?u='+encodeURIComponent(location.href),
+                  'facebook-share-dialog',
+                  'width=626,height=436');
+                return false;"><span class="icon-facebook-sign">Share</span>
+            </a>
+        </section>
+    </footer>
+
+
+  <section id="comment">
+    <button class="btn" id="loadcmts" onclick="cmts.load();">加载评论</button>
+    <div id="gitment"></div>
+    <script src='/js/gitment.browser.js'></script>
+    <link rel="stylesheet" href=''>
+    <script>
+      var cmts={
+        load:function cmts(){
+          var gitment = new Gitment({
+          
+            id: "文摘：OpenClaw + Claude Code 超强教程：一个人就能搭建完整的开发团队！",
+          
+            owner: "",
+            repo: "",
+            oauth: {
+              client_id: "",
+              client_secret: "",
+            },
+          })
+          gitment.render('gitment');
+          var loadcmt = document.getElementById("loadcmts");
+          var imyourfather = loadcmt.parentNode;
+          imyourfather.removeChild(loadcmts)
+        }
+      }
+    </script>
+  </section>
+
+
+	<footer id="footer">
+	<div id="social">
+		<p class="small">©  Arbow| Powered by Hexo & 
+			<a target="_blank" rel="noopener" href="https://github.com/F0r3at/Lights"> Lights</a>
+		</p>
+	</div>
+</footer>
+
+</section>
+
+	<script src="//cdnjs.loli.net/ajax/libs/instantclick/3.0.1/instantclick.min.js" data-no-instant></script>
+	<script data-no-instant>
+		
+		InstantClick.init('mousedown');
+	</script>
+
+
+
