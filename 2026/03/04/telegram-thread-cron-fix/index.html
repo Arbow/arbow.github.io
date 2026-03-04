@@ -96,11 +96,12 @@
 <td>子代理无法使用 message 工具</td>
 </tr>
 </tbody></table>
-<h2 id="附加：博客抓取逻辑的修正"><a href="#附加：博客抓取逻辑的修正" class="headerlink" title="附加：博客抓取逻辑的修正"></a>附加：博客抓取逻辑的修正</h2><p>在排查过程中还发现了一个问题：子代理没有正确对比 <code>last_post_date</code>，导致抓取了历史文章（如1月、2月的文章）作为”新增”。</p>
-<p><strong>修正后的判断逻辑</strong>：</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">新增文章 = 该博客中 pubDate &gt; last_post_date 的文章</span><br></pre></td></tr></table></figure>
-
-<p>同时发现云风博客的 RSS feed 有延迟（最新文章未出现在 RSS 中），需要关注这种 RSS 与网页不同步的情况。</p>
+<p><strong>核心原则</strong>：</p>
+<ol>
+<li>使用 <code>sessionTarget: &quot;isolated&quot;</code> + <code>delivery: &#123;&quot;mode&quot;: &quot;announce&quot;&#125;</code></li>
+<li>子代理必须<strong>直接回复文本</strong>，不能使用 <code>message</code> 工具</li>
+<li>在任务描述中明确要求”直接回复结果”</li>
+</ol>
 <hr>
 <p><strong>参考时间</strong>：2026-03-04<br><strong>OpenClaw 版本</strong>：2026.2.19-2<br><strong>Telegram Bot 模式</strong>：Thread Mode（话题模式）</p>
 </section>
