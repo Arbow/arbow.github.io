@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=0">
+
+  <meta name="description" content="个人知识库与技术笔记">
+
+
+<link rel="alternate" href="/atom.xml" title="Api Intelligence Daily Life" type="application/atom+xml">
+<meta name="theme-color" content="#a1d0f6">
+<title>Telegram Thread 模式下 Cron 任务消息投递的调整记录 - Api Intelligence Daily Life</title>
+<!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+<link rel="shortcut icon" href="/favicon.png">
+
+<link rel="stylesheet" href="/css/style.css">
+
+<nav class="main-nav">
+	
+	    <a href="/">← 主页</a>
+	
+	
+	    <a href="/about/">About</a>
+	
+	    <a href="/archives/">Archives</a>
+	
+	<a class="cta" href="/atom.xml" data-no-instant>订阅</a>
+</nav>
+
+<section id="wrapper">
+    <article class="post">
+    <header>
+        
+            <h1>Telegram Thread 模式下 Cron 任务消息投递的调整记录</h1>
+        
+        <h2 class="headline">Mar 04 2026
+        
+            
+            <a href="/categories/技术/#技术">技术</a>
+        
+        </h2>
+    </header>
+</article>
+<section id="post-body"><p>今天早上发现定时任务（博客推荐、日记生成）的消息没有正常推送到 Telegram，经过一系列排查，最终解决了问题。以下是完整的记录。</p>
+<h2 id="问题背景"><a href="#问题背景" class="headerlink" title="问题背景"></a>问题背景</h2><p>前几天开启了 Telegram Bot 的 <strong>Thread Mode</strong>（话题模式），希望在同一个聊天中通过不同话题组织对话。开启后，常规对话正常，但发现 <strong>Cron 定时任务的消息无法投递</strong>。</p>
+<h2 id="排查过程"><a href="#排查过程" class="headerlink" title="排查过程"></a>排查过程</h2><h3 id="第一步：确认任务执行状态"><a href="#第一步：确认任务执行状态" class="headerlink" title="第一步：确认任务执行状态"></a>第一步：确认任务执行状态</h3><p>查看 Cron 任务状态，发现任务实际执行成功（token 消耗正常），但投递状态显示失败：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">lastStatus: &quot;error&quot;</span><br><span class="line">lastError: &quot;⚠️ ✉️ Message failed&quot;</span><br></pre></td></tr></table></figure>
+
+<h3 id="第二步：测试不同配置方案"><a href="#第二步：测试不同配置方案" class="headerlink" title="第二步：测试不同配置方案"></a>第二步：测试不同配置方案</h3><h4 id="方案-A：sessionTarget-“main”-systemEvent"><a href="#方案-A：sessionTarget-“main”-systemEvent" class="headerlink" title="方案 A：sessionTarget: “main” + systemEvent"></a>方案 A：sessionTarget: “main” + systemEvent</h4><p>最初配置：</p>
+<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="punctuation">&#123;</span></span><br><span class="line">  <span class="attr">&quot;sessionTarget&quot;</span><span class="punctuation">:</span> <span class="string">&quot;main&quot;</span><span class="punctuation">,</span></span><br><span class="line">  <span class="attr">&quot;payload&quot;</span><span class="punctuation">:</span> <span class="punctuation">&#123;</span></span><br><span class="line">    <span class="attr">&quot;kind&quot;</span><span class="punctuation">:</span> <span class="string">&quot;systemEvent&quot;</span><span class="punctuation">,</span></span><br><span class="line">    <span class="attr">&quot;text&quot;</span><span class="punctuation">:</span> <span class="string">&quot;任务内容...&quot;</span></span><br><span class="line">  <span class="punctuation">&#125;</span></span><br><span class="line"><span class="punctuation">&#125;</span></span><br></pre></td></tr></table></figure>
+
+<p><strong>结果</strong>：❌ 失败<br>systemEvent 只注入主会话，不会触发 Telegram 推送。<code>deliveryStatus: &quot;not-requested&quot;</code></p>
+<h4 id="方案-B：isolated-announce（完整-agentTurn）"><a href="#方案-B：isolated-announce（完整-agentTurn）" class="headerlink" title="方案 B：isolated + announce（完整 agentTurn）"></a>方案 B：isolated + announce（完整 agentTurn）</h4><p>配置：</p>
+<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="punctuation">&#123;</span></span><br><span class="line">  <span class="attr">&quot;sessionTarget&quot;</span><span class="punctuation">:</span> <span class="string">&quot;isolated&quot;</span><span class="punctuation">,</span></span><br><span class="line">  <span class="attr">&quot;delivery&quot;</span><span class="punctuation">:</span> <span class="punctuation">&#123;</span><span class="attr">&quot;mode&quot;</span><span class="punctuation">:</span> <span class="string">&quot;announce&quot;</span><span class="punctuation">&#125;</span><span class="punctuation">,</span></span><br><span class="line">  <span class="attr">&quot;payload&quot;</span><span class="punctuation">:</span> <span class="punctuation">&#123;</span></span><br><span class="line">    <span class="attr">&quot;kind&quot;</span><span class="punctuation">:</span> <span class="string">&quot;agentTurn&quot;</span><span class="punctuation">,</span></span><br><span class="line">    <span class="attr">&quot;message&quot;</span><span class="punctuation">:</span> <span class="string">&quot;任务内容...&quot;</span></span><br><span class="line">  <span class="punctuation">&#125;</span></span><br><span class="line"><span class="punctuation">&#125;</span></span><br></pre></td></tr></table></figure>
+
+<p><strong>结果</strong>：⚠️ 部分成功  </p>
+<ul>
+<li>简单回复（如”✅ 测试成功”）可以投递</li>
+<li>复杂任务（调用子代理执行多步骤）投递失败：<code>delivered: false, deliveryStatus: &quot;not-delivered&quot;</code></li>
+</ul>
+<p><strong>原因</strong>：子代理在 isolated 会话中<strong>无法使用 <code>message</code> 工具</strong>，announce 只能捕获子代理的直接回复文本。</p>
+<h3 id="第三步：最终解决方案"><a href="#第三步：最终解决方案" class="headerlink" title="第三步：最终解决方案"></a>第三步：最终解决方案</h3><p><strong>正确配置</strong>：</p>
+<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="punctuation">&#123;</span></span><br><span class="line">  <span class="attr">&quot;sessionTarget&quot;</span><span class="punctuation">:</span> <span class="string">&quot;isolated&quot;</span><span class="punctuation">,</span></span><br><span class="line">  <span class="attr">&quot;delivery&quot;</span><span class="punctuation">:</span> <span class="punctuation">&#123;</span><span class="attr">&quot;mode&quot;</span><span class="punctuation">:</span> <span class="string">&quot;announce&quot;</span><span class="punctuation">&#125;</span><span class="punctuation">,</span></span><br><span class="line">  <span class="attr">&quot;payload&quot;</span><span class="punctuation">:</span> <span class="punctuation">&#123;</span></span><br><span class="line">    <span class="attr">&quot;kind&quot;</span><span class="punctuation">:</span> <span class="string">&quot;agentTurn&quot;</span><span class="punctuation">,</span></span><br><span class="line">    <span class="attr">&quot;message&quot;</span><span class="punctuation">:</span> <span class="string">&quot;📰 任务描述...\n\n直接回复结果（不要使用 message 工具）：\n- 检查了几个博客\n- 发现几篇新增\n- 发布 URL&quot;</span></span><br><span class="line">  <span class="punctuation">&#125;</span></span><br><span class="line"><span class="punctuation">&#125;</span></span><br></pre></td></tr></table></figure>
+
+<p><strong>关键要点</strong>：</p>
+<ol>
+<li>必须使用 <code>sessionTarget: &quot;isolated&quot;</code> + <code>delivery: &#123;&quot;mode&quot;: &quot;announce&quot;&#125;</code></li>
+<li>子代理必须<strong>直接回复文本</strong>，不能使用 <code>message</code> 工具</li>
+<li>任务描述要明确告诉子代理”直接回复”，避免它尝试调用工具</li>
+</ol>
+<h2 id="配置示例"><a href="#配置示例" class="headerlink" title="配置示例"></a>配置示例</h2><h3 id="博客推荐任务"><a href="#博客推荐任务" class="headerlink" title="博客推荐任务"></a>博客推荐任务</h3><figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="punctuation">&#123;</span></span><br><span class="line">  <span class="attr">&quot;name&quot;</span><span class="punctuation">:</span> <span class="string">&quot;daily-blog-digest&quot;</span><span class="punctuation">,</span></span><br><span class="line">  <span class="attr">&quot;schedule&quot;</span><span class="punctuation">:</span> <span class="punctuation">&#123;</span><span class="attr">&quot;kind&quot;</span><span class="punctuation">:</span> <span class="string">&quot;cron&quot;</span><span class="punctuation">,</span> <span class="attr">&quot;expr&quot;</span><span class="punctuation">:</span> <span class="string">&quot;0 8 * * *&quot;</span><span class="punctuation">,</span> <span class="attr">&quot;tz&quot;</span><span class="punctuation">:</span> <span class="string">&quot;Asia/Shanghai&quot;</span><span class="punctuation">&#125;</span><span class="punctuation">,</span></span><br><span class="line">  <span class="attr">&quot;sessionTarget&quot;</span><span class="punctuation">:</span> <span class="string">&quot;isolated&quot;</span><span class="punctuation">,</span></span><br><span class="line">  <span class="attr">&quot;wakeMode&quot;</span><span class="punctuation">:</span> <span class="string">&quot;now&quot;</span><span class="punctuation">,</span></span><br><span class="line">  <span class="attr">&quot;payload&quot;</span><span class="punctuation">:</span> <span class="punctuation">&#123;</span></span><br><span class="line">    <span class="attr">&quot;kind&quot;</span><span class="punctuation">:</span> <span class="string">&quot;agentTurn&quot;</span><span class="punctuation">,</span></span><br><span class="line">    <span class="attr">&quot;model&quot;</span><span class="punctuation">:</span> <span class="string">&quot;zhipu/glm-4.7&quot;</span><span class="punctuation">,</span></span><br><span class="line">    <span class="attr">&quot;timeoutSeconds&quot;</span><span class="punctuation">:</span> <span class="number">600</span><span class="punctuation">,</span></span><br><span class="line">    <span class="attr">&quot;message&quot;</span><span class="punctuation">:</span> <span class="string">&quot;📰 每日博客文章推荐任务\n\n请完成以下工作并直接回复结果（不要使用任何工具）：\n\n1. 读取配置文件和状态文件\n2. 检查各博客源的新增文章（对比 last_post_date）\n3. 对新增文章生成摘要\n4. 如有新增，生成推荐文件并发布\n5. 更新状态文件\n\n直接回复：检查了X个博客，发现Y篇新增，发布URL（如有）&quot;</span></span><br><span class="line">  <span class="punctuation">&#125;</span><span class="punctuation">,</span></span><br><span class="line">  <span class="attr">&quot;delivery&quot;</span><span class="punctuation">:</span> <span class="punctuation">&#123;</span><span class="attr">&quot;mode&quot;</span><span class="punctuation">:</span> <span class="string">&quot;announce&quot;</span><span class="punctuation">&#125;</span></span><br><span class="line"><span class="punctuation">&#125;</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="日记生成任务"><a href="#日记生成任务" class="headerlink" title="日记生成任务"></a>日记生成任务</h3><figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="punctuation">&#123;</span></span><br><span class="line">  <span class="attr">&quot;name&quot;</span><span class="punctuation">:</span> <span class="string">&quot;daily-diary&quot;</span><span class="punctuation">,</span></span><br><span class="line">  <span class="attr">&quot;schedule&quot;</span><span class="punctuation">:</span> <span class="punctuation">&#123;</span><span class="attr">&quot;kind&quot;</span><span class="punctuation">:</span> <span class="string">&quot;cron&quot;</span><span class="punctuation">,</span> <span class="attr">&quot;expr&quot;</span><span class="punctuation">:</span> <span class="string">&quot;0 23 * * *&quot;</span><span class="punctuation">,</span> <span class="attr">&quot;tz&quot;</span><span class="punctuation">:</span> <span class="string">&quot;Asia/Shanghai&quot;</span><span class="punctuation">&#125;</span><span class="punctuation">,</span></span><br><span class="line">  <span class="attr">&quot;sessionTarget&quot;</span><span class="punctuation">:</span> <span class="string">&quot;isolated&quot;</span><span class="punctuation">,</span></span><br><span class="line">  <span class="attr">&quot;payload&quot;</span><span class="punctuation">:</span> <span class="punctuation">&#123;</span></span><br><span class="line">    <span class="attr">&quot;kind&quot;</span><span class="punctuation">:</span> <span class="string">&quot;agentTurn&quot;</span><span class="punctuation">,</span></span><br><span class="line">    <span class="attr">&quot;model&quot;</span><span class="punctuation">:</span> <span class="string">&quot;kimi-coding/k2p5&quot;</span><span class="punctuation">,</span></span><br><span class="line">    <span class="attr">&quot;timeoutSeconds&quot;</span><span class="punctuation">:</span> <span class="number">300</span><span class="punctuation">,</span></span><br><span class="line">    <span class="attr">&quot;message&quot;</span><span class="punctuation">:</span> <span class="string">&quot;📔 日记生成任务\n\n1. 检查日记文件是否存在\n2. 如不存在，读取 memory 文件并生成日记\n3. hexo generate &amp;&amp; git push\n\n直接回复结果：日记标题和URL，或告知已存在&quot;</span></span><br><span class="line">  <span class="punctuation">&#125;</span><span class="punctuation">,</span></span><br><span class="line">  <span class="attr">&quot;delivery&quot;</span><span class="punctuation">:</span> <span class="punctuation">&#123;</span><span class="attr">&quot;mode&quot;</span><span class="punctuation">:</span> <span class="string">&quot;announce&quot;</span><span class="punctuation">&#125;</span></span><br><span class="line"><span class="punctuation">&#125;</span></span><br></pre></td></tr></table></figure>
+
+<h2 id="经验总结"><a href="#经验总结" class="headerlink" title="经验总结"></a>经验总结</h2><table>
+<thead>
+<tr>
+<th>配置</th>
+<th>是否推送</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>main</code> + <code>systemEvent</code></td>
+<td>❌</td>
+<td>只注入会话，不触发推送</td>
+</tr>
+<tr>
+<td><code>isolated</code> + <code>announce</code> + 直接回复</td>
+<td>✅</td>
+<td>正确方案</td>
+</tr>
+<tr>
+<td><code>isolated</code> + <code>announce</code> + 工具调用</td>
+<td>❌</td>
+<td>子代理无法使用 message 工具</td>
+</tr>
+</tbody></table>
+<h2 id="附加：博客抓取逻辑的修正"><a href="#附加：博客抓取逻辑的修正" class="headerlink" title="附加：博客抓取逻辑的修正"></a>附加：博客抓取逻辑的修正</h2><p>在排查过程中还发现了一个问题：子代理没有正确对比 <code>last_post_date</code>，导致抓取了历史文章（如1月、2月的文章）作为”新增”。</p>
+<p><strong>修正后的判断逻辑</strong>：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">新增文章 = 该博客中 pubDate &gt; last_post_date 的文章</span><br></pre></td></tr></table></figure>
+
+<p>同时发现云风博客的 RSS feed 有延迟（最新文章未出现在 RSS 中），需要关注这种 RSS 与网页不同步的情况。</p>
+<hr>
+<p><strong>参考时间</strong>：2026-03-04<br><strong>OpenClaw 版本</strong>：2026.2.19-2<br><strong>Telegram Bot 模式</strong>：Thread Mode（话题模式）</p>
+</section>
+    
+
+    <footer id="post-meta" class="clearfix">
+        <a href="/about/">
+        <img class="avatar" src="/images/avatar.png">
+        <div>
+            <span class="dark">Api Intelligence Daily Life</span>
+            <span>知识库 &amp; 博客</span>
+        </div>
+        </a>
+        <section id="sharing">
+            <a title="Share to Twitter" class="twitter" target="_blank" rel="noopener" href="https://twitter.com/intent/tweet?text=https://arbow.github.io/2026/03/04/telegram-thread-cron-fix/ - Telegram Thread 模式下 Cron 任务消息投递的调整记录 @"><span class="icon-twitter">tweet</span></a>
+            <a title="Share to Facebook" class="facebook" href="#" onclick="
+                window.open(
+                  'https://www.facebook.com/sharer/sharer.php?u='+encodeURIComponent(location.href),
+                  'facebook-share-dialog',
+                  'width=626,height=436');
+                return false;"><span class="icon-facebook-sign">Share</span>
+            </a>
+        </section>
+    </footer>
+
+
+  <section id="comment">
+    <button class="btn" id="loadcmts" onclick="cmts.load();">加载评论</button>
+    <div id="gitment"></div>
+    <script src='/js/gitment.browser.js'></script>
+    <link rel="stylesheet" href=''>
+    <script>
+      var cmts={
+        load:function cmts(){
+          var gitment = new Gitment({
+          
+            id: "Telegram Thread 模式下 Cron 任务消息投递的调整记录",
+          
+            owner: "",
+            repo: "",
+            oauth: {
+              client_id: "",
+              client_secret: "",
+            },
+          })
+          gitment.render('gitment');
+          var loadcmt = document.getElementById("loadcmts");
+          var imyourfather = loadcmt.parentNode;
+          imyourfather.removeChild(loadcmts)
+        }
+      }
+    </script>
+  </section>
+
+
+	<footer id="footer">
+	<div id="social">
+		<p class="small">©  Arbow| Powered by Hexo & 
+			<a target="_blank" rel="noopener" href="https://github.com/F0r3at/Lights"> Lights</a>
+		</p>
+	</div>
+</footer>
+
+</section>
+
+	<script src="//cdnjs.loli.net/ajax/libs/instantclick/3.0.1/instantclick.min.js" data-no-instant></script>
+	<script data-no-instant>
+		
+		InstantClick.init('mousedown');
+	</script>
+
+
+
