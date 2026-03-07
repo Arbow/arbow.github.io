@@ -9,7 +9,7 @@
 
 <link rel="alternate" href="/atom.xml" title="Api Intelligence Daily Life" type="application/atom+xml">
 <meta name="theme-color" content="#a1d0f6">
-<title>博客文章推荐（2026-03-07） - Api Intelligence Daily Life</title>
+<title>每日博客推荐 2026-03-07 - Api Intelligence Daily Life</title>
 <!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
 <link rel="shortcut icon" href="/favicon.png">
 
@@ -31,95 +31,80 @@
     <article class="post">
     <header>
         
-            <h1>博客文章推荐（2026-03-07）</h1>
+            <h1>每日博客推荐 2026-03-07</h1>
         
         <h2 class="headline">Mar 07 2026
+        
+            
+            <a href="/categories/博客推荐/#博客推荐">博客推荐</a>
         
         </h2>
     </header>
 </article>
-<section id="post-body"><blockquote>
-<p>每日精选技术博客文章推荐</p>
-</blockquote>
+<section id="post-body"><h2 id="今日推荐（4篇）"><a href="#今日推荐（4篇）" class="headerlink" title="今日推荐（4篇）"></a>今日推荐（4篇）</h2><hr>
+<h3 id="1-我用-AI-翻译的三个阶段：提示词时代-→-推理模型时代-→-Agent-时代"><a href="#1-我用-AI-翻译的三个阶段：提示词时代-→-推理模型时代-→-Agent-时代" class="headerlink" title="1. 我用 AI 翻译的三个阶段：提示词时代 → 推理模型时代 → Agent 时代"></a>1. 我用 AI 翻译的三个阶段：提示词时代 → 推理模型时代 → Agent 时代</h3><p><strong>作者</strong>：宝玉<br><strong>来源</strong>：<a target="_blank" rel="noopener" href="https://baoyu.io/blog/2026-03-05/i-built-a-translator-skill">baoyu.io</a><br><strong>日期</strong>：2026-03-05<br><strong>评级</strong>：⭐⭐⭐⭐⭐</p>
+<p><strong>摘要</strong>：</p>
+<p>这篇文章详细记录了作者近两年在 AI 翻译领域的实践历程，从早期手写提示词到如今使用 Agent 自动化工作流的完整演变过程。翻译表面简单，但要做成通用工具需要处理：输入多样性（一句话到万字长文）、不同语言对需求、质量分级、长文本分块、术语一致性等一系列复杂问题。</p>
+<p>作者将演变分为三个阶段：</p>
+<p><strong>第一阶段：提示词时代</strong>。推理模型出现之前，翻译质量完全依赖精心设计的提示词，包括角色设定、语气要求、术语表等。作者最早公开提出”两步翻译”（先直译再意译）和”三步翻译”（直译→审校→意译）方法，利用类似推理链的思路提升质量，但上下文占用大且费 Token。</p>
+<p><strong>第二阶段：推理模型时代</strong>。模型具备推理能力后，提示词核心从”翻译”转变为”重写”。不再逐字对译，而是让模型用目标语言重新表达内容。这种思路转变带来了明显质量提升，模型能自主处理隐喻和句式重组。</p>
+<p><strong>第三阶段：Agent 时代</strong>。翻译工作流可以更精细：Agent 先分析文章提取术语和难点，生成翻译提示词；长文本按 Markdown 结构分块；多个子 Agent 并行翻译；最后合并校对。所有中间结果保存成文件，支持独立重翻和调试。</p>
+<p>Agent 翻译相比提示词翻译有三个核心优势：有完整工作流而非一次性执行；用文件系统作为外部记忆，上下文保持干净；可以启动子 Agent 并行工作。这让翻译从”写好提示词”升级为”设计翻译系统”。</p>
+<p>文章还详细介绍了 Skill 的创建迭代过程、从串行到并行的一致性解决方案、提示词传递的四次重构、三种翻译模式的设计等实战细节。最终形成了一个包含快速、普通、精细三种模式的完整翻译 Skill。</p>
+<p><strong>推荐理由</strong>：</p>
+<p>这是一篇极其深入的工程实践总结。不仅展示了 AI 能力的应用，更重要的是展示了如何系统性地思考和迭代产品。从单一提示词到完整 Agent 工作流的升级过程，提供了构建 AI 应用的完整思路。所有产物持久化、关注点分离、渐进式体验等原则，对任何从事 AI 应用开发的人都极具参考价值。</p>
 <hr>
-<h2 id="📰-今日新增文章"><a href="#📰-今日新增文章" class="headerlink" title="📰 今日新增文章"></a>📰 今日新增文章</h2><p>检查了 9 个博客，发现 1 篇真正的新增文章：</p>
-<h3 id="⭐⭐⭐⭐-AI-And-The-Ship-of-Theseus"><a href="#⭐⭐⭐⭐-AI-And-The-Ship-of-Theseus" class="headerlink" title="⭐⭐⭐⭐ AI And The Ship of Theseus"></a>⭐⭐⭐⭐ AI And The Ship of Theseus</h3><p><strong>作者</strong>：Armin Ronacher<br><strong>发布时间</strong>：2026-03-05<br><strong>链接</strong>：<a target="_blank" rel="noopener" href="https://lucumr.pocoo.org/2026/3/5/theseus/">https://lucumr.pocoo.org/2026/3/5/theseus/</a></p>
-<h4 id="背景与背景"><a href="#背景与背景" class="headerlink" title="背景与背景"></a>背景与背景</h4><p>随着代码生成成本不断降低，AI 工具能够轻松重写现有软件。这种现象引发了新的争议，比如 Chardet 项目从 LGPL 重写为 MIT 授权的事件。同时，Vercel 重写了 bash，但对 Next.js 的类似操作表示不满。</p>
-<h4 id="核心论点"><a href="#核心论点" class="headerlink" title="核心论点"></a>核心论点</h4><p>文章提出了一个深刻的哲学问题：当 AI 仅通过测试套件就能重写代码时，”忒修斯之船”问题变得现实。Copyleft 许可（如 GPL）依赖版权和许可协议来强制要求，但如果代码可以轻易重写，这种机制还能持续有效吗？</p>
-<p>更令人深思的是，如果法院裁定 AI 生成的代码属于公共领域（因为缺乏足够的人类输入），大量 GPL 软件可能以 MIT 形式重新出现。这意味着软件的授权生态系统可能面临根本性变革。</p>
-<p>作者以个人经验说明：他曾计划重写 readline 等 GPL 授权库，正是因为其许可证限制。这种做法可能引发关于作者身份和贡献认定的争议。</p>
-<h4 id="关键引用"><a href="#关键引用" class="headerlink" title="关键引用"></a>关键引用</h4><blockquote>
-<p>“如果测试套件就能决定代码功能，那即使最终结果相同，重写也算新作品吗？这并不令人惊讶。它速度快得多，支持多核，并且使用了根本不同的设计。”</p>
-</blockquote>
-<blockquote>
-<p>“我们可能根本无法对这些创作主张版权。法院仍可能裁定所有 AI 生成的代码都在公共领域。”</p>
-</blockquote>
-<h4 id="推荐原因"><a href="#推荐原因" class="headerlink" title="推荐原因"></a>推荐原因</h4><p>这篇文章的价值在于它超越了具体的技术实现，深入探讨了 AI 时代软件行业的根本性问题：</p>
-<ol>
-<li><strong>版权制度的挑战</strong>：当 AI 能够低成本重写代码时，传统的 Copyleft 许可机制是否还有效？</li>
-<li><strong>软件身份的重新定义</strong>：功能相同但实现不同的代码算”新作品”吗？</li>
-<li><strong>未来趋势的预判</strong>：我们可能会看到更多软件在更宽松的许可下重新出现，或者更多软件成为专有的放弃软件。</li>
-</ol>
-<p>作者 Armin Ronacher 作为开源社区的资深贡献者，以冷静而深刻的视角分析了这个问题，没有陷入极端情绪。文章结尾提到，他个人支持尽可能开放、尽可能少进行许可强制。这种务实的态度值得学习。</p>
-<h4 id="关键信息"><a href="#关键信息" class="headerlink" title="关键信息"></a>关键信息</h4><ul>
-<li><strong>发布日期</strong>：2026-03-05</li>
-<li><strong>标签</strong>：ai, licensing, python</li>
-<li><strong>文章类型</strong>：深度思考 &#x2F; 行业分析</li>
-<li><strong>字数</strong>：约 800 字</li>
+<h3 id="2-多稿合并：从手动比稿到一键-Skill"><a href="#2-多稿合并：从手动比稿到一键-Skill" class="headerlink" title="2. 多稿合并：从手动比稿到一键 Skill"></a>2. 多稿合并：从手动比稿到一键 Skill</h3><p><strong>作者</strong>：宝玉<br><strong>来源</strong>：<a target="_blank" rel="noopener" href="https://baoyu.io/blog/2026-03-04/ai-merge-drafts-into-skills">baoyu.io</a><br><strong>日期</strong>：2026-03-05<br><strong>评级</strong>：⭐⭐⭐⭐</p>
+<p><strong>摘要</strong>：</p>
+<p>AI 翻译或辅助写作时，作者通常不会只生成一个版本。可能用不同模型、不同提示词各跑一次，得到多个版本：A 版本结构好但生硬，B 版本某几段出彩但缺信息，C 版本信息全但像机器翻译。如何把这些优点合并到一起？</p>
+<p><strong>早期做法：手动合并</strong>。选一篇最好的当基础，逐段比较其他版本，复制更好的表达和缺失信息，最后润色拼接处。效果不错但费时间，多版本比稿很消耗注意力，容易漏掉细节。</p>
+<p><strong>让 AI 来做</strong>。把所有版本和指令发给 AI：”阅读所有稿子，选最好的基础；逐一审阅其他稿子，找出亮点和缺失内容；融合到基础稿；润色全文消除拼接痕迹”。效果出乎意料地好，AI 在”比较多个文本、提取差异、执行合并”任务上非常靠谱，不会漏内容且风格统一。使用推理模型（如 Claude 扩展思考模式）效果更好。</p>
+<p><strong>固化成 Skill</strong>。重复工作应该做成 Skill。文章介绍了两种创建方式：</p>
+<p><strong>方式一：先手动做一遍，再固化</strong>。在 Claude AI 里走完完整流程，满意后让 AI 把操作流程固化成 Skill。因为 AI 刚走过一遍，清楚每步该做什么，提炼出的 Skill 更准确。好处是有直观感受可提前发现问题，缺点是要花时间做一遍。</p>
+<p><strong>方式二：直接描述需求，让 AI 创建</strong>。如果已经很清楚流程，可以直接告诉 Skill Creator。它会根据描述生成完整 Skill，包括触发条件、输入格式、工作流程、输出规范。这种方式更快，但生成的 Skill 可能需要多跑几次调优。</p>
+<p><strong>两种方式的选择</strong>：流程不确定或没做过，用方式一先摸清楚；流程已经很清晰，用方式二节省时间。也可以结合：先用方式一做初版，用几次后再让 Skill Creator 调整。</p>
+<p>文章还提供了实际在用的多稿合并 Skill 示例，包含触发描述、工作流程六步骤、合并原则等细节。Skill 可以引用其他 Skill（如写作风格），并可根据需求调整（加字数限制、输出文件名规则、用户确认步骤等）。</p>
+<p><strong>核心思路</strong>：任何重复做的事情都可以考虑做成 Skill。判断标准是：发现自己在复制粘贴之前的提示词，或每次都要跟 AI 解释同样的流程，就该做成 Skill 了。</p>
+<p><strong>推荐理由</strong>：</p>
+<p>这篇文章展示了从”解决问题”到”工具化”的思维升级。多稿合并是个常见但琐碎的任务，作者不仅找到了 AI 解决方案，更进一步将其固化成可复用的 Skill。两种创建方式的对比和选择建议，对希望系统化提升工作流的读者很有价值。Skill 文件的实用示例也为读者提供了可直接参考的模板。</p>
+<hr>
+<h3 id="3-陶哲轩最新演讲：AI-不是来抢数学家蛋糕的，是来把蛋糕做大的"><a href="#3-陶哲轩最新演讲：AI-不是来抢数学家蛋糕的，是来把蛋糕做大的" class="headerlink" title="3. 陶哲轩最新演讲：AI 不是来抢数学家蛋糕的，是来把蛋糕做大的"></a>3. 陶哲轩最新演讲：AI 不是来抢数学家蛋糕的，是来把蛋糕做大的</h3><p><strong>作者</strong>：宝玉（翻译陶哲轩演讲）<br><strong>来源</strong>：<a target="_blank" rel="noopener" href="https://baoyu.io/blog/2026-03-04/terence-tao-mathematics-in-the-age-of-ai">baoyu.io</a><br><strong>日期</strong>：2026-03-04<br><strong>评级</strong>：⭐⭐⭐⭐⭐</p>
+<p><strong>摘要</strong>：</p>
+<p>陶哲轩在 2026 年 2 月 SAIR 基金会”AI for Science: Kickoff 2026”活动中，用 17 分钟阐述了数学领域正在被新技术撬动。撬动的关键不是 AI 本身，而是大多数人没听说过的”形式验证”。</p>
+<p><strong>数学的保守性</strong>。数学可能是最保守的学科：200 年前 Cauchy 的教科书今天还能用，数学家是最后还用粉笔黑板的学术群体。陶哲轩说：”我有 6 块黑板，我爱它们，我不会放弃。”这种连续性是数学的力量，但代价是极度保守、不愿拥抱变化。</p>
+<p><strong>为什么数学不能大规模协作</strong>。其他科学论文作者数爆炸增长，数学却从 1.5 人缓慢爬到 2.5 人。原因：1）门槛高，需要博士学位；2）正确性要求极端，100 份贡献中 1 份错误就毁掉整个证明；3）工作流无法扩展，核心方式是两三人站黑板前讨论。</p>
+<p><strong>从一次一题到一次百万题</strong>。过去是”案例研究”模式，一次一个问题几个月一篇论文。现在出现”大规模调查”模式，同时处理数千问题，报告统计规律。参与者也拓宽到”公民数学”。</p>
+<p><strong>秘密武器：形式验证</strong>。形式验证是一种特殊的计算机语言，能接收数学论证自动判断对错。这”过滤掉了大量垃圾”，解决了信任壁垒问题。因为自动检查，不需要信任每个贡献者，只需信任验证系统。最活跃的工具是 Lean，由微软开发的证明助手语言。</p>
+<p><strong>2200 万道代数题，50 个人，三个月</strong>。陶哲轩主导的 Equational Theories Project，50 位协作者（大多数他从未见过，不是专业数学家），三个月内解决了 2200 万道代数蕴含关系问题。以前同类研究最多处理 20 个问题。每道都有证明或反证。</p>
+<p><strong>成功关键</strong>：1）模块化，问题天然拆分，有人写人类证明，有人做 Lean 翻译；2）明确指标，从第 16 天剩 888 个未解决，所有人自发往下推；3）形式验证打破信任壁垒，匿名贡献、不受信任贡献都可以，所有提交必须通过自动验证。</p>
+<p>陶哲轩说：”实际上起作用的是更平凡的技术，就是 GitHub 和 Zulip 这些基本协作平台。”</p>
+<p><strong>LLM 的局限与潜力</strong>。LLM 能解奥赛题但连乘法都会算错，每个数学家都发现”不可靠性是太大问题”。但如果 LLM 输出配合验证器，”生成→检验→反馈→纠正”循环有时候能跑通。陶哲轩正与 Google DeepMind 合作 AlphaEvolve（结合 LLM 和遗传算法），在堆叠问题等优化领域打破人类记录。</p>
+<p><strong>不是来抢蛋糕，是来把蛋糕做大</strong>。AI 的价值不是替代数学家攻克最难的问题，而是处理人类没精力覆盖的海量中等难度问题。就像那 2200 万道代数题。AI 先跑一遍把简单解决掉，真正难的才上报人类。</p>
+<p>“AI 不应该跟人类已经在做的工作竞争，而应该把蛋糕做大，创造出更多任务，让更多目标在经济上变得可行。”</p>
+<p>已在发挥作用的应用：写代码容易了；文献综述很好用；AI 能从数据集发现新猜想；AI 是万能翻译器帮助跨领域沟通。</p>
+<p><strong>推荐理由</strong>：</p>
+<p>这篇文章翻译了陶哲轩关于 AI 与数学关系的重要演讲，观点非常深刻。关键洞察：数学领域被技术撬动的真正秘密是形式验证，而非 AI 本身；AI 的最大价值不是替代顶级数学家，而是处理海量中等难度问题，”把蛋糕做大”；2200 万道题三个月完成展示了大规模协作的范式转变。对关心 AI 在科学研究中应用、以及软件工程和数学交叉领域的读者极具启发。</p>
+<hr>
+<h3 id="4-AI-And-The-Ship-of-Theseus"><a href="#4-AI-And-The-Ship-of-Theseus" class="headerlink" title="4. AI And The Ship of Theseus"></a>4. AI And The Ship of Theseus</h3><p><strong>作者</strong>：Armin Ronacher<br><strong>来源</strong>：<a target="_blank" rel="noopener" href="https://lucumr.pocoo.org/2026/3/5/theseus/">lucumr.pocoo.org</a><br><strong>日期</strong>：2026-03-05<br><strong>评级</strong>：⭐⭐⭐⭐</p>
+<p><strong>摘要</strong>：</p>
+<p>随着代码生成成本越来越低，重新实现变得越来越普遍。作者提到最近让 AI 把他的一个库移植到另一种语言，AI 选择了不同的设计方式。功能相同，但实现路径完全不同。这个移植是通过测试套件实现的。</p>
+<p><strong>chardet 事件</strong>。类似的事情发生在 chardet 项目：当前维护者通过只指向 API 和测试套件，让 AI 从头重新实现，目的是将许可从 LGPL 改为 MIT。原作者 Mark Pilgrim 反对，认为是衍生作品；新维护者（维护了 12 年）认为是新作品，并让编码 Agent 正好这样做。作者验证新实现完全不同：更快、支持多核、设计完全不同。</p>
+<p><strong>Copyleft 的挑战</strong>。作者认为更有趣的是这个问题的后果。Copyleft 代码如 GPL 严重依赖版权和摩擦力来执行。但因为代码在公开场合，有无测试都可以轻易重写。作者自己也打算对一些 GPL 库做类似事情，比如 readline。</p>
+<p>更个人层面的有趣：我们可能根本无法对 AI 生成的代码申请版权。法院可能裁定 AI 生成的代码都在公共领域，因为人类输入不够。虽然可能不很现实，但有可能。</p>
+<p><strong>双标与混乱</strong>。Vercel 很高兴用 Clankers 重新实现 bash，但当有人用同样方式重新实现 Next.js 时却明显不爽。这带来了巨大后果：当生成代码成本如此降低，可以仅从测试套件重新实现时，软件的未来会怎样？我们会看到大量软件以更宽松的许可重新出现吗？专有软件变成开源吗？开源变专有吗？</p>
+<p><strong>新世界，新规则</strong>。这是个新世界，我们很少知道如何导航。期间会有版权纠纷，作者觉得很少会上法庭，因为所有人都害怕确立先例。</p>
+<p>在 GPL 案例中，这会让 copyleft 与宽松许可的老争论升温。确实不爽作品被 Clanker 重写，作者身份被抹除。但不像”忒修斯之船”悖论（所有部件都被替换还是同一艘船吗？），这个更清楚：如果你扔掉所有代码从头开始，即使结果表现相同，也是一艘新船。只是继续沿用名字。这可能是另一个论点：作者应该持有商标而不是依赖许可和合同法。</p>
+<p><strong>个人观点</strong>。作者认为这一切都很兴奋。他是强烈支持尽可能少许可执法地公开分享的人。认为社会因分享而更好，GPL 限制能做什么，这违背了分享精神。这个发展符合他的世界观。理解不是所有人都这么看，预期会有更多关于 slopforks 出现的争议。毕竟这以最坏的方式结合了两个热门话题：许可和 AI。</p>
+<p><strong>推荐理由</strong>：</p>
+<p>这篇文章提出了一个被忽视但极其重要的问题：AI 生成的代码的版权归属和许可证问题。当测试套件+AI 可以轻易重新实现任何软件时，传统的许可证保护机制面临巨大挑战。作者通过 chardet 事件、Vercel 的双标等案例，展示了这个问题的现实影响。”忒修斯之船”的类比非常恰当——如果所有代码都重写了，还是同一个软件吗？对关心开源、软件版权、AI 伦理的读者都是必读内容。</p>
+<hr>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>今天的推荐涵盖了 AI 工程实践、工具化思维、科学研究和版权伦理等多个维度：</p>
+<ul>
+<li>宝玉的两篇文章提供了从提示词到 Agent、从解决问题到工具化的完整思维框架</li>
+<li>陶哲轩演讲展示了形式验证+AI 在数学研究中的范式转变，核心是”把蛋糕做大”</li>
+<li>Armin Ronacher 的文章提出了 AI 时代版权许可的根本性挑战</li>
 </ul>
-<hr>
-<h2 id="📊-其他博客检查结果"><a href="#📊-其他博客检查结果" class="headerlink" title="📊 其他博客检查结果"></a>📊 其他博客检查结果</h2><table>
-<thead>
-<tr>
-<th>博客</th>
-<th>最新文章日期</th>
-<th>是否新增</th>
-</tr>
-</thead>
-<tbody><tr>
-<td>云风的博客</td>
-<td>2026-03-01</td>
-<td>❌ （早于 2026-03-02）</td>
-</tr>
-<tr>
-<td>liruifengv</td>
-<td>2026-02-04</td>
-<td>❌</td>
-</tr>
-<tr>
-<td>宝玉</td>
-<td>2026-03-02</td>
-<td>❌ （等于截止日期，不算新增）</td>
-</tr>
-<tr>
-<td>Lilian Weng</td>
-<td>2025-05-01</td>
-<td>❌</td>
-</tr>
-<tr>
-<td>卢向东</td>
-<td>2026-01-05</td>
-<td>❌</td>
-</tr>
-<tr>
-<td>Chip Huyen</td>
-<td>2026-01-16</td>
-<td>❌</td>
-</tr>
-<tr>
-<td>Anthropic Engineering</td>
-<td>2026-02-05</td>
-<td>❌</td>
-</tr>
-<tr>
-<td>李乾坤</td>
-<td>2026-02-16</td>
-<td>❌</td>
-</tr>
-</tbody></table>
-<hr>
-<p><strong>总结</strong>：今日发现 1 篇新增文章。虽然只有一篇，但这篇文章触及了 AI 时代软件行业的核心哲学问题，值得深度阅读。</p>
-<p><em>免责声明：文章评级和摘要由 AI 生成，仅供参考。建议读者阅读原文后自行判断。</em></p>
+<p>这些文章都指向一个共同主题：AI 不仅是工具，更在重塑我们的工作方式、协作模式，甚至法律框架。理解这些变化，对任何从事技术相关工作的人都至关重要。</p>
 </section>
     
 
@@ -132,7 +117,7 @@
         </div>
         </a>
         <section id="sharing">
-            <a title="Share to Twitter" class="twitter" target="_blank" rel="noopener" href="https://twitter.com/intent/tweet?text=https://arbow.github.io/2026/03/07/blog-digest-2026-03-07/ - 博客文章推荐（2026-03-07） @"><span class="icon-twitter">tweet</span></a>
+            <a title="Share to Twitter" class="twitter" target="_blank" rel="noopener" href="https://twitter.com/intent/tweet?text=https://arbow.github.io/2026/03/07/blog-digest-2026-03-07/ - 每日博客推荐 2026-03-07 @"><span class="icon-twitter">tweet</span></a>
             <a title="Share to Facebook" class="facebook" href="#" onclick="
                 window.open(
                   'https://www.facebook.com/sharer/sharer.php?u='+encodeURIComponent(location.href),
@@ -154,7 +139,7 @@
         load:function cmts(){
           var gitment = new Gitment({
           
-            id: "博客文章推荐（2026-03-07）",
+            id: "每日博客推荐 2026-03-07",
           
             owner: "",
             repo: "",
