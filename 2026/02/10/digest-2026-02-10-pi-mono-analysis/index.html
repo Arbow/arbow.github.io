@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=0">
+
+  <meta name="description" content="个人知识库与技术笔记">
+
+
+<link rel="alternate" href="/atom.xml" title="Api Intelligence Daily Life" type="application/atom+xml">
+<meta name="theme-color" content="#a1d0f6">
+<title>调研：Pi-Mono Agent Loop 实现分析 - Api Intelligence Daily Life</title>
+<!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+<link rel="shortcut icon" href="/favicon.png">
+
+<link rel="stylesheet" href="/css/style.css">
+
+<nav class="main-nav">
+	
+	    <a href="/">← 主页</a>
+	
+	
+	    <a href="/about/">About</a>
+	
+	    <a href="/archives/">Archives</a>
+	
+	<a class="cta" href="/atom.xml" data-no-instant>订阅</a>
+</nav>
+
+<section id="wrapper">
+    <article class="post">
+    <header>
+        
+            <h1>调研：Pi-Mono Agent Loop 实现分析</h1>
+        
+        <h2 class="headline">Feb 10 2026
+        
+            
+            <a href="/categories/调研/#调研">调研</a>
+        
+        </h2>
+    </header>
+</article>
+<section id="post-body"><blockquote>
+<p>基于本地源码（pi-mono v0.51.1）的详细技术分析</p>
+</blockquote>
+<h2 id="1-架构概览"><a href="#1-架构概览" class="headerlink" title="1. 架构概览"></a>1. 架构概览</h2><h3 id="1-1-核心设计哲学"><a href="#1-1-核心设计哲学" class="headerlink" title="1.1 核心设计哲学"></a>1.1 核心设计哲学</h3><p>Pi 的 Agent Loop 采用<strong>极简主义设计</strong>，仅提供四个核心工具：</p>
+<ul>
+<li><code>read</code>: 文件读取（支持文本和图片）</li>
+<li><code>write</code>: 文件写入</li>
+<li><code>edit</code>: 精确文本替换</li>
+<li><code>bash</code>: 命令执行</li>
+</ul>
+<p>其他所有能力都通过这四个工具的组合来实现（如 <code>grep</code>, <code>find</code> 等可通过 bash 调用）。</p>
+<h3 id="1-2-代码位置"><a href="#1-2-代码位置" class="headerlink" title="1.2 代码位置"></a>1.2 代码位置</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">packages/pi-agent-core/src/agent-loop.ts    # Agent 循环核心</span><br><span class="line">packages/pi-coding-agent/src/core/tools/    # 工具实现</span><br></pre></td></tr></table></figure>
+
+<hr>
+<h2 id="2-Agent-Loop-核心实现"><a href="#2-Agent-Loop-核心实现" class="headerlink" title="2. Agent Loop 核心实现"></a>2. Agent Loop 核心实现</h2><h3 id="2-1-双层循环架构"><a href="#2-1-双层循环架构" class="headerlink" title="2.1 双层循环架构"></a>2.1 双层循环架构</h3><figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 外层循环：处理 follow-up messages（用户追加的消息）</span></span><br><span class="line"><span class="keyword">while</span> (<span class="literal">true</span>) &#123;</span><br><span class="line">    <span class="keyword">let</span> hasMoreToolCalls = <span class="literal">true</span>;</span><br><span class="line">    </span><br><span class="line">    <span class="comment">// 内层循环：处理工具调用和 steering messages</span></span><br><span class="line">    <span class="keyword">while</span> (hasMoreToolCalls || pendingMessages.<span class="property">length</span> &gt; <span class="number">0</span>) &#123;</span><br><span class="line">        <span class="comment">// 1. 发送 pending messages 到上下文</span></span><br><span class="line">        <span class="comment">// 2. 流式获取 LLM 响应</span></span><br><span class="line">        <span class="comment">// 3. 执行工具调用（串行）</span></span><br><span class="line">        <span class="comment">// 4. 检查 steering messages（用户中断）</span></span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="comment">// 检查是否有 follow-up messages，没有则退出</span></span><br><span class="line">    <span class="keyword">const</span> followUpMessages = <span class="keyword">await</span> config.<span class="property">getFollowUpMessages</span>?.();</span><br><span class="line">    <span class="keyword">if</span> (followUpMessages.<span class="property">length</span> === <span class="number">0</span>) <span class="keyword">break</span>;</span><br><span class="line">    pendingMessages = followUpMessages;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><strong>设计亮点</strong>：</p>
+<ul>
+<li><strong>外层循环</strong>：允许 Agent “暂停” 后接收新指令继续（如用户说”等等，先做这个”）</li>
+<li><strong>内层循环</strong>：处理单次对话中的多工具调用（如 read → edit → bash 链式操作）</li>
+</ul>
+<h3 id="2-2-事件驱动架构"><a href="#2-2-事件驱动架构" class="headerlink" title="2.2 事件驱动架构"></a>2.2 事件驱动架构</h3><p>使用 <code>EventStream</code> 进行事件驱动编程：</p>
+<figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">export</span> <span class="keyword">type</span> <span class="title class_">AgentEvent</span> =</span><br><span class="line">  | &#123; <span class="attr">type</span>: <span class="string">&quot;agent_start&quot;</span> &#125;</span><br><span class="line">  | &#123; <span class="attr">type</span>: <span class="string">&quot;agent_end&quot;</span>; <span class="attr">messages</span>: <span class="title class_">AgentMessage</span>[] &#125;</span><br><span class="line">  | &#123; <span class="attr">type</span>: <span class="string">&quot;turn_start&quot;</span> &#125;</span><br><span class="line">  | &#123; <span class="attr">type</span>: <span class="string">&quot;turn_end&quot;</span>; <span class="attr">message</span>: <span class="title class_">AgentMessage</span>; <span class="attr">toolResults</span>: <span class="title class_">ToolResultMessage</span>[] &#125;</span><br><span class="line">  | &#123; <span class="attr">type</span>: <span class="string">&quot;message_start&quot;</span>; <span class="attr">message</span>: <span class="title class_">AgentMessage</span> &#125;</span><br><span class="line">  | &#123; <span class="attr">type</span>: <span class="string">&quot;message_update&quot;</span>; <span class="attr">message</span>: <span class="title class_">AgentMessage</span>; <span class="attr">assistantMessageEvent</span>: <span class="title class_">AssistantMessageEvent</span> &#125;</span><br><span class="line">  | &#123; <span class="attr">type</span>: <span class="string">&quot;message_end&quot;</span>; <span class="attr">message</span>: <span class="title class_">AgentMessage</span> &#125;</span><br><span class="line">  | &#123; <span class="attr">type</span>: <span class="string">&quot;tool_execution_start&quot;</span>; <span class="attr">toolCallId</span>: <span class="built_in">string</span>; <span class="attr">toolName</span>: <span class="built_in">string</span>; <span class="attr">args</span>: <span class="built_in">any</span> &#125;</span><br><span class="line">  | &#123; <span class="attr">type</span>: <span class="string">&quot;tool_execution_update&quot;</span>; ... &#125;</span><br><span class="line">  | &#123; <span class="attr">type</span>: <span class="string">&quot;tool_execution_end&quot;</span>; ... &#125;;</span><br></pre></td></tr></table></figure>
+
+<p><strong>优势</strong>：</p>
+<ul>
+<li>UI 可以精确追踪每个阶段（工具开始、部分结果、完成）</li>
+<li>支持流式输出，用户体验好</li>
+<li>便于调试和日志记录</li>
+</ul>
+<h3 id="2-3-工具执行流程"><a href="#2-3-工具执行流程" class="headerlink" title="2.3 工具执行流程"></a>2.3 工具执行流程</h3><figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">async</span> <span class="keyword">function</span> <span class="title function_">executeToolCalls</span>(<span class="params">tools, assistantMessage, signal, stream, getSteeringMessages</span>) &#123;</span><br><span class="line">    <span class="keyword">const</span> toolCalls = assistantMessage.<span class="property">content</span>.<span class="title function_">filter</span>(<span class="function">(<span class="params">c</span>) =&gt;</span> c.<span class="property">type</span> === <span class="string">&quot;toolCall&quot;</span>);</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">let</span> index = <span class="number">0</span>; index &lt; toolCalls.<span class="property">length</span>; index++) &#123;</span><br><span class="line">        <span class="keyword">const</span> toolCall = toolCalls[index];</span><br><span class="line">        <span class="keyword">const</span> tool = tools?.<span class="title function_">find</span>(<span class="function">(<span class="params">t</span>) =&gt;</span> t.<span class="property">name</span> === toolCall.<span class="property">name</span>);</span><br><span class="line">        </span><br><span class="line">        <span class="comment">// 1. 发送 tool_execution_start 事件</span></span><br><span class="line">        stream.<span class="title function_">push</span>(&#123; <span class="attr">type</span>: <span class="string">&quot;tool_execution_start&quot;</span>, ... &#125;);</span><br><span class="line">        </span><br><span class="line">        <span class="comment">// 2. 执行工具（支持部分结果回调）</span></span><br><span class="line">        result = <span class="keyword">await</span> tool.<span class="title function_">execute</span>(toolCall.<span class="property">id</span>, validatedArgs, signal, <span class="function">(<span class="params">partialResult</span>) =&gt;</span> &#123;</span><br><span class="line">            stream.<span class="title function_">push</span>(&#123; <span class="attr">type</span>: <span class="string">&quot;tool_execution_update&quot;</span>, ... &#125;);</span><br><span class="line">        &#125;);</span><br><span class="line">        </span><br><span class="line">        <span class="comment">// 3. 发送 tool_execution_end 事件</span></span><br><span class="line">        stream.<span class="title function_">push</span>(&#123; <span class="attr">type</span>: <span class="string">&quot;tool_execution_end&quot;</span>, ... &#125;);</span><br><span class="line">        </span><br><span class="line">        <span class="comment">// 4. 检查 steering messages（用户中断）</span></span><br><span class="line">        <span class="keyword">const</span> steering = <span class="keyword">await</span> getSteeringMessages?.();</span><br><span class="line">        <span class="keyword">if</span> (steering.<span class="property">length</span> &gt; <span class="number">0</span>) &#123;</span><br><span class="line">            <span class="comment">// 跳过剩余工具调用</span></span><br><span class="line">            <span class="title function_">skipRemainingToolCalls</span>();</span><br><span class="line">            <span class="keyword">break</span>;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><strong>关键设计</strong>：</p>
+<ul>
+<li><strong>串行执行</strong>：工具调用是顺序的，不是并行的（保证可预测性）</li>
+<li><strong>可中断</strong>：支持用户在中途插入新指令（steering）</li>
+<li><strong>部分结果</strong>：如 bash 命令可以实时流式输出</li>
+</ul>
+<hr>
+<h2 id="3-四大核心工具实现"><a href="#3-四大核心工具实现" class="headerlink" title="3. 四大核心工具实现"></a>3. 四大核心工具实现</h2><h3 id="3-1-Read-Tool（文件读取）"><a href="#3-1-Read-Tool（文件读取）" class="headerlink" title="3.1 Read Tool（文件读取）"></a>3.1 Read Tool（文件读取）</h3><figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> readSchema = <span class="title class_">Type</span>.<span class="title class_">Object</span>(&#123;</span><br><span class="line">    <span class="attr">path</span>: <span class="title class_">Type</span>.<span class="title class_">String</span>(&#123; <span class="attr">description</span>: <span class="string">&quot;Path to the file to read&quot;</span> &#125;),</span><br><span class="line">    <span class="attr">offset</span>: <span class="title class_">Type</span>.<span class="title class_">Optional</span>(<span class="title class_">Type</span>.<span class="title class_">Number</span>(&#123; <span class="attr">description</span>: <span class="string">&quot;Line number to start (1-indexed)&quot;</span> &#125;)),</span><br><span class="line">    <span class="attr">limit</span>: <span class="title class_">Type</span>.<span class="title class_">Optional</span>(<span class="title class_">Type</span>.<span class="title class_">Number</span>(&#123; <span class="attr">description</span>: <span class="string">&quot;Maximum lines to read&quot;</span> &#125;)),</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+
+<p><strong>核心特性</strong>：</p>
+<ol>
+<li><strong>智能截断</strong>：默认限制 2000 行或 30KB（<code>DEFAULT_MAX_LINES</code>, <code>DEFAULT_MAX_BYTES</code>）</li>
+<li><strong>图片支持</strong>：自动检测图片格式，支持 jpg&#x2F;png&#x2F;gif&#x2F;webp</li>
+<li><strong>图片压缩</strong>：大图片自动缩放（<code>resizeImage</code>），避免超出 LLM 上下文</li>
+<li><strong>分页读取</strong>：通过 offset&#x2F;limit 支持大文件分段读取</li>
+</ol>
+<p><strong>Prompt Caching 优化</strong>：</p>
+<ul>
+<li>工具描述简洁，明确告知截断规则</li>
+<li>图片转为 base64 后自动缩放，减少 token 消耗</li>
+</ul>
+<h3 id="3-2-Write-Tool（文件写入）"><a href="#3-2-Write-Tool（文件写入）" class="headerlink" title="3.2 Write Tool（文件写入）"></a>3.2 Write Tool（文件写入）</h3><figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> writeSchema = <span class="title class_">Type</span>.<span class="title class_">Object</span>(&#123;</span><br><span class="line">    <span class="attr">path</span>: <span class="title class_">Type</span>.<span class="title class_">String</span>(&#123; <span class="attr">description</span>: <span class="string">&quot;Path to the file to write&quot;</span> &#125;),</span><br><span class="line">    <span class="attr">content</span>: <span class="title class_">Type</span>.<span class="title class_">String</span>(&#123; <span class="attr">description</span>: <span class="string">&quot;Content to write&quot;</span> &#125;),</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+
+<p><strong>核心特性</strong>：</p>
+<ol>
+<li><strong>自动创建目录</strong>：<code>mkdir(dir, &#123; recursive: true &#125;)</code></li>
+<li><strong>简洁描述</strong>：没有冗余的格式说明</li>
+<li><strong>原子操作</strong>：直接写入，没有复杂的 diff 逻辑</li>
+</ol>
+<p><strong>与 Read 的配合</strong>：</p>
+<ul>
+<li>写之前通常先 read，但 LLM 可以自主决定</li>
+<li>没有强制校验（如”必须先读取”），保持灵活性</li>
+</ul>
+<h3 id="3-3-Edit-Tool（精确编辑）"><a href="#3-3-Edit-Tool（精确编辑）" class="headerlink" title="3.3 Edit Tool（精确编辑）"></a>3.3 Edit Tool（精确编辑）</h3><figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> editSchema = <span class="title class_">Type</span>.<span class="title class_">Object</span>(&#123;</span><br><span class="line">    <span class="attr">path</span>: <span class="title class_">Type</span>.<span class="title class_">String</span>(&#123; <span class="attr">description</span>: <span class="string">&quot;Path to the file to edit&quot;</span> &#125;),</span><br><span class="line">    <span class="attr">oldText</span>: <span class="title class_">Type</span>.<span class="title class_">String</span>(&#123; <span class="attr">description</span>: <span class="string">&quot;Exact text to find and replace&quot;</span> &#125;),</span><br><span class="line">    <span class="attr">newText</span>: <span class="title class_">Type</span>.<span class="title class_">String</span>(&#123; <span class="attr">description</span>: <span class="string">&quot;New text to replace with&quot;</span> &#125;),</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+
+<p><strong>核心算法</strong>：</p>
+<ol>
+<li><strong>Fuzzy Matching</strong>：先尝试精确匹配，失败后用模糊匹配（<code>fuzzyFindText</code>）</li>
+<li><strong>唯一性校验</strong>：如果找到多个匹配，拒绝执行（防止误替换）</li>
+<li><strong>行尾处理</strong>：自动处理 CRLF&#x2F;LF 差异（<code>normalizeToLF</code>）</li>
+<li><strong>BOM 处理</strong>：自动剥离 UTF-8 BOM</li>
+</ol>
+<p><strong>Prompt Caching 优势</strong>：</p>
+<ul>
+<li>只有四个参数，Schema 简洁</li>
+<li>没有复杂的 “patch” 格式（如 unified diff），LLM 生成更可靠</li>
+</ul>
+<h3 id="3-4-Bash-Tool（命令执行）"><a href="#3-4-Bash-Tool（命令执行）" class="headerlink" title="3.4 Bash Tool（命令执行）"></a>3.4 Bash Tool（命令执行）</h3><figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> bashSchema = <span class="title class_">Type</span>.<span class="title class_">Object</span>(&#123;</span><br><span class="line">    <span class="attr">command</span>: <span class="title class_">Type</span>.<span class="title class_">String</span>(&#123; <span class="attr">description</span>: <span class="string">&quot;Bash command to execute&quot;</span> &#125;),</span><br><span class="line">    <span class="attr">timeout</span>: <span class="title class_">Type</span>.<span class="title class_">Optional</span>(<span class="title class_">Type</span>.<span class="title class_">Number</span>(&#123; <span class="attr">description</span>: <span class="string">&quot;Timeout in seconds&quot;</span> &#125;)),</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+
+<p><strong>核心特性</strong>：</p>
+<ol>
+<li><strong>流式输出</strong>：实时捕获 stdout&#x2F;stderr（<code>onData</code> 回调）</li>
+<li><strong>输出截断</strong>：超过 30KB 或 2000 行时保存到临时文件</li>
+<li><strong>超时控制</strong>：支持 timeout 参数，超时后 kill 整个进程树</li>
+<li><strong>Shell 适配</strong>：自动检测系统 Shell（bash&#x2F;zsh&#x2F;powershell）</li>
+</ol>
+<p><strong>设计智慧</strong>：</p>
+<ul>
+<li><strong>组合性</strong>：通过 bash 可以调用 grep&#x2F;find&#x2F;ls 等，无需为每个命令单独定义工具</li>
+<li><strong>安全性</strong>：timeout 和进程树 kill 防止挂起</li>
+</ul>
+<hr>
+<h2 id="4-Prompt-Caching-优化策略"><a href="#4-Prompt-Caching-优化策略" class="headerlink" title="4. Prompt Caching 优化策略"></a>4. Prompt Caching 优化策略</h2><h3 id="4-1-工具描述最小化"><a href="#4-1-工具描述最小化" class="headerlink" title="4.1 工具描述最小化"></a>4.1 工具描述最小化</h3><p>对比其他 Agent 框架（如 OpenClaw 的 20+ 工具），Pi 只有 4 个核心工具：</p>
+<p><strong>优势</strong>：</p>
+<ul>
+<li>工具描述短，占用 token 少</li>
+<li>LLM 更容易记住每个工具的用途</li>
+<li>减少 “选择困难”（LLM 不会困惑该用哪个工具）</li>
+</ul>
+<h3 id="4-2-输出截断机制"><a href="#4-2-输出截断机制" class="headerlink" title="4.2 输出截断机制"></a>4.2 输出截断机制</h3><figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">export</span> <span class="keyword">const</span> <span class="variable constant_">DEFAULT_MAX_BYTES</span> = <span class="number">30</span> * <span class="number">1024</span>;  <span class="comment">// 30KB</span></span><br><span class="line"><span class="keyword">export</span> <span class="keyword">const</span> <span class="variable constant_">DEFAULT_MAX_LINES</span> = <span class="number">2000</span>;        <span class="comment">// 2000行</span></span><br></pre></td></tr></table></figure>
+
+<p><strong>截断策略</strong>（<code>truncate.ts</code>）：</p>
+<figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">export</span> <span class="keyword">function</span> <span class="title function_">truncateTail</span>(<span class="params"><span class="attr">content</span>: <span class="built_in">string</span></span>) &#123;</span><br><span class="line">    <span class="keyword">const</span> lines = content.<span class="title function_">split</span>(<span class="string">&quot;\n&quot;</span>);</span><br><span class="line">    </span><br><span class="line">    <span class="comment">// 如果行数超标，保留最后 2000 行</span></span><br><span class="line">    <span class="keyword">if</span> (lines.<span class="property">length</span> &gt; <span class="variable constant_">DEFAULT_MAX_LINES</span>) &#123;</span><br><span class="line">        <span class="keyword">const</span> truncatedLines = lines.<span class="title function_">slice</span>(-<span class="variable constant_">DEFAULT_MAX_LINES</span>);</span><br><span class="line">        <span class="keyword">return</span> &#123;</span><br><span class="line">            <span class="attr">truncated</span>: <span class="literal">true</span>,</span><br><span class="line">            <span class="attr">content</span>: truncatedLines.<span class="title function_">join</span>(<span class="string">&quot;\n&quot;</span>),</span><br><span class="line">            <span class="attr">totalLines</span>: lines.<span class="property">length</span>,</span><br><span class="line">            <span class="attr">outputLines</span>: <span class="variable constant_">DEFAULT_MAX_LINES</span>,</span><br><span class="line">            <span class="attr">truncatedBy</span>: <span class="string">&quot;lines&quot;</span>,</span><br><span class="line">        &#125;;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="comment">// 如果字节数超标，保留最后的 30KB</span></span><br><span class="line">    <span class="keyword">const</span> buffer = <span class="title class_">Buffer</span>.<span class="title function_">from</span>(content, <span class="string">&quot;utf-8&quot;</span>);</span><br><span class="line">    <span class="keyword">if</span> (buffer.<span class="property">length</span> &gt; <span class="variable constant_">DEFAULT_MAX_BYTES</span>) &#123;</span><br><span class="line">        <span class="keyword">const</span> truncated = buffer.<span class="title function_">slice</span>(-<span class="variable constant_">DEFAULT_MAX_BYTES</span>);</span><br><span class="line">        <span class="keyword">return</span> &#123;</span><br><span class="line">            <span class="attr">truncated</span>: <span class="literal">true</span>,</span><br><span class="line">            <span class="attr">content</span>: truncated.<span class="title function_">toString</span>(<span class="string">&quot;utf-8&quot;</span>),</span><br><span class="line">            <span class="attr">truncatedBy</span>: <span class="string">&quot;bytes&quot;</span>,</span><br><span class="line">        &#125;;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">return</span> &#123; <span class="attr">truncated</span>: <span class="literal">false</span>, content &#125;;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><strong>Prompt Caching 收益</strong>：</p>
+<ul>
+<li>大文件不会撑爆上下文</li>
+<li>保留最近的输出（通常是错误信息或结果）</li>
+<li>告知 LLM “输出被截断”，引导其使用 offset&#x2F;limit 继续读取</li>
+</ul>
+<h3 id="4-3-类型安全与-Schema"><a href="#4-3-类型安全与-Schema" class="headerlink" title="4.3 类型安全与 Schema"></a>4.3 类型安全与 Schema</h3><p>使用 <code>@sinclair/typebox</code> 定义工具参数：</p>
+<figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> readSchema = <span class="title class_">Type</span>.<span class="title class_">Object</span>(&#123;</span><br><span class="line">    <span class="attr">path</span>: <span class="title class_">Type</span>.<span class="title class_">String</span>(&#123; <span class="attr">description</span>: <span class="string">&quot;...&quot;</span> &#125;),</span><br><span class="line">    <span class="attr">offset</span>: <span class="title class_">Type</span>.<span class="title class_">Optional</span>(<span class="title class_">Type</span>.<span class="title class_">Number</span>(&#123; <span class="attr">description</span>: <span class="string">&quot;...&quot;</span> &#125;)),</span><br><span class="line">    <span class="attr">limit</span>: <span class="title class_">Type</span>.<span class="title class_">Optional</span>(<span class="title class_">Type</span>.<span class="title class_">Number</span>(&#123; <span class="attr">description</span>: <span class="string">&quot;...&quot;</span> &#125;)),</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+
+<p><strong>优势</strong>：</p>
+<ul>
+<li>类型安全，减少运行时错误</li>
+<li>自动生成 JSON Schema，便于 LLM 理解</li>
+<li>代码压缩后体积小</li>
+</ul>
+<hr>
+<h2 id="5-扩展机制：Skills-系统"><a href="#5-扩展机制：Skills-系统" class="headerlink" title="5. 扩展机制：Skills 系统"></a>5. 扩展机制：Skills 系统</h2><p>虽然核心只有 4 个工具，但 Pi 支持通过 <strong>README.md 模式</strong> 扩展能力：</p>
+<h3 id="5-1-渐进式披露（Progressive-Disclosure）"><a href="#5-1-渐进式披露（Progressive-Disclosure）" class="headerlink" title="5.1 渐进式披露（Progressive Disclosure）"></a>5.1 渐进式披露（Progressive Disclosure）</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">skill-directory/</span><br><span class="line">├── README.md          # 工具描述（LLM 按需读取）</span><br><span class="line">├── main.ts            # 实现代码</span><br><span class="line">└── package.json</span><br></pre></td></tr></table></figure>
+
+<p><strong>工作流程</strong>：</p>
+<ol>
+<li>LLM 初始只有 4 个基础工具</li>
+<li>当任务需要时（如测试），LLM 使用 <code>read</code> 读取 skill 的 README</li>
+<li>README 包含该 skill 的详细说明和调用方式</li>
+<li>LLM 通过 <code>bash</code> 调用 skill（如 <code>npm test</code>）</li>
+</ol>
+<p><strong>优势</strong>：</p>
+<ul>
+<li>只有在需要时才支付 token 成本（读取 README）</li>
+<li>不污染核心工具列表</li>
+<li>易于社区贡献（只需写 README 和脚本）</li>
+</ul>
+<hr>
+<h2 id="6-与-OpenClaw-的对比"><a href="#6-与-OpenClaw-的对比" class="headerlink" title="6. 与 OpenClaw 的对比"></a>6. 与 OpenClaw 的对比</h2><table>
+<thead>
+<tr>
+<th>特性</th>
+<th>Pi-Mono</th>
+<th>OpenClaw</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>核心工具数</td>
+<td>4 (read&#x2F;write&#x2F;edit&#x2F;bash)</td>
+<td>20+ (含 calendar&#x2F;web_search&#x2F;browser 等)</td>
+</tr>
+<tr>
+<td>工具设计</td>
+<td>最小化，组合式</td>
+<td>全面化，内置式</td>
+</tr>
+<tr>
+<td>Prompt Caching</td>
+<td>友好（描述短，输出截断）</td>
+<td>较差（工具多，描述长）</td>
+</tr>
+<tr>
+<td>扩展方式</td>
+<td>README + bash</td>
+<td>Skill 系统（YAML + 代码）</td>
+</tr>
+<tr>
+<td>架构复杂度</td>
+<td>简单</td>
+<td>复杂</td>
+</tr>
+</tbody></table>
+<p><strong>Pi 的优势</strong>：</p>
+<ul>
+<li>上下文占用小，长对话性能更好</li>
+<li>LLM 工具选择更明确</li>
+<li>通过 bash 组合实现灵活性，不牺牲简洁性</li>
+</ul>
+<hr>
+<h2 id="7-关键代码摘录"><a href="#7-关键代码摘录" class="headerlink" title="7. 关键代码摘录"></a>7. 关键代码摘录</h2><h3 id="7-1-Agent-Loop-入口"><a href="#7-1-Agent-Loop-入口" class="headerlink" title="7.1 Agent Loop 入口"></a>7.1 Agent Loop 入口</h3><figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// packages/pi-agent-core/src/agent-loop.ts</span></span><br><span class="line"><span class="keyword">export</span> <span class="keyword">function</span> <span class="title function_">agentLoop</span>(<span class="params"></span></span><br><span class="line"><span class="params">    <span class="attr">prompts</span>: <span class="title class_">AgentMessage</span>[],</span></span><br><span class="line"><span class="params">    <span class="attr">context</span>: <span class="title class_">AgentContext</span>,</span></span><br><span class="line"><span class="params">    <span class="attr">config</span>: <span class="title class_">AgentLoopConfig</span>,</span></span><br><span class="line"><span class="params">    <span class="attr">signal</span>?: <span class="title class_">AbortSignal</span>,</span></span><br><span class="line"><span class="params">    <span class="attr">streamFn</span>?: <span class="title class_">StreamFn</span>,</span></span><br><span class="line"><span class="params"></span>): <span class="title class_">EventStream</span>&lt;<span class="title class_">AgentEvent</span>, <span class="title class_">AgentMessage</span>[]&gt; &#123;</span><br><span class="line">    <span class="keyword">const</span> stream = <span class="title function_">createAgentStream</span>();</span><br><span class="line"></span><br><span class="line">    (<span class="title function_">async</span> () =&gt; &#123;</span><br><span class="line">        <span class="keyword">const</span> <span class="attr">newMessages</span>: <span class="title class_">AgentMessage</span>[] = [...prompts];</span><br><span class="line">        <span class="keyword">const</span> <span class="attr">currentContext</span>: <span class="title class_">AgentContext</span> = &#123;</span><br><span class="line">            ...context,</span><br><span class="line">            <span class="attr">messages</span>: [...context.<span class="property">messages</span>, ...prompts],</span><br><span class="line">        &#125;;</span><br><span class="line"></span><br><span class="line">        stream.<span class="title function_">push</span>(&#123; <span class="attr">type</span>: <span class="string">&quot;agent_start&quot;</span> &#125;);</span><br><span class="line">        stream.<span class="title function_">push</span>(&#123; <span class="attr">type</span>: <span class="string">&quot;turn_start&quot;</span> &#125;);</span><br><span class="line">        </span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">const</span> prompt <span class="keyword">of</span> prompts) &#123;</span><br><span class="line">            stream.<span class="title function_">push</span>(&#123; <span class="attr">type</span>: <span class="string">&quot;message_start&quot;</span>, <span class="attr">message</span>: prompt &#125;);</span><br><span class="line">            stream.<span class="title function_">push</span>(&#123; <span class="attr">type</span>: <span class="string">&quot;message_end&quot;</span>, <span class="attr">message</span>: prompt &#125;);</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">await</span> <span class="title function_">runLoop</span>(currentContext, newMessages, config, signal, stream, streamFn);</span><br><span class="line">    &#125;)();</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> stream;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="7-2-工具定义示例（Read）"><a href="#7-2-工具定义示例（Read）" class="headerlink" title="7.2 工具定义示例（Read）"></a>7.2 工具定义示例（Read）</h3><figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// packages/pi-coding-agent/src/core/tools/read.ts</span></span><br><span class="line"><span class="keyword">export</span> <span class="keyword">function</span> <span class="title function_">createReadTool</span>(<span class="params">cwd, options</span>) &#123;</span><br><span class="line">    <span class="keyword">return</span> &#123;</span><br><span class="line">        <span class="attr">name</span>: <span class="string">&quot;read&quot;</span>,</span><br><span class="line">        <span class="attr">label</span>: <span class="string">&quot;read&quot;</span>,</span><br><span class="line">        <span class="attr">description</span>: <span class="string">`Read the contents of a file...truncated to <span class="subst">$&#123;DEFAULT_MAX_LINES&#125;</span> lines or <span class="subst">$&#123;DEFAULT_MAX_BYTES / <span class="number">1024</span>&#125;</span>KB...`</span>,</span><br><span class="line">        <span class="attr">parameters</span>: readSchema,</span><br><span class="line">        <span class="attr">execute</span>: <span class="title function_">async</span> (_toolCallId, &#123; path, offset, limit &#125;, signal) =&gt; &#123;</span><br><span class="line">            <span class="keyword">const</span> absolutePath = <span class="title function_">resolveReadPath</span>(path, cwd);</span><br><span class="line">            <span class="comment">// 检查 abort signal</span></span><br><span class="line">            <span class="keyword">if</span> (signal?.<span class="property">aborted</span>) &#123;</span><br><span class="line">                <span class="keyword">throw</span> <span class="keyword">new</span> <span class="title class_">Error</span>(<span class="string">&quot;Operation aborted&quot;</span>);</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="comment">// 读取文件逻辑...</span></span><br><span class="line">        &#125;,</span><br><span class="line">    &#125;;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="7-3-工具组合（Coding-Tools）"><a href="#7-3-工具组合（Coding-Tools）" class="headerlink" title="7.3 工具组合（Coding Tools）"></a>7.3 工具组合（Coding Tools）</h3><figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// packages/pi-coding-agent/src/core/tools/index.ts</span></span><br><span class="line"><span class="keyword">export</span> <span class="keyword">const</span> codingTools = [readTool, bashTool, editTool, writeTool];</span><br><span class="line"><span class="keyword">export</span> <span class="keyword">const</span> readOnlyTools = [readTool, grepTool, findTool, lsTool];</span><br><span class="line"></span><br><span class="line"><span class="keyword">export</span> <span class="keyword">function</span> <span class="title function_">createCodingTools</span>(<span class="params">cwd, options</span>) &#123;</span><br><span class="line">    <span class="keyword">return</span> [</span><br><span class="line">        <span class="title function_">createReadTool</span>(cwd, options?.<span class="property">read</span>),</span><br><span class="line">        <span class="title function_">createBashTool</span>(cwd, options?.<span class="property">bash</span>),</span><br><span class="line">        <span class="title function_">createEditTool</span>(cwd),</span><br><span class="line">        <span class="title function_">createWriteTool</span>(cwd),</span><br><span class="line">    ];</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<hr>
+<h2 id="8-总结"><a href="#8-总结" class="headerlink" title="8. 总结"></a>8. 总结</h2><p>Pi-Mono 的 Agent Loop 通过以下设计实现了<strong>高效、简洁、可缓存</strong>的目标：</p>
+<ol>
+<li><strong>四大核心工具</strong>：最小化工具集，其他能力通过 bash 组合</li>
+<li><strong>双层循环架构</strong>：支持会话延续和实时中断（steering）</li>
+<li><strong>事件驱动</strong>：流式处理，用户体验好</li>
+<li><strong>输出截断</strong>：30KB&#x2F;2000行限制，保护上下文空间</li>
+<li><strong>渐进式披露</strong>：Skill 能力按需加载，不常驻上下文</li>
+<li><strong>类型安全</strong>：TypeBox 定义 Schema，减少错误</li>
+</ol>
+<p>这些设计使得 Pi 在长对话场景中表现出色，同时保持了代码的简洁性和可维护性。</p>
+<hr>
+<p><strong>报告完成时间</strong>: 2026-02-10<br><strong>分析源码版本</strong>: pi-mono v0.51.1<br><strong>源码位置</strong>: <code>/usr/local/lib/node_modules/openclaw/node_modules/@mariozechner/</code></p>
+</section>
+    
+        
+        <h2 class="footline">
+            <a href="/tags/调研/#调研">调研</a>, <a href="/tags/Pi-Mono/#Pi-Mono">Pi-Mono</a>, <a href="/tags/Agent/#Agent">Agent</a>, <a href="/tags/AI/#AI">AI</a>
+        </h2>
+    
+
+    <footer id="post-meta" class="clearfix">
+        <a href="/about/">
+        <img class="avatar" src="/images/avatar.png">
+        <div>
+            <span class="dark">Api Intelligence Daily Life</span>
+            <span>知识库 &amp; 博客</span>
+        </div>
+        </a>
+        <section id="sharing">
+            <a title="Share to Twitter" class="twitter" target="_blank" rel="noopener" href="https://twitter.com/intent/tweet?text=https://arbow.github.io/2026/02/10/digest-2026-02-10-pi-mono-analysis/ - 调研：Pi-Mono Agent Loop 实现分析 @"><span class="icon-twitter">tweet</span></a>
+            <a title="Share to Facebook" class="facebook" href="#" onclick="
+                window.open(
+                  'https://www.facebook.com/sharer/sharer.php?u='+encodeURIComponent(location.href),
+                  'facebook-share-dialog',
+                  'width=626,height=436');
+                return false;"><span class="icon-facebook-sign">Share</span>
+            </a>
+        </section>
+    </footer>
+
+
+  <section id="comment">
+    <button class="btn" id="loadcmts" onclick="cmts.load();">加载评论</button>
+    <div id="gitment"></div>
+    <script src='/js/gitment.browser.js'></script>
+    <link rel="stylesheet" href=''>
+    <script>
+      var cmts={
+        load:function cmts(){
+          var gitment = new Gitment({
+          
+            id: "调研：Pi-Mono Agent Loop 实现分析",
+          
+            owner: "",
+            repo: "",
+            oauth: {
+              client_id: "",
+              client_secret: "",
+            },
+          })
+          gitment.render('gitment');
+          var loadcmt = document.getElementById("loadcmts");
+          var imyourfather = loadcmt.parentNode;
+          imyourfather.removeChild(loadcmts)
+        }
+      }
+    </script>
+  </section>
+
+
+	<footer id="footer">
+	<div id="social">
+		<p class="small">©  Arbow| Powered by Hexo & 
+			<a target="_blank" rel="noopener" href="https://github.com/F0r3at/Lights"> Lights</a>
+		</p>
+	</div>
+</footer>
+
+</section>
+
+	<script src="//cdnjs.loli.net/ajax/libs/instantclick/3.0.1/instantclick.min.js" data-no-instant></script>
+	<script data-no-instant>
+		
+		InstantClick.init('mousedown');
+	</script>
+
+
+

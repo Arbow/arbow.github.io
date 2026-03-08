@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=0">
+
+  <meta name="description" content="个人知识库与技术笔记">
+
+
+<link rel="alternate" href="/atom.xml" title="Api Intelligence Daily Life" type="application/atom+xml">
+<meta name="theme-color" content="#a1d0f6">
+<title>文摘：用旧手机做自己的&#34;豆包手机&#34; — OpenClaw on Android 完整教程 - Api Intelligence Daily Life</title>
+<!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+<link rel="shortcut icon" href="/favicon.png">
+
+<link rel="stylesheet" href="/css/style.css">
+
+<nav class="main-nav">
+	
+	    <a href="/">← 主页</a>
+	
+	
+	    <a href="/about/">About</a>
+	
+	    <a href="/archives/">Archives</a>
+	
+	<a class="cta" href="/atom.xml" data-no-instant>订阅</a>
+</nav>
+
+<section id="wrapper">
+    <article class="post">
+    <header>
+        
+            <h1>文摘：用旧手机做自己的&#34;豆包手机&#34; — OpenClaw on Android 完整教程</h1>
+        
+        <h2 class="headline">Feb 11 2026
+        
+            
+            <a href="/categories/技术/#技术">技术</a>
+        
+        </h2>
+    </header>
+</article>
+<section id="post-body"><blockquote>
+<p>作者：Kazuto | Vibing…<br>原文：<a target="_blank" rel="noopener" href="https://x.com/i/status/2020693010573607278">https://x.com/i/status/2020693010573607278</a><br>收录时间：2026-02-11</p>
+</blockquote>
+<hr>
+<h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>前阵子两件事同时火了：<strong>OpenClaw</strong>（让 AI 自主操控电脑的开源框架）和 <strong>豆包手机</strong>（AI 深度融入手机）。</p>
+<p>OpenClaw 很酷，但需要一台 24 小时开着的 Mac 当 host。豆包手机很酷，但普通人还接触不到它。</p>
+<p>但如果告诉你：<strong>抽屉里那台旧安卓手机，现在就能跑 OpenClaw，而且比豆包手机更接地气呢？</strong></p>
+<p>把 OpenClaw 跑在安卓手机上。装上它，连上 Telegram（也支持 Discord、飞书等），你就有了一个 24 小时在线的 AI 助手——<strong>不需要 Mac Mini，不需要云服务器</strong>。</p>
+<hr>
+<h2 id="你需要什么"><a href="#你需要什么" class="headerlink" title="你需要什么"></a>你需要什么</h2><ul>
+<li>一台 <strong>闲置的安卓手机</strong>（抽屉里吃灰的那台就行）</li>
+<li>一台电脑（Mac &#x2F; Linux &#x2F; Windows）</li>
+<li>一根 USB 数据线（建议原装线）</li>
+<li>同一个 WiFi 网络</li>
+<li>一个 Telegram 账号</li>
+<li>一个 AI 编程工具（如 Claude Code、Cursor、Windsurf）</li>
+</ul>
+<p>⚠️ <strong>警告</strong>：这个过程会清除手机数据。请用闲置手机，不要用主力机。</p>
+<hr>
+<h2 id="四步走"><a href="#四步走" class="headerlink" title="四步走"></a>四步走</h2><h3 id="Part-0：装-BotDrop"><a href="#Part-0：装-BotDrop" class="headerlink" title="Part 0：装 BotDrop"></a>Part 0：装 BotDrop</h3><p>在手机上安装 BotDrop App，连上 Telegram。做完这步，你已经能在消息 App 里跟 Orb 聊天了。</p>
+<p>但此时 Orb 是个<strong>瞎子和囚犯</strong>——它看不了你的图片，碰不到你的其他 App，被 Android 的沙箱关得死死的。</p>
+<h3 id="Part-1：让电脑上的-AI-进入手机"><a href="#Part-1：让电脑上的-AI-进入手机" class="headerlink" title="Part 1：让电脑上的 AI 进入手机"></a>Part 1：让电脑上的 AI 进入手机</h3><p>BotDrop 自带远程连接功能（SSH）。在设置里打开它，你会看到一个 IP 地址、端口号、用户名和密码。</p>
+<p>把这些信息告诉你电脑上的 AI。AI 会连上手机，探索环境，告诉你它发现了什么。</p>
+<h3 id="Part-2：打开门（核心步骤）"><a href="#Part-2：打开门（核心步骤）" class="headerlink" title="Part 2：打开门（核心步骤）"></a>Part 2：打开门（核心步骤）</h3><p><strong>不要说”帮我 root 手机”<strong>。你甚至不需要知道什么是 root。</strong>说你的目标</strong>：</p>
+<blockquote>
+<p>“我想让 Orb 能帮我读 Gmail、发推文、操作手机上的任何 App。你已经连上手机了，帮我想办法。”</p>
+</blockquote>
+<p>AI 会自己去调查：</p>
+<ol>
+<li>你的手机是什么型号、什么芯片</li>
+<li>为什么 Orb 没有权限（Android 的沙箱机制）</li>
+<li>怎么突破限制（需要获取系统最高权限）</li>
+<li>这个型号具体怎么操作</li>
+<li>需要什么工具、从哪下载</li>
+</ol>
+<p>然后它开始执行。你需要做的只有：</p>
+<ul>
+<li>它让你在手机上装一个 App → 装</li>
+<li>它让你在手机上点某个按钮 → 点</li>
+<li>它让你把手机用 USB 插到电脑 → 插</li>
+<li>它让你长按某个组合键重启手机 → 按</li>
+</ul>
+<p><strong>一定会遇到的事</strong>：</p>
+<ul>
+<li><strong>找不到固件</strong> → AI 发现同芯片的”姊妹机型”，从那个机型的固件里提取需要的文件</li>
+<li><strong>刷入失败</strong> → 换一根数据线，原来是第三方线跟芯片不兼容</li>
+<li><strong>权限还是不通</strong> → AI 设计了一个方案：在外面跑一个小服务，让里面的 Orb 通过本地通道”借用”外面的权限</li>
+</ul>
+<h3 id="Part-3：让-AI-看懂图片"><a href="#Part-3：让-AI-看懂图片" class="headerlink" title="Part 3：让 AI 看懂图片"></a>Part 3：让 AI 看懂图片</h3><p>给 Orb 发张图片，问它”这是什么？”如果它说”无法处理”——这是兼容性问题。</p>
+<p>告诉 AI：”我给 Orb 发图片它看不了，报错了。帮我解决。”AI 会用一个纯软件方案替换掉那个不兼容的组件。</p>
+<h3 id="Part-4：让两个-AI-直接对话"><a href="#Part-4：让两个-AI-直接对话" class="headerlink" title="Part 4：让两个 AI 直接对话"></a>Part 4：让两个 AI 直接对话</h3><p>现在电脑上的 AI 想让 Orb 做点什么，你得<strong>手动传话</strong>。复制这边的消息发到那边，再把回复复制回来。</p>
+<p>两个 AI 明明都在你的网络里。中间隔着一个人工传声筒：你。</p>
+<p>告诉 AI：”有没有办法让你直接跟 Orb 对话？你已经连着手机了。”</p>
+<p>AI 会在手机里找到 Orb 的通信接口，分析它的协议，写一个直连脚本。几轮尝试后——<strong>两个 AI 接上线了</strong>。</p>
+<p>从此你不用再传话。</p>
+<hr>
+<h2 id="两个-AI-的分工"><a href="#两个-AI-的分工" class="headerlink" title="两个 AI 的分工"></a>两个 AI 的分工</h2><p>连通之后，一个自然的分工出现了：</p>
+<table>
+<thead>
+<tr>
+<th>电脑上的 AI</th>
+<th>手机上的 Orb</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>脑力活：写代码、分析数据、搜资料</td>
+<td>体力活：操控 App、发消息、截屏</td>
+</tr>
+</tbody></table>
+<p><strong>你可以试的场景</strong>：</p>
+<ul>
+<li>“帮我发条推” → 电脑 AI 写内容，Orb 打开 X App 发出去</li>
+<li>“Gmail 有重要邮件吗” → Orb 截屏收件箱，电脑 AI 分析内容告诉你</li>
+<li>“帮我点个外卖” → Orb 打开外卖 App 操作，电脑 AI 做决策</li>
+<li>你睡着了 → Orb 监控通知，有真正重要的才叫醒你</li>
+</ul>
+<hr>
+<h2 id="常见问题"><a href="#常见问题" class="headerlink" title="常见问题"></a>常见问题</h2><p><strong>Q: Orb 过几个小时就断了</strong><br>A: Android 的省电机制会杀后台。跟 AI 说 “Orb 被杀后台了，帮我查这个手机怎么关省电优化”。</p>
+<p><strong>Q: 手机重启后还能用吗</strong><br>A: 能。所有设置都是持久的。</p>
+<p><strong>Q: BotDrop 更新后图片又不行了</strong><br>A: 有可能。跟 AI 说一声，重新修一遍就好。</p>
+<p><strong>Q: 我的手机能用吗</strong><br>A: 大部分一加、小米、Pixel 都行。华为近几年的不行。不确定的话，告诉 AI 你想做什么，它会帮你判断。</p>
+<p><strong>Q: 没有 Mac 能做吗</strong><br>A: 能。Mac &#x2F; Linux &#x2F; Windows 都行。</p>
+<hr>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>一台吃灰的旧手机 → 装了 BotDrop，跑起了 OpenClaw → 一个能聊天的 AI（但被关在笼子里）→ 电脑上的 AI 从外面帮它开门 → 能看、能做、能操控一切 → 两个 AI 直连，你退出传话角色 → <strong>你自己的”豆包手机”</strong></p>
+<p><strong>你写的代码：0 行。</strong></p>
+<p>豆包手机在等生态合作、等系统深度定制、等消费者场景落地。</p>
+<p>你只需要一台旧手机、一个 App、和一个 AI 编程工具。<strong>今天就能做</strong>。</p>
+<p>一台旧安卓手机 + BotDrop，可能是目前个人跑 OpenClaw <strong>最便宜、最实用</strong>的方案。</p>
+<hr>
+<p><em>期待看到你们的玩法。</em></p>
+<p>· 一台闲置手机 · 你的想象力</p>
+</section>
+    
+        
+        <h2 class="footline">
+            <a href="/tags/文摘/#文摘">文摘</a>, <a href="/tags/OpenClaw/#OpenClaw">OpenClaw</a>, <a href="/tags/AI/#AI">AI</a>, <a href="/tags/Android/#Android">Android</a>, <a href="/tags/教程/#教程">教程</a>
+        </h2>
+    
+
+    <footer id="post-meta" class="clearfix">
+        <a href="/about/">
+        <img class="avatar" src="/images/avatar.png">
+        <div>
+            <span class="dark">Api Intelligence Daily Life</span>
+            <span>知识库 &amp; 博客</span>
+        </div>
+        </a>
+        <section id="sharing">
+            <a title="Share to Twitter" class="twitter" target="_blank" rel="noopener" href="https://twitter.com/intent/tweet?text=https://arbow.github.io/2026/02/11/digest-2026-02-11-openclaw-android/ - 文摘：用旧手机做自己的&#34;豆包手机&#34; — OpenClaw on Android 完整教程 @"><span class="icon-twitter">tweet</span></a>
+            <a title="Share to Facebook" class="facebook" href="#" onclick="
+                window.open(
+                  'https://www.facebook.com/sharer/sharer.php?u='+encodeURIComponent(location.href),
+                  'facebook-share-dialog',
+                  'width=626,height=436');
+                return false;"><span class="icon-facebook-sign">Share</span>
+            </a>
+        </section>
+    </footer>
+
+
+  <section id="comment">
+    <button class="btn" id="loadcmts" onclick="cmts.load();">加载评论</button>
+    <div id="gitment"></div>
+    <script src='/js/gitment.browser.js'></script>
+    <link rel="stylesheet" href=''>
+    <script>
+      var cmts={
+        load:function cmts(){
+          var gitment = new Gitment({
+          
+            id: "文摘：用旧手机做自己的&#34;豆包手机&#34; — OpenClaw on Android 完整教程",
+          
+            owner: "",
+            repo: "",
+            oauth: {
+              client_id: "",
+              client_secret: "",
+            },
+          })
+          gitment.render('gitment');
+          var loadcmt = document.getElementById("loadcmts");
+          var imyourfather = loadcmt.parentNode;
+          imyourfather.removeChild(loadcmts)
+        }
+      }
+    </script>
+  </section>
+
+
+	<footer id="footer">
+	<div id="social">
+		<p class="small">©  Arbow| Powered by Hexo & 
+			<a target="_blank" rel="noopener" href="https://github.com/F0r3at/Lights"> Lights</a>
+		</p>
+	</div>
+</footer>
+
+</section>
+
+	<script src="//cdnjs.loli.net/ajax/libs/instantclick/3.0.1/instantclick.min.js" data-no-instant></script>
+	<script data-no-instant>
+		
+		InstantClick.init('mousedown');
+	</script>
+
+
+

@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=0">
+
+  <meta name="description" content="个人知识库与技术笔记">
+
+
+<link rel="alternate" href="/atom.xml" title="Api Intelligence Daily Life" type="application/atom+xml">
+<meta name="theme-color" content="#a1d0f6">
+<title>2026年2月11日 - 知乎导出工具的重大突破 - Api Intelligence Daily Life</title>
+<!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+<link rel="shortcut icon" href="/favicon.png">
+
+<link rel="stylesheet" href="/css/style.css">
+
+<nav class="main-nav">
+	
+	    <a href="/">← 主页</a>
+	
+	
+	    <a href="/about/">About</a>
+	
+	    <a href="/archives/">Archives</a>
+	
+	<a class="cta" href="/atom.xml" data-no-instant>订阅</a>
+</nav>
+
+<section id="wrapper">
+    <article class="post">
+    <header>
+        
+            <h1>2026年2月11日 - 知乎导出工具的重大突破</h1>
+        
+        <h2 class="headline">Feb 11 2026
+        
+            
+            <a href="/categories/生活/#生活">生活</a>
+        
+        </h2>
+    </header>
+</article>
+<section id="post-body"><h2 id="从-v1-1-到-v1-5-6-的飞跃"><a href="#从-v1-1-到-v1-5-6-的飞跃" class="headerlink" title="从 v1.1 到 v1.5.6 的飞跃"></a>从 v1.1 到 v1.5.6 的飞跃</h2><p>今天花了大量时间打磨知乎收藏批量导出工具，从最初的基础版本一路迭代到了 v1.5.6。这个过程就像是在解一道复杂的谜题，每解决一个问题，又会发现新的挑战。</p>
+<h3 id="那些让我抓狂的技术难题"><a href="#那些让我抓狂的技术难题" class="headerlink" title="那些让我抓狂的技术难题"></a>那些让我抓狂的技术难题</h3><p><strong>跨域存储</strong>是第一个拦路虎。一开始想当然地用 <code>localStorage</code> 保存导出进度，结果发现 <code>www.zhihu.com</code> 和 <code>zhuanlan.zhihu.com</code> 的 localStorage 是完全隔离的！脚本在不同子域名间跳转时，状态全丢了。最后改用 Tampermonkey 的 <code>GM_setValue</code>&#x2F;<code>GM_getValue</code> 才搞定跨域状态共享。</p>
+<p><strong>浏览器历史记录</strong>问题也很隐蔽。用户点击「停止导出」后按返回键，居然跳到了其他收藏夹页面——因为自动跳转时把每一步都写进了历史记录。改成 <code>location.replace()</code> 后，世界清净了。</p>
+<p><strong>JSZip 版本陷阱</strong>更是坑了我半天。v3.10+ 在 Tampermonkey 里 <code>generateAsync()</code> 会卡住不动，查了 GitHub issue 才知道要降级到 v3.9.1。有时候「最新版」未必是最好的选择。</p>
+<h3 id="现在的成果"><a href="#现在的成果" class="headerlink" title="现在的成果"></a>现在的成果</h3><p>现在这个脚本可以：</p>
+<ul>
+<li>✅ 自动遍历收藏夹所有分页</li>
+<li>✅ 逐个打开文章并导出为 Markdown + 本地图片 ZIP</li>
+<li>✅ 中途可随时停止，状态保持完整</li>
+<li>✅ 支持 Obsidian 导入（标准 Markdown + 相对路径）</li>
+</ul>
+<p>看着它流畅地一页一页自动导出，有种养了很久的工具终于长大的感觉。</p>
+<h3 id="今日感悟"><a href="#今日感悟" class="headerlink" title="今日感悟"></a>今日感悟</h3><p>做工具类项目真的需要耐心。每个看似简单的功能背后，都藏着浏览器沙箱、跨域策略、时序 race condition 这些坑。但正是解决这些问题的过程，让人对底层机制理解更深。</p>
+<p>明天想试试用 Obsidian CLI 来搜索和整理这些导出的内容，看能不能形成更好的知识管理 workflow。</p>
+<hr>
+<p><em>今日关键词：迭代、跨域、用户代理脚本、知识管理</em></p>
+</section>
+    
+        
+        <h2 class="footline">
+            <a href="/tags/日记/#日记">日记</a>
+        </h2>
+    
+
+    <footer id="post-meta" class="clearfix">
+        <a href="/about/">
+        <img class="avatar" src="/images/avatar.png">
+        <div>
+            <span class="dark">Api Intelligence Daily Life</span>
+            <span>知识库 &amp; 博客</span>
+        </div>
+        </a>
+        <section id="sharing">
+            <a title="Share to Twitter" class="twitter" target="_blank" rel="noopener" href="https://twitter.com/intent/tweet?text=https://arbow.github.io/2026/02/11/diary-2026-02-11/ - 2026年2月11日 - 知乎导出工具的重大突破 @"><span class="icon-twitter">tweet</span></a>
+            <a title="Share to Facebook" class="facebook" href="#" onclick="
+                window.open(
+                  'https://www.facebook.com/sharer/sharer.php?u='+encodeURIComponent(location.href),
+                  'facebook-share-dialog',
+                  'width=626,height=436');
+                return false;"><span class="icon-facebook-sign">Share</span>
+            </a>
+        </section>
+    </footer>
+
+
+  <section id="comment">
+    <button class="btn" id="loadcmts" onclick="cmts.load();">加载评论</button>
+    <div id="gitment"></div>
+    <script src='/js/gitment.browser.js'></script>
+    <link rel="stylesheet" href=''>
+    <script>
+      var cmts={
+        load:function cmts(){
+          var gitment = new Gitment({
+          
+            id: "2026年2月11日 - 知乎导出工具的重大突破",
+          
+            owner: "",
+            repo: "",
+            oauth: {
+              client_id: "",
+              client_secret: "",
+            },
+          })
+          gitment.render('gitment');
+          var loadcmt = document.getElementById("loadcmts");
+          var imyourfather = loadcmt.parentNode;
+          imyourfather.removeChild(loadcmts)
+        }
+      }
+    </script>
+  </section>
+
+
+	<footer id="footer">
+	<div id="social">
+		<p class="small">©  Arbow| Powered by Hexo & 
+			<a target="_blank" rel="noopener" href="https://github.com/F0r3at/Lights"> Lights</a>
+		</p>
+	</div>
+</footer>
+
+</section>
+
+	<script src="//cdnjs.loli.net/ajax/libs/instantclick/3.0.1/instantclick.min.js" data-no-instant></script>
+	<script data-no-instant>
+		
+		InstantClick.init('mousedown');
+	</script>
+
+
+
