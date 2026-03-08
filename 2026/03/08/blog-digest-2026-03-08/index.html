@@ -38,51 +38,20 @@
         </h2>
     </header>
 </article>
-<section id="post-body"><h2 id="今日新文章概览"><a href="#今日新文章概览" class="headerlink" title="今日新文章概览"></a>今日新文章概览</h2><p>检查了 <strong>9 个博客</strong>，发现 <strong>2 篇新增</strong>：</p>
-<ol>
-<li><a target="_blank" rel="noopener" href="https://lucumr.pocoo.org/2026/2/13/the-final-bottleneck/">The Final Bottleneck</a> - Armin Ronacher (2026-02-13)</li>
-<li><a target="_blank" rel="noopener" href="https://lucumr.pocoo.org/2026/2/9/a-language-for-agents/">A Language For Agents</a> - Armin Ronacher (2026-02-09)</li>
-</ol>
-<hr>
-<h2 id="The-Final-Bottleneck"><a href="#The-Final-Bottleneck" class="headerlink" title="The Final Bottleneck"></a>The Final Bottleneck</h2><p><strong>作者</strong>: Armin Ronacher<br><strong>发布日期</strong>: 2026-02-13<br><strong>原文链接</strong>: <a target="_blank" rel="noopener" href="https://lucumr.pocoo.org/2026/2/13/the-final-bottleneck/">https://lucumr.pocoo.org/2026/2/13/the-final-bottleneck/</a></p>
-<p>这篇文章深刻讨论了 AI 时代软件工程面临的新挑战。历史上，写代码比审查代码更慢。但现在，随着 AI 辅助编程的普及，代码生成速度大幅提升，代码审查却跟不上，形成了新的瓶颈。</p>
-<p>作者指出，当输入增长速度超过处理速度时，就会出现累积性失败。以 OpenClaw 为例，它有超过 2,500 个开放的 PR，这就是一个”大浴缸”问题。许多 AI 相关的开源项目和内部项目都面临类似的困境——代码太多而无法审查。</p>
-<p>作者将此比作被手机订单淹没的星巴克：体验崩溃，你不知道前面有多少订单，没有清晰的排队，没有可靠的等待时间，也难以取消。</p>
-<p>历史表明，人类曾多次面临类似情况。工业革命时期，纺织业的每个瓶颈被移除后，下游就会创新。织布加速？纱线成为约束。更快纺纱？纤维需要改进。软件工程也是如此：汇编语言无法扩展到大型团队，我们需要更高级别的语言。但语言的演变主要是为了加快写代码，而不是移除核心工程技能。</p>
-<p>作者探讨了两种应对策略：要么”放弃”（如 Pi 项目对不受信任的 PR 自动关闭，实行 OSS 假期），要么”投降”（接受并适应新的工程模式）。但如果速度持续增加，我们需要加速哪些下游环节？PR 审查显然成为瓶颈，但无法真正自动化。</p>
-<p>最终，作者认为他自己就是瓶颈。只要他承担责任并需要负责，这一点就不会改变。如果我们能把责任推上去，可能会改变，但目前还不清楚如何实现。</p>
-<p>这篇文章引发了对 AI 时代工程实践的深刻思考：当代码生产速度远超人类处理能力时，我们该如何重新设计工作流程？</p>
-<hr>
-<h2 id="A-Language-For-Agents"><a href="#A-Language-For-Agents" class="headerlink" title="A Language For Agents"></a>A Language For Agents</h2><p><strong>作者</strong>: Armin Ronacher<br><strong>发布日期</strong>: 2026-02-09<br><strong>原文链接</strong>: <a target="_blank" rel="noopener" href="https://lucumr.pocoo.org/2026/2/9/a-language-for-agents/">https://lucumr.pocoo.org/2026/2/9/a-language-for-agents/</a></p>
-<p>这篇文章前瞻性地探讨了 AI Agent 时代编程语言可能的发展方向。作者认为，虽然现有的庞大代码库可能会让既有语言保持优势，但现实可能恰恰相反——我们将看到更多新的编程语言。</p>
-<p>AI Agent 在某些语言上表现更好，原因很明显：这些语言在训练权重中有更好的表示，且工具链更稳定、变化更少。但编码成本正在显著下降，这意味着生态系统的广度变得不那么重要。作者现在更频繁地使用 JavaScript 而非 Python，不是因为喜爱它或生态更好，而是因为 Agent 更擅长处理 TypeScript。</p>
-<p>作者提出了设计 AI Agent 友好语言的几个关键考虑：</p>
-<h3 id="Agent-喜欢的特性"><a href="#Agent-喜欢的特性" class="headerlink" title="Agent 喜欢的特性"></a>Agent 喜欢的特性</h3><ol>
-<li><p><strong>无需 LSP 的上下文</strong>：语言服务器协议让 IDE 推断信息，但对 Agent 来说成本很高。Agent 往往不会运行 LSP，特别是在处理文档片段或独立文件时。一个不分割成”有 LSP”和”无 LSP”两种体验的语言会更有利于 Agent。</p>
-</li>
-<li><p><strong>显式而非隐式</strong>：任何隐式流动的东西可能不会被配置。比如当前时间，你可能想隐式传递计时器到所有函数，但如果计时器未配置怎么办？显式传递虽然繁琐，但可以避免问题。作者实验过在代码格式化步骤中添加效果标记，函数可以声明需要当前时间或数据库，如果不显式标记，就是 linting 警告。</p>
-</li>
-<li><p><strong>结果优于异常</strong>：Agent 恐惧异常，会尝试捕获所有东西并记录，然后进行很糟糕的恢复。检查异常是方法之一，但它们一直传播到调用链顶部，不会显著改善情况。</p>
-</li>
-<li><p><strong>最小差异和行读取</strong>：Agent 常用基于行的方式读取文件，这在多行字符串时容易出错。2000 行的文件包含长的嵌入式代码字符串，Agent 有时会编辑多行字符串内以为是真实代码。</p>
-</li>
-<li><p><strong>可 greppable</strong>：像 Go 那样强制包名前缀（如 <code>context.Context</code> 而不是 <code>Context</code>）能帮助 Agent 更好地理解代码，减少误报。</p>
-</li>
-</ol>
-<h3 id="Agent-讨厌的特性"><a href="#Agent-讨厌的特性" class="headerlink" title="Agent 讨厌的特性"></a>Agent 讨厌的特性</h3><ol>
-<li><p><strong>宏</strong>：Agent 难以处理宏，人类也如此。虽然过去宏是减少代码量的好方法，但现在代码生成不那么重要了。</p>
-</li>
-<li><p><strong>重新导出和桶文件</strong>：Agent 难以理解这些结构，会导致从错误的地方导入或遗漏东西，浪费上下文读取太多文件。一对一映射最好。</p>
-</li>
-<li><p><strong>别名</strong>：Agent 讨厌别名。理想情况下，语言鼓励良好的命名并 discourages 导入时的别名。</p>
-</li>
-<li><p><strong>脆弱的测试和环境分歧</strong>：没人喜欢脆弱的测试，但 Agent 更讨厌。讽刺的是，Agent 擅长创建脆弱的测试，因为它们喜欢 mock，而大多数语言不支持 mocking。</p>
-</li>
-<li><p><strong>多个失败条件</strong>：理想情况下，Agent 有一个命令来 lint 和编译，并告诉它一切是否正常。但大多数环境不这样工作，比如 TypeScript 可以运行代码即使类型检查失败。</p>
-</li>
-</ol>
-<p>作者认为，我们将会看到更多新的编程语言。因为我们要写的软件比以往任何时候都多，而且更多人愿意重新思考软件工程的基础。关键是要更好地记录什么是有效的，什么是无效的，基于实际的数据而非观点。Agent 不在意调查，我们可以测量它们的表现如何。</p>
-<p>这篇文章为 AI 时代的编程语言设计提供了宝贵的思考框架，特别是从 Agent 的角度重新审视语言设计的基本假设。</p>
+<section id="post-body"><h2 id="今日新文章概览"><a href="#今日新文章概览" class="headerlink" title="今日新文章概览"></a>今日新文章概览</h2><p>检查了 <strong>9 个博客</strong>，发现 <strong>0 篇新增</strong>。</p>
+<p>所有博客的最新文章日期都未超过上次记录的日期。以下是各博客的最新状态：</p>
+<ul>
+<li><strong>云风博客</strong>: Star Trek : Captain’s Chair 初体验 (2026-03-01)</li>
+<li><strong>李锐锋博客</strong>: 拆解 OpenClaw 的系统提示词，设计的太妙了 (2026-02-04)</li>
+<li><strong>宝玉博客</strong>: 多稿合并：从手动比稿到一键 Skill (2026-03-05)</li>
+<li><strong>Huyen Chip Blog</strong>: Common pitfalls when building generative AI applications (2025-01-16)</li>
+<li><strong>Lil’Log</strong>: Why We Think (2025-05-01)</li>
+<li><strong>陆向东博客</strong>: 企业AI落地三部曲3：真正的角力—知识构建与知识健康 (2026-01-05)</li>
+<li><strong>Armin Ronacher’s Blog</strong>: AI And The Ship of Theseus (2026-03-05)</li>
+<li><strong>Anthropic Engineering Blog</strong>: Quantifying infrastructure noise in agentic coding evals (2026-02-05)</li>
+<li><strong>钱锟李博客</strong>: Long-horizon Agent (2026-02-16)</li>
+</ul>
+<p>今日各订阅博客均无新增文章。</p>
 </section>
     
 
