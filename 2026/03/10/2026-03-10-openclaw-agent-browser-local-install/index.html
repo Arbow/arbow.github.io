@@ -142,7 +142,7 @@
 <h2 id="最终方案：官方安装-本地-Skill-封装"><a href="#最终方案：官方安装-本地-Skill-封装" class="headerlink" title="最终方案：官方安装 + 本地 Skill 封装"></a>最终方案：官方安装 + 本地 Skill 封装</h2><p>最后我采用的是一条更可控的路径：</p>
 <h3 id="第一步：直接安装官方-agent-browser"><a href="#第一步：直接安装官方-agent-browser" class="headerlink" title="第一步：直接安装官方 agent-browser"></a>第一步：直接安装官方 <code>agent-browser</code></h3><p>不是安装第三方 skill，而是在本地工作区内直接装官方 npm 包。</p>
 <p>安装方式选择的是<strong>项目级安装</strong>，而不是全局安装：</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">mkdir</span> -p /Users/admin/.openclaw/workspace/tools/agent-browser</span><br><span class="line"><span class="built_in">cd</span> /Users/admin/.openclaw/workspace/tools/agent-browser</span><br><span class="line">npm init -y</span><br><span class="line">npm install agent-browser</span><br></pre></td></tr></table></figure>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">mkdir</span> -p ~/.openclaw/workspace/tools/agent-browser</span><br><span class="line"><span class="built_in">cd</span> ~/.openclaw/workspace/tools/agent-browser</span><br><span class="line">npm init -y</span><br><span class="line">npm install agent-browser</span><br></pre></td></tr></table></figure>
 
 <p>这样做有几个好处：</p>
 <ul>
@@ -182,7 +182,7 @@
 <h2 id="再往上走一步：给-OpenClaw-做一个自己的本地-skill"><a href="#再往上走一步：给-OpenClaw-做一个自己的本地-skill" class="headerlink" title="再往上走一步：给 OpenClaw 做一个自己的本地 skill"></a>再往上走一步：给 OpenClaw 做一个自己的本地 skill</h2><p>仅仅把 CLI 装上还不够。</p>
 <p>如果希望 OpenClaw 在后续对话中更自然地用上它，最好还要有一层“行为说明书”。</p>
 <p>所以我又额外做了一个本地 skill：</p>
-<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">/Users/admin/.openclaw/workspace/skills/agent-browser-local/SKILL.md</span><br></pre></td></tr></table></figure>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">~/.openclaw/workspace/skills/agent-browser-local/SKILL.md</span><br></pre></td></tr></table></figure>
 
 <p>这个 skill 做的事情很简单：</p>
 <ul>
