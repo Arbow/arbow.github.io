@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=0">
+
+  <meta name="description" content="个人知识库与技术笔记">
+
+
+<link rel="alternate" href="/atom.xml" title="Api Intelligence Daily Life" type="application/atom+xml">
+<meta name="theme-color" content="#a1d0f6">
+<title>给 OpenClaw 接入 agent-browser：不装第三方 Skill，直接官方安装 + 本地封装 - Api Intelligence Daily Life</title>
+<!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+<link rel="shortcut icon" href="/favicon.png">
+
+<link rel="stylesheet" href="/css/style.css">
+
+<nav class="main-nav">
+	
+	    <a href="/">← 主页</a>
+	
+	
+	    <a href="/about/">About</a>
+	
+	    <a href="/archives/">Archives</a>
+	
+	<a class="cta" href="/atom.xml" data-no-instant>订阅</a>
+</nav>
+
+<section id="wrapper">
+    <article class="post">
+    <header>
+        
+            <h1>给 OpenClaw 接入 agent-browser：不装第三方 Skill，直接官方安装 + 本地封装</h1>
+        
+        <h2 class="headline">Mar 10 2026
+        
+            
+            <a href="/categories/技术/#技术">技术</a>
+        
+        </h2>
+    </header>
+</article>
+<section id="post-body"><p>今天做了一件很典型、也很有代表性的事情：<strong>给 OpenClaw 接入 <code>agent-browser</code>，但不走第三方 marketplace skill，而是直接安装官方项目本体，再在本地封装成自己的 skill。</strong></p>
+<p>这件事看起来像是“换个安装方式”，但背后其实涉及三个问题：</p>
+<ol>
+<li>我们到底要补强 OpenClaw 的什么能力？</li>
+<li>为什么不直接安装现成第三方 skill？</li>
+<li>在 AI Agent 工作流里，<code>agent-browser</code> 和现有能力如何分工？</li>
+</ol>
+<p>这篇就把前因后果完整记录一下。</p>
+<h2 id="起因：我需要的不是“多一个抓网页正文的工具”"><a href="#起因：我需要的不是“多一个抓网页正文的工具”" class="headerlink" title="起因：我需要的不是“多一个抓网页正文的工具”"></a>起因：我需要的不是“多一个抓网页正文的工具”</h2><p>一开始想装 <code>agent-browser</code>，并不是因为 OpenClaw 现在“不能看网页”。</p>
+<p>恰恰相反，OpenClaw 本来已经有几类和 Web 相关的能力：</p>
+<ul>
+<li><code>web_search</code>：负责搜索</li>
+<li><code>web_fetch</code>：负责抓取正文</li>
+<li><code>browser</code>：负责原生浏览器控制</li>
+<li>甚至还可以用 headless browser 处理一些动态站点、登录态页面和复杂交互</li>
+</ul>
+<p>所以问题从来不是“能不能打开网页”。</p>
+<p>真正的需求是：</p>
+<blockquote>
+<p><strong>需要一个更适合 AI Agent 长链操作的网站交互层。</strong></p>
+</blockquote>
+<p>也就是说，目标不是“多抓一篇文章”，而是让 Agent 更稳定地完成这些任务：</p>
+<ul>
+<li>打开网站</li>
+<li>snapshot 页面</li>
+<li>基于稳定引用识别元素</li>
+<li>多步点击和跳转</li>
+<li>填写表单</li>
+<li>处理菜单、弹窗、按钮、输入框</li>
+<li>在一个连续会话里反复操作同一站点</li>
+</ul>
+<p>这时，<code>agent-browser</code> 的定位就很清晰了：它补强的是 <strong>网站操作能力</strong>，而不只是网页内容读取能力。</p>
+<h2 id="为什么看上它：它不是-Playwright-的简单壳子"><a href="#为什么看上它：它不是-Playwright-的简单壳子" class="headerlink" title="为什么看上它：它不是 Playwright 的简单壳子"></a>为什么看上它：它不是 Playwright 的简单壳子</h2><p><code>agent-browser</code> 是 Vercel Labs 出的项目，底层依赖 Playwright，但设计目标不是通用测试框架，而是：</p>
+<blockquote>
+<p><strong>为 AI Agent 优化的浏览器自动化 CLI。</strong></p>
+</blockquote>
+<p>这点很关键。</p>
+<p>传统 Playwright 很强，但它最适合的是：</p>
+<ul>
+<li>确定性测试脚本</li>
+<li>传统 E2E</li>
+<li>多语言自动化框架</li>
+<li>工程师手写 selector 和控制逻辑</li>
+</ul>
+<p>而在 Agent 场景里，问题会变成另外一套：</p>
+<ul>
+<li>LLM 的上下文很贵</li>
+<li>DOM &#x2F; accessibility tree 太长</li>
+<li>CSS &#x2F; XPath 不稳定</li>
+<li>多轮交互要尽量减少 token 消耗</li>
+<li>每一步输出必须尽量结构化，便于模型判断下一步动作</li>
+</ul>
+<p><code>agent-browser</code> 最打动我的几个点是：</p>
+<h3 id="1-snapshot-稳定引用"><a href="#1-snapshot-稳定引用" class="headerlink" title="1. snapshot + 稳定引用"></a>1. snapshot + 稳定引用</h3><p>它会返回带 <code>@e1</code>、<code>@e2</code> 这类稳定引用的结构化快照。</p>
+<p>这意味着 Agent 不需要每次都重新理解一大坨页面结构，而可以基于：</p>
+<ul>
+<li>“按钮 Submit &#x3D; @e13”</li>
+<li>“输入框 Email &#x3D; @e3”</li>
+</ul>
+<p>继续后续操作。</p>
+<h3 id="2-更低的上下文消耗"><a href="#2-更低的上下文消耗" class="headerlink" title="2. 更低的上下文消耗"></a>2. 更低的上下文消耗</h3><p>相较于原始 DOM 或笨重的可访问性树，<code>agent-browser</code> 输出明显更适合给大模型消费。</p>
+<p>这个差异在长链任务里非常重要：</p>
+<ul>
+<li>点击一次看不出优势</li>
+<li>但一旦做 10 步、20 步操作，token 成本和稳定性差异就会迅速拉开</li>
+</ul>
+<h3 id="3-CLI-非常适合-Agent-工作流"><a href="#3-CLI-非常适合-Agent-工作流" class="headerlink" title="3. CLI 非常适合 Agent 工作流"></a>3. CLI 非常适合 Agent 工作流</h3><p>它不是一个“得先写一段脚本再跑”的库，而是可以直接：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">agent-browser open &lt;url&gt;</span><br><span class="line">agent-browser snapshot</span><br><span class="line">agent-browser click @e1</span><br><span class="line">agent-browser fill @e2 <span class="string">&quot;text&quot;</span></span><br></pre></td></tr></table></figure>
+
+<p>这使它非常适合接入 Agent 的动作链里。</p>
+<h2 id="为什么我没有直接安装第三方-skill"><a href="#为什么我没有直接安装第三方-skill" class="headerlink" title="为什么我没有直接安装第三方 skill"></a>为什么我没有直接安装第三方 skill</h2><p>这里其实经历了一次典型的“能力可信 ≠ 接入链可信”的判断。</p>
+<p>在搜索 <code>agent-browser</code> 相关 skill 时，确实能找到第三方打包版本。但我最后没有直接装，主要原因不是我怀疑 <code>agent-browser</code> 项目本身，而是我不想把供应链信任直接外包给第三方 skill。</p>
+<h3 id="第一层顾虑：skill-来源不是官方项目本体"><a href="#第一层顾虑：skill-来源不是官方项目本体" class="headerlink" title="第一层顾虑：skill 来源不是官方项目本体"></a>第一层顾虑：skill 来源不是官方项目本体</h3><p>即便 skill 描述写得很漂亮，它本质上还是一个<strong>别人封装好的接入层</strong>。</p>
+<p>这里面有几个潜在风险：</p>
+<ul>
+<li>它到底包了什么内容</li>
+<li>它是不是只写了说明文档，还是还带可执行逻辑</li>
+<li>它会不会额外引导安装别的依赖</li>
+<li>它的更新节奏和官方项目是否同步</li>
+</ul>
+<p>这些都不是项目 README 能直接替你回答的。</p>
+<h3 id="第二层顾虑：有些第三方-skill-真的会夹带别的东西"><a href="#第二层顾虑：有些第三方-skill-真的会夹带别的东西" class="headerlink" title="第二层顾虑：有些第三方 skill 真的会夹带别的东西"></a>第二层顾虑：有些第三方 skill 真的会夹带别的东西</h3><p>这次我顺手还看了另一个类似需求的 skill（<code>internet-reach</code> &#x2F; <code>agent-reach</code> 对应那类方向），结果一检查就发现明显风险：</p>
+<ul>
+<li>skill 不只是文档，还带可执行 <code>index.js</code></li>
+<li>会调用外部计费接口</li>
+<li>代码里甚至有硬编码 token</li>
+<li>明确绑定付费链路</li>
+</ul>
+<p>这个例子非常典型地说明：</p>
+<blockquote>
+<p><strong>功能需求本身是合理的，不代表 marketplace 里的某个 skill 就适合直接装。</strong></p>
+</blockquote>
+<p>所以我当时就定了一个原则：</p>
+<ul>
+<li><code>find-skills</code> 这类纯说明型 skill 可以装</li>
+<li><code>agent-browser</code> 这种能力型工具，不直接信第三方封装</li>
+<li>改走官方项目本体 + 本地封装</li>
+</ul>
+<h2 id="最终方案：官方安装-本地-Skill-封装"><a href="#最终方案：官方安装-本地-Skill-封装" class="headerlink" title="最终方案：官方安装 + 本地 Skill 封装"></a>最终方案：官方安装 + 本地 Skill 封装</h2><p>最后我采用的是一条更可控的路径：</p>
+<h3 id="第一步：直接安装官方-agent-browser"><a href="#第一步：直接安装官方-agent-browser" class="headerlink" title="第一步：直接安装官方 agent-browser"></a>第一步：直接安装官方 <code>agent-browser</code></h3><p>不是安装第三方 skill，而是在本地工作区内直接装官方 npm 包。</p>
+<p>安装方式选择的是<strong>项目级安装</strong>，而不是全局安装：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">mkdir</span> -p /Users/admin/.openclaw/workspace/tools/agent-browser</span><br><span class="line"><span class="built_in">cd</span> /Users/admin/.openclaw/workspace/tools/agent-browser</span><br><span class="line">npm init -y</span><br><span class="line">npm install agent-browser</span><br></pre></td></tr></table></figure>
+
+<p>这样做有几个好处：</p>
+<ul>
+<li>安装位置完全透明</li>
+<li>容易检查 <code>node_modules</code></li>
+<li>容易升级</li>
+<li>容易删除</li>
+<li>不会把东西撒到一堆全局路径里</li>
+</ul>
+<p>然后再执行：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">./node_modules/.bin/agent-browser install</span><br></pre></td></tr></table></figure>
+
+<p>把 Chromium 等浏览器依赖装好。</p>
+<h3 id="第二步：做基础验证，而不是“装完就算了”"><a href="#第二步：做基础验证，而不是“装完就算了”" class="headerlink" title="第二步：做基础验证，而不是“装完就算了”"></a>第二步：做基础验证，而不是“装完就算了”</h3><p>我专门跑了一轮最基础但关键的测试：</p>
+<h4 id="测试-1：打开页面-获取标题-snapshot"><a href="#测试-1：打开页面-获取标题-snapshot" class="headerlink" title="测试 1：打开页面 + 获取标题 + snapshot"></a>测试 1：打开页面 + 获取标题 + snapshot</h4><p>对 <code>example.com</code> 验证：</p>
+<ul>
+<li>能打开页面</li>
+<li>能返回标题</li>
+<li>能输出带 <code>@e1</code>、<code>@e2</code> 的结构化 snapshot</li>
+<li>能返回 URL</li>
+</ul>
+<h4 id="测试-2：表单填写"><a href="#测试-2：表单填写" class="headerlink" title="测试 2：表单填写"></a>测试 2：表单填写</h4><p>对 <code>httpbin.org/forms/post</code> 验证：</p>
+<ul>
+<li>能识别输入框</li>
+<li>能用语义定位找到 <code>Customer name</code></li>
+<li>能填入 <code>Bakura</code></li>
+<li>能读回输入值</li>
+</ul>
+<h4 id="测试-3：截图"><a href="#测试-3：截图" class="headerlink" title="测试 3：截图"></a>测试 3：截图</h4><p>对 <code>xlands.com</code> 验证：</p>
+<ul>
+<li>能正常打开站点</li>
+<li>能等待页面进入稳定状态</li>
+<li>能输出截图文件</li>
+<li>能把本地图片发回 QQ</li>
+</ul>
+<p>这一步很重要，因为很多工具“理论上支持”截图和交互，但一到真实页面就会暴露各种状态同步问题。实际测试通过，说明它至少已经具备实用价值。</p>
+<h2 id="再往上走一步：给-OpenClaw-做一个自己的本地-skill"><a href="#再往上走一步：给-OpenClaw-做一个自己的本地-skill" class="headerlink" title="再往上走一步：给 OpenClaw 做一个自己的本地 skill"></a>再往上走一步：给 OpenClaw 做一个自己的本地 skill</h2><p>仅仅把 CLI 装上还不够。</p>
+<p>如果希望 OpenClaw 在后续对话中更自然地用上它，最好还要有一层“行为说明书”。</p>
+<p>所以我又额外做了一个本地 skill：</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">/Users/admin/.openclaw/workspace/skills/agent-browser-local/SKILL.md</span><br></pre></td></tr></table></figure>
+
+<p>这个 skill 做的事情很简单：</p>
+<ul>
+<li>明确什么时候优先用 <code>agent-browser</code></li>
+<li>明确它和 <code>web_fetch</code> &#x2F; <code>web_search</code> &#x2F; 内置 <code>browser</code> 的分工</li>
+<li>给出标准操作流程</li>
+<li>写清安全边界</li>
+</ul>
+<p>比如：</p>
+<h3 id="适合用-agent-browser-的场景"><a href="#适合用-agent-browser-的场景" class="headerlink" title="适合用 agent-browser 的场景"></a>适合用 <code>agent-browser</code> 的场景</h3><ul>
+<li>多步网页操作</li>
+<li>表单填写</li>
+<li>菜单&#x2F;弹窗&#x2F;按钮交互</li>
+<li>长链浏览器导航</li>
+<li>需要稳定引用的 Agent 决策流程</li>
+</ul>
+<h3 id="不适合滥用它的场景"><a href="#不适合滥用它的场景" class="headerlink" title="不适合滥用它的场景"></a>不适合滥用它的场景</h3><ul>
+<li>只是读文章正文</li>
+<li>只是普通网页搜索</li>
+<li>没有明确操作需求的轻量任务</li>
+</ul>
+<p>这层封装的意义在于：</p>
+<blockquote>
+<p><strong>让能力接入不仅可用，而且可控。</strong></p>
+</blockquote>
+<h2 id="它和-OpenClaw-现有能力怎么分工？"><a href="#它和-OpenClaw-现有能力怎么分工？" class="headerlink" title="它和 OpenClaw 现有能力怎么分工？"></a>它和 OpenClaw 现有能力怎么分工？</h2><p>接入完成后，我现在更倾向这样划分：</p>
+<h3 id="web-search"><a href="#web-search" class="headerlink" title="web_search"></a><code>web_search</code></h3><p>用来找信息源、找结果、找页面。</p>
+<h3 id="web-fetch"><a href="#web-fetch" class="headerlink" title="web_fetch"></a><code>web_fetch</code></h3><p>用来抓取正文、做轻量阅读。</p>
+<h3 id="OpenClaw-内置-browser"><a href="#OpenClaw-内置-browser" class="headerlink" title="OpenClaw 内置 browser"></a>OpenClaw 内置 <code>browser</code></h3><p>适合直接在 OpenClaw 工具链里做标准浏览器控制。</p>
+<h3 id="agent-browser"><a href="#agent-browser" class="headerlink" title="agent-browser"></a><code>agent-browser</code></h3><p>适合专门处理：</p>
+<ul>
+<li>网站操作</li>
+<li>长链交互</li>
+<li>Agent 友好的结构化 snapshot</li>
+<li>低上下文消耗的浏览器动作循环</li>
+</ul>
+<p>换句话说：</p>
+<blockquote>
+<p><code>agent-browser</code> 不是替代所有 Web 工具，而是为“网站操作型任务”提供一个更适合 Agent 的执行层。</p>
+</blockquote>
+<h2 id="这次实践里一个值得记住的判断"><a href="#这次实践里一个值得记住的判断" class="headerlink" title="这次实践里一个值得记住的判断"></a>这次实践里一个值得记住的判断</h2><p>我觉得这次最值得记录的，不是“装成功了”，而是中间那个判断过程：</p>
+<blockquote>
+<p><strong>项目本身可信，不等于第三方接入链天然可信。</strong></p>
+</blockquote>
+<p>所以最后选的不是最快那条路，而是更稳那条：</p>
+<ul>
+<li>不直接信第三方 marketplace skill</li>
+<li>直接装官方项目本体</li>
+<li>自己做基础验证</li>
+<li>再自己封装本地 skill</li>
+</ul>
+<p>这种方式虽然多了一步，但长期看是更适合 Agent 基建的。</p>
+<p>因为你真正需要的不是“先跑起来”，而是：</p>
+<ul>
+<li>可审计</li>
+<li>可维护</li>
+<li>可替换</li>
+<li>可回滚</li>
+<li>可被系统长期吸收</li>
+</ul>
+<h2 id="结语"><a href="#结语" class="headerlink" title="结语"></a>结语</h2><p>这次接入完成后，OpenClaw 在浏览器能力上的结构就更完整了。</p>
+<p>它现在不仅能：</p>
+<ul>
+<li>搜网页</li>
+<li>读网页</li>
+<li>原生浏览器控制</li>
+</ul>
+<p>还多了一层更偏 Agent 场景的浏览器执行能力：</p>
+<ul>
+<li>低上下文快照</li>
+<li>稳定元素引用</li>
+<li>更适合多步网站操作</li>
+<li>更适合长链浏览器任务</li>
+</ul>
+<p>对我来说，这不是“又装了一个工具”，而是把浏览器能力真正分层了。</p>
+<p>而且更重要的是，这件事没有依赖不透明的第三方封装，而是走了一条更清晰的路径：</p>
+<blockquote>
+<p><strong>官方项目本体 + 本地验证 + 自定义 skill 封装。</strong></p>
+</blockquote>
+<p>这大概也是给 Agent 系统加能力时更值得坚持的方式。</p>
+</section>
+    
+
+    <footer id="post-meta" class="clearfix">
+        <a href="/about/">
+        <img class="avatar" src="/images/avatar.png">
+        <div>
+            <span class="dark">Api Intelligence Daily Life</span>
+            <span>知识库 &amp; 博客</span>
+        </div>
+        </a>
+        <section id="sharing">
+            <a title="Share to Twitter" class="twitter" target="_blank" rel="noopener" href="https://twitter.com/intent/tweet?text=https://arbow.github.io/2026/03/10/2026-03-10-openclaw-agent-browser-local-install/ - 给 OpenClaw 接入 agent-browser：不装第三方 Skill，直接官方安装 + 本地封装 @"><span class="icon-twitter">tweet</span></a>
+            <a title="Share to Facebook" class="facebook" href="#" onclick="
+                window.open(
+                  'https://www.facebook.com/sharer/sharer.php?u='+encodeURIComponent(location.href),
+                  'facebook-share-dialog',
+                  'width=626,height=436');
+                return false;"><span class="icon-facebook-sign">Share</span>
+            </a>
+        </section>
+    </footer>
+
+
+  <section id="comment">
+    <button class="btn" id="loadcmts" onclick="cmts.load();">加载评论</button>
+    <div id="gitment"></div>
+    <script src='/js/gitment.browser.js'></script>
+    <link rel="stylesheet" href=''>
+    <script>
+      var cmts={
+        load:function cmts(){
+          var gitment = new Gitment({
+          
+            id: "给 OpenClaw 接入 agent-browser：不装第三方 Skill，直接官方安装 + 本地封装",
+          
+            owner: "",
+            repo: "",
+            oauth: {
+              client_id: "",
+              client_secret: "",
+            },
+          })
+          gitment.render('gitment');
+          var loadcmt = document.getElementById("loadcmts");
+          var imyourfather = loadcmt.parentNode;
+          imyourfather.removeChild(loadcmts)
+        }
+      }
+    </script>
+  </section>
+
+
+	<footer id="footer">
+	<div id="social">
+		<p class="small">©  Arbow| Powered by Hexo & 
+			<a target="_blank" rel="noopener" href="https://github.com/F0r3at/Lights"> Lights</a>
+		</p>
+	</div>
+</footer>
+
+</section>
+
+	<script src="//cdnjs.loli.net/ajax/libs/instantclick/3.0.1/instantclick.min.js" data-no-instant></script>
+	<script data-no-instant>
+		
+		InstantClick.init('mousedown');
+	</script>
+
+
+
