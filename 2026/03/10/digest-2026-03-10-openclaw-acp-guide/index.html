@@ -1,0 +1,387 @@
+<!DOCTYPE html>
+
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=0">
+
+  <meta name="description" content="个人知识库与技术笔记">
+
+
+<link rel="alternate" href="/atom.xml" title="Api Intelligence Daily Life" type="application/atom+xml">
+<meta name="theme-color" content="#a1d0f6">
+<title>文摘：OpenClaw 的 ACP 协议怎么用？如何接入 Claude Code、Codex、Gemini CLI - Api Intelligence Daily Life</title>
+<!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+<link rel="shortcut icon" href="/favicon.png">
+
+<link rel="stylesheet" href="/css/style.css">
+
+<nav class="main-nav">
+	
+	    <a href="/">← 主页</a>
+	
+	
+	    <a href="/about/">About</a>
+	
+	    <a href="/archives/">Archives</a>
+	
+	<a class="cta" href="/atom.xml" data-no-instant>订阅</a>
+</nav>
+
+<section id="wrapper">
+    <article class="post">
+    <header>
+        
+            <h1>文摘：OpenClaw 的 ACP 协议怎么用？如何接入 Claude Code、Codex、Gemini CLI</h1>
+        
+        <h2 class="headline">Mar 10 2026
+        
+            
+            <a href="/categories/文摘/#文摘">文摘</a>
+        
+        </h2>
+    </header>
+</article>
+<section id="post-body"><p>最近不少人第一次看到 OpenClaw 的 ACP（Agent Client Protocol）都会有点懵：它到底是个什么东西？为什么文档里说能操作 Claude Code、Codex、Gemini CLI 这些 AI 编程工具？它和 OpenClaw 自己的 sub-agent 又是什么关系？</p>
+<p>如果只说一句话，我会这样概括：</p>
+<blockquote>
+<p><strong>ACP 是 OpenClaw 连接“外部 AI 编程 CLI &#x2F; Harness”的统一接口层。</strong></p>
+<p>OpenClaw 负责理解你的需求、保存上下文、分发任务；ACP 负责把任务交给 Claude Code、Codex、Gemini CLI、OpenCode 这类外部编程代理去执行。</p>
+</blockquote>
+<p>这意味着，OpenClaw 并不是自己“假装成” Claude Code，而是把 Claude Code、Codex 这类工具接进它的运行体系里，让它们变成一个个可调度、可追踪、可持续对话的执行端。</p>
+<h2 id="ACP-到底解决了什么问题？"><a href="#ACP-到底解决了什么问题？" class="headerlink" title="ACP 到底解决了什么问题？"></a>ACP 到底解决了什么问题？</h2><p>如果你直接使用 Claude Code 或 Codex CLI，通常会遇到几个现实限制：</p>
+<ol>
+<li><strong>上下文分裂</strong>：代码上下文、需求背景、历史决策、客户信息分散在不同地方</li>
+<li><strong>会话不稳定</strong>：一个任务做完之后，后续追问不一定还能延续原有上下文</li>
+<li><strong>调度能力弱</strong>：缺少统一的生命周期管理，例如创建、取消、重新绑定、状态查看</li>
+<li><strong>多代理难编排</strong>：很难把“会理解业务的调度层”和“只负责写代码的执行层”分开</li>
+</ol>
+<p>OpenClaw 的思路是把系统拆成两层：</p>
+<ul>
+<li><strong>编排层（OpenClaw）</strong>：理解业务需求、保留长期上下文、管理会话和路由</li>
+<li><strong>执行层（ACP Harness）</strong>：真正去读仓库、写代码、跑测试、修 Bug</li>
+</ul>
+<p>于是，ACP 的角色就变得很清晰：它让外部 AI 编程代理不再是孤立工具，而是变成 OpenClaw 可以统一调度的一种“外接执行引擎”。</p>
+<h2 id="ACP-和-sub-agent-的区别"><a href="#ACP-和-sub-agent-的区别" class="headerlink" title="ACP 和 sub-agent 的区别"></a>ACP 和 sub-agent 的区别</h2><p>这是最容易混淆的一点。</p>
+<p>OpenClaw 里常见有两种委托执行方式：</p>
+<h3 id="1-sub-agent"><a href="#1-sub-agent" class="headerlink" title="1. sub-agent"></a>1. sub-agent</h3><p>这是 OpenClaw 原生的子代理运行方式。</p>
+<p>适合场景：</p>
+<ul>
+<li>普通调研</li>
+<li>资料整理</li>
+<li>写文档</li>
+<li>分工执行一些内部任务</li>
+<li>需要在 OpenClaw 自己的运行模型里完成的工作</li>
+</ul>
+<h3 id="2-ACP"><a href="#2-ACP" class="headerlink" title="2. ACP"></a>2. ACP</h3><p>这是通过 ACP backend 去驱动<strong>外部 harness</strong> 的方式。</p>
+<p>适合场景：</p>
+<ul>
+<li>明确想让 <strong>Claude Code</strong> 干活</li>
+<li>明确想让 <strong>Codex</strong> 操作代码库</li>
+<li>想用 <strong>Gemini CLI</strong> 做代码分析或改动</li>
+<li>想把某个“真实编程代理 CLI”纳入 OpenClaw 工作流</li>
+</ul>
+<p>所以可以粗暴地记成一句话：</p>
+<blockquote>
+<p><strong>要外部 AI 编程 CLI，用 ACP；要 OpenClaw 内部子代理，用 sub-agent。</strong></p>
+</blockquote>
+<p>文档中对应关系也非常直接：</p>
+<ul>
+<li>sub-agent：<code>sessions_spawn</code> 默认运行方式</li>
+<li>ACP：必须显式指定 <code>runtime: &quot;acp&quot;</code></li>
+</ul>
+<h2 id="在-OpenClaw-里，ACP-是怎么触发的？"><a href="#在-OpenClaw-里，ACP-是怎么触发的？" class="headerlink" title="在 OpenClaw 里，ACP 是怎么触发的？"></a>在 OpenClaw 里，ACP 是怎么触发的？</h2><p>主要有两种方式。</p>
+<h3 id="方式一：自然语言触发"><a href="#方式一：自然语言触发" class="headerlink" title="方式一：自然语言触发"></a>方式一：自然语言触发</h3><p>你可以直接对 OpenClaw 说：</p>
+<ul>
+<li>“用 Codex 跑这个任务”</li>
+<li>“开一个 Claude Code 会话处理这个仓库”</li>
+<li>“用 Gemini CLI 看一下这个 repo 的测试失败原因”</li>
+</ul>
+<p>理论上，OpenClaw 应该自动识别这是一类 <strong>ACP harness 请求</strong>，然后把任务路由到 ACP runtime，而不是 sub-agent runtime。</p>
+<h3 id="方式二：显式用-acp-命令"><a href="#方式二：显式用-acp-命令" class="headerlink" title="方式二：显式用 /acp 命令"></a>方式二：显式用 <code>/acp</code> 命令</h3><p>如果你想要更强的控制感，可以直接用 ACP 指令。</p>
+<p>文档给出的常用命令包括：</p>
+<ul>
+<li><code>/acp spawn</code></li>
+<li><code>/acp status</code></li>
+<li><code>/acp sessions</code></li>
+<li><code>/acp steer</code></li>
+<li><code>/acp cancel</code></li>
+<li><code>/acp close</code></li>
+<li><code>/acp doctor</code></li>
+<li><code>/acp permissions</code></li>
+<li><code>/acp model</code></li>
+<li><code>/acp timeout</code></li>
+</ul>
+<p>比如下面这条：</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">/acp spawn codex --mode persistent --thread auto</span><br></pre></td></tr></table></figure>
+
+<p>它的含义是：</p>
+<ul>
+<li>启动一个 <code>codex</code> ACP 会话</li>
+<li><code>persistent</code> 表示持久会话，而不是一次性运行</li>
+<li><code>thread auto</code> 表示如果当前渠道支持 thread&#x2F;topic 绑定，就自动绑定过去</li>
+</ul>
+<p>如果只是跑一次任务，不想保留长期上下文，则可以用类似：</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">/acp spawn claude --mode oneshot --thread off</span><br></pre></td></tr></table></figure>
+
+<h2 id="如果从工具接口调用，格式长什么样？"><a href="#如果从工具接口调用，格式长什么样？" class="headerlink" title="如果从工具接口调用，格式长什么样？"></a>如果从工具接口调用，格式长什么样？</h2><p>OpenClaw 文档给出的典型结构是这样的：</p>
+<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="punctuation">&#123;</span></span><br><span class="line">  <span class="attr">&quot;task&quot;</span><span class="punctuation">:</span> <span class="string">&quot;Open the repo and summarize failing tests&quot;</span><span class="punctuation">,</span></span><br><span class="line">  <span class="attr">&quot;runtime&quot;</span><span class="punctuation">:</span> <span class="string">&quot;acp&quot;</span><span class="punctuation">,</span></span><br><span class="line">  <span class="attr">&quot;agentId&quot;</span><span class="punctuation">:</span> <span class="string">&quot;codex&quot;</span><span class="punctuation">,</span></span><br><span class="line">  <span class="attr">&quot;thread&quot;</span><span class="punctuation">:</span> <span class="literal"><span class="keyword">true</span></span><span class="punctuation">,</span></span><br><span class="line">  <span class="attr">&quot;mode&quot;</span><span class="punctuation">:</span> <span class="string">&quot;session&quot;</span></span><br><span class="line"><span class="punctuation">&#125;</span></span><br></pre></td></tr></table></figure>
+
+<p>这里最关键的几个字段是：</p>
+<ul>
+<li><code>task</code>：初始任务描述</li>
+<li><code>runtime: &quot;acp&quot;</code>：明确使用 ACP runtime</li>
+<li><code>agentId</code>：目标 harness，例如 <code>codex</code>、<code>claude</code>、<code>gemini</code></li>
+<li><code>thread</code>：是否请求线程&#x2F;话题绑定</li>
+<li><code>mode</code>：<code>run</code>（一次性）或 <code>session</code>（持续会话）</li>
+</ul>
+<p>这个接口设计很重要，因为它说明 ACP 在 OpenClaw 里不是一个“聊天口令”，而是一个<strong>一等运行时（runtime）</strong>。</p>
+<h2 id="为什么它能操作-Claude-Code-Codex-Gemini-CLI？"><a href="#为什么它能操作-Claude-Code-Codex-Gemini-CLI？" class="headerlink" title="为什么它能操作 Claude Code &#x2F; Codex &#x2F; Gemini CLI？"></a>为什么它能操作 Claude Code &#x2F; Codex &#x2F; Gemini CLI？</h2><p>因为在 OpenClaw 的架构里，这些工具被抽象成了 ACP 的“目标 harness”。</p>
+<p>换句话说，OpenClaw 并不关心底层是 Claude Code 还是 Codex，它关心的是：</p>
+<ul>
+<li>目标 agent 是谁（<code>agentId</code>）</li>
+<li>会话是否要持续</li>
+<li>是否要绑定到某个 thread&#x2F;topic</li>
+<li>这次任务是否取消、继续、改模型、改权限</li>
+</ul>
+<p>因此，Claude Code、Codex、Gemini CLI 这些原本各自独立的工具，被纳入了一个统一管理面：</p>
+<ul>
+<li>会话创建</li>
+<li>会话状态查询</li>
+<li>会话取消</li>
+<li>会话关闭</li>
+<li>会话持续上下文</li>
+<li>输出回传到当前聊天界面</li>
+</ul>
+<p>这也是为什么 ACP 的价值并不只是“多支持几个 CLI”，而是把这些 CLI 纳入了 OpenClaw 的统一调度框架。</p>
+<h2 id="最常见的两种使用模式"><a href="#最常见的两种使用模式" class="headerlink" title="最常见的两种使用模式"></a>最常见的两种使用模式</h2><h3 id="一次性任务（oneshot-run）"><a href="#一次性任务（oneshot-run）" class="headerlink" title="一次性任务（oneshot &#x2F; run）"></a>一次性任务（oneshot &#x2F; run）</h3><p>适合：</p>
+<ul>
+<li>“分析这个报错”</li>
+<li>“总结这个仓库的 failing tests”</li>
+<li>“找出这个 PR 的潜在风险”</li>
+<li>“给出修复思路，但不用一直保留上下文”</li>
+</ul>
+<p>特点：</p>
+<ul>
+<li>跑完就结束</li>
+<li>像临时叫来一个外部编程代理做事</li>
+<li>成本和管理复杂度较低</li>
+</ul>
+<h3 id="持续会话（persistent-session）"><a href="#持续会话（persistent-session）" class="headerlink" title="持续会话（persistent &#x2F; session）"></a>持续会话（persistent &#x2F; session）</h3><p>适合：</p>
+<ul>
+<li>持续维护同一个仓库</li>
+<li>围绕同一任务反复追问</li>
+<li>在一个 thread 里长期和某个 coding agent 协作</li>
+<li>多轮修 bug、改代码、跑测试、继续修</li>
+</ul>
+<p>特点：</p>
+<ul>
+<li>上下文连续</li>
+<li>更像在聊天界面里长期挂着一个 Claude Code &#x2F; Codex 工作线程</li>
+<li>适合真正进入“AI 编程协作”状态</li>
+</ul>
+<h2 id="它不是开箱即用的一句口号，而是一套运行条件"><a href="#它不是开箱即用的一句口号，而是一套运行条件" class="headerlink" title="它不是开箱即用的一句口号，而是一套运行条件"></a>它不是开箱即用的一句口号，而是一套运行条件</h2><p>很多人看到“支持 Claude Code &#x2F; Codex”时，会以为只要写一句 prompt 就自动生效。但实际上，ACP 依赖后端插件和策略配置。</p>
+<p>文档给出的基础 ACP 配置大致是：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">  acp: &#123;</span><br><span class="line">    enabled: true,</span><br><span class="line">    dispatch: &#123; enabled: true &#125;,</span><br><span class="line">    backend: &quot;acpx&quot;,</span><br><span class="line">    defaultAgent: &quot;codex&quot;,</span><br><span class="line">    allowedAgents: [&quot;pi&quot;, &quot;claude&quot;, &quot;codex&quot;, &quot;opencode&quot;, &quot;gemini&quot;, &quot;kimi&quot;],</span><br><span class="line">    maxConcurrentSessions: 8,</span><br><span class="line">  &#125;,</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>如果要跑 acpx backend，文档建议先安装并启用插件：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">openclaw plugins install acpx</span><br><span class="line">openclaw config <span class="built_in">set</span> plugins.entries.acpx.enabled <span class="literal">true</span></span><br></pre></td></tr></table></figure>
+
+<p>然后再检查：</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">/acp doctor</span><br></pre></td></tr></table></figure>
+
+<p>所以现实中的可用条件至少包括：</p>
+<ol>
+<li><code>acp.enabled=true</code></li>
+<li>ACP backend 已安装并可用（例如 <code>acpx</code>）</li>
+<li>目标 harness agent 在 allowlist 中</li>
+<li>当前运行环境允许 host-side ACP 执行</li>
+<li>底层 harness 本身可用</li>
+</ol>
+<h2 id="ACP-最大的工程坑：权限"><a href="#ACP-最大的工程坑：权限" class="headerlink" title="ACP 最大的工程坑：权限"></a>ACP 最大的工程坑：权限</h2><p>这一点非常关键。</p>
+<p>文档明确指出：<strong>ACP 会话是非交互式的</strong>。也就是说，它没有本地终端里那种 TTY 弹窗让你批准“是否允许写文件”“是否允许执行 shell”。</p>
+<p>这会导致一个常见问题：</p>
+<blockquote>
+<p>Claude Code &#x2F; Codex 需要写文件或执行命令时，如果权限策略不匹配，ACP 会话可能直接失败。</p>
+</blockquote>
+<p>acpx 相关权限主要有两个配置。</p>
+<h3 id="permissionMode"><a href="#permissionMode" class="headerlink" title="permissionMode"></a><code>permissionMode</code></h3><p>控制哪些操作可以不经提示直接通过：</p>
+<ul>
+<li><code>approve-all</code>：自动批准写文件和 shell 命令</li>
+<li><code>approve-reads</code>：只自动批准读操作；写和 exec 会触发权限问题</li>
+<li><code>deny-all</code>：全部拒绝</li>
+</ul>
+<h3 id="nonInteractivePermissions"><a href="#nonInteractivePermissions" class="headerlink" title="nonInteractivePermissions"></a><code>nonInteractivePermissions</code></h3><p>控制当本来应该弹出权限确认，但 ACP 又没有交互式终端时怎么办：</p>
+<ul>
+<li><code>fail</code>：直接报错终止</li>
+<li><code>deny</code>：静默拒绝，尽量继续执行</li>
+</ul>
+<p>文档特别提醒：OpenClaw 当前默认常常是：</p>
+<ul>
+<li><code>permissionMode=approve-reads</code></li>
+<li><code>nonInteractivePermissions=fail</code></li>
+</ul>
+<p>这意味着，只要外部 harness 需要写文件或执行 shell，就可能抛出类似：</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">AcpRuntimeError: Permission prompt unavailable in non-interactive mode</span><br></pre></td></tr></table></figure>
+
+<p>如果你希望 AI 编程代理真正具备“改代码 + 跑命令”的能力，就必须认真处理这一层权限策略，而不能只看“是否成功启动”。</p>
+<h2 id="另一个关键点：ACP-跑在-host，不在-sandbox"><a href="#另一个关键点：ACP-跑在-host，不在-sandbox" class="headerlink" title="另一个关键点：ACP 跑在 host，不在 sandbox"></a>另一个关键点：ACP 跑在 host，不在 sandbox</h2><p>文档里还有个容易被忽略但很重要的限制：</p>
+<blockquote>
+<p><strong>ACP 运行在宿主机（host runtime），而不是 OpenClaw sandbox 内部。</strong></p>
+</blockquote>
+<p>这会带来两个直接后果：</p>
+<ol>
+<li>如果当前会话本身是 sandboxed，ACP spawn 可能被阻止</li>
+<li>如果你要求的是强沙箱隔离，就不该选 ACP，而应该使用 sub-agent</li>
+</ol>
+<p>这也解释了 ACP 的本质：它更像是“通过 OpenClaw 调用宿主机上的真实外部编程工具”，而不是 OpenClaw 内部的纯抽象代理。</p>
+<h2 id="线程绑定：为什么它特别适合-Discord-Telegram-这类场景？"><a href="#线程绑定：为什么它特别适合-Discord-Telegram-这类场景？" class="headerlink" title="线程绑定：为什么它特别适合 Discord &#x2F; Telegram 这类场景？"></a>线程绑定：为什么它特别适合 Discord &#x2F; Telegram 这类场景？</h2><p>ACP 的一个很强的能力是<strong>thread-bound session</strong>。</p>
+<p>文档中说明，在支持 thread&#x2F;topic binding 的渠道里，OpenClaw 可以把某个 ACP 会话绑定到一个 thread 或 topic 上。之后：</p>
+<ul>
+<li>这个 thread 里的后续消息继续路由给同一个 ACP 会话</li>
+<li>输出持续回到同一个 thread</li>
+<li>直到会话被关闭、解绑、过期或超时</li>
+</ul>
+<p>这种设计非常适合真实工作流：</p>
+<ul>
+<li>一个 thread 对应一个仓库问题</li>
+<li>一个 topic 对应一个长期项目</li>
+<li>一个 coding agent 在这个上下文中持续干活</li>
+</ul>
+<p>它让聊天界面真正变成一个“可持续协作的开发操作台”，而不是一问一答的临时对话框。</p>
+<h2 id="一个更准确的定位：OpenClaw-是编排层，ACP-是外部执行层"><a href="#一个更准确的定位：OpenClaw-是编排层，ACP-是外部执行层" class="headerlink" title="一个更准确的定位：OpenClaw 是编排层，ACP 是外部执行层"></a>一个更准确的定位：OpenClaw 是编排层，ACP 是外部执行层</h2><p>很多人第一次接触 ACP，容易把它误解成“OpenClaw 的另一个工具”。其实更准确的理解应该是：</p>
+<ul>
+<li><strong>OpenClaw &#x3D; 编排层 &#x2F; 聊天入口 &#x2F; 上下文管理层</strong></li>
+<li><strong>ACP &#x3D; 外部 AI 编程代理的统一接入和控制层</strong></li>
+</ul>
+<p>于是，当你说：</p>
+<ul>
+<li>“用 Claude Code 看看这个仓库”</li>
+<li>“用 Codex 修一下这个 bug”</li>
+<li>“用 Gemini CLI 做代码审查”</li>
+</ul>
+<p>本质上是让 OpenClaw 做五件事：</p>
+<ol>
+<li>识别这是 ACP 请求</li>
+<li>选择目标 harness（如 <code>claude</code> &#x2F; <code>codex</code> &#x2F; <code>gemini</code>）</li>
+<li>创建 ACP session</li>
+<li>把任务发送给外部 coding agent</li>
+<li>将结果和状态回传到当前聊天上下文</li>
+</ol>
+<h2 id="一套最短心法"><a href="#一套最短心法" class="headerlink" title="一套最短心法"></a>一套最短心法</h2><p>如果只记最实用的部分，可以记住下面这份“极简心法”：</p>
+<h3 id="一次性任务"><a href="#一次性任务" class="headerlink" title="一次性任务"></a>一次性任务</h3><p>用：</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">/acp spawn &lt;agent&gt; --mode oneshot</span><br></pre></td></tr></table></figure>
+
+<h3 id="持久会话"><a href="#持久会话" class="headerlink" title="持久会话"></a>持久会话</h3><p>用：</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">/acp spawn &lt;agent&gt; --mode persistent</span><br></pre></td></tr></table></figure>
+
+<h3 id="常见-agentId"><a href="#常见-agentId" class="headerlink" title="常见 agentId"></a>常见 agentId</h3><ul>
+<li><code>codex</code></li>
+<li><code>claude</code></li>
+<li><code>gemini</code></li>
+<li><code>opencode</code></li>
+</ul>
+<h3 id="常见检查命令"><a href="#常见检查命令" class="headerlink" title="常见检查命令"></a>常见检查命令</h3><ul>
+<li><code>/acp doctor</code></li>
+<li><code>/acp status</code></li>
+<li><code>/acp sessions</code></li>
+</ul>
+<h3 id="报错优先排查"><a href="#报错优先排查" class="headerlink" title="报错优先排查"></a>报错优先排查</h3><ul>
+<li>ACP backend 有没有装好</li>
+<li><code>allowedAgents</code> 有没有放行目标 agent</li>
+<li>当前权限模式是否太保守</li>
+<li>当前渠道是否支持 thread&#x2F;topic 绑定</li>
+<li>当前会话是否被 sandbox 限制</li>
+</ul>
+<h2 id="结语"><a href="#结语" class="headerlink" title="结语"></a>结语</h2><p>从系统设计角度看，ACP 的意义并不是“OpenClaw 又支持了几个模型”，而是它为 <strong>AI 编程 CLI 的工程化接入</strong> 提供了一套统一控制面。</p>
+<p>它把原本散落的 Claude Code、Codex、Gemini CLI 这类工具，纳入了一个更完整的工作流框架：</p>
+<ul>
+<li>有统一入口</li>
+<li>有统一生命周期</li>
+<li>有统一会话管理</li>
+<li>有线程&#x2F;话题绑定</li>
+<li>有权限策略</li>
+<li>有状态控制与诊断能力</li>
+</ul>
+<p>如果说 OpenClaw 解决的是“如何在聊天界面中持续组织复杂工作”，那么 ACP 解决的就是：</p>
+<blockquote>
+<p><strong>如何把真正能干代码活的外部 AI 代理，稳定地接进这个系统里。</strong></p>
+</blockquote>
+<p>对于想搭建 AI-Native 开发工作流的人来说，ACP 不是一个边缘功能，反而是 OpenClaw 走向“可操作 Claude Code &#x2F; Codex &#x2F; Gemini CLI”的关键桥梁。</p>
+<hr>
+<p><strong>参考资料</strong></p>
+<ul>
+<li>OpenClaw 文档：<code>tools/acp-agents.md</code></li>
+<li>OpenClaw 文档：<code>tools/slash-commands.md</code></li>
+<li>Agent Client Protocol: <a target="_blank" rel="noopener" href="https://agentclientprotocol.com/">https://agentclientprotocol.com/</a></li>
+</ul>
+</section>
+    
+
+    <footer id="post-meta" class="clearfix">
+        <a href="/about/">
+        <img class="avatar" src="/images/avatar.png">
+        <div>
+            <span class="dark">Api Intelligence Daily Life</span>
+            <span>知识库 &amp; 博客</span>
+        </div>
+        </a>
+        <section id="sharing">
+            <a title="Share to Twitter" class="twitter" target="_blank" rel="noopener" href="https://twitter.com/intent/tweet?text=https://arbow.github.io/2026/03/10/digest-2026-03-10-openclaw-acp-guide/ - 文摘：OpenClaw 的 ACP 协议怎么用？如何接入 Claude Code、Codex、Gemini CLI @"><span class="icon-twitter">tweet</span></a>
+            <a title="Share to Facebook" class="facebook" href="#" onclick="
+                window.open(
+                  'https://www.facebook.com/sharer/sharer.php?u='+encodeURIComponent(location.href),
+                  'facebook-share-dialog',
+                  'width=626,height=436');
+                return false;"><span class="icon-facebook-sign">Share</span>
+            </a>
+        </section>
+    </footer>
+
+
+  <section id="comment">
+    <button class="btn" id="loadcmts" onclick="cmts.load();">加载评论</button>
+    <div id="gitment"></div>
+    <script src='/js/gitment.browser.js'></script>
+    <link rel="stylesheet" href=''>
+    <script>
+      var cmts={
+        load:function cmts(){
+          var gitment = new Gitment({
+          
+            id: "文摘：OpenClaw 的 ACP 协议怎么用？如何接入 Claude Code、Codex、Gemini CLI",
+          
+            owner: "",
+            repo: "",
+            oauth: {
+              client_id: "",
+              client_secret: "",
+            },
+          })
+          gitment.render('gitment');
+          var loadcmt = document.getElementById("loadcmts");
+          var imyourfather = loadcmt.parentNode;
+          imyourfather.removeChild(loadcmts)
+        }
+      }
+    </script>
+  </section>
+
+
+	<footer id="footer">
+	<div id="social">
+		<p class="small">©  Arbow| Powered by Hexo & 
+			<a target="_blank" rel="noopener" href="https://github.com/F0r3at/Lights"> Lights</a>
+		</p>
+	</div>
+</footer>
+
+</section>
+
+	<script src="//cdnjs.loli.net/ajax/libs/instantclick/3.0.1/instantclick.min.js" data-no-instant></script>
+	<script data-no-instant>
+		
+		InstantClick.init('mousedown');
+	</script>
+
+
+
