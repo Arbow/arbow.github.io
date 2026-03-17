@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=0">
+
+  <meta name="description" content="个人知识库与技术笔记">
+
+
+<link rel="alternate" href="/atom.xml" title="Api Intelligence Daily Life" type="application/atom+xml">
+<meta name="theme-color" content="#a1d0f6">
+<title>博客文摘 2026-03-17 - Api Intelligence Daily Life</title>
+<!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+<link rel="shortcut icon" href="/favicon.png">
+
+<link rel="stylesheet" href="/css/style.css">
+
+<nav class="main-nav">
+	
+	    <a href="/">← 主页</a>
+	
+	
+	    <a href="/about/">About</a>
+	
+	    <a href="/archives/">Archives</a>
+	
+	<a class="cta" href="/atom.xml" data-no-instant>订阅</a>
+</nav>
+
+<section id="wrapper">
+    <article class="post">
+    <header>
+        
+            <h1>博客文摘 2026-03-17</h1>
+        
+        <h2 class="headline">Mar 17 2026
+        
+            
+            <a href="/categories/博客推荐/#博客推荐">博客推荐</a>
+        
+        </h2>
+    </header>
+</article>
+<section id="post-body"><h2 id="智能体工程的-8-个等级"><a href="#智能体工程的-8-个等级" class="headerlink" title="智能体工程的 8 个等级"></a>智能体工程的 8 个等级</h2><p><strong>来源</strong>：<a target="_blank" rel="noopener" href="https://baoyu.io/translations/2026-03-11/levels-of-agentic-engineering">宝玉的分享</a><br><strong>原文作者</strong>：Bassim Eledath<br><strong>发布日期</strong>：2026-03-16</p>
+<p>AI 的编程能力正在超越我们驾驭它的能力。这篇文章提出了一个引人深思的观点：虽然我们在拼命刷 SWE-bench 分数，但这些努力并没有与工程领导层真正关心的生产力指标同步。Anthropic 团队用 10 天就上线了 Cowork，而另一个团队用着同样的模型却连一个 POC 都搞不定——区别在于一个团队已经弥合了能力与实践之间的差距，而另一个还没有。</p>
+<p>文章提出了智能体工程的 8 个等级进阶路径：</p>
+<p><strong>第 1-2 级：Tab 补全与智能体 IDE</strong><br>这是起点，从 GitHub Copilot 的 Tab 补全到以 Cursor 为代表的 AI 专用 IDE。瓶颈始终是上下文——模型只能处理它能看到的内容。</p>
+<p><strong>第 3 级：上下文工程</strong><br>2025 年的年度热词。核心在于提高每个 token 的信息密度。它包括系统提示词、规则文件、工具描述、对话历史管理等方方面面。虽然现在不再常听到这个说法，但上下文工程并没有消失，只是在进化——重心从过滤坏上下文转向确保正确的上下文在正确的时间出现。</p>
+<p><strong>第 4 级：复合工程</strong><br>这是一个”计划、委派、评估、沉淀”的循环。魔力就在”沉淀”这一步——把学到的东西固化到规则文件中，让未来的每一次会话都受益。关键是要培养一种直觉：当 LLM 犯错时，先想上下文是不是缺了什么，而不是怪模型不行。</p>
+<p><strong>第 5 级：MCP 与技能</strong><br>解决的是能力问题。让 LLM 能访问数据库、API、CI 流水线、设计系统等。当智能体开始批量产出 PR 时，人工审查就成了瓶颈，取而代之的是自动化的、一致的、技能驱动的审查。另一个趋势是 LLM 越来越多地使用 CLI 工具而非 MCP，因为 token 效率更高。</p>
+<p><strong>第 6 级：Harness Engineering</strong><br>关注的是构建整个环境——工具、基础设施和反馈循环——让智能体能在你不干预的情况下可靠地工作。核心概念是回压机制——自动化的反馈机制（类型系统、测试、linter、pre-commit 钩子），让智能体能在不需要人工干预的情况下发现并纠正错误。如果你想要自主性，就必须有回压机制，否则你得到的就是一台垃圾生产机器。</p>
+<p><strong>第 7 级：后台智能体</strong><br>计划模式正在消亡。随着模型越来越聪明，一次性成功率不断攀升，计划模式作为一个独立的人工介入步骤将逐渐消失。这解锁了后台智能体——智能体能生成靠谱的计划并执行而不需要你签字确认，它就能在你做别的事的时候异步运行。你已经不写代码了——你变成了一个中层管理者。一个强大的模式是：用不同的模型做不同的工作——把 Opus 分配给实现，Gemini 做探索性研究，Codex 负责审查。</p>
+<p><strong>第 8 级：自主智能体团队</strong><br>这是当前的前沿，还没有人真正掌握。智能体之间直接协调——认领任务、共享发现、标记依赖关系、解决冲突——一切都不需要经过单一的编排者。Anthropic 用 16 个并行智能体从零构建了一个可以编译 Linux 的 C 编译器，Cursor 运行了数百个并发智能体持续数周从零构建了一个浏览器。但多智能体协调是个很难的问题，还没有人找到最优解。</p>
+<p>文章最后指出，对于大多数人日常的工作来说，第 7 级才是真正的杠杆所在。不会意外第 8 级最终成为主流模式，但现在会把精力放在第 7 级上。</p>
+<hr>
+<h2 id="推荐理由"><a href="#推荐理由" class="headerlink" title="推荐理由"></a>推荐理由</h2><p>这篇文章提供了一个清晰的进阶路径，帮助开发者理解如何更好地使用 AI 辅助编程。它不仅仅是在谈论技术，更是在谈工程实践和组织协作。一个重要的观点是：你的产出比你想象的更依赖于队友的等级——如果你是 7 级高手，但你的同事还停留在 2 级，那你的吞吐量就会被卡死。所以帮队友升级，对你自己也有利。</p>
+<p>对于正在使用或计划使用 AI 编程智能体的团队和个人来说，这篇文章提供了很好的参考框架。它告诉我们，模型能力的提升只是一方面，更重要的是要建立上下文工程、复合工程、Harness Engineering 等实践，才能真正释放 AI 的生产力。</p>
+<hr>
+<p><strong>相关阅读</strong>：</p>
+<ul>
+<li><a target="_blank" rel="noopener" href="https://baoyu.io/translations/2026-03-11/coding-agents-reshaping-epd">编程 Agent 如何重塑工程、产品和设计</a></li>
+<li><a target="_blank" rel="noopener" href="https://baoyu.io/translations/2026-01-07/ai-writes-most-code">当 AI 写了几乎所有代码，软件工程会怎样？</a></li>
+</ul>
+</section>
+    
+
+    <footer id="post-meta" class="clearfix">
+        <a href="/about/">
+        <img class="avatar" src="/images/avatar.png">
+        <div>
+            <span class="dark">Api Intelligence Daily Life</span>
+            <span>知识库 &amp; 博客</span>
+        </div>
+        </a>
+        <section id="sharing">
+            <a title="Share to Twitter" class="twitter" target="_blank" rel="noopener" href="https://twitter.com/intent/tweet?text=https://arbow.github.io/2026/03/17/blog-digest-2026-03-17/ - 博客文摘 2026-03-17 @"><span class="icon-twitter">tweet</span></a>
+            <a title="Share to Facebook" class="facebook" href="#" onclick="
+                window.open(
+                  'https://www.facebook.com/sharer/sharer.php?u='+encodeURIComponent(location.href),
+                  'facebook-share-dialog',
+                  'width=626,height=436');
+                return false;"><span class="icon-facebook-sign">Share</span>
+            </a>
+        </section>
+    </footer>
+
+
+  <section id="comment">
+    <button class="btn" id="loadcmts" onclick="cmts.load();">加载评论</button>
+    <div id="gitment"></div>
+    <script src='/js/gitment.browser.js'></script>
+    <link rel="stylesheet" href=''>
+    <script>
+      var cmts={
+        load:function cmts(){
+          var gitment = new Gitment({
+          
+            id: "博客文摘 2026-03-17",
+          
+            owner: "",
+            repo: "",
+            oauth: {
+              client_id: "",
+              client_secret: "",
+            },
+          })
+          gitment.render('gitment');
+          var loadcmt = document.getElementById("loadcmts");
+          var imyourfather = loadcmt.parentNode;
+          imyourfather.removeChild(loadcmts)
+        }
+      }
+    </script>
+  </section>
+
+
+	<footer id="footer">
+	<div id="social">
+		<p class="small">©  Arbow| Powered by Hexo & 
+			<a target="_blank" rel="noopener" href="https://github.com/F0r3at/Lights"> Lights</a>
+		</p>
+	</div>
+</footer>
+
+</section>
+
+	<script src="//cdnjs.loli.net/ajax/libs/instantclick/3.0.1/instantclick.min.js" data-no-instant></script>
+	<script data-no-instant>
+		
+		InstantClick.init('mousedown');
+	</script>
+
+
+
