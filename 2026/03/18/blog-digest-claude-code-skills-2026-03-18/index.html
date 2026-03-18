@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=0">
+
+  <meta name="description" content="个人知识库与技术笔记">
+
+
+<link rel="alternate" href="/atom.xml" title="Api Intelligence Daily Life" type="application/atom+xml">
+<meta name="theme-color" content="#a1d0f6">
+<title>博客文摘 | 构建 Claude Code 的经验：我们如何使用 Skills - Api Intelligence Daily Life</title>
+<!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+<link rel="shortcut icon" href="/favicon.png">
+
+<link rel="stylesheet" href="/css/style.css">
+
+<nav class="main-nav">
+	
+	    <a href="/">← 主页</a>
+	
+	
+	    <a href="/about/">About</a>
+	
+	    <a href="/archives/">Archives</a>
+	
+	<a class="cta" href="/atom.xml" data-no-instant>订阅</a>
+</nav>
+
+<section id="wrapper">
+    <article class="post">
+    <header>
+        
+            <h1>博客文摘 | 构建 Claude Code 的经验：我们如何使用 Skills</h1>
+        
+        <h2 class="headline">Mar 18 2026
+        
+        </h2>
+    </header>
+</article>
+<section id="post-body"><h2 id="《构建-Claude-Code-的经验：我们如何使用-Skills》"><a href="#《构建-Claude-Code-的经验：我们如何使用-Skills》" class="headerlink" title="《构建 Claude Code 的经验：我们如何使用 Skills》"></a>《构建 Claude Code 的经验：我们如何使用 Skills》</h2><p>📰 <strong>来源</strong>：宝玉博客（翻译） | 📅 <strong>时间</strong>：2026-03-18 | ✍️ <strong>作者</strong>：Thariq Shihipar（Anthropic 工程师）<br>⭐⭐⭐⭐⭐ 推荐星级</p>
+<hr>
+<h3 id="文章摘要"><a href="#文章摘要" class="headerlink" title="文章摘要"></a>文章摘要</h3><p>本文作者 Thariq Shihipar 是 Anthropic Claude Code 团队的核心工程师，也是 Skills 功能的主要推动者之一。文章分享了 Anthropic 内部使用 Claude Code Skills 的实战经验——目前内部活跃使用的 Skills 已有几百个。</p>
+<p>文章首先澄清了一个常见误解：Skills 不只是 markdown 文件，而是可以包含脚本、资源、数据的完整文件夹结构，智能体可以发现、探索和使用这些内容。</p>
+<p><strong>Skills 的九大类型：</strong></p>
+<ol>
+<li><strong>库与 API 参考</strong> - 帮助正确使用库、CLI 工具或 SDK，包含参考代码和踩坑点</li>
+<li><strong>产品验证</strong> - 描述如何测试或验证代码，常搭配 Playwright、tmux 等工具</li>
+<li><strong>数据获取与分析</strong> - 连接数据和监控体系，包含数据获取库和常用工作流</li>
+<li><strong>业务流程与团队自动化</strong> - 把重复工作流自动化为一条命令</li>
+<li><strong>代码脚手架与模板</strong> - 为特定功能生成框架样板代码</li>
+<li><strong>代码质量与审查</strong> - 执行代码质量标准并辅助代码审查</li>
+<li><strong>CI&#x2F;CD 与部署</strong> - 拉取、推送和部署代码</li>
+<li><strong>运维手册</strong> - 引导多工具排查流程，生成结构化报告</li>
+<li><strong>基础设施运维</strong> - 执行日常维护和运维操作</li>
+</ol>
+<p><strong>编写 Skills 的核心技巧：</strong></p>
+<ul>
+<li><strong>不要说显而易见的事</strong> - 专注于打破 Claude 常规思维模式的信息</li>
+<li><strong>建一个踩坑点章节</strong> - 记录 Claude 使用时的常见失败点</li>
+<li><strong>利用文件系统与渐进式披露</strong> - 把整个文件系统当作上下文工程工具</li>
+<li><strong>不要把 Claude 限制得太死</strong> - 给信息但留灵活性</li>
+<li><strong>description 字段是给模型看的</strong> - 描述”何时该触发”而非”做什么”</li>
+<li><strong>记忆与数据存储</strong> - 可用 ${CLAUDE_PLUGIN_DATA} 存储数据</li>
+<li><strong>存储脚本与生成代码</strong> - 给 Claude 脚本和库，让它专注组合编排</li>
+</ul>
+<p><strong>分发 Skills：</strong></p>
+<ul>
+<li>提交到代码仓库（.&#x2F;.claude&#x2F;skills）</li>
+<li>搭建内部插件市场（Plugin Marketplace）</li>
+<li>让有用的 Skills 自然涌现，通过 PR 审核机制正式发布</li>
+</ul>
+<hr>
+<h3 id="核心观点"><a href="#核心观点" class="headerlink" title="核心观点"></a>核心观点</h3><blockquote>
+<p>“Skills 是 AI 智能体极其强大且灵活的工具，但这一切还处于早期阶段，我们都在摸索怎样用好它们。”</p>
+</blockquote>
+<p>文章强调 Skills 的最佳实践是：从小做起（几行文字加一个踩坑点），通过不断迭代、补充 Claude 遇到的新边界情况来完善。</p>
+<p>特别值得注意的是 <strong>description 字段的写法</strong>——很多人写”这个 Skill 做什么”，但 Claude 需要的是”什么情况下该用这个 Skill”。好的 description 读起来更像 if-then 条件。</p>
+<hr>
+<h3 id="精彩摘录"><a href="#精彩摘录" class="headerlink" title="精彩摘录"></a>精彩摘录</h3><p><strong>关于 Skills 的本质：</strong></p>
+<p>“Skills 最有意思的地方恰恰在于它们不只是文本文件——它们是文件夹，可以包含脚本、资源文件、数据等等，智能体可以发现、探索和使用这些内容。”</p>
+<p><strong>关于踩坑点章节：</strong></p>
+<p>“任何 Skill 中信息量最大的部分就是踩坑点章节。这些章节应该根据 Claude 在使用你的 Skill 时遇到的常见失败点逐步积累起来。”</p>
+<p><strong>关于渐进式披露：</strong></p>
+<p>“把整个文件系统当作上下文工程（Context Engineering）和渐进式披露（progressive disclosure）的工具。告诉 Claude 你的 Skill 里有哪些文件，它会在合适的时候去读取它们。”</p>
+<p><strong>关于按需钩子：</strong></p>
+<p>“&#x2F;careful —— 通过 PreToolUse 匹配器拦截 Bash 中的 rm -rf、DROP TABLE、force-push、kubectl delete。你只在知道自己在操作生产环境时才需要这个。”</p>
+<hr>
+<h3 id="为什么推荐"><a href="#为什么推荐" class="headerlink" title="为什么推荐"></a>为什么推荐</h3><ol>
+<li><strong>一手经验</strong> - 来自 Anthropic 内部团队的实战总结，不是理论推演</li>
+<li><strong>体系完整</strong> - 从 Skills 分类、编写技巧到团队分发，覆盖完整链路</li>
+<li><strong>可落地</strong> - 每个技巧都有具体示例，可以直接参考应用</li>
+<li><strong>前瞻性强</strong> - Skills 是 Claude Code 的核心扩展点，代表了 AI 编程助手的发展方向</li>
+</ol>
+<p>对于正在使用或准备使用 Claude Code 的团队，这篇文章提供了从”会用 Skills”到”精通 Skills”的完整路径。</p>
+<hr>
+<p>📎 <strong>原文地址</strong>：<a target="_blank" rel="noopener" href="https://card.weibo.com/article/m/show/id/2309405277675806916617">微博文章 - 构建 Claude Code 的经验</a></p>
+</section>
+    
+
+    <footer id="post-meta" class="clearfix">
+        <a href="/about/">
+        <img class="avatar" src="/images/avatar.png">
+        <div>
+            <span class="dark">Api Intelligence Daily Life</span>
+            <span>知识库 &amp; 博客</span>
+        </div>
+        </a>
+        <section id="sharing">
+            <a title="Share to Twitter" class="twitter" target="_blank" rel="noopener" href="https://twitter.com/intent/tweet?text=https://arbow.github.io/2026/03/18/blog-digest-claude-code-skills-2026-03-18/ - 博客文摘 | 构建 Claude Code 的经验：我们如何使用 Skills @"><span class="icon-twitter">tweet</span></a>
+            <a title="Share to Facebook" class="facebook" href="#" onclick="
+                window.open(
+                  'https://www.facebook.com/sharer/sharer.php?u='+encodeURIComponent(location.href),
+                  'facebook-share-dialog',
+                  'width=626,height=436');
+                return false;"><span class="icon-facebook-sign">Share</span>
+            </a>
+        </section>
+    </footer>
+
+
+  <section id="comment">
+    <button class="btn" id="loadcmts" onclick="cmts.load();">加载评论</button>
+    <div id="gitment"></div>
+    <script src='/js/gitment.browser.js'></script>
+    <link rel="stylesheet" href=''>
+    <script>
+      var cmts={
+        load:function cmts(){
+          var gitment = new Gitment({
+          
+            id: "博客文摘 | 构建 Claude Code 的经验：我们如何使用 Skills",
+          
+            owner: "",
+            repo: "",
+            oauth: {
+              client_id: "",
+              client_secret: "",
+            },
+          })
+          gitment.render('gitment');
+          var loadcmt = document.getElementById("loadcmts");
+          var imyourfather = loadcmt.parentNode;
+          imyourfather.removeChild(loadcmts)
+        }
+      }
+    </script>
+  </section>
+
+
+	<footer id="footer">
+	<div id="social">
+		<p class="small">©  Arbow| Powered by Hexo & 
+			<a target="_blank" rel="noopener" href="https://github.com/F0r3at/Lights"> Lights</a>
+		</p>
+	</div>
+</footer>
+
+</section>
+
+	<script src="//cdnjs.loli.net/ajax/libs/instantclick/3.0.1/instantclick.min.js" data-no-instant></script>
+	<script data-no-instant>
+		
+		InstantClick.init('mousedown');
+	</script>
+
+
+
