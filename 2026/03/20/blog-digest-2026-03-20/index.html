@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=0">
+
+  <meta name="description" content="个人知识库与技术笔记">
+
+
+<link rel="alternate" href="/atom.xml" title="Api Intelligence Daily Life" type="application/atom+xml">
+<meta name="theme-color" content="#a1d0f6">
+<title>文摘：博客推荐 - 2026-03-20 - Api Intelligence Daily Life</title>
+<!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+<link rel="shortcut icon" href="/favicon.png">
+
+<link rel="stylesheet" href="/css/style.css">
+
+<nav class="main-nav">
+	
+	    <a href="/">← 主页</a>
+	
+	
+	    <a href="/about/">About</a>
+	
+	    <a href="/archives/">Archives</a>
+	
+	<a class="cta" href="/atom.xml" data-no-instant>订阅</a>
+</nav>
+
+<section id="wrapper">
+    <article class="post">
+    <header>
+        
+            <h1>文摘：博客推荐 - 2026-03-20</h1>
+        
+        <h2 class="headline">Mar 20 2026
+        
+            
+            <a href="/categories/博客推荐/#博客推荐">博客推荐</a>
+        
+        </h2>
+    </header>
+</article>
+<section id="post-body"><h2 id="被美国遣返、禁止入境-5-年，他在温哥华的卧室里做出了日处理-400-万工作流的-AI-平台"><a href="#被美国遣返、禁止入境-5-年，他在温哥华的卧室里做出了日处理-400-万工作流的-AI-平台" class="headerlink" title="被美国遣返、禁止入境 5 年，他在温哥华的卧室里做出了日处理 400 万工作流的 AI 平台"></a>被美国遣返、禁止入境 5 年，他在温哥华的卧室里做出了日处理 400 万工作流的 AI 平台</h2><p><strong>背景</strong>：Max Brodeur-Urbas 是 Gumloop 的联合创始人兼 CEO。这家 AI 自动化平台刚拿了 Benchmark 领投的 5000 万美元 B 轮融资，客户包括 Instacart、Shopify、DoorDash、Gusto。但在此之前，他是微软的一名普通工程师，因为过边境被遣返而被迫走上创业之路。</p>
+<p><strong>核心观点</strong>：</p>
+<ul>
+<li>“50 个 AI Agent 帮我运营公司”是营销骗局。绝大多数声称全自动化的创业故事都在撒谎，他们真正的赚钱方式是卖课本身。</li>
+<li>大厂经历是一种”自我安慰”，大多数人说着说着就被金手铐套住了。21 到 23 岁的时间窗口极其稀缺——没有房贷、家庭负担，应该用来尝试创业而不是每天修 ticket。</li>
+<li>从 AutoGPT 的 Discord 服务器中发现了真正机会：用户不是要自主 Agent，而是可靠性和可预测性。Gumloop 从一个简单的 UI 演变成了日处理 400 万工作流的自动化平台。</li>
+</ul>
+<p><strong>精彩摘录</strong>：</p>
+<blockquote>
+<p>“希望是最好卖的东西。”<br>“AI 加持，而非 AI 替代。最好的用户是用 AI 增强自己工作能力的人，不是试图用 AI 替掉整个岗位的人。”<br>“在创业里，你应该追着’证明自己是错的’跑，而不是等着’证明自己是对的’。”<br>“只自动化自己真正理解的东西。如果你在自动化一个你不理解的流程，你做出来的就是一个老虎机，结果完全不可预测。”<br>“最后一代伟大的工程师可能已经出生了。”</p>
+</blockquote>
+<p><strong>个人评论</strong>：这篇文章最打动我的是 Max 对 AI 行业营销泡沫的清醒认知，以及他从失败中学习、从用户反馈中迭代的真实经历。他对”AI 加持而非替代”的定位，与很多过度宣传”全自动”的公司形成了鲜明对比。</p>
+<p>原文链接：<a target="_blank" rel="noopener" href="https://baoyu.io/blog/gumloop-max-interview">https://baoyu.io/blog/gumloop-max-interview</a></p>
+<hr>
+<h2 id="构建-Claude-Code-的经验：我们如何使用-Skills"><a href="#构建-Claude-Code-的经验：我们如何使用-Skills" class="headerlink" title="构建 Claude Code 的经验：我们如何使用 Skills"></a>构建 Claude Code 的经验：我们如何使用 Skills</h2><p><strong>背景</strong>：Thariq Shihipar 是 Anthropic Claude Code 团队工程师，也是 Skills 功能的核心推动者。这篇文章是 Anthropic 内部团队使用 Skills 的实战总结——他们内部活跃使用的 Skills 已经有几百个。</p>
+<p><strong>核心观点</strong>：</p>
+<ul>
+<li>Skills 不只是 markdown 文件，它们是文件夹，可以包含脚本、资源文件、数据等等。最有意思的 Skills 往往创造性地利用了配置选项和文件夹结构。</li>
+<li>Skills 大致分为 9 类：库与 API 参考、产品验证、数据获取与分析、业务流程与团队自动化、代码脚手架与模板、代码质量与审查、CI&#x2F;CD 与部署、运维手册、基础设施运维。</li>
+<li>编写好 Skill 的关键：不要说显而易见的事，建一个踩坑点章节，利用文件系统与渐进式披露，不要把 Claude 限制得太死。</li>
+</ul>
+<p><strong>精彩摘录</strong>：</p>
+<blockquote>
+<p>“任何 Skill 中信息量最大的部分就是踩坑点章节。这些章节应该根据 Claude 在使用你的 Skill 时遇到的常见失败点逐步积累起来。”<br>“description 字段不是摘要——它描述的是何时该触发这个 Skill。好的 description 读起来更像 if-then 条件，而不是功能说明。”<br>“Skills 最大的好处之一就是你可以把它们分享给团队的其他人。”</p>
+</blockquote>
+<p><strong>个人评论</strong>：这篇文章的价值在于它是来自 Anthropic 内部团队的真实实践，而不是理论探讨。9 种 Skills 类型的分类体系和编写技巧对正在构建或使用 AI 编程工具的团队很有参考价值。特别是”踩坑点章节”和”渐进式披露”的理念，体现了从实战中提炼的智慧。</p>
+<p>原文链接：<a target="_blank" rel="noopener" href="https://baoyu.io/translations/2026-03-17/claude-code-skills-lessons">https://baoyu.io/translations/2026-03-17/claude-code-skills-lessons</a></p>
+</section>
+    
+
+    <footer id="post-meta" class="clearfix">
+        <a href="/about/">
+        <img class="avatar" src="/images/avatar.png">
+        <div>
+            <span class="dark">Api Intelligence Daily Life</span>
+            <span>知识库 &amp; 博客</span>
+        </div>
+        </a>
+        <section id="sharing">
+            <a title="Share to Twitter" class="twitter" target="_blank" rel="noopener" href="https://twitter.com/intent/tweet?text=https://arbow.github.io/2026/03/20/blog-digest-2026-03-20/ - 文摘：博客推荐 - 2026-03-20 @"><span class="icon-twitter">tweet</span></a>
+            <a title="Share to Facebook" class="facebook" href="#" onclick="
+                window.open(
+                  'https://www.facebook.com/sharer/sharer.php?u='+encodeURIComponent(location.href),
+                  'facebook-share-dialog',
+                  'width=626,height=436');
+                return false;"><span class="icon-facebook-sign">Share</span>
+            </a>
+        </section>
+    </footer>
+
+
+  <section id="comment">
+    <button class="btn" id="loadcmts" onclick="cmts.load();">加载评论</button>
+    <div id="gitment"></div>
+    <script src='/js/gitment.browser.js'></script>
+    <link rel="stylesheet" href=''>
+    <script>
+      var cmts={
+        load:function cmts(){
+          var gitment = new Gitment({
+          
+            id: "文摘：博客推荐 - 2026-03-20",
+          
+            owner: "",
+            repo: "",
+            oauth: {
+              client_id: "",
+              client_secret: "",
+            },
+          })
+          gitment.render('gitment');
+          var loadcmt = document.getElementById("loadcmts");
+          var imyourfather = loadcmt.parentNode;
+          imyourfather.removeChild(loadcmts)
+        }
+      }
+    </script>
+  </section>
+
+
+	<footer id="footer">
+	<div id="social">
+		<p class="small">©  Arbow| Powered by Hexo & 
+			<a target="_blank" rel="noopener" href="https://github.com/F0r3at/Lights"> Lights</a>
+		</p>
+	</div>
+</footer>
+
+</section>
+
+	<script src="//cdnjs.loli.net/ajax/libs/instantclick/3.0.1/instantclick.min.js" data-no-instant></script>
+	<script data-no-instant>
+		
+		InstantClick.init('mousedown');
+	</script>
+
+
+
