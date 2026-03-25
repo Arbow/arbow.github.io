@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=0">
+
+  <meta name="description" content="个人知识库与技术笔记">
+
+
+<link rel="alternate" href="/atom.xml" title="Api Intelligence Daily Life" type="application/atom+xml">
+<meta name="theme-color" content="#a1d0f6">
+<title>文摘：博客推荐 - 2026-03-25 - Api Intelligence Daily Life</title>
+<!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+<link rel="shortcut icon" href="/favicon.png">
+
+<link rel="stylesheet" href="/css/style.css">
+
+<nav class="main-nav">
+	
+	    <a href="/">← 主页</a>
+	
+	
+	    <a href="/about/">About</a>
+	
+	    <a href="/archives/">Archives</a>
+	
+	<a class="cta" href="/atom.xml" data-no-instant>订阅</a>
+</nav>
+
+<section id="wrapper">
+    <article class="post">
+    <header>
+        
+            <h1>文摘：博客推荐 - 2026-03-25</h1>
+        
+        <h2 class="headline">Mar 25 2026
+        
+            
+            <a href="/categories/博客推荐/#博客推荐">博客推荐</a>
+        
+        </h2>
+    </header>
+</article>
+<section id="post-body"><h2 id="今日推荐（2篇）"><a href="#今日推荐（2篇）" class="headerlink" title="今日推荐（2篇）"></a>今日推荐（2篇）</h2><h3 id="1-AI-发展太快跟不上？一张四象限图帮你做减法"><a href="#1-AI-发展太快跟不上？一张四象限图帮你做减法" class="headerlink" title="1. AI 发展太快跟不上？一张四象限图帮你做减法"></a>1. AI 发展太快跟不上？一张四象限图帮你做减法</h3><p><strong>来源</strong>: <a target="_blank" rel="noopener" href="https://baoyu.io/">宝玉的分享</a><br><strong>发布时间</strong>: 2026年3月20日<br><strong>链接</strong>: <a target="_blank" rel="noopener" href="https://baoyu.io/blog/ai-learning-priority-quadrant">AI 发展太快跟不上？一张四象限图帮你做减法</a></p>
+<p><strong>摘要</strong>:<br>面对 AI 领域日新月异的发展，技术工作者常常陷入信息焦虑：新概念、新技术层出不穷，但时间和精力有限，难以全面跟踪。宝玉提出了一个简洁有效的四象限决策框架，通过两个关键维度来筛选学习重点：一是该事物离你当前生产力的远近，二是知识的保鲜期长短。横轴决定”要不要学”，纵轴决定”学了会不会过期”。</p>
+<p>根据这两个维度的交叉，文章将 AI 相关内容分为四类：左下角的噪音区（远离生产力且保鲜期短）、左上角的地图感维持区（远离生产力但保鲜期长）、右下角的工具尝试区（接近生产力但保鲜期不确定）、右上角的深度投入区（接近生产力且保鲜期长）。作者建议按照从左下到右上的对角线来分配时间投入——数量递减，优先级递增。</p>
+<p>文章通过大量实例说明各类典型：左下角包括模型跑分排名、融资新闻等噪音，可直接跳过；左上角如 RAG、Chain-of-Thought 等行业通用概念，需维持地图感但不必深究；右下角如 AI 画图工具、ChatGPT Atlas 等新兴工具，值得花几个小时上手体验但别投入过多精力；右上角如软件工程、上下文工程、Claude Code 等核心能力，值得深度投入，因其复利效应远大于浅尝十个工具。作者还强调四象限是动态的，同一事物在不同时间会移动位置，并提供了观察迁移方向的三个信号：谁在用、背后有无持续投入、形态是否收敛。这套框架帮助读者在信息过载时代做有效的减法，聚焦真正能产生长期价值的领域。</p>
+<hr>
+<h3 id="2-Harness-design-for-long-running-application-development"><a href="#2-Harness-design-for-long-running-application-development" class="headerlink" title="2. Harness design for long-running application development"></a>2. Harness design for long-running application development</h3><p><strong>来源</strong>: <a target="_blank" rel="noopener" href="https://www.anthropic.com/engineering">Anthropic Engineering</a><br><strong>发布时间</strong>: 2026年3月24日<br><strong>链接</strong>: <a target="_blank" rel="noopener" href="https://www.anthropic.com/engineering/harness-design-long-running-apps">Harness design for long-running application development</a></p>
+<p><strong>摘要</strong>:<br>Anthropic Labs 团队分享了他们在长时间运行的自主编码智能体方面的最新进展。作者之前在前端设计和长时间编码任务上分别遇到了性能瓶颈，尽管通过提示词工程和 harness 设计实现了超出基线的提升，但最终触碰到能力天花板。受生成对抗网络（GAN）启发，作者设计了一种多智能体架构，包含生成器和评估器，通过将主观判断转化为可评分的具体标准来建立可靠的评估机制。</p>
+<p>文章首先分析了简单实现的失败原因：模型在长任务中因上下文窗口填充而失去连贯性，以及评估自己作品时往往过于宽容——尤其在设计等主观任务上，模型倾向自信地称赞平庸产出。为解决上下文焦虑问题，作者采用上下文重置而非简单的摘要压缩，为下一个智能体提供清洁的起点；为解决自我评估偏差，通过分离生成和评估，让专门的评估器通过 Playwright MCP 实时交互页面，并严格按设计质量、原创性、工艺和功能性四个标准评分，然后将反馈传递给生成器迭代。</p>
+<p>作者将这一模式从前端设计扩展到全栈开发，构建了一个三智能体系统：规划器将简短提示词扩展为完整产品规格，生成器按特性迭代构建应用，评估器通过 Playwright 测试实际运行的应用并按 bug 和产品深度等标准评分。在实验中，用该 harness 生成复古游戏制作器花费 6 小时、成本 $200，相比单智能体的 20 分钟、$9，产出质量显著提升。随后作者通过移除 sprint 结构、利用 Opus 4.6 的更强上下文和任务持续能力，对 harness 进行了迭代简化，在生成数字音频工作站（DAW）时降至约 4 小时、$124。</p>
+<p>作者的经验总结为：随着模型持续改进，harness 设计不会简单消失，而是会移动——有趣的工作是不断寻找下一个新颖组合。关键原则包括：实验你要构建的模型，在现实问题上读取其轨迹并调整性能；在更复杂任务上，将任务分解并应用专门智能体；新模型发布时重新审视 harness，移除不再影响性能的部分并添加新能力。</p>
+<hr>
+<h2 id="统计信息"><a href="#统计信息" class="headerlink" title="统计信息"></a>统计信息</h2><ul>
+<li><strong>检查博客数量</strong>: 10个</li>
+<li><strong>发现新增文章</strong>: 2篇<ul>
+<li>宝玉: 1篇</li>
+<li>Anthropic Engineering: 1篇</li>
+</ul>
+</li>
+<li><strong>今日无新增</strong>: 8个</li>
+</ul>
+<hr>
+<p><em>本推荐系统每日自动更新，帮助你发现优质技术内容。</em></p>
+</section>
+    
+
+    <footer id="post-meta" class="clearfix">
+        <a href="/about/">
+        <img class="avatar" src="/images/avatar.png">
+        <div>
+            <span class="dark">Api Intelligence Daily Life</span>
+            <span>知识库 &amp; 博客</span>
+        </div>
+        </a>
+        <section id="sharing">
+            <a title="Share to Twitter" class="twitter" target="_blank" rel="noopener" href="https://twitter.com/intent/tweet?text=https://arbow.github.io/2026/03/25/blog-digest-2026-03-25/ - 文摘：博客推荐 - 2026-03-25 @"><span class="icon-twitter">tweet</span></a>
+            <a title="Share to Facebook" class="facebook" href="#" onclick="
+                window.open(
+                  'https://www.facebook.com/sharer/sharer.php?u='+encodeURIComponent(location.href),
+                  'facebook-share-dialog',
+                  'width=626,height=436');
+                return false;"><span class="icon-facebook-sign">Share</span>
+            </a>
+        </section>
+    </footer>
+
+
+  <section id="comment">
+    <button class="btn" id="loadcmts" onclick="cmts.load();">加载评论</button>
+    <div id="gitment"></div>
+    <script src='/js/gitment.browser.js'></script>
+    <link rel="stylesheet" href=''>
+    <script>
+      var cmts={
+        load:function cmts(){
+          var gitment = new Gitment({
+          
+            id: "文摘：博客推荐 - 2026-03-25",
+          
+            owner: "",
+            repo: "",
+            oauth: {
+              client_id: "",
+              client_secret: "",
+            },
+          })
+          gitment.render('gitment');
+          var loadcmt = document.getElementById("loadcmts");
+          var imyourfather = loadcmt.parentNode;
+          imyourfather.removeChild(loadcmts)
+        }
+      }
+    </script>
+  </section>
+
+
+	<footer id="footer">
+	<div id="social">
+		<p class="small">©  Arbow| Powered by Hexo & 
+			<a target="_blank" rel="noopener" href="https://github.com/F0r3at/Lights"> Lights</a>
+		</p>
+	</div>
+</footer>
+
+</section>
+
+	<script src="//cdnjs.loli.net/ajax/libs/instantclick/3.0.1/instantclick.min.js" data-no-instant></script>
+	<script data-no-instant>
+		
+		InstantClick.init('mousedown');
+	</script>
+
+
+
