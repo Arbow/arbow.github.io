@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=0">
+
+  <meta name="description" content="个人知识库与技术笔记">
+
+
+<link rel="alternate" href="/atom.xml" title="Api Intelligence Daily Life" type="application/atom+xml">
+<meta name="theme-color" content="#a1d0f6">
+<title>文摘：博客推荐 - 2026-03-26 - Api Intelligence Daily Life</title>
+<!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+<link rel="shortcut icon" href="/favicon.png">
+
+<link rel="stylesheet" href="/css/style.css">
+
+<nav class="main-nav">
+	
+	    <a href="/">← 主页</a>
+	
+	
+	    <a href="/about/">About</a>
+	
+	    <a href="/archives/">Archives</a>
+	
+	<a class="cta" href="/atom.xml" data-no-instant>订阅</a>
+</nav>
+
+<section id="wrapper">
+    <article class="post">
+    <header>
+        
+            <h1>文摘：博客推荐 - 2026-03-26</h1>
+        
+        <h2 class="headline">Mar 26 2026
+        
+            
+            <a href="/categories/博客推荐/#博客推荐">博客推荐</a>
+        
+        </h2>
+    </header>
+</article>
+<section id="post-body"><h2 id="今日推荐（1篇）"><a href="#今日推荐（1篇）" class="headerlink" title="今日推荐（1篇）"></a>今日推荐（1篇）</h2><h3 id="1-Claude-Code-auto-mode-a-safer-way-to-skip-permissions"><a href="#1-Claude-Code-auto-mode-a-safer-way-to-skip-permissions" class="headerlink" title="1. Claude Code auto mode: a safer way to skip permissions"></a>1. Claude Code auto mode: a safer way to skip permissions</h3><p><strong>来源</strong>: <a target="_blank" rel="noopener" href="https://www.anthropic.com/engineering">Anthropic Engineering</a><br><strong>发布时间</strong>: 2026年3月25日<br><strong>链接</strong>: <a target="_blank" rel="noopener" href="https://www.anthropic.com/engineering/claude-code-auto-mode">Claude Code auto mode: a safer way to skip permissions</a></p>
+<p><strong>摘要</strong>:<br>Claude Code 默认要求用户在执行命令或修改文件前进行批准，这种设计保证了安全性，但也带来了频繁点击”批准”的负担，久而久之会导致审批疲劳。用户通常有两种解决方案：使用内置沙箱来隔离危险操作，或使用 <code>--dangerously-skip-permissions</code> 标志跳过所有权限提示，让 Claude 自由行动——后者在大多数情况下是不安全的。</p>
+<p>Auto mode 是 Claude Code 的新模式，通过基于模型的分类器来委托认批决策，在人工审核和无防护之间找到了中间地带。目标是捕获与用户意图不符的危险操作，同时让其他操作无需批准提示即可执行。</p>
+<p>该模式使用两层防护：输入层和输出层。输入层的 prompt-injection probe 会在工具输出进入代理上下文之前进行扫描，防止内容劫持。输出层的 transcript classifier（基于 Sonnet 4.6）会在执行前评估每个操作，替代人工审批者。分类器分两个阶段运行：快速单令牌过滤器决定是阻止还是允许，只有在第一个过滤器标记时才进入第二阶段的链式思维推理。</p>
+<p>该设计针对四种威胁模型：过度热切行为、诚实错误、提示词注入和对齐错误的模型。通过内部事故日志分析，分类器能够识别范围升级、凭证探索、代理推断参数等危险行为模式。</p>
+<p>在性能评估中，分类器在真实过度热切行为数据集上达到了 17% 的假阴性率（漏过危险操作的比例）。这意味着虽然分类器并非完美，但相比完全跳过权限提示，它提供了实质性的安全提升。</p>
+<hr>
+<h2 id="统计信息"><a href="#统计信息" class="headerlink" title="统计信息"></a>统计信息</h2><ul>
+<li><strong>检查博客数量</strong>: 10个</li>
+<li><strong>发现新增文章</strong>: 1篇<ul>
+<li>Anthropic Engineering: 1篇</li>
+</ul>
+</li>
+<li><strong>今日无新增</strong>: 9个博客</li>
+</ul>
+<hr>
+<p><em>本推荐系统每日自动更新，帮助你发现优质技术内容。</em></p>
+</section>
+    
+
+    <footer id="post-meta" class="clearfix">
+        <a href="/about/">
+        <img class="avatar" src="/images/avatar.png">
+        <div>
+            <span class="dark">Api Intelligence Daily Life</span>
+            <span>知识库 &amp; 博客</span>
+        </div>
+        </a>
+        <section id="sharing">
+            <a title="Share to Twitter" class="twitter" target="_blank" rel="noopener" href="https://twitter.com/intent/tweet?text=https://arbow.github.io/2026/03/26/blog-digest-2026-03-26/ - 文摘：博客推荐 - 2026-03-26 @"><span class="icon-twitter">tweet</span></a>
+            <a title="Share to Facebook" class="facebook" href="#" onclick="
+                window.open(
+                  'https://www.facebook.com/sharer/sharer.php?u='+encodeURIComponent(location.href),
+                  'facebook-share-dialog',
+                  'width=626,height=436');
+                return false;"><span class="icon-facebook-sign">Share</span>
+            </a>
+        </section>
+    </footer>
+
+
+  <section id="comment">
+    <button class="btn" id="loadcmts" onclick="cmts.load();">加载评论</button>
+    <div id="gitment"></div>
+    <script src='/js/gitment.browser.js'></script>
+    <link rel="stylesheet" href=''>
+    <script>
+      var cmts={
+        load:function cmts(){
+          var gitment = new Gitment({
+          
+            id: "文摘：博客推荐 - 2026-03-26",
+          
+            owner: "",
+            repo: "",
+            oauth: {
+              client_id: "",
+              client_secret: "",
+            },
+          })
+          gitment.render('gitment');
+          var loadcmt = document.getElementById("loadcmts");
+          var imyourfather = loadcmt.parentNode;
+          imyourfather.removeChild(loadcmts)
+        }
+      }
+    </script>
+  </section>
+
+
+	<footer id="footer">
+	<div id="social">
+		<p class="small">©  Arbow| Powered by Hexo & 
+			<a target="_blank" rel="noopener" href="https://github.com/F0r3at/Lights"> Lights</a>
+		</p>
+	</div>
+</footer>
+
+</section>
+
+	<script src="//cdnjs.loli.net/ajax/libs/instantclick/3.0.1/instantclick.min.js" data-no-instant></script>
+	<script data-no-instant>
+		
+		InstantClick.init('mousedown');
+	</script>
+
+
+
