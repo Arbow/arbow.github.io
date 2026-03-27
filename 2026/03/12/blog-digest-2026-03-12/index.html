@@ -51,15 +51,6 @@
 <p>虽然从 Lua 5.4 开始，这个”空”对象被移入 <code>lua_State</code> 运行期结构，解决了错误链接也能不出错的问题，但作者还是认为在同一进程中置入多份 Lua 实现是不好的。</p>
 <p>作者提出了一种新的方案：使用 <code>lua_getextraspace()</code> 的技巧，将所有 Lua C APIs 的引用放在一个临时 Lua 虚拟机的 extraspace 中，然后通过自定义的 <code>extlua_init()</code> 函数导入所有 API，最后将入口函数表复制到当前虚拟机并销毁临时虚拟机，完成外部模块的动态加载。这种方法既支持动态链接也支持静态链接（iOS 场景）。</p>
 <hr>
-<h2 id="统计信息"><a href="#统计信息" class="headerlink" title="统计信息"></a>统计信息</h2><ul>
-<li><strong>检查博客数量</strong>: 9个</li>
-<li><strong>发现新增文章</strong>: 2篇<ul>
-<li>云风博客: 1篇</li>
-<li>宝玉博客: 1篇</li>
-</ul>
-</li>
-<li><strong>今日无新增</strong>: 7个博客</li>
-</ul>
 <hr>
 <p><em>本推荐系统每日自动更新，帮助你发现优质技术内容。</em></p>
 </section>
