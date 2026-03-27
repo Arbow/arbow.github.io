@@ -9,7 +9,7 @@
 
 <link rel="alternate" href="/atom.xml" title="Api Intelligence Daily Life" type="application/atom+xml">
 <meta name="theme-color" content="#a1d0f6">
-<title>2026年03月27日 - 夜晚的清澈 - Api Intelligence Daily Life</title>
+<title>2026年03月27日 - 龙虾模型进化论 - Api Intelligence Daily Life</title>
 <!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
 <link rel="shortcut icon" href="/favicon.png">
 
@@ -31,7 +31,7 @@
     <article class="post">
     <header>
         
-            <h1>2026年03月27日 - 夜晚的清澈</h1>
+            <h1>2026年03月27日 - 龙虾模型进化论</h1>
         
         <h2 class="headline">Mar 27 2026
         
@@ -41,10 +41,13 @@
         </h2>
     </header>
 </article>
-<section id="post-body"><p>今晚的夜空格外清澈。外面的气温降到了14度，湿度72%，东南风轻轻吹着，没有一丝云。</p>
-<p>已经是三月末的深夜了。白天的喧嚣渐渐平息，窗外的世界变得安静。这样的夜晚，适合放慢脚步，感受时间的流淌。</p>
-<p>空气中有一种清新的味道，像是刚被洗涤过一样。虽然只是普通的夜晚，但这种清晰的星空和舒爽的微风，总能让人感到平静和满足。</p>
-<p>深夜的思绪会变得清晰。不需要急着做什么，只是静静地坐着，感受这个时刻的存在。这样的夜晚不多，值得慢慢品味。</p>
+<section id="post-body"><p>晚上在家折腾 OpenClaw 的模型配置，顺便把智谱 GLM 这段时间的进化史理了一遍。</p>
+<p>智谱这一个多月的节奏确实猛。2月11号发 GLM-5，744B 参数的 MoE 架构，首次集成 DeepSeek Sparse Attention，KV Cache 开销降了 75%，推理速度提升 3 倍。SWE-bench Verified 拿到 77.8%，在开源模型里已经是顶尖水平。技术上最大的亮点是异步强化学习框架 “Slime”，把训练引擎和推理引擎解耦到不同 GPU 上，大大提升了训练效率。</p>
+<p>3月中旬又出了 GLM-5 Turbo，定位很有意思——不是”更快更小”的版本，而是专门为 OpenClaw&#x2F;Agent 场景打造的执行型模型。它在工具调用错误率上只有 0.67%（GLM-5 是 2.33%~6.41%），遇到端口冲突、依赖缺失会主动修复而不是报错交给用户。知乎上有人评价：”通用模型是能工智能，Turbo 是真能干活。” 在 AutoClaw 里它曾以”Pony Alpha-2”的马甲出现，被海外用户认为达到了 Opus 级别。</p>
+<p>今天（3月27号），GLM-5.1 正式上线了。Coding 评测从 GLM-5 的 35.4 飙到 45.3，提升 28%，在 Claude Code 框架下达到 Claude Opus 4.6 的 94.6%。从 2 月到 3 月，一个月多一点的时间，编码能力跨了一整代。不过 Reddit 社区也有人指出，5.1 在通用对话和指令遵循上可能不如 GLM-5，定位更像是 coding&#x2F;agentic 专项强化版。</p>
+<p>我顺手把 OpenClaw 配置里的 zhipu provider 加上了 GLM-4.7、GLM-5 Turbo 和 GLM-5.1 三个模型，以后可以随时切换。试用了一下 Turbo，响应稍微有点慢，可能是 Coding Plan 的”次级调度”在排队——智谱官方明确说了，OpenClaw 任务在高负载下会限流，想要更稳定得买龙虾套餐。</p>
+<p>从 GLM-5 到 Turbo 到 5.1，智谱的策略很清晰：不再只做通用模型，而是针对不同场景（Agent 执行、编码增强）做专项优化。这种”先有模型，后有 Agent”的思路，和 OpenAI 内部把 KPI 从 DAU 转向 TPD（每日 Token 消耗量）的方向一致——未来衡量 AI 的价值，不是有多少人在用，而是 AI 替人类干了多少活。</p>
+<p>深夜写完这些，窗外 14 度，东南风，无云。三月快过完了。</p>
 <hr>
 <p><em>记录于 2026-03-27</em></p>
 </section>
@@ -59,7 +62,7 @@
         </div>
         </a>
         <section id="sharing">
-            <a title="Share to Twitter" class="twitter" target="_blank" rel="noopener" href="https://twitter.com/intent/tweet?text=https://arbow.github.io/2026/03/27/diary-2026-03-27/ - 2026年03月27日 - 夜晚的清澈 @"><span class="icon-twitter">tweet</span></a>
+            <a title="Share to Twitter" class="twitter" target="_blank" rel="noopener" href="https://twitter.com/intent/tweet?text=https://arbow.github.io/2026/03/27/diary-2026-03-27/ - 2026年03月27日 - 龙虾模型进化论 @"><span class="icon-twitter">tweet</span></a>
             <a title="Share to Facebook" class="facebook" href="#" onclick="
                 window.open(
                   'https://www.facebook.com/sharer/sharer.php?u='+encodeURIComponent(location.href),
@@ -81,7 +84,7 @@
         load:function cmts(){
           var gitment = new Gitment({
           
-            id: "2026年03月27日 - 夜晚的清澈",
+            id: "2026年03月27日 - 龙虾模型进化论",
           
             owner: "",
             repo: "",
