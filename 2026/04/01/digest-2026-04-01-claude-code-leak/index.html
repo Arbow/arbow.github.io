@@ -55,7 +55,19 @@
 </ol>
 <p>文章特别值得称道的是对 “tool.blocked_on_user” span 的分析——把人在回路的时间独立出来，让 trace 能回答”慢是因为模型慢还是审批慢”这类关键问题。这种对 Agent 真实运行场景的深刻理解，是很多”demo 级 tracing”和”生产级 tracing”的分水岭。</p>
 <hr>
-<h3 id="2-Claude-Code源代码意外泄露：512K行代码曝光，内含大量未发布功能"><a href="#2-Claude-Code源代码意外泄露：512K行代码曝光，内含大量未发布功能" class="headerlink" title="2. Claude Code源代码意外泄露：512K行代码曝光，内含大量未发布功能"></a>2. Claude Code源代码意外泄露：512K行代码曝光，内含大量未发布功能</h3><p><strong>来源</strong>: <a target="_blank" rel="noopener" href="https://finance.sina.com.cn/tech/roll/2026-03-31/doc-inhswxzn3168987.shtml">新浪财经 - DeepTech深科技</a><br><strong>原文链接</strong>: <a target="_blank" rel="noopener" href="https://finance.sina.com.cn/tech/roll/2026-03-31/doc-inhswxzn3168987.shtml">Claude Code源代码意外泄露</a></p>
+<h3 id="2-Claude-Code-的秘密：Claude-Code-基于-0331-开源版本的深度调研"><a href="#2-Claude-Code-的秘密：Claude-Code-基于-0331-开源版本的深度调研" class="headerlink" title="2. Claude Code 的秘密：Claude Code 基于 0331 开源版本的深度调研"></a>2. Claude Code 的秘密：Claude Code 基于 0331 开源版本的深度调研</h3><p><strong>来源</strong>: <a target="_blank" rel="noopener" href="https://mp.weixin.qq.com/s/FyO4-7eINBPlHl5fTp6psQ">微信公众号 - 手工川</a><br><strong>原文链接</strong>: <a target="_blank" rel="noopener" href="https://mp.weixin.qq.com/s/FyO4-7eINBPlHl5fTp6psQ">Claude Code 的秘密</a></p>
+<p><strong>简评</strong>:</p>
+<p>这是一篇极具深度的源码级分析，作者逐文件审读了 1,884 个 TypeScript 文件（118,442 行代码），揭示了 Claude Code 作为 AI 操作系统雏形的完整架构。文章的核心发现包括：</p>
+<p><strong>特性标志系统（Feature Flags）</strong>：Claude Code 使用 Bun 打包器的编译时特性标志，在编译阶段物理删除不需要的代码分支。源码中找到 16 个主要特性标志，19 个命令被标记为仅内部可见（isAntOnly: true）。公开版只展现了完整能力的约 60%，水下隐藏着 KAIROS、Coordinator、Swarm、Voice、Bridge、Dream 等庞大内部系统。</p>
+<p><strong>KAIROS 模式</strong>：被定义为 “Assistant Mode”，与日常交互模式有本质区别。KAIROS 持续运行，主动监控开发环境变化，集成 GitHub Webhook 监听、MCP Channel 通知、定时检查与触发。这是 7×24 小时在线的 AI 开发伙伴，从”辅助编程”迈向”自主编程”的起点。</p>
+<p><strong>Token 管理体系</strong>：三层压缩（Snip 压缩、自动压缩、响应式压缩）+ 一层缓存的架构。当 Token 用量达到”有效上下文窗口 - 13,000”时触发自动压缩，通过”缓存断点”让输入成本直降 90%。还有”微压缩”机制：FileEdit 修改文件时，精确定位并删除之前 FileRead 的对应结果。</p>
+<p><strong>AI 做梦系统（DreamTask&#x2F;AutoDream）</strong>：当满足条件（距上次 Dream 超过 24 小时、累积至少 5 个 Session、当前无活跃会话），Claude Code 会在后台静默启动受限子 Agent，回顾对话历史，提取编码偏好、项目架构决策等，写入记忆文件。下次启动时自动加载。这是知识蒸馏，而非简单的 session 持久化。</p>
+<p><strong>四层记忆架构</strong>：Session Memory（会话内记忆）→ Memdir（项目记忆目录）→ Magic Docs（AI 维护的活文档）→ Team Memory Sync（团队知识同步）。从短期到长期、从个人到团队，构成完整的 AI 知识管理系统。</p>
+<p><strong>多 Agent 三条路线</strong>：Coordinator（主从协调，Leader-Worker 模式）、Swarm（对等协作，Agent 互相发消息共享发现）、InProcessTeammate（进程内队友，Mailbox 机制）。覆盖从重量级到轻量级的全部场景。</p>
+<p><strong>七层安全防护</strong>：权限三级制 → 拒绝追踪 → Hook 拦截 → AI 分类器辅助 → Bash 沙箱（25 项检查 + 迭代固定点算法）→ 文件系统防护 → 秘密扫描。</p>
+<p>文章最后提到，读完 1884 个文件后，让作者记住最久的不是 Token 优化或多 Agent 架构，而是 buddy&#x2F; 目录——一个 CLI 工具里藏着虚拟宠物系统，18 种物种，纯装饰，唯一作用是让终端窗口多了一点温度。</p>
+<hr>
+<h3 id="3-Claude-Code源代码意外泄露：512K行代码曝光，内含大量未发布功能"><a href="#3-Claude-Code源代码意外泄露：512K行代码曝光，内含大量未发布功能" class="headerlink" title="3. Claude Code源代码意外泄露：512K行代码曝光，内含大量未发布功能"></a>3. Claude Code源代码意外泄露：512K行代码曝光，内含大量未发布功能</h3><p><strong>来源</strong>: <a target="_blank" rel="noopener" href="https://finance.sina.com.cn/tech/roll/2026-03-31/doc-inhswxzn3168987.shtml">新浪财经 - DeepTech深科技</a><br><strong>原文链接</strong>: <a target="_blank" rel="noopener" href="https://finance.sina.com.cn/tech/roll/2026-03-31/doc-inhswxzn3168987.shtml">Claude Code源代码意外泄露</a></p>
 <p><strong>简评</strong>:</p>
 <p>这篇报道全面梳理了泄露事件的来龙去脉，并挖掘出多个引人注目的隐藏功能：</p>
 <p><strong>KAIROS（永不下线的 AI 助手）</strong>：一个持久化的常驻助手模式，具备后台守护进程能力，可以持续监视、记录并主动采取行动。包含 autoDream 后台记忆整合引擎，通过”距上次做梦 24 小时 + 至少 5 次会话 + 获取整合锁”的三重门控触发。</p>
@@ -63,7 +75,7 @@
 <p><strong>ULTRAPLAN（30分钟远程规划）</strong>：将复杂规划任务交给运行 Opus 4.6 的远程云容器，给予最多 30 分钟思考时间，用户可在浏览器中批准结果，然后通过特殊标记将结果”传送”回本地终端。</p>
 <p>文章还揭示了 Anthropic 内部使用动物命名模型的传统（Capybara、Tengu 等），以及”Undercover Mode”卧底模式——当检测到 Anthropic 员工在公开仓库操作时自动激活，强制抹除所有 AI 痕迹。</p>
 <hr>
-<h3 id="3-突发！Claude-Code-源码泄露，扒出这些隐藏功能"><a href="#3-突发！Claude-Code-源码泄露，扒出这些隐藏功能" class="headerlink" title="3. 突发！Claude Code 源码泄露，扒出这些隐藏功能"></a>3. 突发！Claude Code 源码泄露，扒出这些隐藏功能</h3><p><strong>来源</strong>: <a target="_blank" rel="noopener" href="https://www.53ai.com/news/LargeLanguageModel/2026033157429.html">53AI - AI范儿</a><br><strong>原文链接</strong>: <a target="_blank" rel="noopener" href="https://www.53ai.com/news/LargeLanguageModel/2026033157429.html">突发！Claude Code 源码泄露</a></p>
+<h3 id="4-突发！Claude-Code-源码泄露，扒出这些隐藏功能"><a href="#4-突发！Claude-Code-源码泄露，扒出这些隐藏功能" class="headerlink" title="4. 突发！Claude Code 源码泄露，扒出这些隐藏功能"></a>4. 突发！Claude Code 源码泄露，扒出这些隐藏功能</h3><p><strong>来源</strong>: <a target="_blank" rel="noopener" href="https://www.53ai.com/news/LargeLanguageModel/2026033157429.html">53AI - AI范儿</a><br><strong>原文链接</strong>: <a target="_blank" rel="noopener" href="https://www.53ai.com/news/LargeLanguageModel/2026033157429.html">突发！Claude Code 源码泄露</a></p>
 <p><strong>简评</strong>:</p>
 <p>这篇文章以通俗易懂的方式解释了 source map 泄露的技术原理，并梳理了多个即将推出的功能：</p>
 <p><strong>DAEMON（后台守护进程）</strong>：让 Claude Code 在关掉终端窗口后依然持续运行，配合 &#x2F;loop 定时命令实现更高程度的自动化。</p>
@@ -73,7 +85,7 @@
 <p><strong>KAIROS</strong>：希腊语意为”关键时机’，具体功能仍在分析中。</p>
 <p>文章还提到一个有趣的细节：源码中包含 cost-tracker.ts 文件，专门追踪每次调用消耗的 token 和费用，说明 Anthropic 已在工具层面内置用量成本管理。</p>
 <hr>
-<h3 id="4-Claude-Code-源码”泄漏”事件分析"><a href="#4-Claude-Code-源码”泄漏”事件分析" class="headerlink" title="4. Claude Code 源码”泄漏”事件分析"></a>4. Claude Code 源码”泄漏”事件分析</h3><p><strong>来源</strong>: <a target="_blank" rel="noopener" href="https://www.tinyash.com/blog/claude-code-source-leak-analysis/">小灰灰的笔记</a><br><strong>原文链接</strong>: <a target="_blank" rel="noopener" href="https://www.tinyash.com/blog/claude-code-source-leak-analysis/">Claude Code 源码”泄漏”事件分析</a></p>
+<h3 id="5-Claude-Code-源码”泄漏”事件分析"><a href="#5-Claude-Code-源码”泄漏”事件分析" class="headerlink" title="5. Claude Code 源码”泄漏”事件分析"></a>5. Claude Code 源码”泄漏”事件分析</h3><p><strong>来源</strong>: <a target="_blank" rel="noopener" href="https://www.tinyash.com/blog/claude-code-source-leak-analysis/">小灰灰的笔记</a><br><strong>原文链接</strong>: <a target="_blank" rel="noopener" href="https://www.tinyash.com/blog/claude-code-source-leak-analysis/">Claude Code 源码”泄漏”事件分析</a></p>
 <p><strong>简评</strong>:</p>
 <p>这是一篇偏向技术实现细节的分析，作者从泄露的源码中整理了完整的目录结构和关键文件：</p>
 <ul>
@@ -86,7 +98,7 @@
 </ul>
 <p>文章特别指出泄露代码的”彩蛋”性质：BUDDY 系统使用的随机数种子盐值是’friend-2026-401’，其中 401 可能指代 4 月 1 日，代码还标注了 4 月 1-7 日为”预告窗口”，完整发布定于 2026 年 5 月。</p>
 <hr>
-<h3 id="5-Claude-Code-源码泄露事件始末：从泄露原因到工程借鉴"><a href="#5-Claude-Code-源码泄露事件始末：从泄露原因到工程借鉴" class="headerlink" title="5. Claude Code 源码泄露事件始末：从泄露原因到工程借鉴"></a>5. Claude Code 源码泄露事件始末：从泄露原因到工程借鉴</h3><p><strong>来源</strong>: <a target="_blank" rel="noopener" href="https://www.cnblogs.com/yumingwen/p/19803657">博客园 - yuumingwen</a><br><strong>原文链接</strong>: <a target="_blank" rel="noopener" href="https://www.cnblogs.com/yumingwen/p/19803657">Claude Code 源码泄露事件始末</a></p>
+<h3 id="6-Claude-Code-源码泄露事件始末：从泄露原因到工程借鉴"><a href="#6-Claude-Code-源码泄露事件始末：从泄露原因到工程借鉴" class="headerlink" title="6. Claude Code 源码泄露事件始末：从泄露原因到工程借鉴"></a>6. Claude Code 源码泄露事件始末：从泄露原因到工程借鉴</h3><p><strong>来源</strong>: <a target="_blank" rel="noopener" href="https://www.cnblogs.com/yumingwen/p/19803657">博客园 - yuumingwen</a><br><strong>原文链接</strong>: <a target="_blank" rel="noopener" href="https://www.cnblogs.com/yumingwen/p/19803657">Claude Code 源码泄露事件始末</a></p>
 <p><strong>简评</strong>:</p>
 <p>这篇技术博客从工程角度总结了泄露事件的关键教训：</p>
 <p><strong>泄露原因</strong>：source map 文件本应在生产构建时被排除，但由于 .npmignore 配置疏漏或构建工具（Bun）设置不当，导致包含完整原始代码的文件被一同发布到 npm registry。</p>
@@ -94,7 +106,7 @@
 <p><strong>系统规模</strong>：包含 40+ 工具系统、50+ 斜杠命令、140+ 界面组件，规模接近一个中型 App。</p>
 <p><strong>安全 Bug</strong>：文章还整理了源码中暴露的多个安全 Bug，包括 watchdog 初始化太晚、abort 函数无效、5.4% 的工具调用成为”孤儿”（结果未返回）等。</p>
 <hr>
-<h3 id="6-全网疯传fork！刚刚，Claude-Code源代码泄露被开源了"><a href="#6-全网疯传fork！刚刚，Claude-Code源代码泄露被开源了" class="headerlink" title="6. 全网疯传fork！刚刚，Claude Code源代码泄露被开源了"></a>6. 全网疯传fork！刚刚，Claude Code源代码泄露被开源了</h3><p><strong>来源</strong>: <a target="_blank" rel="noopener" href="https://finance.sina.com.cn/wm/2026-03-31/doc-inhswxzn3162187.shtml">新浪财经 - 机器之心</a><br><strong>原文链接</strong>: <a target="_blank" rel="noopener" href="https://finance.sina.com.cn/wm/2026-03-31/doc-inhswxzn3162187.shtml">全网疯传fork！刚刚，Claude Code源代码泄露被开源了</a></p>
+<h3 id="7-全网疯传fork！刚刚，Claude-Code源代码泄露被开源了"><a href="#7-全网疯传fork！刚刚，Claude-Code源代码泄露被开源了" class="headerlink" title="7. 全网疯传fork！刚刚，Claude Code源代码泄露被开源了"></a>7. 全网疯传fork！刚刚，Claude Code源代码泄露被开源了</h3><p><strong>来源</strong>: <a target="_blank" rel="noopener" href="https://finance.sina.com.cn/wm/2026-03-31/doc-inhswxzn3162187.shtml">新浪财经 - 机器之心</a><br><strong>原文链接</strong>: <a target="_blank" rel="noopener" href="https://finance.sina.com.cn/wm/2026-03-31/doc-inhswxzn3162187.shtml">全网疯传fork！刚刚，Claude Code源代码泄露被开源了</a></p>
 <p><strong>简评</strong>:</p>
 <p>这篇报道聚焦于泄露事件在开发者社区引发的狂欢，并挖掘出更多有趣的内部细节：</p>
 <p><strong>“卧底模式”（Undercover Mode）</strong>：当系统检测到使用者是 Anthropic 内部员工（USER_TYPE &#x3D;&#x3D;&#x3D; ‘ant’）且正在操作公开仓库时自动激活，抹除所有 AI 生成代码的痕迹和归属信息，系统提示词明确要求”不要暴露你的身份”。</p>
