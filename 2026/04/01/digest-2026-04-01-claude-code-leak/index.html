@@ -55,7 +55,35 @@
 </ol>
 <p>文章特别值得称道的是对 “tool.blocked_on_user” span 的分析——把人在回路的时间独立出来，让 trace 能回答”慢是因为模型慢还是审批慢”这类关键问题。这种对 Agent 真实运行场景的深刻理解，是很多”demo 级 tracing”和”生产级 tracing”的分水岭。</p>
 <hr>
-<h3 id="2-Claude-Code-源码泄露深度剖析：Anthropic-AI-编程助手的架构全解密"><a href="#2-Claude-Code-源码泄露深度剖析：Anthropic-AI-编程助手的架构全解密" class="headerlink" title="2. Claude Code 源码泄露深度剖析：Anthropic AI 编程助手的架构全解密"></a>2. Claude Code 源码泄露深度剖析：Anthropic AI 编程助手的架构全解密</h3><p><strong>来源</strong>: <a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/2022378958767887638">知乎 - 孤飞</a><br><strong>原文链接</strong>: <a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/2022378958767887638">Claude Code 源码泄露深度剖析</a></p>
+<h3 id="2-从-Claude-Code-源码学习怎么做-Agent-可观测性（下）"><a href="#2-从-Claude-Code-源码学习怎么做-Agent-可观测性（下）" class="headerlink" title="2. 从 Claude Code 源码学习怎么做 Agent 可观测性（下）"></a>2. 从 Claude Code 源码学习怎么做 Agent 可观测性（下）</h3><p><strong>来源</strong>: <a target="_blank" rel="noopener" href="https://mp.weixin.qq.com/s/qfybXYKA4uU-UuElNprUrg">微信公众号 - 此间山林</a><br><strong>原文链接</strong>: <a target="_blank" rel="noopener" href="https://mp.weixin.qq.com/s/qfybXYKA4uU-UuElNprUrg">从 Claude Code 源码学习怎么做 Agent 可观测性（下）</a></p>
+<p><strong>简评</strong>:</p>
+<p>这是上篇的续作，聚焦三个更落地的工程问题：可靠性与失败补偿、隐私与字段基数治理、默认开关矩阵。</p>
+<p><strong>可靠性与失败补偿</strong>：</p>
+<ul>
+<li><strong>启动早期事件不丢</strong>：<code>analytics/index.ts</code> 带 eventQueue，sink 挂载前事件先入队，等 attachAnalyticsSink() 后再异步排空</li>
+<li><strong>1P event logging 带磁盘缓冲</strong>：失败事件写到 <code>~/.claude/telemetry</code>，下次进程启动时扫描并回放；quadratic backoff 重试最多 8 次；401 触发 auth fallback（带 auth 发，失败后降级无 auth 重试）</li>
+<li><strong>killswitch 联动</strong>：每次 POST 前检查 isKilled()，sink 被杀掉时事件落盘，网络侧零流量</li>
+<li><strong>退出时 flush 但不卡死</strong>：Promise.race 把 flush 和 timeout 放一起赛跑，timeout 后记录诊断信息但不阻塞退出</li>
+<li><strong>trace 生命周期管理</strong>：activeSpans 用 WeakRef，strongSpans 用强引用；ensureCleanupInterval() 每 60 秒扫描，30 分钟 TTL 清理 orphaned span</li>
+</ul>
+<p><strong>隐私、字段基数与 feature gate</strong>：</p>
+<ul>
+<li><strong>privacy level 三档</strong>：<code>default</code> | <code>no-telemetry</code> | <code>essential-traffic</code>，直接决定整条可观测性链路开不开</li>
+<li><strong>字符串不是默认就能发</strong>：默认 event metadata 限制为 boolean、number、undefined；字符串必须显式声明 <code>AnalyticsMetadata_I_VERIFIED_THIS_IS_NOT_CODE_OR_FILEPATHS</code></li>
+<li><strong><code>_PROTO_*</code> 分层脱敏</strong>：普通后端绝不能看到 <code>_PROTO_*</code> 字段，只有 1P exporter 拿到完整 payload</li>
+<li><strong>内容粒度开关</strong>：<code>OTEL_LOG_USER_PROMPTS</code>、<code>OTEL_LOG_TOOL_CONTENT</code>、<code>OTEL_LOG_TOOL_DETAILS</code> 等控制 prompt&#x2F;tool content 粒度</li>
+<li><strong>Beta tracing 按用户类型分层</strong>：Thinking output 只对内部用户（ant）可见</li>
+</ul>
+<p><strong>默认开关矩阵</strong>：</p>
+<ul>
+<li><strong>Analytics</strong>：默认可调用，sink 未挂载时先入队；Datadog 受 <code>tengu_log_datadog_events</code> gate + per-sink killswitch 控制；1P 受 killswitch + 采样控制</li>
+<li><strong>OTel telemetry</strong>：<code>CLAUDE_CODE_ENABLE_TELEMETRY</code> 总开关；trace 还叠加 <code>isEnhancedTelemetryEnabled()</code>（build feature + env override &#x2F; ant &#x2F; GrowthBook gate）</li>
+<li><strong>Beta tracing</strong>：<code>ENABLE_BETA_TRACING_DETAILED=1</code> + <code>BETA_TRACING_ENDPOINT</code>；外部用户需满足 headless&#x2F;SDK 或 <code>tengu_trace_lantern</code> allowlist</li>
+<li><strong>层级关系</strong>：privacy level → <code>CLAUDE_CODE_ENABLE_TELEMETRY</code> → <code>isEnhancedTelemetryEnabled()</code> → <code>isBetaTracingEnabled()</code></li>
+</ul>
+<p>文章最后总结：可靠性是一组机制叠出来的（启动队列、磁盘缓冲、退避重试、flush timeout、span TTL cleanup）；治理要前置到采集阶段（marker type、<code>_PROTO_*</code> 分层、内容粒度开关、用户分层可见性）；开关之间有层级关系，不理解依赖链就很难排查”为什么没数据”。</p>
+<hr>
+<h3 id="4-Claude-Code-源码泄露深度剖析：Anthropic-AI-编程助手的架构全解密"><a href="#4-Claude-Code-源码泄露深度剖析：Anthropic-AI-编程助手的架构全解密" class="headerlink" title="4. Claude Code 源码泄露深度剖析：Anthropic AI 编程助手的架构全解密"></a>4. Claude Code 源码泄露深度剖析：Anthropic AI 编程助手的架构全解密</h3><p><strong>来源</strong>: <a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/2022378958767887638">知乎 - 孤飞</a><br><strong>原文链接</strong>: <a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/2022378958767887638">Claude Code 源码泄露深度剖析</a></p>
 <p><strong>简评</strong>:</p>
 <p>这是一篇从项目架构、核心系统设计、技术栈选型三个维度全面拆解 Claude Code 的技术分析文章。作者作为重度用户，第一时间深入研究了泄露的 51 万行代码。</p>
 <p><strong>泄露始末</strong>：npm 包中包含的 <code>cli.js.map</code> 文件（59.8 MB）包含完整源码映射，源码 zip 包直接托管在 Anthropic 的 R2 存储桶上。泄露规模：~1,900 个文件，512,000+ 行代码，TypeScript (strict)，Bun 运行时，React + Ink 终端 UI。</p>
