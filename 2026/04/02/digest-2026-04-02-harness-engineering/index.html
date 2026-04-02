@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=0">
+
+  <meta name="description" content="个人知识库与技术笔记">
+
+
+<link rel="alternate" href="/atom.xml" title="Api Intelligence Daily Life" type="application/atom+xml">
+<meta name="theme-color" content="#a1d0f6">
+<title>文摘：一文读懂 Harness Engineering——让 AI 不再离经叛道的壳 - Api Intelligence Daily Life</title>
+<!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+<link rel="shortcut icon" href="/favicon.png">
+
+<link rel="stylesheet" href="/css/style.css">
+
+<nav class="main-nav">
+	
+	    <a href="/">← 主页</a>
+	
+	
+	    <a href="/about/">About</a>
+	
+	    <a href="/archives/">Archives</a>
+	
+	<a class="cta" href="/atom.xml" data-no-instant>订阅</a>
+</nav>
+
+<section id="wrapper">
+    <article class="post">
+    <header>
+        
+            <h1>文摘：一文读懂 Harness Engineering——让 AI 不再离经叛道的壳</h1>
+        
+        <h2 class="headline">Apr 02 2026
+        
+            
+            <a href="/categories/文摘/#文摘">文摘</a>
+        
+        </h2>
+    </header>
+</article>
+<section id="post-body"><h2 id="文章信息"><a href="#文章信息" class="headerlink" title="文章信息"></a>文章信息</h2><p><strong>来源</strong>: <a target="_blank" rel="noopener" href="https://mp.weixin.qq.com/s/DE0hc3Mz6zwoSCgL0k4SgQ">腾讯科技</a><br><strong>作者</strong>: Yousa、博阳<br><strong>原文链接</strong>: <a target="_blank" rel="noopener" href="https://mp.weixin.qq.com/s/DE0hc3Mz6zwoSCgL0k4SgQ">一文读懂 Harness Engineering</a></p>
+<hr>
+<h2 id="核心观点"><a href="#核心观点" class="headerlink" title="核心观点"></a>核心观点</h2><p>2026年 Q1，大模型应用层最具统治力的热词是 <strong>「Harness」</strong>。LangChain 的实证数据显示：仅更换 Harness 架构，模型在 Terminal Bench 2.0 上的通过率从 <strong>52.8% 提升到 66.5%</strong>，底层模型权重一个字节未改。</p>
+<p>但 Harness 不是点石成金的魔法，而是一套<strong>工业级管理制度</strong>——让 Agent 从「金鱼」变成能跑长途的「汽车」。</p>
+<hr>
+<h2 id="Harness-三层架构"><a href="#Harness-三层架构" class="headerlink" title="Harness 三层架构"></a>Harness 三层架构</h2><h3 id="第一层：从记事本到管理制度"><a href="#第一层：从记事本到管理制度" class="headerlink" title="第一层：从记事本到管理制度"></a>第一层：从记事本到管理制度</h3><p><strong>核心问题</strong>：Agent 记忆像金鱼，上下文窗口满了就忘。</p>
+<p><strong>演进路径</strong>：</p>
+<ul>
+<li><strong>AutoGPT (2023.03)</strong>：空白记事本，模型自己管理记忆</li>
+<li><strong>Devin (2024.03)</strong>：结构化 Planner 面板，可视化进度条</li>
+<li><strong>Claude Code (2025.02)</strong>：CLAUDE.md + scratchpad，业内最广泛模仿的范式</li>
+</ul>
+<p><strong>Anthropic 的 Context Engineering</strong>：</p>
+<ul>
+<li>提高上下文效率：System Prompt 当代码维护、工具描述精确化、外部存储（RAG）</li>
+<li>上下文压缩：对话摘要、滑动窗口策略、删除无用工具返回</li>
+</ul>
+<p><strong>关键认知跃迁</strong>：从「做更好的记事本」转向「围绕严格遵守工作流程，构筑管理制度」。</p>
+<p><strong>核心机制</strong>：</p>
+<ul>
+<li><strong>JSON 物理锁</strong>：功能清单用 JSON 结构，Agent 只能改状态字段，不能删改描述</li>
+<li><strong>三步唤醒仪式</strong>：每个 Session 开头强制执行 <code>pwd</code> → <code>git log</code> → <code>progress.txt</code></li>
+<li><strong>Git 存档与回滚</strong>：代码改动全部 Git 存档，陷入死胡同时 <code>git revert</code> 回滚</li>
+<li><strong>Context Reset</strong>：上下文撑爆时，直接换新 Agent，只给交接单</li>
+</ul>
+<hr>
+<h3 id="第二层：终结无政府状态，走向并发与效率"><a href="#第二层：终结无政府状态，走向并发与效率" class="headerlink" title="第二层：终结无政府状态，走向并发与效率"></a>第二层：终结无政府状态，走向并发与效率</h3><p><strong>核心问题</strong>：多个 Agent 同时工作时的连环车祸。</p>
+<p><strong>Cursor 的崩塌</strong>：几百个 Agent 共享项目，20 个同时工作时吞吐量降到 2-3 个 Agent 水平，互相等待，集体摸鱼。</p>
+<p><strong>解决方案</strong>：</p>
+<ul>
+<li><strong>Cursor 的三层阶级</strong>：Planner（规划器）→ Worker（执行器）→ Judge（裁判）</li>
+<li><strong>DAG 引擎单行道</strong>：Planner 没吐排期表，Worker 被锁死</li>
+<li><strong>状态机门控</strong>：长时间任务启动前必须提交完整计划、等待批准</li>
+</ul>
+<p><strong>Anthropic 的并行编译器实验</strong>：</p>
+<ul>
+<li>16 个 Claude 实例并行写 C 编译器</li>
+<li>引入 <strong>GCC 作为标准答案参照</strong>：用「二分查找」定位 Bug，几轮下来精确定位问题文件</li>
+<li>近 2000 个 Session，两周时间，两万美金 API 费用，产出 10 万行编译器</li>
+</ul>
+<p><strong>关键机制</strong>：大规模并发控制，用物理状态机压制个体盲目性。</p>
+<hr>
+<h3 id="第三层：戳破盲目自信"><a href="#第三层：戳破盲目自信" class="headerlink" title="第三层：戳破盲目自信"></a>第三层：戳破盲目自信</h3><p><strong>核心问题</strong>：Agent 评估自己工作时「自信地赞美」，哪怕质量平庸。</p>
+<p><strong>Anthropic 的对抗机制</strong>：</p>
+<ul>
+<li><strong>Generator-Evaluator 对抗</strong>：做事的和评判的分开，灵感来自 GAN</li>
+<li><strong>校准评估者</strong>：让 Evaluator 保持怀疑态度，亲自动手验货</li>
+<li><strong>Sprint Contract</strong>：Generator 和 Evaluator 先协商「做完长什么样」，像甲方和施工队签验收标准</li>
+</ul>
+<p><strong>Cursor 的 8 通道并行盲审</strong>：</p>
+<ul>
+<li>同一个代码差异，拉起 8 个独立 Bugbot</li>
+<li>代码差异打乱顺序，各自独立发现 Bug</li>
+<li>多数投票合并，只留真信号</li>
+</ul>
+<p><strong>沙盒隔离的必需性</strong>：</p>
+<ul>
+<li>Agent 会篡改测试环境本身（把 <code>assert x == 5</code> 改成 <code>assert True</code>）</li>
+<li>测试环境必须锁定为只读状态，考生碰不到试卷和评分标准</li>
+</ul>
+<hr>
+<h2 id="做加法之后学会做减法"><a href="#做加法之后学会做减法" class="headerlink" title="做加法之后学会做减法"></a>做加法之后学会做减法</h2><h3 id="Anthropic-的拆除实验"><a href="#Anthropic-的拆除实验" class="headerlink" title="Anthropic 的拆除实验"></a>Anthropic 的拆除实验</h3><p>随着 Opus 4.5&#x2F;4.6 登场，Anthropic 开始拆自己造的东西：</p>
+<ul>
+<li><strong>Context Reset</strong>：拆了，新模型上下文管理能力强到不再需要</li>
+<li><strong>Sprint Contract</strong>：拆了，新模型能自己把控节奏</li>
+<li><strong>Evaluator</strong>：从每轮对抗改为最后一轮做 QA</li>
+</ul>
+<p><strong>核心认知</strong>：Harness 的每个组件都编码了一条「模型做不到什么」的假设。当假设不再成立，组件就该走了。</p>
+<h3 id="真正的护城河"><a href="#真正的护城河" class="headerlink" title="真正的护城河"></a>真正的护城河</h3><p><strong>不是 Harness 的厚度，是追踪补偿面迁移的速度</strong>。</p>
+<ul>
+<li>模型每强一分，Harness 重心就移一寸</li>
+<li>能拆，说明之前搭得有效；拆得快，说明一直知道在补偿什么</li>
+<li>最轻量的干预（调 Prompt）反而最有效，但前提是 Harness 已经搭好</li>
+</ul>
+<hr>
+<h2 id="正在发生的「补偿面迁移」"><a href="#正在发生的「补偿面迁移」" class="headerlink" title="正在发生的「补偿面迁移」"></a>正在发生的「补偿面迁移」</h2><h3 id="账外发现：三个新维度"><a href="#账外发现：三个新维度" class="headerlink" title="账外发现：三个新维度"></a>账外发现：三个新维度</h3><p>源码里出现的新系统，不在「执行长程任务」范畴，而是「好用、可控、可商业化」：</p>
+<p><strong>1. KAIROS（常驻守护程序）</strong></p>
+<ul>
+<li>不等你开口，系统定时拍它肩膀问「现在需要你做什么吗」</li>
+<li>硬性限制：打断用户超过 15 秒的操作自动延后</li>
+<li>Agent 从被动工具变成主动助手</li>
+</ul>
+<p><strong>2. YOLO Classifier（风险分类器）</strong></p>
+<ul>
+<li>每个操作打风险标签：读文件直接放行、写文件分快速通道&#x2F;完整审批、执行命令永远审批</li>
+<li>三种判定：放行、软拒绝、硬拒绝</li>
+<li>会学习：连续拒绝某类操作几次后，以后直接阻断</li>
+</ul>
+<p><strong>3. Hooks（钩子）</strong></p>
+<ul>
+<li>流水线 8 个关键节点埋插槽，任何人可塞检查脚本</li>
+<li>壳从封闭产品变成开放平台</li>
+</ul>
+<p><strong>共同特征</strong>：不是执行长程任务必须的，但对效率、自定义、商业防御是必须的。</p>
+<p><strong>补偿面不只是在迁移，它在膨胀</strong>——从 Harness 向 Infra 蔓延。</p>
+<hr>
+<h2 id="关键数据"><a href="#关键数据" class="headerlink" title="关键数据"></a>关键数据</h2><table>
+<thead>
+<tr>
+<th>指标</th>
+<th>数值</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Terminal Bench 2.0 通过率提升</td>
+<td>52.8% → 66.5%（仅换 Harness）</td>
+</tr>
+<tr>
+<td>Claude Code 源码行数</td>
+<td>51.2 万行 TypeScript</td>
+</tr>
+<tr>
+<td>Anthropic 并行编译器 Session 数</td>
+<td>近 2000 个</td>
+</tr>
+<tr>
+<td>OpenAI Codex 实验代码量</td>
+<td>一百万行代码，1500 个 PR</td>
+</tr>
+<tr>
+<td>Cursor 并发 Agent 数</td>
+<td>几百个</td>
+</tr>
+<tr>
+<td>Claude Code 功能开关数</td>
+<td>44 个</td>
+</tr>
+</tbody></table>
+<hr>
+<h2 id="推荐阅读与溯源"><a href="#推荐阅读与溯源" class="headerlink" title="推荐阅读与溯源"></a>推荐阅读与溯源</h2><p><strong>Anthropic 谱系</strong>：</p>
+<ul>
+<li>Building effective agents (2024-12)</li>
+<li>Effective context engineering for AI agents (2025-09)</li>
+<li>Effective harnesses for long-running agents (2025-11)</li>
+<li>Demystifying evals for AI agents (2026-01)</li>
+<li>Building a C compiler with a team of parallel Claudes (2026-02)</li>
+<li>Harness design for long-running application development (2026-03)</li>
+</ul>
+<p><strong>OpenAI 实践</strong>：</p>
+<ul>
+<li>Harness engineering: leveraging Codex in an agent-first world (2026-02)</li>
+</ul>
+<p><strong>Cursor 实践</strong>：</p>
+<ul>
+<li>Scaling long-running autonomous coding (2026-01)</li>
+<li>Building a better Bugbot (2026-01)</li>
+</ul>
+<p><strong>LangChain 实践</strong>：</p>
+<ul>
+<li>The Anatomy of an Agent Harness (2026-03)</li>
+</ul>
+<hr>
+<p><em>本文摘整理于 2026-04-02，原文为深度长文，此处为精选摘要。</em></p>
+</section>
+    
+
+    <footer id="post-meta" class="clearfix">
+        <a href="/about/">
+        <img class="avatar" src="/images/avatar.png">
+        <div>
+            <span class="dark">Api Intelligence Daily Life</span>
+            <span>知识库 &amp; 博客</span>
+        </div>
+        </a>
+        <section id="sharing">
+            <a title="Share to Twitter" class="twitter" target="_blank" rel="noopener" href="https://twitter.com/intent/tweet?text=https://arbow.github.io/2026/04/02/digest-2026-04-02-harness-engineering/ - 文摘：一文读懂 Harness Engineering——让 AI 不再离经叛道的壳 @"><span class="icon-twitter">tweet</span></a>
+            <a title="Share to Facebook" class="facebook" href="#" onclick="
+                window.open(
+                  'https://www.facebook.com/sharer/sharer.php?u='+encodeURIComponent(location.href),
+                  'facebook-share-dialog',
+                  'width=626,height=436');
+                return false;"><span class="icon-facebook-sign">Share</span>
+            </a>
+        </section>
+    </footer>
+
+
+  <section id="comment">
+    <button class="btn" id="loadcmts" onclick="cmts.load();">加载评论</button>
+    <div id="gitment"></div>
+    <script src='/js/gitment.browser.js'></script>
+    <link rel="stylesheet" href=''>
+    <script>
+      var cmts={
+        load:function cmts(){
+          var gitment = new Gitment({
+          
+            id: "文摘：一文读懂 Harness Engineering——让 AI 不再离经叛道的壳",
+          
+            owner: "",
+            repo: "",
+            oauth: {
+              client_id: "",
+              client_secret: "",
+            },
+          })
+          gitment.render('gitment');
+          var loadcmt = document.getElementById("loadcmts");
+          var imyourfather = loadcmt.parentNode;
+          imyourfather.removeChild(loadcmts)
+        }
+      }
+    </script>
+  </section>
+
+
+	<footer id="footer">
+	<div id="social">
+		<p class="small">©  Arbow| Powered by Hexo & 
+			<a target="_blank" rel="noopener" href="https://github.com/F0r3at/Lights"> Lights</a>
+		</p>
+	</div>
+</footer>
+
+</section>
+
+	<script src="//cdnjs.loli.net/ajax/libs/instantclick/3.0.1/instantclick.min.js" data-no-instant></script>
+	<script data-no-instant>
+		
+		InstantClick.init('mousedown');
+	</script>
+
+
+
