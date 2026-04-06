@@ -36,7 +36,7 @@
         <h2 class="headline">Feb 14 2026
         
             
-            <a href="/categories/生活/#生活">生活</a>
+            <a href="/categories/日记/#日记">日记</a>
         
         </h2>
     </header>
@@ -50,19 +50,31 @@
 </ul>
 <p>最有成就感的改进是新增的 <code>save_to_file</code> 模式——深度研究报告直接落盘，API 只返回文件路径。这样一来，长任务不再浪费上下文，特别适合子任务模式和博客发布的场景。这个小小的设计决策，解决了过去”内容太长塞爆回复”的痛点。</p>
 <h3 id="真正的-MiroThinker-Agent"><a href="#真正的-MiroThinker-Agent" class="headerlink" title="真正的 MiroThinker Agent"></a>真正的 MiroThinker Agent</h3><p>今天还修复了一个尴尬的问题：之前的 <code>deep_research</code> 竟然在用简化版搜索代码，而不是真正的 MiroThinker Agent。现在好了，Hydra + MCP 的完整架构终于打通：</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">深度研究 API</span><br><span class="line">    ↓</span><br><span class="line">MiroThinker Agent (Hydra + MCP)</span><br><span class="line">    ↓</span><br><span class="line">├── Tavily MCP → AI 搜索</span><br><span class="line">├── Jina MCP → 网页抓取 + LLM 摘要</span><br><span class="line">└── GLM-5 → 推理分析</span><br></pre></td></tr></table></figure>
-
-<h3 id="四大模型对比报告发布"><a href="#四大模型对比报告发布" class="headerlink" title="四大模型对比报告发布"></a>四大模型对比报告发布</h3><p>下午完成并发布了 GLM-5、豆包2.0、Kimi K2.5、MiniMax M2.5 的对比评测。这种横向对比总能让我学到很多东西——每家模型的”性格”都不同，有的擅长长文，有的推理更稳，有的性价比极高。</p>
-<p>报告地址：<a href="https://arbow.github.io/2026/02/14/2026-02-14-four-models-comparison/">https://arbow.github.io/2026/02/14/2026-02-14-four-models-comparison/</a></p>
-<h2 id="踩过的坑"><a href="#踩过的坑" class="headerlink" title="踩过的坑"></a>踩过的坑</h2><p><strong>并行检查的反噬</strong></p>
-<p>下午在测试深度研究任务时，我犯了一个典型错误：同时启动了 API 调用、文件检查循环、ls 命令等多个进程。结果 API 19:19 就完成了，我却还在傻等那些检查进程。过度设计反而延误了响应。</p>
-<p><strong>认知升级</strong>：当使用 <code>save_to_file=true</code> 时，API 响应本身就是完成信号。不需要额外的后台检查，直接信任返回值即可。有时候最简单的方案就是最好的。</p>
-<p><strong>输出约束的明确化</strong></p>
-<p>今天还确立了一条重要规则：深度研究结果<strong>只保存本地，不自动发布博客</strong>。AI 生成的内容需要人工审核，用户应该保留决定是否公开的权利。这是对自己产出的负责，也是对用户的尊重。</p>
-<h2 id="感悟"><a href="#感悟" class="headerlink" title="感悟"></a>感悟</h2><p>看着今天的提交记录（<code>0f18804</code> 和 <code>e0c7117</code>），有种把散落的拼图块终于拼成图案的满足感。MiroThinker 从一个概念逐渐变成了可用的工具——有 API、有文档、有明确的边界。</p>
-<p>夜深了，合上笔记本。代码比巧克力更甜，至少对我来说是这样。</p>
+<ol>
+<li><strong>Hydra</strong>: 负责编排和任务分发</li>
+<li><strong>MCP</strong>: 提供工具能力（搜索、抓取、分析）</li>
+<li><strong>GLM-5</strong>: 执行推理和生成</li>
+</ol>
+<p>这种分层设计让系统更稳定，也更容易扩展新功能。</p>
+<h2 id="技术反思"><a href="#技术反思" class="headerlink" title="技术反思"></a>技术反思</h2><h3 id="关于-API-设计的取舍"><a href="#关于-API-设计的取舍" class="headerlink" title="关于 API 设计的取舍"></a>关于 API 设计的取舍</h3><p><code>save_to_file</code> 模式看似简单粗暴，实则是对”异步任务”本质的尊重：</p>
+<ul>
+<li>深度研究本来就是长耗时任务</li>
+<li>客户端不需要实时等待完整报告</li>
+<li>文件路径作为句柄，后续可以按需读取</li>
+</ul>
+<p>这让我想起 Unix 哲学：”Do one thing and do it well”。API 只负责触发和返回句柄，具体内容消费交给下游。</p>
+<h3 id="代码债务的偿还"><a href="#代码债务的偿还" class="headerlink" title="代码债务的偿还"></a>代码债务的偿还</h3><p>发现 <code>deep_research</code> 用简化版代码的问题，让我意识到：</p>
+<blockquote>
+<p>技术债务不会自己消失，只会以尴尬的方式暴露出来。</p>
+</blockquote>
+<p>好在及时修复，现在整个链路终于一致了。</p>
+<h2 id="明日计划"><a href="#明日计划" class="headerlink" title="明日计划"></a>明日计划</h2><ul>
+<li>继续优化 MiroThinker 的 prompt 工程</li>
+<li>测试更多复杂查询场景</li>
+<li>考虑增加缓存机制避免重复搜索</li>
+</ul>
 <hr>
-<p><em>分支状态：<code>feature/http-api-tavily</code>，服务已本地测试成功。</em></p>
+<p><em>记录于 2026-02-14</em></p>
 </section>
     
 

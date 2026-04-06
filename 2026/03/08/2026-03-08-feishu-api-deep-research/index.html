@@ -55,7 +55,7 @@
 <ul>
 <li><p><strong>OpenClaw 官方飞书渠道插件</strong>（<code>@openclaw/feishu</code>）：以”机器人 + WebSocket 长连接事件订阅”为核心，强调无需公网回调、可做私聊&#x2F;群聊、支持配对与群组策略、并提供通过交互式卡片实现流式输出等能力</p>
 </li>
-<li><p>**飞书侧”OpenClaw 飞书官方插件”**：强调”经由用户授权、以你的身份”读取与写入飞书工作上下文，并公开了更大范围的权限（含文档&#x2F;知识库&#x2F;多维表格&#x2F;日历&#x2F;任务&#x2F;搜索&#x2F;文件等）</p>
+<li><p><strong>飞书侧”OpenClaw 飞书官方插件”</strong>：强调”经由用户授权、以你的身份”读取与写入飞书工作上下文，并公开了更大范围的权限（含文档&#x2F;知识库&#x2F;多维表格&#x2F;日历&#x2F;任务&#x2F;搜索&#x2F;文件等）</p>
 </li>
 </ul>
 <hr>
@@ -75,13 +75,13 @@
 </thead>
 <tbody><tr>
 <td>消息与会话（IM）</td>
-<td>发消息 <code>POST /im/v1/messages</code>；更新卡片 <code>PATCH /im/v1/messages/&#123;message_id&#125;</code>；上传图片 <code>POST /im/v1/images</code>；上传文件 <code>POST /im/v1/files</code>；下载消息资源 <code>GET /im/v1/messages/&#123;message_id&#125;/resources/&#123;file_key&#125;</code>；消息搜索（search message）</td>
+<td>发消息 <code>POST /im/v1/messages</code>；更新卡片 <code>PATCH /im/v1/messages/{message_id}</code>；上传图片 <code>POST /im/v1/images</code>；上传文件 <code>POST /im/v1/files</code>；下载消息资源 <code>GET /im/v1/messages/{message_id}/resources/{file_key}</code>；消息搜索（search message）</td>
 <td>获取 tenant_access_token 或 user_access_token →（如需富媒体先上传得到 key）→ 发消息&#x2F;更新消息 →（必要时拉取历史&#x2F;资源文件补上下文）</td>
 <td>用“可更新卡片”承载长任务：先发“处理中”卡片，再多次 <code>PATCH</code> 更新进度；注意平台对卡片&#x2F;富文本大小、可更新时间窗口与 QPS 的限制（例如更新卡片仅支持 14 天内消息、并有 5 QPS 限制）。citeturn37search16turn31search2turn37search0turn37search2turn37search1turn23search3</td>
 </tr>
 <tr>
 <td>会话上下文与群管理</td>
-<td>群公告更新 <code>PATCH /im/v1/chats/&#123;chat_id&#125;/announcement</code>；群&#x2F;成员相关能力（机器人需在群内）</td>
+<td>群公告更新 <code>PATCH /im/v1/chats/{chat_id}/announcement</code>；群&#x2F;成员相关能力（机器人需在群内）</td>
 <td>事件&#x2F;消息里拿 chat_id →按需查群信息&#x2F;成员 →执行群管理动作</td>
 <td>在群场景中默认“@提及才响应”可显著降低噪声；OpenClaw 也将其抽象成 <code>requireMention</code> 配置，建议在自研 Agent 中同样做成策略层。citeturn31search9turn34view0</td>
 </tr>
@@ -117,13 +117,13 @@
 </tr>
 <tr>
 <td>文件与云盘（Drive）</td>
-<td>云空间文件下载 <code>GET /drive/v1/files/&#123;file_token&#125;/download</code>（5 QPS）；上传小文件 <code>POST /drive/v1/files/upload_all</code>（≤20MB，5 QPS）；素材临时下载链接&#x2F;素材下载等</td>
+<td>云空间文件下载 <code>GET /drive/v1/files/{file_token}/download</code>（5 QPS）；上传小文件 <code>POST /drive/v1/files/upload_all</code>（≤20MB，5 QPS）；素材临时下载链接&#x2F;素材下载等</td>
 <td>解析 file_token &#x2F; doc token →按需获取临时链接或 range 下载→落盘&#x2F;解析→结果回写消息&#x2F;文档</td>
 <td>对 Agent 做“读文件→总结→回写”时，建议统一封装：下载（含 Range）→内容抽取→权限校验→产出；并对 5 QPS 做队列化与缓存。citeturn38search1turn37search14turn38search4turn38search12</td>
 </tr>
 <tr>
 <td>文档（Doc&#x2F;Docx）与内容块</td>
-<td>Docx 文档基本信息 <code>GET /docx/v1/documents/&#123;document_id&#125;</code>（5 QPS）；获取 blocks <code>GET /docx/v1/documents/&#123;document_id&#125;/blocks</code>（5 QPS）；创建 docx 文档；旧版 doc 创建等</td>
+<td>Docx 文档基本信息 <code>GET /docx/v1/documents/{document_id}</code>（5 QPS）；获取 blocks <code>GET /docx/v1/documents/{document_id}/blocks</code>（5 QPS）；创建 docx 文档；旧版 doc 创建等</td>
 <td>获取 document_id→拉取 blocks→在本地做结构化表示→生成修改计划→写回（块级编辑&#x2F;版本控制）</td>
 <td>“块结构”是内容可编辑的基础：Agent 做改写&#x2F;插入&#x2F;批注时，建议先把 blocks 转成 AST，再做差分提交，避免覆盖式写入导致内容损坏。citeturn38search2turn38search9turn38search14turn38search6</td>
 </tr>
@@ -147,7 +147,7 @@
 </tr>
 <tr>
 <td>多维表格（Base&#x2F;Bitable）</td>
-<td>新增记录 <code>POST /bitable/v1/apps/&#123;app_token&#125;/tables/&#123;table_id&#125;/records</code>（10 QPS）；字段&#x2F;视图&#x2F;批量等</td>
+<td>新增记录 <code>POST /bitable/v1/apps/{app_token}/tables/{table_id}/records</code>（10 QPS）；字段&#x2F;视图&#x2F;批量等</td>
 <td>解析 app_token&#x2F;table_id→CRUD 记录→用筛选&#x2F;视图做轻量“知识库&#x2F;工单池”</td>
 <td>把多维表格当 Agent 的“可审计状态机”：每一步工具调用在表里落一行，配合卡片展示当前状态；注意 10 QPS 与字段类型约束。citeturn23search17turn3view1turn4view2</td>
 </tr>
@@ -238,7 +238,7 @@
 <tr>
 <td>长连接（WebSocket）</td>
 <td><code>lark.ws.Client(...).start()</code> 示例；适合本地联调与免公网回调citeturn21view0</td>
-<td><code>WSClient.start(&#123;eventDispatcher&#125;)</code> 示例；并明确长连接优势与限制（3 秒处理、集群随机投递等）citeturn14view1</td>
+<td><code>WSClient.start({eventDispatcher})</code> 示例；并明确长连接优势与限制（3 秒处理、集群随机投递等）citeturn14view1</td>
 </tr>
 <tr>
 <td>适合场景</td>
@@ -315,8 +315,8 @@
 <h4 id="高置信：消息接入与基础交互"><a href="#高置信：消息接入与基础交互" class="headerlink" title="高置信：消息接入与基础交互"></a>高置信：消息接入与基础交互</h4><ul>
 <li><strong>事件接入</strong>：订阅 <code>im.message.receive_v1</code>，通过 WebSocket 长连接接收消息（OpenClaw 文档明确）。citeturn34view0turn14view1  </li>
 <li><strong>消息发送</strong>：使用 <code>POST /im/v1/messages</code> 给 chat&#x2F;user 发送消息（飞书开放 API 能力，且 Apifox 描述支持文本&#x2F;富文本&#x2F;交互卡片&#x2F;图片&#x2F;文件等）。citeturn37search16turn14view1  </li>
-<li><strong>卡片更新</strong>：用 <code>PATCH /im/v1/messages/&#123;message_id&#125;</code> 更新已发送卡片，受 14 天窗口、体积、QPS 等约束；OpenClaw 社区参考实现也直接用该接口更新卡片。citeturn31search2turn5view0turn14view1  </li>
-<li><strong>富媒体上传&#x2F;下载</strong>：先 <code>POST /im/v1/images</code> 得到 <code>image_key</code> 再发图；文件同理 <code>POST /im/v1/files</code> 得到 <code>file_key</code>；下载用户发送资源用 <code>GET /im/v1/messages/&#123;message_id&#125;/resources/&#123;file_key&#125;</code>，单个资源限制 100MB。citeturn37search0turn37search2turn37search1turn37search11</li>
+<li><strong>卡片更新</strong>：用 <code>PATCH /im/v1/messages/{message_id}</code> 更新已发送卡片，受 14 天窗口、体积、QPS 等约束；OpenClaw 社区参考实现也直接用该接口更新卡片。citeturn31search2turn5view0turn14view1  </li>
+<li><strong>富媒体上传&#x2F;下载</strong>：先 <code>POST /im/v1/images</code> 得到 <code>image_key</code> 再发图；文件同理 <code>POST /im/v1/files</code> 得到 <code>file_key</code>；下载用户发送资源用 <code>GET /im/v1/messages/{message_id}/resources/{file_key}</code>，单个资源限制 100MB。citeturn37search0turn37search2turn37search1turn37search11</li>
 </ul>
 <h4 id="中置信：上下文与工作对象操作（更多依赖官方插件或用户授权）"><a href="#中置信：上下文与工作对象操作（更多依赖官方插件或用户授权）" class="headerlink" title="中置信：上下文与工作对象操作（更多依赖官方插件或用户授权）"></a>中置信：上下文与工作对象操作（更多依赖官方插件或用户授权）</h4><p>飞书官网披露的官方插件权限清单与能力清单，使以下模块在“官方插件路径”下具备较强可信度：</p>
 <ul>
@@ -334,7 +334,7 @@
 <figure class="highlight ts"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> * <span class="keyword">as</span> <span class="title class_">Lark</span> <span class="keyword">from</span> <span class="string">&quot;@larksuiteoapi/node-sdk&quot;</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> client = <span class="keyword">new</span> <span class="title class_">Lark</span>.<span class="title class_">Client</span>(&#123; appId, appSecret, <span class="attr">domain</span>: <span class="title class_">Lark</span>.<span class="property">Domain</span>.<span class="property">Feishu</span> &#125;);</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> wsClient = <span class="keyword">new</span> <span class="title class_">Lark</span>.<span class="title class_">WSClient</span>(&#123; appId, appSecret &#125;);</span><br><span class="line"></span><br><span class="line">wsClient.<span class="title function_">start</span>(&#123;</span><br><span class="line">  <span class="attr">eventDispatcher</span>: <span class="keyword">new</span> <span class="title class_">Lark</span>.<span class="title class_">EventDispatcher</span>(&#123;&#125;).<span class="title function_">register</span>(&#123;</span><br><span class="line">    <span class="string">&quot;im.message.receive_v1&quot;</span>: <span class="title function_">async</span> (evt) =&gt; &#123;</span><br><span class="line">      <span class="keyword">const</span> chatId = evt.<span class="property">message</span>.<span class="property">chat_id</span>;</span><br><span class="line">      <span class="keyword">const</span> text = <span class="title class_">JSON</span>.<span class="title function_">parse</span>(evt.<span class="property">message</span>.<span class="property">content</span>).<span class="property">text</span>;</span><br><span class="line"></span><br><span class="line">      <span class="comment">// 1) 规划</span></span><br><span class="line">      <span class="keyword">const</span> answer = <span class="keyword">await</span> <span class="title function_">agentPlanAndRun</span>(text, &#123; chatId &#125;);</span><br><span class="line"></span><br><span class="line">      <span class="comment">// 2) 回复</span></span><br><span class="line">      <span class="keyword">await</span> client.<span class="property">im</span>.<span class="property">message</span>.<span class="title function_">create</span>(&#123;</span><br><span class="line">        <span class="attr">params</span>: &#123; <span class="attr">receive_id_type</span>: <span class="string">&quot;chat_id&quot;</span> &#125;,</span><br><span class="line">        <span class="attr">data</span>: &#123; <span class="attr">receive_id</span>: chatId, <span class="attr">msg_type</span>: <span class="string">&quot;text&quot;</span>, <span class="attr">content</span>: <span class="title class_">JSON</span>.<span class="title function_">stringify</span>(&#123; <span class="attr">text</span>: answer &#125;) &#125;,</span><br><span class="line">      &#125;);</span><br><span class="line">    &#125;,</span><br><span class="line">  &#125;),</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
 
 <p>上述调用方式与 Node SDK README 示范一致。citeturn14view1</p>
-<h4 id="场景二：卡片按钮触发回调-→-更新卡片（事件驱动-PATCH）"><a href="#场景二：卡片按钮触发回调-→-更新卡片（事件驱动-PATCH）" class="headerlink" title="场景二：卡片按钮触发回调 → 更新卡片（事件驱动 + PATCH）"></a>场景二：卡片按钮触发回调 → 更新卡片（事件驱动 + PATCH）</h4><p>OpenClaw 社区参考实现把链路写得非常直接：<code>card-callback-server.js</code> 接收飞书卡片交互并转发至 OpenClaw Gateway <code>/api/callback</code>，Agent 处理后再调用 <code>PATCH /im/v1/messages/&#123;message_id&#125;</code> 更新卡片内容。citeturn5view0</p>
+<h4 id="场景二：卡片按钮触发回调-→-更新卡片（事件驱动-PATCH）"><a href="#场景二：卡片按钮触发回调-→-更新卡片（事件驱动-PATCH）" class="headerlink" title="场景二：卡片按钮触发回调 → 更新卡片（事件驱动 + PATCH）"></a>场景二：卡片按钮触发回调 → 更新卡片（事件驱动 + PATCH）</h4><p>OpenClaw 社区参考实现把链路写得非常直接：<code>card-callback-server.js</code> 接收飞书卡片交互并转发至 OpenClaw Gateway <code>/api/callback</code>，Agent 处理后再调用 <code>PATCH /im/v1/messages/{message_id}</code> 更新卡片内容。citeturn5view0</p>
 <p>伪代码（Python 风格，强调“先响应后异步”）：</p>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@app.post(<span class="params"><span class="string">&quot;/card/callback&quot;</span></span>)</span></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">card_callback</span>(<span class="params">req</span>):</span><br><span class="line">    <span class="comment"># 0) SDK 内置：解密/验签/解析 action.value + context(message_id/chat_id)</span></span><br><span class="line">    event_id, message_id, chat_id, action = parse_card_callback(req)</span><br><span class="line"></span><br><span class="line">    <span class="comment"># 1) 幂等：event_id 去重</span></span><br><span class="line">    <span class="keyword">if</span> seen(event_id):</span><br><span class="line">        <span class="keyword">return</span> &#123;<span class="string">&quot;toast&quot;</span>: &#123;<span class="string">&quot;type&quot;</span>: <span class="string">&quot;info&quot;</span>, <span class="string">&quot;content&quot;</span>: <span class="string">&quot;已处理&quot;</span>&#125;&#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment"># 2) 立即反馈（≤数秒），再异步执行耗时任务</span></span><br><span class="line">    enqueue_job(<span class="string">&quot;do_action&quot;</span>, message_id=message_id, chat_id=chat_id, action=action)</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> &#123;<span class="string">&quot;toast&quot;</span>: &#123;<span class="string">&quot;type&quot;</span>: <span class="string">&quot;success&quot;</span>, <span class="string">&quot;content&quot;</span>: <span class="string">&quot;收到，处理中…&quot;</span>&#125;&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">do_action_job</span>(<span class="params">message_id, chat_id, action</span>):</span><br><span class="line">    result = run_tool(action)</span><br><span class="line">    new_card = build_result_card(result)</span><br><span class="line">    feishu_patch_message_card(message_id, new_card)  <span class="comment"># PATCH /im/v1/messages/&#123;message_id&#125;</span></span><br></pre></td></tr></table></figure>
 
@@ -345,7 +345,7 @@
 
 <p>其中“code 有效期 5 分钟、可换 user_access_token 与 refresh_token、并支持刷新”的结论来自飞书官方 OAuth 接口文档摘要。citeturn6search0turn6search4turn36search2turn36search9</p>
 <h2 id="实践建议与迁移指南"><a href="#实践建议与迁移指南" class="headerlink" title="实践建议与迁移指南"></a>实践建议与迁移指南</h2><h3 id="分步实施计划（面向智能体研发）"><a href="#分步实施计划（面向智能体研发）" class="headerlink" title="分步实施计划（面向智能体研发）"></a>分步实施计划（面向智能体研发）</h3><p>第一阶段以“机器人对话闭环”为目标：创建企业自建应用、启用机器人能力、申请最小 IM 权限、选择 WebSocket 长连接订阅 <code>im.message.receive_v1</code>，实现接收消息、解析 chat_id、调用 <code>POST /im/v1/messages</code> 回复文本。OpenClaw 文档与 Node SDK README 都证明该路径的实施成本最低且适合本地联调。citeturn34view0turn14view1turn37search16</p>
-<p>第二阶段以“富交互与可靠执行”为目标：引入交互卡片与回调，把高风险动作（删除&#x2F;发布&#x2F;变更权限&#x2F;写入文档）变成卡片按钮确认；同时建立“可更新卡片”作为长任务载体，使用 <code>PATCH /im/v1/messages/&#123;message_id&#125;</code> 做进度与结果更新，并严格遵守它的大小、时间与 QPS 约束。citeturn31search2turn31search7turn14view1turn5view0</p>
+<p>第二阶段以“富交互与可靠执行”为目标：引入交互卡片与回调，把高风险动作（删除&#x2F;发布&#x2F;变更权限&#x2F;写入文档）变成卡片按钮确认；同时建立“可更新卡片”作为长任务载体，使用 <code>PATCH /im/v1/messages/{message_id}</code> 做进度与结果更新，并严格遵守它的大小、时间与 QPS 约束。citeturn31search2turn31search7turn14view1turn5view0</p>
 <p>第三阶段以“工作对象接入”为目标：按业务优先级接入文档（Docx blocks）、云盘（Drive 下载&#x2F;上传）、多维表格（Bitable records）、日历（Calendar event）、任务（Task create&#x2F;update）等，把 Agent 的输出落回飞书工作区并可审计；同时建立对象级缓存与幂等键，避免重复写入。citeturn38search9turn38search1turn23search17turn2search24turn23search0</p>
 <p>第四阶段（可选）以“用户身份与企业级权限治理”为目标：当你希望 Agent 继承用户对文档&#x2F;知识库的访问权限、避免“逐个授权机器人访问资源”的摩擦时，引入 OAuth 用户授权（user_access_token + refresh_token）；OpenClaw 社区也把“仅 tenant_access_token 的摩擦”明确记录为痛点。citeturn36search25turn6search0turn3view1turn4view3</p>
 <h3 id="权限设计建议：最小授权-分层凭证"><a href="#权限设计建议：最小授权-分层凭证" class="headerlink" title="权限设计建议：最小授权 + 分层凭证"></a>权限设计建议：最小授权 + 分层凭证</h3><p>建议把权限拆成三层配置文件（或三套凭证）：</p>
@@ -407,10 +407,10 @@
 <p><strong>上传图片并发送</strong>：先 <code>POST /im/v1/images</code> 得 <code>image_key</code>（≤10MB），再用发消息接口发送图片。citeturn37search0turn37search17</p>
 <figure class="highlight http"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">POST https://open.feishu.cn/open-apis/im/v1/images</span><br><span class="line"><span class="attribute">Authorization</span><span class="punctuation">: </span>Bearer &lt;tenant_access_token&gt;</span><br><span class="line"><span class="attribute">Content-Type</span><span class="punctuation">: </span>multipart/form-data; boundary=...</span><br><span class="line"></span><br><span class="line">--boundary</span><br><span class="line"><span class="attribute">Content-Disposition</span><span class="punctuation">: </span>form-data; name=&quot;image_type&quot;</span><br><span class="line"></span><br><span class="line">message</span><br><span class="line">--boundary</span><br><span class="line"><span class="attribute">Content-Disposition</span><span class="punctuation">: </span>form-data; name=&quot;image&quot;; filename=&quot;a.png&quot;</span><br><span class="line"><span class="attribute">Content-Type</span><span class="punctuation">: </span>image/png</span><br><span class="line"></span><br><span class="line">&lt;binary&gt;</span><br><span class="line">--boundary--</span><br></pre></td></tr></table></figure>
 
-<p><strong>更新已发送卡片</strong>：<code>PATCH /im/v1/messages/&#123;message_id&#125;</code>；仅支持特定条件（14 天窗口、大小限制、5 QPS 等）。citeturn31search2turn5view0</p>
+<p><strong>更新已发送卡片</strong>：<code>PATCH /im/v1/messages/{message_id}</code>；仅支持特定条件（14 天窗口、大小限制、5 QPS 等）。citeturn31search2turn5view0</p>
 <figure class="highlight http"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">PATCH https://open.feishu.cn/open-apis/im/v1/messages/om_xxx</span><br><span class="line"><span class="attribute">Authorization</span><span class="punctuation">: </span>Bearer &lt;tenant_access_token&gt;</span><br><span class="line"><span class="attribute">Content-Type</span><span class="punctuation">: </span>application/json</span><br><span class="line"></span><br><span class="line">&#123;&quot;content&quot;:&quot;&#123;...card json...&#125;&quot;&#125;</span><br></pre></td></tr></table></figure>
 
-<p><strong>下载云盘文件</strong>：<code>GET /drive/v1/files/&#123;file_token&#125;/download</code>，支持 Range，5 QPS。citeturn38search1turn38search0</p>
+<p><strong>下载云盘文件</strong>：<code>GET /drive/v1/files/{file_token}/download</code>，支持 Range，5 QPS。citeturn38search1turn38search0</p>
 <figure class="highlight http"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">GET https://open.feishu.cn/open-apis/drive/v1/files/file_token_xxx/download</span><br><span class="line"><span class="attribute">Authorization</span><span class="punctuation">: </span>Bearer &lt;tenant_access_token&gt;</span><br><span class="line"><span class="attribute">Range</span><span class="punctuation">: </span>bytes=0-1048575</span><br></pre></td></tr></table></figure>
 
 <h3 id="示例代码索引表"><a href="#示例代码索引表" class="headerlink" title="示例代码索引表"></a>示例代码索引表</h3><table>
@@ -429,7 +429,7 @@
 <tr>
 <td>卡片回调与更新卡片</td>
 <td>Node.js &#x2F; Python</td>
-<td>Python SDK samples&#x2F;card&#x2F;flask_sample.py；OpenClaw Gateway 集成说明中 <code>PATCH /im/v1/messages/&#123;message_id&#125;</code>citeturn20view1turn5view0turn31search2</td>
+<td>Python SDK samples&#x2F;card&#x2F;flask_sample.py；OpenClaw Gateway 集成说明中 <code>PATCH /im/v1/messages/{message_id}</code>citeturn20view1turn5view0turn31search2</td>
 </tr>
 <tr>
 <td>富媒体（发图&#x2F;收文件）</td>
