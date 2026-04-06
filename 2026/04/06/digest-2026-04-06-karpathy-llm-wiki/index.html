@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=0">
+
+  <meta name="description" content="个人知识库与技术笔记">
+
+
+<link rel="alternate" href="/atom.xml" title="Api Intelligence Daily Life" type="application/atom+xml">
+<meta name="theme-color" content="#a1d0f6">
+<title>文摘：Karpathy LLM Wiki - 从检索到编译的知识管理范式革命 - Api Intelligence Daily Life</title>
+<!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+<link rel="shortcut icon" href="/favicon.png">
+
+<link rel="stylesheet" href="/css/style.css">
+
+<nav class="main-nav">
+	
+	    <a href="/">← 主页</a>
+	
+	
+	    <a href="/about/">About</a>
+	
+	    <a href="/archives/">Archives</a>
+	
+	<a class="cta" href="/atom.xml" data-no-instant>订阅</a>
+</nav>
+
+<section id="wrapper">
+    <article class="post">
+    <header>
+        
+            <h1>文摘：Karpathy LLM Wiki - 从检索到编译的知识管理范式革命</h1>
+        
+        <h2 class="headline">Apr 06 2026
+        
+            
+            <a href="/categories/文摘/#文摘">文摘</a>
+        
+        </h2>
+    </header>
+</article>
+<section id="post-body"><h2 id="引言"><a href="#引言" class="headerlink" title="引言"></a>引言</h2><p>2026 年，AI 知识管理领域正在经历一场静默的革命。Andrej Karpathy，这位前 OpenAI 创始成员、Tesla AI 总监，在 2025 年底提出了一个颠覆性的概念：<strong>LLM Wiki</strong>——一种替代传统 RAG（检索增强生成）的全新知识工作流。</p>
+<p>这不是简单的技术优化，而是<strong>范式的根本转变</strong>：把 LLM 从”临时问答器”变成”持续维护知识库的编译器”。本文将系统梳理 Karpathy 的核心理念，以及全球开发者对这一理念的实践与扩展。</p>
+<hr>
+<h2 id="核心文章"><a href="#核心文章" class="headerlink" title="核心文章"></a>核心文章</h2><h3 id="1-Andrej-Karpathy-原文-LLM-Knowledge-Bases"><a href="#1-Andrej-Karpathy-原文-LLM-Knowledge-Bases" class="headerlink" title="1. Andrej Karpathy 原文 - LLM Knowledge Bases"></a>1. Andrej Karpathy 原文 - LLM Knowledge Bases</h3><p><strong>来源</strong>: <a target="_blank" rel="noopener" href="https://gist.github.com/karpathy/442a6bf555914893e9891c11519de94f">GitHub Gist</a><br><strong>类型</strong>: 核心概念&#x2F;技术文档<br><strong>推荐指数</strong>: ⭐⭐⭐⭐⭐ <strong>(5&#x2F;5) - 奠基必读</strong></p>
+<p><strong>核心概要</strong></p>
+<p>Karpathy 提出了一个革命性的知识管理范式转变：将 LLM 从”临时问答器”转变为”持续维护知识库的编译器”。他描述的工作流包括：收集原始素材（raw&#x2F;目录）→ LLM 编译成 markdown wiki → 通过各种 CLI 工具进行问答和增量增强 → 在 Obsidian 中查看。</p>
+<p>核心洞见是：<strong>你很少手动编写或编辑 wiki，这是 LLM 的领域</strong>。</p>
+<p><strong>关键洞察</strong></p>
+<ol>
+<li><strong>编译 vs 检索</strong>: 传统 RAG 是每次查询时从原始文档检索片段，而 LLM Wiki 是将知识编译成持久结构</li>
+<li><strong>中间层价值</strong>: Markdown wiki 作为”原始资料”和”最终回答”之间的可复用中间层</li>
+<li><strong>自动化维护</strong>: LLM 不仅回答问题，还主动维护知识库结构、更新交叉引用、标记矛盾</li>
+<li><strong>规模可行性</strong>: 在约 100 篇文章、40 万词的规模下，无需向量数据库即可处理复杂查询</li>
+<li><strong>人机分工</strong>: 人类负责阅读和提问，LLM 负责编写和维护</li>
+</ol>
+<p><strong>评价</strong>: 概念简洁优雅，直击 RAG 的核心痛点。作为概念性文档，具体实现细节需要社区补充，但提供了清晰的架构蓝图。必读的奠基性文档。</p>
+<hr>
+<h2 id="深度解读"><a href="#深度解读" class="headerlink" title="深度解读"></a>深度解读</h2><h3 id="2-Antigravity-Codes-Karpathy-LLM-Wiki-Idea-File"><a href="#2-Antigravity-Codes-Karpathy-LLM-Wiki-Idea-File" class="headerlink" title="2. Antigravity Codes - Karpathy LLM Wiki Idea File"></a>2. Antigravity Codes - Karpathy LLM Wiki Idea File</h3><p><strong>来源</strong>: <a target="_blank" rel="noopener" href="https://antigravity.codes/blog/karpathy-llm-wiki-idea-file">Antigravity Codes</a><br><strong>类型</strong>: 实践指南（ChatGPT 强烈推荐）<br><strong>推荐指数</strong>: ⭐⭐⭐⭐⭐ <strong>(5&#x2F;5) - 实施首选</strong></p>
+<p><strong>核心概要</strong></p>
+<p>这是一篇深度实践指南，不仅解释了 Karpathy 的概念，还提供了详细的实施路径。文章的核心论点是：LLM Wiki 代表了一种新的知识管理哲学——从”搜索和检索”转向”编译和维护”。</p>
+<p>作者详细描述了如何设置目录结构（raw&#x2F;、wiki&#x2F;、output&#x2F;）、如何编写 SCHEMA.md 来指导 LLM、以及三个核心工作流（ingest、query、lint）。特别有价值的是对”为什么这比 RAG 更好”的深入分析：RAG 是每次查询时临时拼凑答案，而 LLM Wiki 是持续构建一个越来越丰富的知识表示。</p>
+<p><strong>关键洞察</strong></p>
+<ol>
+<li><strong>范式转移</strong>: 从”查询时检索”到”编译时整合”的根本转变</li>
+<li><strong>SCHEMA.md 的重要性</strong>: 这是指导 LLM 如何维护 wiki 的”宪法”，定义页面类型、元数据标准、链接约定</li>
+<li><strong>三个核心操作</strong>: Ingest（摄取）、Query（查询）、Lint（健康检查）构成了完整的知识管理循环</li>
+<li><strong>数字主权</strong>: 本地优先、纯 markdown、零供应商锁定</li>
+<li><strong>矛盾检测</strong>: LLM 可以主动发现知识库中的矛盾和不一致</li>
+<li><strong>复利效应</strong>: 每增加一个来源，整个知识库都变得更丰富</li>
+</ol>
+<p><strong>评价</strong>: 目前最全面的实施指南。将抽象概念转化为具体可操作的步骤，对本地优先和数字主权的强调具有前瞻性。提供了清晰的目录结构和工作流定义，对 RAG vs LLM Wiki 的比较分析透彻。</p>
+<hr>
+<h3 id="3-Yoju-Hsu-Karpathy-AI-知识库实作"><a href="#3-Yoju-Hsu-Karpathy-AI-知识库实作" class="headerlink" title="3. Yoju Hsu - Karpathy AI 知识库实作"></a>3. Yoju Hsu - Karpathy AI 知识库实作</h3><p><strong>来源</strong>: <a target="_blank" rel="noopener" href="https://yojuhsu.com/blog/karpathy-ai-wiki-claude-cowork">Yoju Hsu</a><br><strong>类型</strong>: 实践案例（中文）<br><strong>推荐指数</strong>: ⭐⭐⭐⭐ <strong>(4&#x2F;5) - 中文最佳</strong></p>
+<p><strong>核心概要</strong></p>
+<p>这是一篇非常实用的中文实践案例。作者 Erica 记录了她使用 Claude Cowork 将散落四处十几年的笔记整理成 <strong>51 张知识卡片</strong>的完整过程。文章的最大价值在于其”数据分析师思维”——将整个流程映射到数据分析的标准工作流：数据清理 → 分析 → 解读与洞察。</p>
+<p>作者花了两天时间，产出包括：51 张知识卡片、<strong>206 条双向链接</strong>、9 个知识主轴。她特别强调”资料清理”的重要性——花了整整一天半整理文件、去重、分类，这一步决定了后续所有卡片的品质（Garbage in, garbage out）。</p>
+<p><strong>关键洞察</strong></p>
+<ol>
+<li><strong>数据清理是关键</strong>: 用数据分析的”Garbage in, garbage out”原则强调预处理的重要性</li>
+<li><strong>六步工作流</strong>: 资料清理 → 知识点萃取 → 补遗 → 再萃取 → Dashboard → 排程维护</li>
+<li><strong>跨领域连接的价值</strong>: 206 条双向链接让知识变成网络，发现皮凯提的 r&gt;g 与平台抽成是同一结构</li>
+<li><strong>工具选择</strong>: 推荐使用 Claude Opus（跨领域合成能力更强）</li>
+<li><strong>人工校准不可省</strong>: AI 跑完后必须人工检查、修正、合并</li>
+<li><strong>与 Karpathy 的差异</strong>: Karpathy 是”从零收集”,作者是”清理旧档再批量萃取”</li>
+</ol>
+<p><strong>评价</strong>: 中文世界最详细的实践指南。包含具体数字（51 张卡片、206 条链接），坦诚分享踩坑经验，非常实用。将知识管理映射到数据分析工作流，易于理解。扣1星是因为工具特定性较强（主要针对 Claude Cowork），且排程维护部分还在规划中。</p>
+<hr>
+<h3 id="4-Modem-Guides-Local-LLM-Knowledge-Base-With-Obsidian"><a href="#4-Modem-Guides-Local-LLM-Knowledge-Base-With-Obsidian" class="headerlink" title="4. Modem Guides - Local LLM Knowledge Base With Obsidian"></a>4. Modem Guides - Local LLM Knowledge Base With Obsidian</h3><p><strong>来源</strong>: <a target="_blank" rel="noopener" href="https://www.modemguides.com/blogs/ai-infrastructure/local-llm-knowledge-base-obsidian-setup-guide">Modem Guides</a><br><strong>类型</strong>: 技术指南<br><strong>推荐指数</strong>: ⭐⭐⭐⭐ <strong>(4&#x2F;5) - 技术深度</strong></p>
+<p><strong>核心概要</strong></p>
+<p>这是一份非常详细的技术实施指南，专注于使用 <strong>Obsidian + Ollama</strong> 在本地搭建 LLM Wiki。文章首先解释了传统 RAG 和云工具的问题：数据离开你的网络、没有知识积累、供应商锁定。</p>
+<p>指南提供了<strong>三个硬件配置层级</strong>（入门级 16GB RAM、中级 32GB RAM、高性能 24GB VRAM），详细的软件栈，以及六步设置流程：创建目录结构 → 安装配置 Obsidian → 设置本地 LLM → 编写 Schema 文件 → 摄取第一个来源 → 查询和维护。</p>
+<p><strong>关键洞察</strong></p>
+<ol>
+<li><strong>三层架构</strong>: raw&#x2F;（原始素材）、wiki&#x2F;（LLM 维护）、SCHEMA.md（配置指令）</li>
+<li><strong>本地优先</strong>: 使用 Ollama 运行本地模型，数据完全不出网络</li>
+<li><strong>硬件分层</strong>: 从 16GB RAM 的入门级到 24GB VRAM 的高性能级</li>
+<li><strong>安全实践</strong>: VLAN 隔离、Ollama 绑定 localhost、Pi-hole DNS 监控</li>
+<li><strong>对比分析</strong>: 详细对比 LLM Wiki vs RAG vs NotebookLM</li>
+</ol>
+<p><strong>评价</strong>: 最全面的技术实施指南，包含硬件配置建议。安全考虑全面，适合隐私敏感用户。对比表格清晰，帮助读者做出技术选择。扣1星是因为对非技术用户门槛较高，某些部分（如网络隔离配置）需要额外网络知识。</p>
+<hr>
+<h2 id="开源项目"><a href="#开源项目" class="headerlink" title="开源项目"></a>开源项目</h2><h3 id="5-fakechris-obsidian-vault-pipeline"><a href="#5-fakechris-obsidian-vault-pipeline" class="headerlink" title="5. fakechris&#x2F;obsidian_vault_pipeline"></a>5. fakechris&#x2F;obsidian_vault_pipeline</h3><p><strong>来源</strong>: <a target="_blank" rel="noopener" href="https://github.com/fakechris/obsidian_vault_pipeline">GitHub</a><br><strong>类型</strong>: 自动化流水线<br><strong>推荐指数</strong>: ⭐⭐⭐⭐⭐ <strong>(5&#x2F;5) - 生产首选</strong></p>
+<p><strong>核心概要</strong></p>
+<p>这是一个<strong>生产级</strong>的 Obsidian 知识管理流水线，用 Python 实现。项目核心理念是”Obsidian 是 IDE，LLM 是程序员，Wiki 是代码库”。</p>
+<p>核心流程：输入源（书签&#x2F;文章）→ 深度解读（LLM <strong>6 维度分析</strong>）→ 质检（自动评分 1-5 分）→ 知识提炼（Evergreen 原子笔记）→ 索引更新（自动 MOC、反向链接）。</p>
+<p>项目包含 <strong>5 大自动维护系统</strong>：质量门禁、WIGS 完整性检查、反向链接维护、Evergreen 提取、运行审计。还支持 <strong>AutoPilot 自动驾驶模式</strong>——把文件丢进目录，全自动完成后续所有步骤。</p>
+<p><strong>关键洞察</strong></p>
+<ol>
+<li><strong>生产级设计</strong>: 包含完整的质量门禁和审计系统</li>
+<li><strong>6 维度质量模型</strong>: 一句话定义、详细解释、重要细节、架构图、行动建议、关联知识</li>
+<li><strong>WIGS 系统</strong>: Workflow Integrity Guarantee System，5 层一致性检查</li>
+<li><strong>AutoPilot 模式</strong>: 完全自动化的目录监控和处理</li>
+<li><strong>PARA + Zettelkasten</strong>: 结合两种知识管理方法论</li>
+</ol>
+<p><strong>评价</strong>: 最完整的工程实现。功能最完整、最成熟，生产级质量门禁和审计系统，AutoPilot 自动驾驶模式极具创新。适合需要生产级知识管理系统的用户。</p>
+<hr>
+<h3 id="6-hellohejinyu-llm-wiki"><a href="#6-hellohejinyu-llm-wiki" class="headerlink" title="6. hellohejinyu&#x2F;llm-wiki"></a>6. hellohejinyu&#x2F;llm-wiki</h3><p><strong>来源</strong>: <a target="_blank" rel="noopener" href="https://github.com/hellohejinyu/llm-wiki">GitHub</a><br><strong>类型</strong>: CLI 工具<br><strong>推荐指数</strong>: ⭐⭐⭐⭐ <strong>(4&#x2F;5) - 开发者友好</strong></p>
+<p><strong>核心概要</strong></p>
+<p>这是一个用 <strong>TypeScript</strong> 编写的 LLM 驱动的个人 wiki CLI 工具。核心命令包括：<code>wiki raw</code>（交互式添加来源）、<code>wiki ingest</code>（处理到 wiki）、<code>wiki query</code>（基于 wiki 回答，使用 <strong>ReAct 多步检索</strong>）、<code>wiki list</code>（浏览 wiki）、<code>wiki lint</code>（健康检查）。</p>
+<p>特色功能：智能摄取、自动链接、多步检索（ReAct agent）、Wiki Lint（检测孤儿、死链、矛盾、浅层页面）、零锁定（纯 Markdown）、OpenAI 兼容（支持 OpenAI、Anthropic、DeepSeek、Ollama 等）。</p>
+<p><strong>关键洞察</strong></p>
+<ol>
+<li><strong>ReAct 多步检索</strong>: 使用迭代代理深入源文件获取深度答案</li>
+<li><strong>双阶段 Lint</strong>: 静态分析（免费）+ LLM 语义分析</li>
+<li><strong>YAML 配置</strong>: .wikirc.yaml 配置 LLM 提供商和参数</li>
+<li><strong>自动相关页面发现</strong>: 摄取时自动找到相关现有页面</li>
+</ol>
+<p><strong>评价</strong>: 代码质量高，TypeScript 类型安全。ReAct 多步检索功能强大，配置简单，支持多种 LLM 提供商。扣1星是因为相对较新的项目，某些高级功能（如 Obsidian 插件集成）还在路线图中。</p>
+<hr>
+<h3 id="7-Astro-Han-karpathy-llm-wiki"><a href="#7-Astro-Han-karpathy-llm-wiki" class="headerlink" title="7. Astro-Han&#x2F;karpathy-llm-wiki"></a>7. Astro-Han&#x2F;karpathy-llm-wiki</h3><p><strong>来源</strong>: <a target="_blank" rel="noopener" href="https://github.com/Astro-Han/karpathy-llm-wiki">GitHub</a><br><strong>类型</strong>: Agent Skill<br><strong>推荐指数</strong>: ⭐⭐⭐ <strong>(3&#x2F;5) - 快速尝鲜</strong></p>
+<p><strong>核心概要</strong></p>
+<p>这是一个基于 <strong>Agent Skills 标准</strong>（agentskills.io）实现的 Karpathy LLM Wiki 工具。可以与 Claude Code、Cursor、Codex 等支持该标准的工具配合使用。</p>
+<p>项目实现了三个核心操作：<strong>Ingest</strong>（获取来源到 raw&#x2F;，编译到 wiki&#x2F;）、<strong>Query</strong>（搜索 wiki 并带引用回答）、<strong>Lint</strong>（自动修复断链和索引缺口，报告矛盾、孤儿页面、过时内容）。</p>
+<p>安装非常简单：<code>npx add-skill Astro-Han/karpathy-llm-wiki</code></p>
+<p><strong>关键洞察</strong></p>
+<ol>
+<li><strong>Agent Skills 标准</strong>: 遵循 agentskills.io 开放标准，跨工具兼容</li>
+<li><strong>双目录结构</strong>: raw&#x2F;（不可变源素材）和 wiki&#x2F;（LLM 维护）</li>
+<li><strong>一键安装</strong>: 通过 npx 快速安装到支持的 IDE</li>
+<li><strong>渐进式增强</strong>: wiki 随时间复利增长</li>
+</ol>
+<p><strong>评价</strong>: 实现简洁，遵循标准，安装使用极其简单，跨工具兼容性好。但功能相对基础，高级功能需要自行扩展，且依赖外部 IDE 支持。适合想要快速尝试 Karpathy 工作流的人，但不适合生产使用。</p>
+<hr>
+<h3 id="8-SingggggYee-awesome-llm-knowledge-bases"><a href="#8-SingggggYee-awesome-llm-knowledge-bases" class="headerlink" title="8. SingggggYee&#x2F;awesome-llm-knowledge-bases"></a>8. SingggggYee&#x2F;awesome-llm-knowledge-bases</h3><p><strong>来源</strong>: <a target="_blank" rel="noopener" href="https://github.com/SingggggYee/awesome-llm-knowledge-bases">GitHub</a><br><strong>类型</strong>: 资源列表<br><strong>推荐指数</strong>: ⭐⭐⭐⭐ <strong>(4&#x2F;5) - 工具导航</strong></p>
+<p><strong>核心概要</strong></p>
+<p>这是一个精心策划的 LLM 知识库工具资源列表，收录了从数据摄取到可视化输出的全套工具。定义了标准工作流：<strong>Ingest → Compile → Lint → View → Query → Enhance → Repeat</strong>。</p>
+<p>资源分类包括：数据摄取（Obsidian Web Clipper、Jina Reader、Docling 等）、Wiki 编译（wiki-compiler、Fabric、Khoj、Quivr、Mem0）、知识库 Lint（kb-lint、Markdownlint、Vale）、Obsidian 插件（Copilot、Smart Connections、Dataview 等）、IDE 和查看器（Obsidian、Logseq、Foam、Dendron 等）、RAG 和搜索（LlamaIndex、LangChain、Chroma、Qdrant 等）、LLM 代理和框架（Claude Code、Cursor、Aider、OpenAI Codex 等）。</p>
+<p><strong>关键洞察</strong></p>
+<ol>
+<li><strong>生态系统视角</strong>: 将 LLM Wiki 视为一个完整的工具生态系统</li>
+<li><strong>全面覆盖</strong>: 从数据摄取到模型微调的全链路工具</li>
+<li><strong>社区驱动</strong>: 鼓励贡献，保持列表更新</li>
+<li><strong>历史脉络</strong>: 提及 Vannevar Bush 1945 年的 Memex 愿景</li>
+</ol>
+<p><strong>评价</strong>: 最全面的资源列表，分类清晰，每个工具都有简要说明，涵盖从基础到高级的全套工具。但作为列表，缺乏深度比较和指导，某些分类工具较多，选择困难。扣1星是因为只是资源聚合，没有原创分析。</p>
+<hr>
+<h2 id="核心概念对比"><a href="#核心概念对比" class="headerlink" title="核心概念对比"></a>核心概念对比</h2><table>
+<thead>
+<tr>
+<th>维度</th>
+<th>传统 RAG</th>
+<th>LLM Wiki</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>知识状态</strong></td>
+<td>临时、无状态</td>
+<td>持久、累积</td>
+</tr>
+<tr>
+<td><strong>处理方式</strong></td>
+<td>查询时检索片段</td>
+<td>编译时整合结构</td>
+</tr>
+<tr>
+<td><strong>中间层</strong></td>
+<td>向量数据库</td>
+<td>Markdown wiki</td>
+</tr>
+<tr>
+<td><strong>LLM 角色</strong></td>
+<td>回答生成器</td>
+<td>知识库维护者</td>
+</tr>
+<tr>
+<td><strong>人机分工</strong></td>
+<td>人提问，LLM 检索回答</td>
+<td>人阅读提问，LLM 编写维护</td>
+</tr>
+<tr>
+<td><strong>知识增长</strong></td>
+<td>线性（每次独立）</td>
+<td>复利（每次增强整体）</td>
+</tr>
+<tr>
+<td><strong>可解释性</strong></td>
+<td>黑盒（向量相似度）</td>
+<td>白盒（结构化文本）</td>
+</tr>
+</tbody></table>
+<hr>
+<h2 id="实践建议"><a href="#实践建议" class="headerlink" title="实践建议"></a>实践建议</h2><h3 id="阅读顺序"><a href="#阅读顺序" class="headerlink" title="阅读顺序"></a>阅读顺序</h3><ol>
+<li><strong>必读</strong>: Karpathy 原文（理解核心概念）</li>
+<li><strong>深度</strong>: Antigravity Codes（最全面的实施指南）</li>
+<li><strong>中文</strong>: Yoju Hsu（中文最详细的实践案例）</li>
+<li><strong>技术</strong>: Modem Guides（本地部署技术细节）</li>
+</ol>
+<h3 id="项目选择"><a href="#项目选择" class="headerlink" title="项目选择"></a>项目选择</h3><ul>
+<li><strong>快速尝试</strong>: Astro-Han&#x2F;karpathy-llm-wiki（简单 Skill，3星）</li>
+<li><strong>生产使用</strong>: fakechris&#x2F;obsidian_vault_pipeline（最完整，5星）</li>
+<li><strong>开发者</strong>: hellohejinyu&#x2F;llm-wiki（TypeScript CLI，4星）</li>
+<li><strong>工具发现</strong>: SingggggYee&#x2F;awesome-llm-knowledge-bases（资源导航，4星）</li>
+</ul>
+<hr>
+<h2 id="关键趋势"><a href="#关键趋势" class="headerlink" title="关键趋势"></a>关键趋势</h2><ol>
+<li><strong>从 RAG 到编译</strong>: 社区正在从检索增强生成转向知识编译</li>
+<li><strong>本地优先</strong>: 数字主权和隐私保护成为重要考量</li>
+<li><strong>自动化</strong>: AutoPilot、自动驾驶模式成为高级功能</li>
+<li><strong>质量控制</strong>: Lint、质量门禁、审计系统成为生产级必备</li>
+</ol>
+</section>
+    
+
+    <footer id="post-meta" class="clearfix">
+        <a href="/about/">
+        <img class="avatar" src="/images/avatar.png">
+        <div>
+            <span class="dark">Api Intelligence Daily Life</span>
+            <span>知识库 &amp; 博客</span>
+        </div>
+        </a>
+        <section id="sharing">
+            <a title="Share to Twitter" class="twitter" target="_blank" rel="noopener" href="https://twitter.com/intent/tweet?text=https://arbow.github.io/2026/04/06/digest-2026-04-06-karpathy-llm-wiki/ - 文摘：Karpathy LLM Wiki - 从检索到编译的知识管理范式革命 @"><span class="icon-twitter">tweet</span></a>
+            <a title="Share to Facebook" class="facebook" href="#" onclick="
+                window.open(
+                  'https://www.facebook.com/sharer/sharer.php?u='+encodeURIComponent(location.href),
+                  'facebook-share-dialog',
+                  'width=626,height=436');
+                return false;"><span class="icon-facebook-sign">Share</span>
+            </a>
+        </section>
+    </footer>
+
+
+  <section id="comment">
+    <button class="btn" id="loadcmts" onclick="cmts.load();">加载评论</button>
+    <div id="gitment"></div>
+    <script src='/js/gitment.browser.js'></script>
+    <link rel="stylesheet" href=''>
+    <script>
+      var cmts={
+        load:function cmts(){
+          var gitment = new Gitment({
+          
+            id: "文摘：Karpathy LLM Wiki - 从检索到编译的知识管理范式革命",
+          
+            owner: "",
+            repo: "",
+            oauth: {
+              client_id: "",
+              client_secret: "",
+            },
+          })
+          gitment.render('gitment');
+          var loadcmt = document.getElementById("loadcmts");
+          var imyourfather = loadcmt.parentNode;
+          imyourfather.removeChild(loadcmts)
+        }
+      }
+    </script>
+  </section>
+
+
+	<footer id="footer">
+	<div id="social">
+		<p class="small">©  Arbow| Powered by Hexo & 
+			<a target="_blank" rel="noopener" href="https://github.com/F0r3at/Lights"> Lights</a>
+		</p>
+	</div>
+</footer>
+
+</section>
+
+	<script src="//cdnjs.loli.net/ajax/libs/instantclick/3.0.1/instantclick.min.js" data-no-instant></script>
+	<script data-no-instant>
+		
+		InstantClick.init('mousedown');
+	</script>
+
+
+
