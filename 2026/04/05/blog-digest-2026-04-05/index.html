@@ -39,12 +39,67 @@
     </header>
 </article>
 <section id="post-body"><p>今日精选 3 篇博客文章推荐：</p>
-<h2 id="Armin-Ronacher"><a href="#Armin-Ronacher" class="headerlink" title="Armin Ronacher"></a>Armin Ronacher</h2><ul>
-<li><a target="_blank" rel="noopener" href="https://lucumr.pocoo.org/2026/4/4/absurd-in-production/">Absurd In Production</a> 2026-04-04</li>
+<h2 id="Armin-Ronacher"><a href="#Armin-Ronacher" class="headerlink" title="Armin Ronacher"></a>Armin Ronacher</h2><h3 id="1-Absurd-In-Production"><a href="#1-Absurd-In-Production" class="headerlink" title="1. Absurd In Production"></a>1. Absurd In Production</h3><p><strong>来源</strong>: <a target="_blank" rel="noopener" href="https://lucumr.pocoo.org/">Armin Ronacher</a></p>
+<p><strong>原文链接</strong>: <a target="_blank" rel="noopener" href="https://lucumr.pocoo.org/2026/4/4/absurd-in-production/">Absurd In Production</a></p>
+<p><strong>推荐指数</strong>: ⭐⭐⭐⭐ (4&#x2F;5) - 简洁实用的持久化执行系统实战分享</p>
+<p><strong>核心概要</strong>:</p>
+<p>Absurd 是 Armin Ronacher 在 Earendil 公司自研的持久化执行系统（durable execution system），完全基于 Postgres 构建，无需额外的服务、编译器插件或运行时。文章分享了该系统五个月来在生产环境的运行经验：设计经受住了考验，系统运行稳定，开发者体验良好。</p>
+<p>文章详细介绍了几个关键迭代：分解步骤（beginStep&#x2F;completeStep）让开发者能在提交前检查步骤状态；任务结果获取机制支持从父工作流中派生子任务并等待完成；absurdctl CLI 工具让调试生产问题变得简单；Habitat 监控面板提供了实时视图。作者最满意的是核心设计几乎未变——任务、步骤、检查点、事件、挂起的基本抽象依然稳固，SDK 保持轻量（TypeScript 约 1400 行，Python 约 1900 行），而 Temporal 的 Python SDK 有约 17 万行。</p>
+<p><strong>关键洞察</strong>:</p>
+<ol>
+<li><strong>复杂度放在 SQL，SDK 保持轻量</strong>：这是 Absurd 与 Temporal 等系统的核心差异，轻量 SDK 易于理解、调试和移植</li>
+<li><strong>检查点重放模型优于确定性重放</strong>：只缓存步骤结果并跳过已完成工作，代码在步骤之间可以调用 Math.random() 或 datetime.now()</li>
+<li><strong>拉取式调度是正确默认</strong>：无协调器、无推送机制、无 HTTP 回调，自托管简单且无需考虑基础设施层面的负载管理</li>
+<li><strong>为 Agent 设计调试能力</strong>：内置的 absurdctl 技能让编码 Agent 能直接查询工作流状态，这对 AI 时代的基础设施至关重要</li>
+<li><strong>开源在 Agent 时代的定位</strong>：作者坦承不确定持久化执行库能否支撑一家公司，但认为它足够复杂又脱离商业利益，是良好的开源项目候选</li>
+</ol>
+<p><strong>评价</strong>:</p>
+<ul>
+<li><strong>优点</strong>: 实战经验丰富，诚实地分享了设计决策的得失；与 Temporal 的代码量对比令人印象深刻；对开源在 Agent 时代价值的反思有深度</li>
+<li><strong>不足</strong>: 对分区（partitioning）等未解决问题的讨论显示系统仍在早期；对”持久化承诺”（durable promise）替代方案的探索仅停留在理论</li>
+<li><strong>适用场景</strong>: 适合需要构建工作流系统但不想引入 Temporal 等重量级基础设施的团队，尤其是已使用 Postgres 的中小型项目</li>
 </ul>
-<h2 id="宝玉"><a href="#宝玉" class="headerlink" title="宝玉"></a>宝玉</h2><ul>
-<li><a target="_blank" rel="noopener" href="https://baoyu.io/blog/openai-president-greg-brockman-ai-self-improvement-the-superapp-bet-path-to-agi-scaling-compute">OpenAI 总裁 Greg Brockman：AI 自我改进、Super App 豪赌、通往 AGI 之路、算力扩张</a> 2026-04-01</li>
-<li><a target="_blank" rel="noopener" href="https://baoyu.io/blog/2026-04-01/learn-from-open-source">Claude Code 源码泄漏了，但我不打算写源码分析分析文章</a> 2026-04-01</li>
+<hr>
+<h2 id="宝玉"><a href="#宝玉" class="headerlink" title="宝玉"></a>宝玉</h2><h3 id="2-OpenAI-总裁-Greg-Brockman：AI-自我改进、Super-App-豪赌、通往-AGI-之路、算力扩张"><a href="#2-OpenAI-总裁-Greg-Brockman：AI-自我改进、Super-App-豪赌、通往-AGI-之路、算力扩张" class="headerlink" title="2. OpenAI 总裁 Greg Brockman：AI 自我改进、Super App 豪赌、通往 AGI 之路、算力扩张"></a>2. OpenAI 总裁 Greg Brockman：AI 自我改进、Super App 豪赌、通往 AGI 之路、算力扩张</h3><p><strong>来源</strong>: <a target="_blank" rel="noopener" href="https://baoyu.io/">宝玉</a></p>
+<p><strong>原文链接</strong>: <a target="_blank" rel="noopener" href="https://baoyu.io/blog/openai-president-greg-brockman-ai-self-improvement-the-superapp-bet-path-to-agi-scaling-compute">OpenAI 总裁 Greg Brockman：AI 自我改进、Super App 豪赌、通往 AGI 之路、算力扩张</a></p>
+<p><strong>推荐指数</strong>: ⭐⭐⭐⭐ (4&#x2F;5) - 了解 OpenAI 战略方向的权威一手信息</p>
+<p><strong>核心概要</strong>:</p>
+<p>这篇访谈整理记录了 OpenAI 总裁 Greg Brockman 在 Big Technology Podcast 上的 90 分钟对话，涵盖了 OpenAI 近期三大动作：砍掉 Sora、获得 1100 亿美元融资、完成下一代模型 Spud 的预训练。Brockman 将 Sora 的关停解释为”技术树不同分支”的选择——在算力有限的情况下，必须集中资源推进 GPT 路线而非扩散模型路线。</p>
+<p>文章还详细披露了 OpenAI 的 Super App 愿景：将 ChatGPT、Codex（编程 Agent）和浏览器整合为统一应用，成为个人助理和工作工具的入口。Brockman 自评 AGI 进度已达 70-80%，但承认 AGI 的定义更像”氛围”而非科学指标。关于 1100 亿美元融资，他坚持”算力不是成本中心而是收入中心”的立场，但对 Dario Amodei 关于”收入预判偏差一年就可能破产”的批评仅回应”我不同意”而未展开论证。</p>
+<p><strong>关键洞察</strong>:</p>
+<ol>
+<li><strong>技术路线必须下注</strong>：Sora 和 GPT 是技术树上完全不同的分支，算力有限时必须做选择，分散投入等于哪个方向都走不远</li>
+<li><strong>Super App 面临微软竞争</strong>：OpenAI 既是微软的模型供应商又要做直接竞品，这个张力如何化解访谈中未提及</li>
+<li><strong>AGI 定义困境</strong>：Brockman 承认 AGI 是”氛围”而非科学定义，但同时又给出 70-80% 的精确进度，这个矛盾折射行业普遍困境</li>
+<li><strong>编码 Agent 是追赶重点</strong>：OpenAI 承认在编程工具”最后一公里可用性”上曾落后于 Anthropic，去年年中组建专门团队追赶</li>
+<li><strong>自动化 AI 研究员计划</strong>：OpenAI 计划秋季推出自动化 AI 研究员，让 AI 加速 AI 自身的改进</li>
+</ol>
+<p><strong>评价</strong>:</p>
+<ul>
+<li><strong>优点</strong>: 一手访谈资料，信息密度高；宝玉的整理保留了 Brockman 的原话同时加入了关键事实核查（如 Sora 商业失败的数据、Anthropic 市场份额变化）；对 Brockman 叙事中的缝隙有敏锐指出</li>
+<li><strong>不足</strong>: 毕竟是整理稿而非原文，部分细节依赖宝玉的选择性呈现；Brockman 本人在访谈中对硬问题多用感性语言回避，文章也无法提供更多数据支撑</li>
+<li><strong>适用场景</strong>: 适合关注 OpenAI 战略动向、AI 行业竞争格局的投资者、产品经理和技术决策者</li>
+</ul>
+<hr>
+<h3 id="3-Claude-Code-源码泄漏了，但我不打算写源码分析分析文章"><a href="#3-Claude-Code-源码泄漏了，但我不打算写源码分析分析文章" class="headerlink" title="3. Claude Code 源码泄漏了，但我不打算写源码分析分析文章"></a>3. Claude Code 源码泄漏了，但我不打算写源码分析分析文章</h3><p><strong>来源</strong>: <a target="_blank" rel="noopener" href="https://baoyu.io/">宝玉</a></p>
+<p><strong>原文链接</strong>: <a target="_blank" rel="noopener" href="https://baoyu.io/blog/2026-04-01/learn-from-open-source">Claude Code 源码泄漏了，但我不打算写源码分析分析文章</a></p>
+<p><strong>推荐指数</strong>: ⭐⭐⭐⭐ (4&#x2F;5) - 学习开源代码的方法论佳作</p>
+<p><strong>核心概要</strong>:</p>
+<p>面对 Claude Code 源码泄漏后满屏的”深度分析”文章，宝玉选择了一条不同的路：不追热点写源码分析，而是分享一套通用的开源代码学习方法论。文章提出了四步学习法：第一步先跑起来——代码是死的，运行起来才是活的；第二步以点带线、以线带面——从一个具体功能点切入，而非从头读到尾；第三步动手改、做二次开发——在代码上留下自己的痕迹；第四步从零搭建——理解架构决策背后的 why。</p>
+<p>文章特别强调，AI 时代让 AI 帮你分析代码太方便了，但这种理解是”借来的”，经不起追问。真正的学习需要自己动手，跳过思考过程就等于跳过了最有价值的部分。最后宝玉还分析了为什么 Anthropic 不可能因此开源：闭源代码质量不用太讲究、可以暗搓搓加料、能控制发布节奏、快速迭代不用走复杂审查流程。</p>
+<p><strong>关键洞察</strong>:</p>
+<ol>
+<li><strong>跑起来是第一优先级</strong>：能用调试器、能打日志，比用眼睛在几万行代码里找逻辑高效百倍</li>
+<li><strong>单点突破优于全面铺开</strong>：搞透一个功能点比走马观花看十个模块有用得多</li>
+<li><strong>二次开发是最佳练手方式</strong>：在成熟项目框架里填充逻辑，入门门槛不高但收获很大</li>
+<li><strong>学习时尽量不用 AI 辅助</strong>：目标是学习不是交付，让 AI 写就跳过了最有价值的思考过程</li>
+<li><strong>从零搭建才能理解架构决策</strong>：站在结果面前看不到”为什么没选 B 和 C”，只有动手重造才能理解原作者的选择</li>
+</ol>
+<p><strong>评价</strong>:</p>
+<ul>
+<li><strong>优点</strong>: 方法论实用且经过验证，四步法循序渐进；对 AI 时代学习陷阱的提醒非常及时；关于闭源优势的讨论冷静客观</li>
+<li><strong>不足</strong>: 如果能结合 Claude Code 的具体例子演示四步法的应用会更生动；对”如何选切入点”的指导可以更具体</li>
+<li><strong>适用场景</strong>: 适合所有想通过阅读开源代码提升技术能力的开发者，尤其是面对大型代码库不知从何下手的新手</li>
 </ul>
 </section>
     
