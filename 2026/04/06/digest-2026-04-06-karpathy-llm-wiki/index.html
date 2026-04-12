@@ -43,6 +43,12 @@
 </article>
 <section id="post-body"><h2 id="引言"><a href="#引言" class="headerlink" title="引言"></a>引言</h2><p>2026 年，AI 知识管理领域正在经历一场静默的革命。Andrej Karpathy，这位前 OpenAI 创始成员、Tesla AI 总监，在 2025 年底提出了一个颠覆性的概念：<strong>LLM Wiki</strong>——一种替代传统 RAG（检索增强生成）的全新知识工作流。</p>
 <p>这不是简单的技术优化，而是<strong>范式的根本转变</strong>：把 LLM 从”临时问答器”变成”持续维护知识库的编译器”。本文将系统梳理 Karpathy 的核心理念，以及全球开发者对这一理念的实践与扩展。</p>
+<p><img src="/images/karpathy-llm-wiki-overview-claude-official.png" alt="LLM Wiki 总览图（Claude Official 风格）"></p>
+<p><em>图 1：LLM Wiki 的总览结构。原始资料先进入 raw&#x2F;，再由 LLM 编译为可维护的 markdown wiki，并通过 query &#x2F; lint 持续使用与维护。</em></p>
+<p><img src="/images/rag-vs-llm-wiki-claude-official.png" alt="传统 RAG 与 LLM Wiki 的对比图（Claude Official 风格）"></p>
+<p><em>图 2：传统 RAG 更像“查询时检索”，LLM Wiki 更像“预先编译知识，再持续维护”。</em></p>
+<p><img src="/images/llm-wiki-pipeline-claude-official.png" alt="LLM Wiki 的工作流图（Claude Official 风格）"></p>
+<p><em>图 3：一个简化的循环：ingest、compile、query、lint。</em></p>
 <hr>
 <h2 id="核心文章"><a href="#核心文章" class="headerlink" title="核心文章"></a>核心文章</h2><h3 id="1-Andrej-Karpathy-原文-LLM-Knowledge-Bases"><a href="#1-Andrej-Karpathy-原文-LLM-Knowledge-Bases" class="headerlink" title="1. Andrej Karpathy 原文 - LLM Knowledge Bases"></a>1. Andrej Karpathy 原文 - LLM Knowledge Bases</h3><p><strong>来源</strong>: <a target="_blank" rel="noopener" href="https://gist.github.com/karpathy/442a6bf555914893e9891c11519de94f">GitHub Gist</a><br><strong>类型</strong>: 核心概念&#x2F;技术文档<br><strong>推荐指数</strong>: ⭐⭐⭐⭐⭐ <strong>(5&#x2F;5) - 奠基必读</strong></p>
 <p><strong>核心概要</strong></p>

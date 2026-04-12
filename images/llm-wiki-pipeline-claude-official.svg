@@ -1,0 +1,66 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 560" width="1200" height="560">
+  <defs>
+    <marker id="arrowA" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#d97757"/>
+    </marker>
+    <marker id="arrowB" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#7b8b5c"/>
+    </marker>
+    <marker id="arrowC" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#8c6f5a"/>
+    </marker>
+    <marker id="arrowE" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#b45309"/>
+    </marker>
+    <marker id="arrowF" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#9a6fb0"/>
+    </marker>
+    <marker id="arrowG" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#d97757"/>
+    </marker>
+    <marker id="arrowH" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#8f8a80"/>
+    </marker>
+    <style>
+    text { font-family: 'Helvetica Neue', Helvetica, Arial, 'PingFang SC', 'Microsoft YaHei', sans-serif; }
+    .title { font-size: 24px; font-weight: 700; fill: #141413; }
+    .subtitle { font-size: 13px; font-weight: 500; fill: #8f8a80; }
+    .section { font-size: 13px; font-weight: 700; fill: #8b7355; letter-spacing: 1.4px; }
+    .section-sub { font-size: 12px; font-weight: 500; fill: #b4aba0; }
+    .node-title { font-size: 18px; font-weight: 700; fill: #141413; }
+    .node-sub { font-size: 12px; font-weight: 500; fill: #6b6257; }
+    .node-type { font-size: 11px; font-weight: 700; fill: #a29a8f; letter-spacing: 0.08em; }
+    .arrow-label { font-size: 12px; font-weight: 600; fill: #6b6257; }
+    .legend { font-size: 12px; font-weight: 500; fill: #6b6257; }
+    .footnote { font-size: 12px; font-weight: 500; fill: #a29a8f; }
+    </style>
+  </defs>
+  <rect width="1200.0" height="560.0" fill="#f8f6f3"/>
+  <text x="48.0" y="48" text-anchor="start" class="title">LLM Wiki Pipeline</text>
+  <text x="48.0" y="72" text-anchor="start" class="subtitle">A simple loop: ingest, compile, query, lint</text>
+  <line x1="48" y1="100" x2="1152.0" y2="100" stroke="#ded8cf" stroke-width="1"/>
+  <path d="M 240.0,278.0 L 365.0,278.0" fill="none" stroke="#b45309" stroke-width="2.0" marker-end="url(#arrowE)"/>
+  <path d="M 515.0,278.0 L 640.0,278.0" fill="none" stroke="#8c6f5a" stroke-width="2.0" marker-end="url(#arrowC)"/>
+  <path d="M 790.0,278.0 L 915.0,278.0" fill="none" stroke="#b45309" stroke-width="2.0" marker-end="url(#arrowE)"/>
+  <path d="M 990.0,240.0 L 990.0,216.0 L 440.0,216.0 L 440.0,240.0" fill="none" stroke="#d97757" stroke-width="2.0" marker-end="url(#arrowA)" stroke-dasharray="6,4"/>
+  <rect x="90.0" y="240.0" width="150.0" height="76.0" rx="10.0" fill="#a8c5e6" stroke="#4a4a4a" stroke-width="1.8"/>
+  <text x="165.0" y="278.0" text-anchor="middle" class="node-title">Ingest</text>
+  <text x="165.0" y="300.0" text-anchor="middle" class="node-sub">collect sources</text>
+  <rect x="365.0" y="240.0" width="150.0" height="76.0" rx="10.0" fill="#9dd4c7" stroke="#4a4a4a" stroke-width="1.8"/>
+  <text x="440.0" y="278.0" text-anchor="middle" class="node-title">Compile</text>
+  <text x="440.0" y="300.0" text-anchor="middle" class="node-sub">structure pages</text>
+  <rect x="640.0" y="240.0" width="150.0" height="76.0" rx="10.0" fill="#f4e4c1" stroke="#4a4a4a" stroke-width="1.8"/>
+  <text x="715.0" y="278.0" text-anchor="middle" class="node-title">Query</text>
+  <text x="715.0" y="300.0" text-anchor="middle" class="node-sub">ask the wiki</text>
+  <rect x="915.0" y="240.0" width="150.0" height="76.0" rx="10.0" fill="#e8e6e3" stroke="#4a4a4a" stroke-width="1.8"/>
+  <text x="990.0" y="278.0" text-anchor="middle" class="node-title">Lint</text>
+  <text x="990.0" y="300.0" text-anchor="middle" class="node-sub">repair quality</text>
+  <rect x="284.5" y="248.0" width="36" height="20" rx="6" fill="#f8f6f3" opacity="0.96"/>
+  <text x="302.5" y="262.0" text-anchor="middle" class="arrow-label">raw</text>
+  <rect x="556.5" y="248.0" width="42" height="20" rx="6" fill="#f8f6f3" opacity="0.96"/>
+  <text x="577.5" y="262.0" text-anchor="middle" class="arrow-label">wiki</text>
+  <rect x="817.5" y="248.0" width="70" height="20" rx="6" fill="#f8f6f3" opacity="0.96"/>
+  <text x="852.5" y="262.0" text-anchor="middle" class="arrow-label">feedback</text>
+  <rect x="697.0" y="186.0" width="36" height="20" rx="6" fill="#f8f6f3" opacity="0.96"/>
+  <text x="715.0" y="200.0" text-anchor="middle" class="arrow-label">fix</text>
+</svg>
