@@ -1,0 +1,92 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 700" width="1200" height="700">
+  <defs>
+    <marker id="arrowA" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#d97757"/>
+    </marker>
+    <marker id="arrowB" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#7b8b5c"/>
+    </marker>
+    <marker id="arrowC" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#8c6f5a"/>
+    </marker>
+    <marker id="arrowE" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#b45309"/>
+    </marker>
+    <marker id="arrowF" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#9a6fb0"/>
+    </marker>
+    <marker id="arrowG" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#d97757"/>
+    </marker>
+    <marker id="arrowH" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#8f8a80"/>
+    </marker>
+    <style>
+    text { font-family: 'Helvetica Neue', Helvetica, Arial, 'PingFang SC', 'Microsoft YaHei', sans-serif; }
+    .title { font-size: 24px; font-weight: 700; fill: #141413; }
+    .subtitle { font-size: 13px; font-weight: 500; fill: #8f8a80; }
+    .section { font-size: 13px; font-weight: 700; fill: #8b7355; letter-spacing: 1.4px; }
+    .section-sub { font-size: 12px; font-weight: 500; fill: #b4aba0; }
+    .node-title { font-size: 18px; font-weight: 700; fill: #141413; }
+    .node-sub { font-size: 12px; font-weight: 500; fill: #6b6257; }
+    .node-type { font-size: 11px; font-weight: 700; fill: #a29a8f; letter-spacing: 0.08em; }
+    .arrow-label { font-size: 12px; font-weight: 600; fill: #6b6257; }
+    .legend { font-size: 12px; font-weight: 500; fill: #6b6257; }
+    .footnote { font-size: 12px; font-weight: 500; fill: #a29a8f; }
+    </style>
+  </defs>
+  <rect width="1200.0" height="700.0" fill="#f8f6f3"/>
+  <text x="48.0" y="48" text-anchor="start" class="title">Paseo Relay Path</text>
+  <text x="48.0" y="72" text-anchor="start" class="subtitle">When direct reachability is inconvenient, relay bridges the remote client and the home daemon</text>
+  <line x1="48" y1="100" x2="1152.0" y2="100" stroke="#ded8cf" stroke-width="1"/>
+  <rect x="40.0" y="120.0" width="260.0" height="430.0" rx="16.0" fill="none" stroke="#ded8cf" stroke-width="1.4" stroke-dasharray="5 4"/>
+  <text x="58.0" y="144.0" class="section">REMOTE SIDE</text>
+  <text x="58.0" y="164.0" class="section-sub">Client outside home network</text>
+  <text x="28.0" y="335.0" text-anchor="end" dominant-baseline="middle" font-size="14.0" font-weight="600" fill="#6b6257">Client</text>
+  <rect x="350.0" y="120.0" width="220.0" height="430.0" rx="16.0" fill="none" stroke="#ded8cf" stroke-width="1.4" stroke-dasharray="5 4"/>
+  <text x="368.0" y="144.0" class="section">RELAY LAYER</text>
+  <text x="368.0" y="164.0" class="section-sub">Middle bridge over the internet</text>
+  <text x="332.0" y="335.0" text-anchor="end" dominant-baseline="middle" font-size="14.0" font-weight="600" fill="#6b6257">Bridge</text>
+  <rect x="620.0" y="120.0" width="540.0" height="430.0" rx="16.0" fill="none" stroke="#ded8cf" stroke-width="1.4" stroke-dasharray="5 4"/>
+  <text x="638.0" y="144.0" class="section">HOME MAC</text>
+  <text x="638.0" y="164.0" class="section-sub">Daemon and agents still run locally</text>
+  <text x="602.0" y="335.0" text-anchor="end" dominant-baseline="middle" font-size="14.0" font-weight="600" fill="#6b6257">Runtime</text>
+  <path d="M 260.0,306.0 L 385.0,306.0" fill="none" stroke="#d97757" stroke-width="2.0" marker-end="url(#arrowA)" stroke-dasharray="6,4"/>
+  <path d="M 535.0,306.0 L 555.4,306.0 L 699.6,226.0 L 720.0,226.0" fill="none" stroke="#d97757" stroke-width="2.0" marker-end="url(#arrowA)" stroke-dasharray="6,4"/>
+  <path d="M 825.0,272.0 L 825.0,360.0" fill="none" stroke="#b45309" stroke-width="2.0" marker-end="url(#arrowE)"/>
+  <path d="M 930.0,408.0 L 970.0,408.0" fill="none" stroke="#b45309" stroke-width="2.0" marker-end="url(#arrowE)"/>
+  <path d="M 930.0,226.0 L 970.0,226.0" fill="none" stroke="#b45309" stroke-width="2.0" marker-end="url(#arrowE)"/>
+  <rect x="80.0" y="260.0" width="180.0" height="92.0" rx="10.0" fill="#a8c5e6" stroke="#4a4a4a" stroke-width="1.8"/>
+  <text x="170.0" y="306.0" text-anchor="middle" class="node-title">Paseo client</text>
+  <text x="170.0" y="328.0" text-anchor="middle" class="node-sub">Phone / web / desktop</text>
+  <rect x="385.0" y="260.0" width="150.0" height="92.0" rx="10.0" fill="#f4e4c1" stroke="#4a4a4a" stroke-width="1.8"/>
+  <text x="460.0" y="306.0" text-anchor="middle" class="node-title">Paseo relay</text>
+  <text x="460.0" y="328.0" text-anchor="middle" class="node-sub">Optional E2EE bridge</text>
+  <rect x="720.0" y="180.0" width="210.0" height="92.0" rx="10.0" fill="#9dd4c7" stroke="#4a4a4a" stroke-width="1.8"/>
+  <text x="825.0" y="226.0" text-anchor="middle" class="node-title">Paseo daemon</text>
+  <text x="825.0" y="248.0" text-anchor="middle" class="node-sub">Receives remote session events</text>
+  <rect x="720.0" y="360.0" width="210.0" height="96.0" rx="10.0" fill="#9dd4c7" stroke="#4a4a4a" stroke-width="1.8"/>
+  <text x="825.0" y="408.0" text-anchor="middle" class="node-title">Local agents</text>
+  <text x="825.0" y="430.0" text-anchor="middle" class="node-sub">Claude Code / Codex / OpenCode</text>
+  <rect x="970.0" y="360.0" width="150.0" height="96.0" rx="10.0" fill="#e8e6e3" stroke="#4a4a4a" stroke-width="1.8"/>
+  <text x="1045.0" y="408.0" text-anchor="middle" class="node-title">Workspace + Tools</text>
+  <text x="1045.0" y="430.0" text-anchor="middle" class="node-sub">Local environment</text>
+  <rect x="970.0" y="180.0" width="150.0" height="92.0" rx="10.0" fill="#e8e6e3" stroke="#4a4a4a" stroke-width="1.8"/>
+  <text x="1045.0" y="226.0" text-anchor="middle" class="node-title">Home Mac</text>
+  <text x="1045.0" y="248.0" text-anchor="middle" class="node-sub">No public UI needed</text>
+  <rect x="291.0" y="276.0" width="63" height="20" rx="6" fill="#f8f6f3" opacity="0.96"/>
+  <text x="322.5" y="290.0" text-anchor="middle" class="arrow-label">connect</text>
+  <rect x="578.5" y="236.0" width="98" height="20" rx="6" fill="#f8f6f3" opacity="0.96"/>
+  <text x="627.5" y="250.0" text-anchor="middle" class="arrow-label">relay bridge</text>
+  <rect x="726.5" y="302.0" width="161" height="20" rx="6" fill="#f8f6f3" opacity="0.96"/>
+  <text x="807.0" y="316.0" text-anchor="middle" class="arrow-label">spawn / attach / send</text>
+  <rect x="890.5" y="394.0" width="119" height="20" rx="6" fill="#f8f6f3" opacity="0.96"/>
+  <text x="950.0" y="408.0" text-anchor="middle" class="arrow-label">use local tools</text>
+  <rect x="887.0" y="212.0" width="126" height="20" rx="6" fill="#f8f6f3" opacity="0.96"/>
+  <text x="950.0" y="226.0" text-anchor="middle" class="arrow-label">runs on home Mac</text>
+  <rect x="32.0" y="608.0" width="233" height="68" rx="10" fill="#f8f6f3" opacity="0.88"/>
+  <line x1="42.0" y1="622.0" x2="72.0" y2="622.0" stroke="#d97757" stroke-width="2.0" marker-end="url(#arrowA)"/>
+  <text x="82.0" y="626.0" class="legend">Relay bridge</text>
+  <line x1="42.0" y1="644.0" x2="72.0" y2="644.0" stroke="#b45309" stroke-width="2.0" marker-end="url(#arrowE)"/>
+  <text x="82.0" y="648.0" class="legend">Control / output stream</text>
+</svg>
