@@ -1,0 +1,818 @@
+<!DOCTYPE html>
+
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=0">
+
+  <meta name="description" content="个人知识库与技术笔记">
+
+
+<link rel="alternate" href="/atom.xml" title="Api Intelligence Daily Life" type="application/atom+xml">
+<meta name="theme-color" content="#a1d0f6">
+<title>文摘：OpenClaw Memory 模块设计文档 - Api Intelligence Daily Life</title>
+<!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+<link rel="shortcut icon" href="/favicon.png">
+
+<link rel="stylesheet" href="/css/style.css">
+
+<nav class="main-nav">
+	
+	    <a href="/">← 主页</a>
+	
+	
+	    <a href="/about/">About</a>
+	
+	    <a href="/archives/">Archives</a>
+	
+	<a class="cta" href="/atom.xml" data-no-instant>订阅</a>
+</nav>
+
+<section id="wrapper">
+    <article class="post">
+    <header>
+        
+            <h1>文摘：OpenClaw Memory 模块设计文档</h1>
+        
+        <h2 class="headline">Feb 05 2026
+        
+            
+            <a href="/categories/文摘/#文摘">文摘</a>
+        
+        </h2>
+    </header>
+</article>
+<section id="post-body"><p>Title: 文摘：OpenClaw Memory 模块设计文档 - Api Intelligence Daily Life</p>
+<p>URL Source: <a href="https://arbow.github.io/2026/02/05/digest-2026-02-05-openclaw-memory/">https://arbow.github.io/2026/02/05/digest-2026-02-05-openclaw-memory/</a></p>
+<p>Markdown Content:<br><a href="https://arbow.github.io/">← 主页</a><a href="https://arbow.github.io/about/">About</a><a href="https://arbow.github.io/archives/">Archives</a><a href="https://arbow.github.io/atom.xml">订阅</a></p>
+<h2 id="Feb-05-2026-文摘"><a href="#Feb-05-2026-文摘" class="headerlink" title="Feb 05 2026 文摘"></a>Feb 05 2026 <a href="https://arbow.github.io/categories/%E6%96%87%E6%91%98/#%E6%96%87%E6%91%98">文摘</a></h2><blockquote>
+<p>原文来自：Arbow 的笔记库</p>
+<p>收录时间：2026-02-05</p>
+</blockquote>
+<hr>
+<h2 id="OpenClaw-Memory-模块设计文档"><a href="#OpenClaw-Memory-模块设计文档" class="headerlink" title="OpenClaw Memory 模块设计文档"></a><a href="https://arbow.github.io/2026/02/05/digest-2026-02-05-openclaw-memory/#OpenClaw-Memory-%E6%A8%A1%E5%9D%97%E8%AE%BE%E8%AE%A1%E6%96%87%E6%A1%A3" title="OpenClaw Memory 模块设计文档"></a>OpenClaw Memory 模块设计文档</h2><h2 id="概述"><a href="#概述" class="headerlink" title="概述"></a><a href="https://arbow.github.io/2026/02/05/digest-2026-02-05-openclaw-memory/#%E6%A6%82%E8%BF%B0" title="概述"></a>概述</h2><p>OpenClaw 的 Memory 模块是一个 sophisticated 的 semantic search 系统，使 AI Agent 能够从基于 markdown 的记忆文件中 recall 先前的工作、决策和上下文。它结合了 vector embeddings、full-text search 和 hybrid ranking，以提供快速、准确的相关信息检索。</p>
+<h2 id="架构"><a href="#架构" class="headerlink" title="架构"></a><a href="https://arbow.github.io/2026/02/05/digest-2026-02-05-openclaw-memory/#%E6%9E%B6%E6%9E%84" title="架构"></a>架构</h2><p>1</p>
+<p>2</p>
+<p>3</p>
+<p>4</p>
+<p>5</p>
+<p>6</p>
+<p>7</p>
+<p>8</p>
+<p>9</p>
+<p>10</p>
+<p>11</p>
+<p>12</p>
+<p>13</p>
+<p>14</p>
+<p>15</p>
+<p>16</p>
+<p>17</p>
+<p>18</p>
+<p>19</p>
+<p>20</p>
+<p>21</p>
+<p>22</p>
+<p>23</p>
+<p>24</p>
+<p>25</p>
+<p>26</p>
+<p>27</p>
+<p>28</p>
+<p>29</p>
+<p>30</p>
+<p>31</p>
+<p>32</p>
+<p>33</p>
+<p>34</p>
+<p>35</p>
+<p>36</p>
+<p>37</p>
+<p>38</p>
+<p>39</p>
+<p>40</p>
+<p>41</p>
+<p>42┌─────────────────────────────────────────────────────────────────────────────┐</p>
+<p>│ Memory 模块架构 │</p>
+<p>├─────────────────────────────────────────────────────────────────────────────┤</p>
+<p>│ │</p>
+<p>│ ┌──────────────┐ ┌──────────────┐ ┌──────────────┐ │</p>
+<p>│ │ CLI 层 │ │ Agent 工具 │ │ 配置层 │ │</p>
+<p>│ │ memory-cli │ │memory_search │ │ memory-search│ │</p>
+<p>│ │ │ │ memory_get │ │ config.ts │ │</p>
+<p>│ └──────┬───────┘ └──────┬───────┘ └──────┬───────┘ │</p>
+<p>│ │ │ │ │</p>
+<p>│ └───────────────────┼────────────────────┘ │</p>
+<p>│ ▼ │</p>
+<p>│ ┌──────────────────────────────┐ │</p>
+<p>│ │ MemorySearchManager │ │</p>
+<p>│ │ (search-manager.ts) │ │</p>
+<p>│ └──────────────┬───────────────┘ │</p>
+<p>│ │ │</p>
+<p>│ ▼ │</p>
+<p>│ ┌──────────────────────────────┐ │</p>
+<p>│ │ MemoryIndexManager │ │</p>
+<p>│ │ (manager.ts) │ │</p>
+<p>│ └──────────────┬───────────────┘ │</p>
+<p>│ │ │</p>
+<p>│ ┌───────────────────┼───────────────────┐ │</p>
+<p>│ ▼ ▼ ▼ │</p>
+<p>│ ┌──────────────┐ ┌──────────────┐ ┌──────────────┐ │</p>
+<p>│ │ Embedding │ │ Search │ │ Sync │ │</p>
+<p>│ │ Providers │ │ Engine │ │ Engine │ │</p>
+<p>│ │ │ │ │ │ │ │</p>
+<p>│ │ • OpenAI │ │ • Vector │ │ • File Watch │ │</p>
+<p>│ │ • Gemini │ │ • FTS (BM25) │ │ • Session │ │</p>
+<p>│ │ • Local │ │ • Hybrid │ │ • Interval │ │</p>
+<p>│ │ (llama.cpp)│ │ Merge │ │ • Delta │ │</p>
+<p>│ └──────────────┘ └──────────────┘ └──────────────┘ │</p>
+<p>│ │ │</p>
+<p>│ ▼ │</p>
+<p>│ ┌──────────────────────────────┐ │</p>
+<p>│ │ SQLite + sqlite-vec │ │</p>
+<p>│ │ (Vector + FTS5 Storage) │ │</p>
+<p>│ └──────────────────────────────┘ │</p>
+<p>│ │</p>
+<p>└─────────────────────────────────────────────────────────────────────────────┘</p>
+<h2 id="核心组件"><a href="#核心组件" class="headerlink" title="核心组件"></a><a href="https://arbow.github.io/2026/02/05/digest-2026-02-05-openclaw-memory/#%E6%A0%B8%E5%BF%83%E7%BB%84%E4%BB%B6" title="核心组件"></a>核心组件</h2><h3 id="1-MemoryIndexManager-src-memory-manager-ts"><a href="#1-MemoryIndexManager-src-memory-manager-ts" class="headerlink" title="1. MemoryIndexManager (src/memory/manager.ts)"></a><a href="https://arbow.github.io/2026/02/05/digest-2026-02-05-openclaw-memory/#1-MemoryIndexManager-src-memory-manager-ts" title="1. MemoryIndexManager (src&#x2F;memory&#x2F;manager.ts)"></a>1. MemoryIndexManager (<code>src/memory/manager.ts</code>)</h3><p>中央 orchestrator，管理 indexing、search 和 synchronization。</p>
+<p><strong>核心职责：</strong></p>
+<ul>
+<li><strong>Singleton Pattern</strong>: 通过 <code>MemoryIndexManager.get()</code> 实现 per-agent cached instances</li>
+<li><strong>Embedding Provider Management</strong>: 支持 auto-selection 和 fallback</li>
+<li><strong>File Watching</strong>: 通过 <code>chokidar</code> 实现 real-time sync</li>
+<li><strong>Session Sync</strong>: 基于 Delta 的 conversation transcripts indexing</li>
+<li><strong>Safe Reindexing</strong>: 支持 rollback 的 atomic index rebuilds</li>
+</ul>
+<p><strong>状态管理：</strong></p>
+<p>1</p>
+<p>2</p>
+<p>3</p>
+<p>4</p>
+<p>5 private dirty &#x3D; false; </p>
+<p>private sessionsDirty &#x3D; false; </p>
+<p>private sessionDeltas &#x3D; new Map(); </p>
+<p>private syncing: Promise<void> | null;</p>
+<h3 id="2-Embedding-Providers-src-memory-embeddings-ts"><a href="#2-Embedding-Providers-src-memory-embeddings-ts" class="headerlink" title="2. Embedding Providers (src/memory/embeddings.ts)"></a><a href="https://arbow.github.io/2026/02/05/digest-2026-02-05-openclaw-memory/#2-Embedding-Providers-src-memory-embeddings-ts" title="2. Embedding Providers (src&#x2F;memory&#x2F;embeddings.ts)"></a>2. Embedding Providers (<code>src/memory/embeddings.ts</code>)</h3><p>支持 automatic fallback 的多提供商 embedding 系统。</p>
+<p><strong>支持的 Providers：</strong></p>
+<table>
+<thead>
+<tr>
+<th>Provider</th>
+<th>Model</th>
+<th>适用场景</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>OpenAI</td>
+<td>text-embedding-3-small</td>
+<td>Cloud-based, high quality</td>
+</tr>
+<tr>
+<td>Gemini</td>
+<td>embedding-001</td>
+<td>Google AI, alternative cloud</td>
+</tr>
+<tr>
+<td>Local</td>
+<td>embeddinggemma-300M</td>
+<td>Privacy-first, offline</td>
+</tr>
+</tbody></table>
+<p><strong>Auto-Selection 逻辑：</strong></p>
+<ol>
+<li>如果 <code>provider: &quot;auto&quot;</code>，首先检查 local model file</li>
+<li>尝试 OpenAI（如果有 API key）</li>
+<li>尝试 Gemini（如果有 API key）</li>
+<li>Fallback chain: primary → fallback provider on errors</li>
+</ol>
+<h3 id="3-Hybrid-Search-src-memory-hybrid-ts-src-memory-manager-search-ts"><a href="#3-Hybrid-Search-src-memory-hybrid-ts-src-memory-manager-search-ts" class="headerlink" title="3. Hybrid Search (src/memory/hybrid.ts, src/memory/manager-search.ts)"></a><a href="https://arbow.github.io/2026/02/05/digest-2026-02-05-openclaw-memory/#3-Hybrid-Search-src-memory-hybrid-ts-src-memory-manager-search-ts" title="3. Hybrid Search (src&#x2F;memory&#x2F;hybrid.ts, src&#x2F;memory&#x2F;manager-search.ts)"></a>3. Hybrid Search (<code>src/memory/hybrid.ts</code>, <code>src/memory/manager-search.ts</code>)</h3><p>结合 vector similarity 和 BM25 full-text search。</p>
+<p><strong>Search Flow：</strong></p>
+<p>1</p>
+<p>2</p>
+<p>3 Query → [Embed Query] → Vector Search (cosine similarity)</p>
+<p> → [Tokenize] → FTS Search (BM25 ranking)</p>
+<p> → [Merge Results] → Weighted Score &#x3D; vectorWeight * vectorScore + textWeight * textScore</p>
+<p><strong>配置：</strong></p>
+<p>1</p>
+<p>2</p>
+<p>3</p>
+<p>4</p>
+<p>5</p>
+<p>6 hybrid: {</p>
+<p> enabled: boolean; </p>
+<p> vectorWeight: 0.7; </p>
+<p> textWeight: 0.3; </p>
+<p> candidateMultiplier: 4; </p>
+<p>}</p>
+<h3 id="4-Storage-Layer-src-memory-memory-schema-ts"><a href="#4-Storage-Layer-src-memory-memory-schema-ts" class="headerlink" title="4. Storage Layer (src/memory/memory-schema.ts)"></a><a href="https://arbow.github.io/2026/02/05/digest-2026-02-05-openclaw-memory/#4-Storage-Layer-src-memory-memory-schema-ts" title="4. Storage Layer (src&#x2F;memory&#x2F;memory-schema.ts)"></a>4. Storage Layer (<code>src/memory/memory-schema.ts</code>)</h3><p>基于 SQLite 的 storage，采用两种 indexing strategies：</p>
+<p><strong>数据表：</strong></p>
+<ul>
+<li><code>meta</code>: Index metadata（model, provider, chunk settings）</li>
+<li><code>files</code>: 带 content hashes 的文件清单</li>
+<li><code>chunks</code>: 带 embeddings 的 text chunks（JSON 存储）</li>
+<li><code>chunks_vec</code>: 用于 vector search 的 virtual table（sqlite-vec）</li>
+<li><code>chunks_fts</code>: 用于 text search 的 FTS5 virtual table</li>
+<li><code>embedding_cache</code>: Embeddings 的 deduplication cache</li>
+</ul>
+<p><strong>Schema 设计：</strong></p>
+<p>1</p>
+<p>2</p>
+<p>3</p>
+<p>4</p>
+<p>5</p>
+<p>6</p>
+<p>7</p>
+<p>8</p>
+<p>9</p>
+<p>10</p>
+<p>11</p>
+<p>12</p>
+<p>13</p>
+<p>14</p>
+<p>15</p>
+<p>16</p>
+<p>17</p>
+<p>18</p>
+<p>19 CREATE TABLE chunks (</p>
+<p> id TEXT PRIMARY KEY,</p>
+<p> path TEXT NOT NULL,</p>
+<p> source TEXT NOT NULL DEFAULT ‘memory’, </p>
+<p> start_line INTEGER NOT NULL,</p>
+<p> end_line INTEGER NOT NULL,</p>
+<p> hash TEXT NOT NULL, </p>
+<p> model TEXT NOT NULL, </p>
+<p> text TEXT NOT NULL,</p>
+<p> embedding TEXT NOT NULL, </p>
+<p> updated_at INTEGER NOT NULL</p>
+<p>);</p>
+<p>CREATE VIRTUAL TABLE chunks_vec USING vec0(</p>
+<p> id TEXT PRIMARY KEY,</p>
+<p> embedding FLOAT[768] </p>
+<p>);</p>
+<h3 id="5-Synchronization-Engine"><a href="#5-Synchronization-Engine" class="headerlink" title="5. Synchronization Engine"></a><a href="https://arbow.github.io/2026/02/05/digest-2026-02-05-openclaw-memory/#5-Synchronization-Engine" title="5. Synchronization Engine"></a>5. Synchronization Engine</h3><p><strong>多源 Sync：</strong></p>
+<table>
+<thead>
+<tr>
+<th>Source</th>
+<th>Trigger</th>
+<th>Strategy</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Memory Files</td>
+<td>File watcher</td>
+<td>Hash-based incremental</td>
+</tr>
+<tr>
+<td>Sessions</td>
+<td>Event + Delta</td>
+<td>Byte&#x2F;message threshold</td>
+</tr>
+<tr>
+<td>Interval</td>
+<td>Timer</td>
+<td>Full scan every N minutes</td>
+</tr>
+<tr>
+<td>Search</td>
+<td>On-demand</td>
+<td>Lazy sync if dirty</td>
+</tr>
+</tbody></table>
+<p><strong>Session Delta Tracking：</strong></p>
+<p>1</p>
+<p>2</p>
+<p>3</p>
+<p>4</p>
+<p>5</p>
+<p>6</p>
+<p>7</p>
+<p>8</p>
+<p>9 sessionDeltas &#x3D; Map&lt;filepath, {</p>
+<p> lastSize: number, </p>
+<p> pendingBytes: number, </p>
+<p> pendingMessages: number </p>
+<p>}&gt;</p>
+<p><strong>File Watching：</strong></p>
+<ul>
+<li>使用 <code>chokidar</code> 实现 cross-platform file watching</li>
+<li>Debounced sync（默认 1000ms）</li>
+<li>监控：<code>MEMORY.md</code>, <code>memory.md</code>, <code>memory/</code>, 以及 <code>extraPaths</code></li>
+</ul>
+<h2 id="数据流"><a href="#数据流" class="headerlink" title="数据流"></a><a href="https://arbow.github.io/2026/02/05/digest-2026-02-05-openclaw-memory/#%E6%95%B0%E6%8D%AE%E6%B5%81" title="数据流"></a>数据流</h2><h3 id="Indexing-Flow"><a href="#Indexing-Flow" class="headerlink" title="Indexing Flow"></a><a href="https://arbow.github.io/2026/02/05/digest-2026-02-05-openclaw-memory/#Indexing-Flow" title="Indexing Flow"></a>Indexing Flow</h3><p>1</p>
+<p>2</p>
+<p>3</p>
+<p>4</p>
+<p>5</p>
+<p>6</p>
+<p>7</p>
+<p>8┌─────────────┐ ┌─────────────┐ ┌─────────────┐ ┌─────────────┐</p>
+<p>│ Markdown │────▶│ Chunking │────▶│ Embedding │────▶│ SQLite │</p>
+<p>│ Files │ │ (tokens) │ │ (batch) │ │ Storage │</p>
+<p>└─────────────┘ └─────────────┘ └─────────────┘ └─────────────┘</p>
+<p> │ │ │ │</p>
+<p> ▼ ▼ ▼ ▼</p>
+<p> listMemoryFiles() chunkMarkdown() embedBatch() INSERT&#x2F;UPDATE</p>
+<p> (file discovery) (line-based) (provider API) (with cache)</p>
+<p><strong>Chunking Strategy：</strong></p>
+<ul>
+<li>基于 Line 的 chunking，支持 configurable token limits</li>
+<li>Chunks 之间的 Overlap，保持 context continuity</li>
+<li>对超长行的 Smart line splitting</li>
+</ul>
+<p>1</p>
+<p>2</p>
+<p>3 chunkMarkdown(content, { tokens: 300, overlap: 50 })</p>
+<h3 id="Search-Flow"><a href="#Search-Flow" class="headerlink" title="Search Flow"></a><a href="https://arbow.github.io/2026/02/05/digest-2026-02-05-openclaw-memory/#Search-Flow" title="Search Flow"></a>Search Flow</h3><p>1</p>
+<p>2</p>
+<p>3</p>
+<p>4</p>
+<p>5</p>
+<p>6</p>
+<p>7</p>
+<p>8</p>
+<p>9</p>
+<p>10</p>
+<p>11</p>
+<p>12</p>
+<p>13</p>
+<p>14</p>
+<p>15</p>
+<p>16┌─────────────┐ ┌─────────────┐ ┌─────────────┐</p>
+<p>│ User Query │────▶│ Embed │────▶│ Vector Search│</p>
+<p>│ “auth bug” │ │ Query │ │ (sqlite-vec) │</p>
+<p>└─────────────┘ └─────────────┘ └──────┬──────┘</p>
+<p> │</p>
+<p>┌─────────────┐ ┌─────────────┐ │</p>
+<p>│ Results │◀────│ Hybrid Merge│◀──────────┘</p>
+<p>│ (ranked) │ │ (weighted) │</p>
+<p>└─────────────┘ └──────┬──────┘</p>
+<p> │</p>
+<p> ┌──────┴──────┐</p>
+<p> ▼ ▼</p>
+<p> ┌─────────────┐ ┌─────────────┐</p>
+<p> │ BM25 Search │ │ Vector │</p>
+<p> │ (FTS5) │ │ (cosine) │</p>
+<p> └─────────────┘ └─────────────┘</p>
+<h2 id="配置"><a href="#配置" class="headerlink" title="配置"></a><a href="https://arbow.github.io/2026/02/05/digest-2026-02-05-openclaw-memory/#%E9%85%8D%E7%BD%AE" title="配置"></a>配置</h2><h3 id="Memory-Search-Config-src-agents-memory-search-ts"><a href="#Memory-Search-Config-src-agents-memory-search-ts" class="headerlink" title="Memory Search Config (src/agents/memory-search.ts)"></a><a href="https://arbow.github.io/2026/02/05/digest-2026-02-05-openclaw-memory/#Memory-Search-Config-src-agents-memory-search-ts" title="Memory Search Config (src&#x2F;agents&#x2F;memory-search.ts)"></a>Memory Search Config (<code>src/agents/memory-search.ts</code>)</h3><p>1</p>
+<p>2</p>
+<p>3</p>
+<p>4</p>
+<p>5</p>
+<p>6</p>
+<p>7</p>
+<p>8</p>
+<p>9</p>
+<p>10</p>
+<p>11</p>
+<p>12</p>
+<p>13</p>
+<p>14</p>
+<p>15</p>
+<p>16</p>
+<p>17</p>
+<p>18</p>
+<p>19</p>
+<p>20</p>
+<p>21</p>
+<p>22</p>
+<p>23</p>
+<p>24</p>
+<p>25</p>
+<p>26</p>
+<p>27</p>
+<p>28</p>
+<p>29</p>
+<p>30</p>
+<p>31</p>
+<p>32</p>
+<p>33</p>
+<p>34</p>
+<p>35</p>
+<p>36</p>
+<p>37</p>
+<p>38</p>
+<p>39</p>
+<p>40</p>
+<p>41</p>
+<p>42</p>
+<p>43</p>
+<p>44</p>
+<p>45</p>
+<p>46</p>
+<p>47</p>
+<p>48</p>
+<p>49</p>
+<p>50</p>
+<p>51</p>
+<p>52</p>
+<p>53</p>
+<p>54</p>
+<p>55</p>
+<p>56</p>
+<p>57</p>
+<p>58</p>
+<p>59</p>
+<p>60</p>
+<p>61</p>
+<p>62</p>
+<p>63</p>
+<p>64</p>
+<p>65</p>
+<p>66</p>
+<p>67 interface MemorySearchConfig {</p>
+<p> enabled: boolean;</p>
+<p> sources: (“memory” | “sessions”)[]; </p>
+<p> extraPaths: string[]; </p>
+<p> provider: “openai” | “gemini” | “local” | “auto”;</p>
+<p> fallback: “openai” | “gemini” | “local” | “none”;</p>
+<p> model: string; </p>
+<p> remote?: {</p>
+<p> baseUrl?: string;</p>
+<p> apiKey?: string;</p>
+<p> headers?: Record&lt;string, string&gt;;</p>
+<p> batch?: {</p>
+<p> enabled: boolean;</p>
+<p> concurrency: number;</p>
+<p> wait: boolean;</p>
+<p> timeoutMinutes: number;</p>
+<p> };</p>
+<p> };</p>
+<p> local?: {</p>
+<p> modelPath?: string;</p>
+<p> modelCacheDir?: string;</p>
+<p> };</p>
+<p> store: {</p>
+<p> path: string; </p>
+<p> vector: {</p>
+<p> enabled: boolean;</p>
+<p> extensionPath?: string;</p>
+<p> };</p>
+<p> };</p>
+<p> chunking: {</p>
+<p> tokens: number; </p>
+<p> overlap: number; </p>
+<p> };</p>
+<p> query: {</p>
+<p> maxResults: number;</p>
+<p> minScore: number; </p>
+<p> hybrid: {</p>
+<p> enabled: boolean;</p>
+<p> vectorWeight: number;</p>
+<p> textWeight: number;</p>
+<p> candidateMultiplier: number;</p>
+<p> };</p>
+<p> };</p>
+<p> cache: {</p>
+<p> enabled: boolean;</p>
+<p> maxEntries?: number;</p>
+<p> };</p>
+<p> sync: {</p>
+<p> onSessionStart: boolean;</p>
+<p> onSearch: boolean; </p>
+<p> watch: boolean; </p>
+<p> watchDebounceMs: number;</p>
+<p> intervalMinutes?: number;</p>
+<p> sessions?: {</p>
+<p> deltaBytes: number; </p>
+<p> deltaMessages: number; </p>
+<p> };</p>
+<p> };</p>
+<p>}</p>
+<h3 id="YAML-配置示例"><a href="#YAML-配置示例" class="headerlink" title="YAML 配置示例"></a><a href="https://arbow.github.io/2026/02/05/digest-2026-02-05-openclaw-memory/#YAML-%E9%85%8D%E7%BD%AE%E7%A4%BA%E4%BE%8B" title="YAML 配置示例"></a>YAML 配置示例</h3><p>1</p>
+<p>2</p>
+<p>3</p>
+<p>4</p>
+<p>5</p>
+<p>6</p>
+<p>7</p>
+<p>8</p>
+<p>9</p>
+<p>10</p>
+<p>11</p>
+<p>12</p>
+<p>13</p>
+<p>14</p>
+<p>15</p>
+<p>16</p>
+<p>17</p>
+<p>18</p>
+<p>19</p>
+<p>20</p>
+<p>21</p>
+<p>22</p>
+<p>23</p>
+<p>24</p>
+<p>25</p>
+<p>26</p>
+<p>27</p>
+<p>28</p>
+<p>29</p>
+<p>30</p>
+<p>31</p>
+<p>32</p>
+<p>33</p>
+<p>34</p>
+<p>35</p>
+<p>36</p>
+<p>37</p>
+<p>38</p>
+<p>39</p>
+<p>40</p>
+<p>41 agents:</p>
+<p> defaults:</p>
+<p> memorySearch:</p>
+<p> enabled: true</p>
+<p> sources: [“memory”, “sessions”]</p>
+<p> provider: “auto” </p>
+<p> fallback: “gemini”</p>
+<p> model: “text-embedding-3-small”</p>
+<p> remote:</p>
+<p> apiKey: “${OPENAI_API_KEY}”</p>
+<p> batch:</p>
+<p> enabled: true</p>
+<p> concurrency: 4</p>
+<p> wait: true</p>
+<p> store:</p>
+<p> path: “~&#x2F;.openclaw&#x2F;memory&#x2F;{agentId}.sqlite”</p>
+<p> vector:</p>
+<p> enabled: true</p>
+<p> chunking:</p>
+<p> tokens: 300</p>
+<p> overlap: 50</p>
+<p> query:</p>
+<p> maxResults: 10</p>
+<p> minScore: 0.6</p>
+<p> hybrid:</p>
+<p> enabled: true</p>
+<p> vectorWeight: 0.7</p>
+<p> textWeight: 0.3</p>
+<p> sync:</p>
+<p> onSessionStart: true</p>
+<p> onSearch: true</p>
+<p> watch: true</p>
+<p> intervalMinutes: 30</p>
+<p> sessions:</p>
+<p> deltaBytes: 10240 &#x2F;&#x2F; 10KB</p>
+<p> deltaMessages: 10</p>
+<h2 id="Agent-工具"><a href="#Agent-工具" class="headerlink" title="Agent 工具"></a><a href="https://arbow.github.io/2026/02/05/digest-2026-02-05-openclaw-memory/#Agent-%E5%B7%A5%E5%85%B7" title="Agent 工具"></a>Agent 工具</h2><h3 id="memory-search"><a href="#memory-search" class="headerlink" title="memory_search"></a><a href="https://arbow.github.io/2026/02/05/digest-2026-02-05-openclaw-memory/#memory-search" title="memory_search"></a>memory_search</h3><p>Agent 回答关于先前工作的问题之前的 mandatory recall step。</p>
+<p>1</p>
+<p>2</p>
+<p>3</p>
+<p>4</p>
+<p>5</p>
+<p>6</p>
+<p>7</p>
+<p>8</p>
+<p>9</p>
+<p>10</p>
+<p>11</p>
+<p>12</p>
+<p>13</p>
+<p>14</p>
+<p>15</p>
+<p>16</p>
+<p>17</p>
+<p>18</p>
+<p>19</p>
+<p>20</p>
+<p>21</p>
+<p>22{</p>
+<p> name: “memory_search”,</p>
+<p> description: “Semantically search MEMORY.md + memory&#x2F;*.md before answering…”,</p>
+<p> parameters: {</p>
+<p> query: string; </p>
+<p> maxResults?: number; </p>
+<p> minScore?: number; </p>
+<p> },</p>
+<p> returns: {</p>
+<p> results: Array&lt;{</p>
+<p> path: string; </p>
+<p> startLine: number;</p>
+<p> endLine: number;</p>
+<p> score: number; </p>
+<p> snippet: string; </p>
+<p> source: “memory” | “sessions”;</p>
+<p> }&gt;;</p>
+<p> provider: string;</p>
+<p> model: string;</p>
+<p> fallback?: { from: string; reason: string };</p>
+<p> };</p>
+<p>}</p>
+<h3 id="memory-get"><a href="#memory-get" class="headerlink" title="memory_get"></a><a href="https://arbow.github.io/2026/02/05/digest-2026-02-05-openclaw-memory/#memory-get" title="memory_get"></a>memory_get</h3><p>Search 后用于 retrieving specific line ranges 的 safe file reader。</p>
+<p>1</p>
+<p>2</p>
+<p>3</p>
+<p>4</p>
+<p>5</p>
+<p>6</p>
+<p>7</p>
+<p>8</p>
+<p>9</p>
+<p>10</p>
+<p>11</p>
+<p>12</p>
+<p>13{</p>
+<p> name: “memory_get”,</p>
+<p> description: “Safe snippet read from MEMORY.md…”,</p>
+<p> parameters: {</p>
+<p> path: string; </p>
+<p> from?: number; </p>
+<p> lines?: number; </p>
+<p> },</p>
+<p> returns: {</p>
+<p> text: string;</p>
+<p> path: string;</p>
+<p> };</p>
+<p>}</p>
+<h2 id="性能优化"><a href="#性能优化" class="headerlink" title="性能优化"></a><a href="https://arbow.github.io/2026/02/05/digest-2026-02-05-openclaw-memory/#%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96" title="性能优化"></a>性能优化</h2><h3 id="1-Embedding-Cache"><a href="#1-Embedding-Cache" class="headerlink" title="1. Embedding Cache"></a><a href="https://arbow.github.io/2026/02/05/digest-2026-02-05-openclaw-memory/#1-Embedding-Cache" title="1. Embedding Cache"></a>1. Embedding Cache</h3><ul>
+<li>基于 SHA256 的 deduplication</li>
+<li>Persistent across sessions</li>
+<li>超过 maxEntries 时进行 LRU pruning</li>
+</ul>
+<h3 id="2-Incremental-Sync"><a href="#2-Incremental-Sync" class="headerlink" title="2. Incremental Sync"></a><a href="https://arbow.github.io/2026/02/05/digest-2026-02-05-openclaw-memory/#2-Incremental-Sync" title="2. Incremental Sync"></a>2. Incremental Sync</h3><ul>
+<li>Content hash comparison（SHA256）</li>
+<li>仅 re-index changed files</li>
+<li>Session files 的 Delta tracking</li>
+</ul>
+<h3 id="3-Batch-Processing"><a href="#3-Batch-Processing" class="headerlink" title="3. Batch Processing"></a><a href="https://arbow.github.io/2026/02/05/digest-2026-02-05-openclaw-memory/#3-Batch-Processing" title="3. Batch Processing"></a>3. Batch Processing</h3><ul>
+<li>OpenAI: 用于 large indexing jobs 的 Batch API</li>
+<li>Gemini: Parallel batch requests</li>
+<li>Configurable concurrency</li>
+</ul>
+<h3 id="4-Safe-Reindexing"><a href="#4-Safe-Reindexing" class="headerlink" title="4. Safe Reindexing"></a><a href="https://arbow.github.io/2026/02/05/digest-2026-02-05-openclaw-memory/#4-Safe-Reindexing" title="4. Safe Reindexing"></a>4. Safe Reindexing</h3><ul>
+<li>Atomic file swaps（temp → backup → new）</li>
+<li>Failure 时 rollback</li>
+<li>Zero-downtime index rebuilds</li>
+</ul>
+<h3 id="5-Vector-Extension"><a href="#5-Vector-Extension" class="headerlink" title="5. Vector Extension"></a><a href="https://arbow.github.io/2026/02/05/digest-2026-02-05-openclaw-memory/#5-Vector-Extension" title="5. Vector Extension"></a>5. Vector Extension</h3><ul>
+<li>用于 native vector operations 的 sqlite-vec</li>
+<li>如果不可用，回退到 JS cosine similarity</li>
+</ul>
+<h2 id="错误处理与弹性"><a href="#错误处理与弹性" class="headerlink" title="错误处理与弹性"></a><a href="https://arbow.github.io/2026/02/05/digest-2026-02-05-openclaw-memory/#%E9%94%99%E8%AF%AF%E5%A4%84%E7%90%86%E4%B8%8E%E5%BC%B9%E6%80%A7" title="错误处理与弹性"></a>错误处理与弹性</h2><h3 id="Provider-Fallback"><a href="#Provider-Fallback" class="headerlink" title="Provider Fallback"></a><a href="https://arbow.github.io/2026/02/05/digest-2026-02-05-openclaw-memory/#Provider-Fallback" title="Provider Fallback"></a>Provider Fallback</h3><p>1</p>
+<p>2</p>
+<p>3</p>
+<p>4</p>
+<p>5 if (shouldFallbackOnError(error)) {</p>
+<p> await activateFallbackProvider(error);</p>
+<p> await runSafeReindex({ force: true });</p>
+<p>}</p>
+<h3 id="Graceful-Degradation"><a href="#Graceful-Degradation" class="headerlink" title="Graceful Degradation"></a><a href="https://arbow.github.io/2026/02/05/digest-2026-02-05-openclaw-memory/#Graceful-Degradation" title="Graceful Degradation"></a>Graceful Degradation</h3><ul>
+<li>FTS unavailable → Vector-only search</li>
+<li>sqlite-vec unavailable → JS cosine similarity</li>
+<li>Provider unavailable → Fallback 或 error</li>
+</ul>
+<h3 id="Batch-Failure-Recovery"><a href="#Batch-Failure-Recovery" class="headerlink" title="Batch Failure Recovery"></a><a href="https://arbow.github.io/2026/02/05/digest-2026-02-05-openclaw-memory/#Batch-Failure-Recovery" title="Batch Failure Recovery"></a>Batch Failure Recovery</h3><ul>
+<li>追踪 consecutive failures</li>
+<li>Lock mechanism 防止 cascade</li>
+<li>带 exponential backoff 的 automatic retry</li>
+</ul>
+<h2 id="安全考量"><a href="#安全考量" class="headerlink" title="安全考量"></a><a href="https://arbow.github.io/2026/02/05/digest-2026-02-05-openclaw-memory/#%E5%AE%89%E5%85%A8%E8%80%83%E9%87%8F" title="安全考量"></a>安全考量</h2><h3 id="Path-Security"><a href="#Path-Security" class="headerlink" title="Path Security"></a><a href="https://arbow.github.io/2026/02/05/digest-2026-02-05-openclaw-memory/#Path-Security" title="Path Security"></a>Path Security</h3><ul>
+<li>所有 paths 相对于 workspace 解析</li>
+<li>忽略 Symlinks</li>
+<li><code>extraPaths</code> 针对 allowed directories 进行验证</li>
+</ul>
+<h3 id="File-Access"><a href="#File-Access" class="headerlink" title="File Access"></a><a href="https://arbow.github.io/2026/02/05/digest-2026-02-05-openclaw-memory/#File-Access" title="File Access"></a>File Access</h3><p>1</p>
+<p>2</p>
+<p>3</p>
+<p>4</p>
+<p>5</p>
+<p>6 const allowedWorkspace &#x3D; inWorkspace &amp;&amp; isMemoryPath(relPath);</p>
+<p>const allowedAdditional &#x3D; extraPaths.some(p &#x3D;&gt; absPath.startsWith(p));</p>
+<p>if (!allowedWorkspace &amp;&amp; !allowedAdditional) {</p>
+<p> throw new Error(“path required”);</p>
+<p>}</p>
+<h2 id="CLI-接口"><a href="#CLI-接口" class="headerlink" title="CLI 接口"></a><a href="https://arbow.github.io/2026/02/05/digest-2026-02-05-openclaw-memory/#CLI-%E6%8E%A5%E5%8F%A3" title="CLI 接口"></a>CLI 接口</h2><p>1</p>
+<p>2</p>
+<p>3</p>
+<p>4</p>
+<p>5</p>
+<p>6</p>
+<p>7</p>
+<p>8 openclaw memory status [–deep] [–index]</p>
+<p>openclaw memory index [–force]</p>
+<p>openclaw memory search <query> [–max-results N] [–min-score 0.6]</p>
+<h2 id="测试策略"><a href="#测试策略" class="headerlink" title="测试策略"></a><a href="https://arbow.github.io/2026/02/05/digest-2026-02-05-openclaw-memory/#%E6%B5%8B%E8%AF%95%E7%AD%96%E7%95%A5" title="测试策略"></a>测试策略</h2><p>该模块包含 comprehensive tests：</p>
+<table>
+<thead>
+<tr>
+<th>Test File</th>
+<th>Coverage</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>manager.atomic-reindex.test.ts</code></td>
+<td>带 rollback 的 Safe reindexing</td>
+</tr>
+<tr>
+<td><code>manager.async-search.test.ts</code></td>
+<td>Concurrent search&#x2F;sync</td>
+</tr>
+<tr>
+<td><code>manager.batch.test.ts</code></td>
+<td>Batch embedding API</td>
+</tr>
+<tr>
+<td><code>manager.sync-errors-do-not-crash.test.ts</code></td>
+<td>Error resilience</td>
+</tr>
+<tr>
+<td><code>manager.vector-dedupe.test.ts</code></td>
+<td>Vector deduplication</td>
+</tr>
+<tr>
+<td><code>embeddings.test.ts</code></td>
+<td>Provider selection</td>
+</tr>
+<tr>
+<td><code>hybrid.test.ts</code></td>
+<td>Hybrid ranking</td>
+</tr>
+<tr>
+<td><code>internal.test.ts</code></td>
+<td>Chunking, hashing</td>
+</tr>
+</tbody></table>
+<h2 id="未来增强"><a href="#未来增强" class="headerlink" title="未来增强"></a><a href="https://arbow.github.io/2026/02/05/digest-2026-02-05-openclaw-memory/#%E6%9C%AA%E6%9D%A5%E5%A2%9E%E5%BC%BA" title="未来增强"></a>未来增强</h2><ol>
+<li><strong>Multi-modal Memory</strong>: Image&#x2F;document embeddings</li>
+<li><strong>Temporal Queries</strong>: 基于 Time 的 filtering</li>
+<li><strong>Memory Graph</strong>: Memories 之间的 Relationship extraction</li>
+<li><strong>Compression</strong>: 用于 storage 的 Embedding quantization</li>
+<li><strong>Distributed</strong>: Multi-agent shared memory</li>
+</ol>
+<h2 id="参考"><a href="#参考" class="headerlink" title="参考"></a><a href="https://arbow.github.io/2026/02/05/digest-2026-02-05-openclaw-memory/#%E5%8F%82%E8%80%83" title="参考"></a>参考</h2><ul>
+<li><a target="_blank" rel="noopener" href="https://github.com/asg017/sqlite-vec">sqlite-vec</a>: Vector search extension</li>
+<li><a target="_blank" rel="noopener" href="https://www.sqlite.org/fts5.html">FTS5</a>: Full-text search</li>
+<li><a target="_blank" rel="noopener" href="https://platform.openai.com/docs/guides/embeddings">OpenAI Embeddings</a></li>
+<li><a target="_blank" rel="noopener" href="https://ai.google.dev/gemini-api/docs/embeddings">Gemini Embeddings</a></li>
+</ul>
+</section>
+    
+
+    <footer id="post-meta" class="clearfix">
+        <a href="/about/">
+        <img class="avatar" src="/images/avatar.png">
+        <div>
+            <span class="dark">Api Intelligence Daily Life</span>
+            <span>知识库 &amp; 博客</span>
+        </div>
+        </a>
+        <section id="sharing">
+            <a title="Share to Twitter" class="twitter" target="_blank" rel="noopener" href="https://twitter.com/intent/tweet?text=https://arbow.github.io/2026/02/05/digest-2026-02-05-openclaw-memory/ - 文摘：OpenClaw Memory 模块设计文档 @"><span class="icon-twitter">tweet</span></a>
+            <a title="Share to Facebook" class="facebook" href="#" onclick="
+                window.open(
+                  'https://www.facebook.com/sharer/sharer.php?u='+encodeURIComponent(location.href),
+                  'facebook-share-dialog',
+                  'width=626,height=436');
+                return false;"><span class="icon-facebook-sign">Share</span>
+            </a>
+        </section>
+    </footer>
+
+
+  <section id="comment">
+    <button class="btn" id="loadcmts" onclick="cmts.load();">加载评论</button>
+    <div id="gitment"></div>
+    <script src='/js/gitment.browser.js'></script>
+    <link rel="stylesheet" href=''>
+    <script>
+      var cmts={
+        load:function cmts(){
+          var gitment = new Gitment({
+          
+            id: "文摘：OpenClaw Memory 模块设计文档",
+          
+            owner: "",
+            repo: "",
+            oauth: {
+              client_id: "",
+              client_secret: "",
+            },
+          })
+          gitment.render('gitment');
+          var loadcmt = document.getElementById("loadcmts");
+          var imyourfather = loadcmt.parentNode;
+          imyourfather.removeChild(loadcmts)
+        }
+      }
+    </script>
+  </section>
+
+
+	<footer id="footer">
+	<div id="social">
+		<p class="small">©  Arbow| Powered by Hexo & 
+			<a target="_blank" rel="noopener" href="https://github.com/F0r3at/Lights"> Lights</a>
+		</p>
+	</div>
+</footer>
+
+</section>
+
+	<script src="//cdnjs.loli.net/ajax/libs/instantclick/3.0.1/instantclick.min.js" data-no-instant></script>
+	<script data-no-instant>
+		
+		InstantClick.init('mousedown');
+	</script>
+
+
+

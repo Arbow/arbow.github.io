@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=0">
+
+  <meta name="description" content="个人知识库与技术笔记">
+
+
+<link rel="alternate" href="/atom.xml" title="Api Intelligence Daily Life" type="application/atom+xml">
+<meta name="theme-color" content="#a1d0f6">
+<title>博客推荐 - 2026-03-30 - Api Intelligence Daily Life</title>
+<!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+<link rel="shortcut icon" href="/favicon.png">
+
+<link rel="stylesheet" href="/css/style.css">
+
+<nav class="main-nav">
+	
+	    <a href="/">← 主页</a>
+	
+	
+	    <a href="/about/">About</a>
+	
+	    <a href="/archives/">Archives</a>
+	
+	<a class="cta" href="/atom.xml" data-no-instant>订阅</a>
+</nav>
+
+<section id="wrapper">
+    <article class="post">
+    <header>
+        
+            <h1>博客推荐 - 2026-03-30</h1>
+        
+        <h2 class="headline">Mar 30 2026
+        
+        </h2>
+    </header>
+</article>
+<section id="post-body"><h2 id="本日新增"><a href="#本日新增" class="headerlink" title="本日新增"></a>本日新增</h2><h3 id="宝玉"><a href="#宝玉" class="headerlink" title="宝玉"></a>宝玉</h3><h4 id="1-飞书-CLI-开源了，为什么-AI-Agent-时代，大家都在做命令行工具？"><a href="#1-飞书-CLI-开源了，为什么-AI-Agent-时代，大家都在做命令行工具？" class="headerlink" title="1. 飞书 CLI 开源了，为什么 AI Agent 时代，大家都在做命令行工具？"></a>1. 飞书 CLI 开源了，为什么 AI Agent 时代，大家都在做命令行工具？</h4><p><strong>来源</strong>: <a target="_blank" rel="noopener" href="https://baoyu.io/">宝玉</a></p>
+<p><strong>原文链接</strong>: <a target="_blank" rel="noopener" href="https://baoyu.io/blog/2026-03-28/lark-cli-ai-agents">飞书 CLI 开源了，为什么 AI Agent 时代，大家都在做命令行工具？</a></p>
+<p><strong>推荐指数</strong>: ⭐⭐⭐⭐ (4&#x2F;5) - 理解 AI Agent 接口设计的实用指南</p>
+<p><strong>核心概要</strong>:</p>
+<p>飞书开源了 lark-cli，让 AI Agent 可以直接操作飞书完成发消息、查日历、写文档、建多维表格等任务。文章解释了为什么 AI Agent 时代 CLI（命令行界面）重新成为热门接口选择：CLI 是自描述的，AI 只需要运行 <code>--help</code> 就能了解能力、参数和用法，而 API 需要预先获取文档、搞懂认证方式。</p>
+<p>文章还厘清了 CLI、MCP 和技能（Skills）三者的关系：CLI 是实际干活的工具；MCP 是另一种让 AI 操作外部服务的方式，但工具描述常驻上下文窗口；技能则是给 Agent 看的说明书，告诉它什么场景该用什么参数。作者总结了为 AI 设计 CLI 的四大原则：help 文本是最重要的文档、支持 dry-run 作为安全网、错误信息要包含修复指引、返回结构化数据并控制输出量。</p>
+<p><strong>关键洞察</strong>:</p>
+<ol>
+<li><strong>CLI 是自描述的接口</strong>：AI 遇到陌生 CLI，运行 <code>--help</code> 就能知道怎么用，而 API 需要预先获取文档和认证信息</li>
+<li><strong>CLI 比 GUI 更适合 AI</strong>：文本输入输出是 AI 的强项，截图+视觉识别+模拟点击是绕远路</li>
+<li><strong>CLI、MCP、技能三者互补</strong>：CLI 是手，MCP 是另一种手，技能是肌肉记忆；能访问终端用 CLI 更灵活，不能访问终端用 MCP</li>
+<li><strong>dry-run 是 AI 的安全网</strong>：AI 会自己做决策，dry-run 让用户能在执行前预览和确认</li>
+<li><strong>错误信息要可行动</strong>：告诉 AI 哪个参数出问题、具体错在哪、下一步执行什么命令修复</li>
+</ol>
+<p><strong>评价</strong>:</p>
+<ul>
+<li><strong>优点</strong>: 概念厘清清晰，CLI&#x2F;MCP&#x2F;技能的三元关系解释到位；设计原则实用，可直接指导实践；飞书和 Google gws 的对比让观点更有说服力</li>
+<li><strong>不足</strong>: 对权限管理、审计追踪等企业级安全问题的讨论较浅；对 CLI 在 Windows 等非 Unix 环境的适用性未提及</li>
+<li><strong>适用场景</strong>: 适合正在设计 AI Agent 接口的产品经理和开发者，尤其是需要让 Agent 操作现有企业系统的场景</li>
+</ul>
+<hr>
+<h4 id="2-Notion-联合创始人-Simon-Last：我从去年夏天起就没写过一行代码了"><a href="#2-Notion-联合创始人-Simon-Last：我从去年夏天起就没写过一行代码了" class="headerlink" title="2. Notion 联合创始人 Simon Last：我从去年夏天起就没写过一行代码了"></a>2. Notion 联合创始人 Simon Last：我从去年夏天起就没写过一行代码了</h4><p><strong>来源</strong>: <a target="_blank" rel="noopener" href="https://baoyu.io/">宝玉</a></p>
+<p><strong>原文链接</strong>: <a target="_blank" rel="noopener" href="https://baoyu.io/blog/from-note-taking-app-to-ai-workspace-the-simon-last-interview">Notion 联合创始人 Simon Last：我从去年夏天起就没写过一行代码了</a></p>
+<p><strong>推荐指数</strong>: ⭐⭐⭐⭐⭐ (5&#x2F;5) - 了解 AI 如何重塑知识工作必读</p>
+<p><strong>核心概要</strong>:</p>
+<p>这篇访谈整理了 Notion 联合创始人 Simon Last 在 No Priors 播客上的分享，讲述了 Notion AI 从 2022 年 GPT-4 初体验到 2026 年 Custom Agent 发布的完整历程。Simon 透露 Notion 的 AI harness（围绕大模型构建的系统层）大约每六个月推倒重写一次，很多公司做了一版就不动是常见错误。</p>
+<p>文章最引人注目的部分是 Simon 个人的工作方式转变：他从 2025 年夏天起不再手写代码，而是成为”Agent 管理者”。他的个人纪录是一个编码 Agent 连续运行 13 天不停。Simon 还分享了多个实际案例：邮件分拣 Agent 自动归档 95% 不需要看的邮件、反馈路由 Agent 将 Slack 反馈自动路由到正确团队、Custom Agent 可以在后台自主运行并按计划执行任务。</p>
+<p>Notion 的使命也发生了根本转变：从”为人类创造最好的直接做事的工具”变成”为人类创造最好的管理 Agent 来替你做事的工具”。Simon 认为编码 Agent 就是 AGI 的内核，代码是表达确定性逻辑的最好原语。</p>
+<p><strong>关键洞察</strong>:</p>
+<ol>
+<li><strong>AI harness 必须持续重写</strong>：模型和技术进步太快，系统必须紧贴当前状态设计，做完一版就不动是常见错误</li>
+<li><strong>编码 Agent 改变一切</strong>：用得好产出比人写的更健壮，用得差产出全是垃圾；关键是验证循环的设计，不是”凭感觉编程”</li>
+<li><strong>100 倍工程师是真的</strong>：会用工具的人产出上限极大提高，最低门槛没变，但最高门槛极大地提高了</li>
+<li><strong>为 Agent 重新设计 API</strong>：Notion 为 Agent 设计了 Markdown 方言（页面）和 SQLite 语法（数据库），因为原有 JSON 格式对 Agent 太冗余</li>
+<li><strong>从做事到管理 Agent</strong>：Notion 的使命转变预示了知识工作的未来——人负责管理 Agent，Agent 负责执行</li>
+</ol>
+<p><strong>评价</strong>:</p>
+<ul>
+<li><strong>优点</strong>: 一手访谈信息丰富，Simon 的多个实际案例（13 天 Agent、邮件分拣、反馈路由）非常具体；对 AI harness 重写周期的坦诚分享难得；Notion 使命转变的总结有启发性</li>
+<li><strong>不足</strong>: 对 Custom Agent 自主运行的安全风险（prompt injection）讨论较少；对”模型界的瑞士”定位在模型厂商也想做平台的时代能否维持，分析不够深入</li>
+<li><strong>适用场景</strong>: 适合所有知识工作者了解 AI 如何重塑工作方式，尤其是产品经理、团队负责人和关注 AI Agent 落地的技术决策者</li>
+</ul>
+<hr>
+<h2 id="说明"><a href="#说明" class="headerlink" title="说明"></a>说明</h2><ul>
+<li>本推荐汇总基于已配置的博客源自动生成</li>
+<li>包含内容摘要、关键洞察、评价和推荐指数</li>
+<li>推荐来源：<a target="_blank" rel="noopener" href="https://github.com/bakura/arbow.github.io">blog-sources.json</a></li>
+</ul>
+</section>
+    
+
+    <footer id="post-meta" class="clearfix">
+        <a href="/about/">
+        <img class="avatar" src="/images/avatar.png">
+        <div>
+            <span class="dark">Api Intelligence Daily Life</span>
+            <span>知识库 &amp; 博客</span>
+        </div>
+        </a>
+        <section id="sharing">
+            <a title="Share to Twitter" class="twitter" target="_blank" rel="noopener" href="https://twitter.com/intent/tweet?text=https://arbow.github.io/2026/03/30/blog-digest-2026-03-30/ - 博客推荐 - 2026-03-30 @"><span class="icon-twitter">tweet</span></a>
+            <a title="Share to Facebook" class="facebook" href="#" onclick="
+                window.open(
+                  'https://www.facebook.com/sharer/sharer.php?u='+encodeURIComponent(location.href),
+                  'facebook-share-dialog',
+                  'width=626,height=436');
+                return false;"><span class="icon-facebook-sign">Share</span>
+            </a>
+        </section>
+    </footer>
+
+
+  <section id="comment">
+    <button class="btn" id="loadcmts" onclick="cmts.load();">加载评论</button>
+    <div id="gitment"></div>
+    <script src='/js/gitment.browser.js'></script>
+    <link rel="stylesheet" href=''>
+    <script>
+      var cmts={
+        load:function cmts(){
+          var gitment = new Gitment({
+          
+            id: "博客推荐 - 2026-03-30",
+          
+            owner: "",
+            repo: "",
+            oauth: {
+              client_id: "",
+              client_secret: "",
+            },
+          })
+          gitment.render('gitment');
+          var loadcmt = document.getElementById("loadcmts");
+          var imyourfather = loadcmt.parentNode;
+          imyourfather.removeChild(loadcmts)
+        }
+      }
+    </script>
+  </section>
+
+
+	<footer id="footer">
+	<div id="social">
+		<p class="small">©  Arbow| Powered by Hexo & 
+			<a target="_blank" rel="noopener" href="https://github.com/F0r3at/Lights"> Lights</a>
+		</p>
+	</div>
+</footer>
+
+</section>
+
+	<script src="//cdnjs.loli.net/ajax/libs/instantclick/3.0.1/instantclick.min.js" data-no-instant></script>
+	<script data-no-instant>
+		
+		InstantClick.init('mousedown');
+	</script>
+
+
+

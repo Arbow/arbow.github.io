@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=0">
+
+  <meta name="description" content="个人知识库与技术笔记">
+
+
+<link rel="alternate" href="/atom.xml" title="Api Intelligence Daily Life" type="application/atom+xml">
+<meta name="theme-color" content="#a1d0f6">
+<title>文摘：浅评林俊旸的 Agentic Thinking 一文 - Api Intelligence Daily Life</title>
+<!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+<link rel="shortcut icon" href="/favicon.png">
+
+<link rel="stylesheet" href="/css/style.css">
+
+<nav class="main-nav">
+	
+	    <a href="/">← 主页</a>
+	
+	
+	    <a href="/about/">About</a>
+	
+	    <a href="/archives/">Archives</a>
+	
+	<a class="cta" href="/atom.xml" data-no-instant>订阅</a>
+</nav>
+
+<section id="wrapper">
+    <article class="post">
+    <header>
+        
+            <h1>文摘：浅评林俊旸的 Agentic Thinking 一文</h1>
+        
+        <h2 class="headline">Mar 28 2026
+        
+            
+            <a href="/categories/文摘/#文摘">文摘</a>
+        
+        </h2>
+    </header>
+</article>
+<section id="post-body"><blockquote>
+<p>转载说明：本文为转载内容，未做评论性改写，仅做排版整理以便存档阅读。</p>
+<p>原文地址：<a target="_blank" rel="noopener" href="https://mp.weixin.qq.com/s/U_FXuSlwF5O2FlT4g5h2yw">https://mp.weixin.qq.com/s/U_FXuSlwF5O2FlT4g5h2yw</a></p>
+<p>原作者：孔某人的低维认知</p>
+</blockquote>
+<p>本次又到了读者喜闻乐见的吐槽环节，这次是吐槽一下 林俊旸 在 X上发的 《From “Reasoning” Thinking to “Agentic” Thinking》一文。</p>
+<p><a target="_blank" rel="noopener" href="https://x.com/JustinLin610/status/2037116325210829168">https://x.com/JustinLin610/status/2037116325210829168</a></p>
+<p>这文看完的感觉就是，好像来自于1年前，大概2025年3月左右。要说放在当时有什么新东西的话，应该就是能看出作者确实实践过Agentic RL post-train，踩过一些坑，但也仅此而已了。这些问题差不多在年前社区都能预判到。所以这文章的整体感觉是：就这？</p>
+<p>Agentic RL post train是简单RLVR post train的一个自然的延伸，在reasoning过程中调用tool其实也不是什么难以想到的想法。但作为2026年3月的特意发文，除了强调这些Agentic RL是重要的，还有Agentic RL训练要面向于应用场景，这观点都已经让我感觉过于老生常谈以至于我现在都懒得写。Agentic RL的训练过程的效率问题也不是什么大家无法预判的问题（当然解决它很复杂），要说有料的话，都不如去看看我12月的RLVR post train系列文，说不定还更有料一些。而且要知道我可不是模型厂的人，实际真的NB的模型层的人，应该会有更多思考和不那么显然的判断。</p>
+<p>当然我也不确定林俊旸是不是其实知道很多，但受限于阿里的保密协议限制不能讲。但无论如何，现在还拿出这样的一篇文章来我是觉得是有些看不下去的，如果要做成模型层“基础”科普系列中的第一篇的话，可能还可以。</p>
+<p>让我专门写这篇文章的原因是，我看完他这篇文章之后感觉浪费了看它的时间。而且估计我不写这个吐槽的话，后续还会有人把这个文章转给我来看。我原本是相信林俊旸的品味的，但我现在得考虑下调一些对他的预判。</p>
+<p>（RLVR post-train和 RFT在本质上很接近，最主要差异是规模不同，所以本文就不特意区分了）</p>
+<p>&#x3D;&#x3D;&#x3D;</p>
+<p>我的吐槽就到此为止了，作为证明，我列举一下我过去对于相关话题的讨论文：</p>
+<p>Agentic RL直接相关的：</p>
+<p>进一步理解RFT范式 （2025.3.20，RFT扩展到Agent场景，模型输出从线性token流变为包含工具调用的程序流）</p>
+<p>2025年12月的RLVR系列：</p>
+<p>漫谈LLM RL post-train（1）模型没有被训练去泛化 （2025.12.4）</p>
+<p>漫谈LLM RL post-train（2）Coding Agent （2025.12.9）</p>
+<p>漫谈LLM RL post-train（3）GUI Agent模型 （2025.12.12）</p>
+<p>转载内容：</p>
+<p>OpenAI Build Hour: Agent RFT 中文全文 （2025.11.21）</p>
+<p>Manus季逸超访谈解读(5)Agent需要的模型能力 （2026.1.10，季逸超提到：post-train对齐仍偏Chatbot，Agent需要tool integrated reasoning）</p>
+<p>其他相关的：</p>
+<p>谈谈我眼中的模型即产品（2025.3.30，RFT时代模型在post-training就被训练使用工具，知道工具存在和使用方式）</p>
+<p>谈目前To C的GUI Agent类产品 （2025.3.31，VLM未进入推理时代，Agent数据需在post-training阶段加入）</p>
+<p>什么时候拆workflow什么时候指望模型</p>
+<p>2025.9 回顾过去1年的LLM圈进展 与 展望 （2025.9.14，Reward和仿真环境构建的重视，Agent泛化依赖多领域RL投入）</p>
+<p>推理模型并非RL泛化的成功案例，而是Meta-RL的成功案例 （2025.12.19，为什么LLM上的RL post train有效但之前的RL似乎不太成功&#x2F;泛化）</p>
+<p>林俊旸原文的中文翻译<br>从”推理式”思考到”智能体式”思考</p>
+<p>原文：<a target="_blank" rel="noopener" href="https://x.com/JustinLin610/status/2037116325210829168">https://x.com/JustinLin610/status/2037116325210829168</a></p>
+<p>Junyang Lin（林俊旸）@JustinLin610</p>
+<p>过去两年重塑了我们评估模型的方式以及我们对模型的期望。OpenAI的o1表明，”思考”可以成为一种一等能力——一种你可以专门训练并向用户开放的能力。DeepSeek-R1证明了推理式的后训练（post-training）可以在原始实验室之外被复现和扩展。OpenAI将o1描述为一个通过强化学习训练来”先思考再回答”的模型。DeepSeek则将R1定位为一个与o1竞争的开源推理模型。</p>
+<p>那个阶段很重要。但2025年上半年主要围绕的是推理式思考（reasoning thinking）：如何让模型在推理时消耗更多计算，如何用更强的奖励信号来训练它们，如何暴露或控制额外的推理力度。现在的问题是接下来会发生什么。我认为答案是智能体式思考（agentic thinking）：为了行动而思考，在与环境交互的过程中思考，并根据来自外部世界的反馈持续更新计划。</p>
+<ol>
+<li>o1和R1的崛起真正教会了我们什么</li>
+</ol>
+<p>第一波推理模型教会我们：如果我们想在语言模型中扩展强化学习，我们需要确定性的、稳定的、可扩展的反馈信号。数学、代码、逻辑以及其他可验证领域成为核心，因为这些场景中的奖励信号远强于通用的偏好监督。它们让RL能够针对正确性而非仅仅是合理性进行优化。基础设施变得至关重要。</p>
+<p>一旦模型被训练为沿着更长的轨迹进行推理，RL就不再是监督微调之上的轻量附加组件，而是变成了一个系统工程问题。你需要大规模的rollout、高吞吐量的验证、稳定的策略更新和高效的采样。推理模型的涌现既是一个建模故事，也是一个基础设施故事。OpenAI将o1描述为用RL训练的推理路线，DeepSeek R1随后强化了这一方向，展示了基于推理的RL需要多少专门的算法和基础设施工作。第一个重大转变是：从扩展预训练（scaling pretraining）到扩展面向推理的后训练（scaling post-training for reasoning）。</p>
+<ol start="2">
+<li>真正的问题从来不只是”融合思考和指令模式”</li>
+</ol>
+<p>2025年初，我们Qwen团队中的很多人心中有一幅雄心勃勃的蓝图。理想的系统将统一思考模式和指令模式。它将支持可调节的推理力度，类似于低&#x2F;中&#x2F;高推理设置。更好的是，它能从prompt和上下文中自动推断出合适的推理量，使模型可以决定何时立即回答、何时多想一会儿、何时在真正困难的问题上投入大量计算。</p>
+<p>从概念上看，这是正确的方向。Qwen3是最清晰的公开尝试之一。它引入了”混合思考模式”，在同一个模型家族中支持思考和非思考行为，强调可控的思考预算，并描述了一个四阶段的后训练流水线，明确包含了在长CoT冷启动和推理RL之后的”思考模式融合”阶段。</p>
+<p>但融合说起来容易，做好很难。难点在于数据。当人们讨论融合思考和指令模式时，往往首先想到的是模型侧的兼容性：一个checkpoint能否同时支持两种模式，一个聊天模板能否在它们之间切换，一个服务栈能否暴露正确的开关。更深层的问题在于，两种模式的数据分布和行为目标有本质差异。</p>
+<p>在试图平衡模型融合与提升后训练数据质量和多样性时，我们并没有把所有事情都做对。在这个修正过程中，我们也密切关注了用户实际使用思考模式和指令模式的方式。一个强大的指令模型通常因直接、简洁、格式合规、低延迟而受到奖励——用于重写、标注、模板化支持、结构化提取和运营QA等重复性的、高吞吐的企业任务。一个强大的思考模型则因在困难问题上花费更多token、维持连贯的中间结构、探索替代路径、保留足够的内部计算以有意义地提升最终正确性而受到奖励。</p>
+<p>这两种行为画像相互拉扯。如果融合的数据没有被精心筛选整理，结果通常是两个方向都表现平庸：”思考”行为变得嘈杂、臃肿或不够果断，而”指令”行为变得不够干脆、不够可靠，且比商业用户实际需要的更昂贵。</p>
+<p>在实践中，分离仍然具有吸引力。2025年晚些时候，在Qwen3最初的混合框架之后，2507版本发布了独立的Instruct和Thinking更新，包括独立的30B和235B变体。在商业部署中，大量客户仍然希望获得高吞吐、低成本、高度可控的指令行为以用于批量操作。对于这些场景，融合并不是一个明显的收益。将两条线分开使团队能够更专注地解决每种模式各自的数据和训练问题。</p>
+<p>其他实验室选择了相反的路线。Anthropic公开主张集成模型哲学：Claude 3.7 Sonnet被作为一个混合推理模型推出，用户可以选择普通回复或扩展思考，API用户可以设置思考预算。Anthropic明确表示，他们认为推理应该是一种集成能力，而不是一个单独的模型。GLM-4.5也公开将自己定位为同时具备思考和非思考模式的混合推理模型，统一了推理、编程和智能体能力；DeepSeek后来也朝着类似的方向发展，V3.1推出了”Think &amp; Non-Think”混合推理。</p>
+<p>关键问题在于这种融合是否是有机的。如果思考和指令仅仅是被放置在同一个checkpoint内，但表现得像两个笨拙拼接的人格，那么产品体验仍然是不自然的。真正成功的融合需要一个平滑的推理力度连续谱。模型应该能够表达多个层次的力度，并且理想情况下能够自适应地在其中选择。GPT风格的力度控制指向这一方向：一种关于计算量的策略（policy over compute），而不是一个二元开关。</p>
+<ol start="3">
+<li>为什么Anthropic的方向是一个有益的纠偏</li>
+</ol>
+<p>Anthropic围绕Claude 3.7和Claude 4的公开表述是克制的。他们强调集成推理、用户可控的思考预算、真实世界任务、编程质量，以及后来在扩展思考过程中使用工具的能力。Claude 3.7被呈现为一个具有可控预算的混合推理模型；Claude 4在此基础上扩展，允许推理与工具使用交错进行，同时Anthropic将编程、长时间运行的任务和智能体工作流作为首要目标。</p>
+<p>产生更长的推理轨迹并不会自动让模型更聪明。在很多情况下，过度的可见推理反而暗示了糟糕的分配。如果模型试图对所有事情都以同样冗长的方式进行推理，它可能是在无法区分优先级、无法压缩信息、或无法采取行动。Anthropic的轨迹暗示了一种更有纪律的视角：思考应该由目标工作负载来塑造。如果目标是编程，那么思考应该帮助代码库导航、规划、分解、错误恢复和工具编排。如果目标是智能体工作流，那么思考应该在长期执行中提升质量，而不是产生华丽的中间文字。</p>
+<p>这种对针对性实用价值的强调指向了更宏大的东西：我们正在从训练模型的时代走向训练智能体的时代。我们在Qwen3博客中明确了这一点，写道”我们正在从一个专注于训练模型的时代过渡到一个以训练智能体为中心的时代”，并将未来的RL进展与长期推理的环境反馈联系起来。智能体是一个能够制定计划、决定何时行动、使用工具、感知环境反馈、修正策略，并在长期范围内持续运作的系统。它由与世界的闭环交互来定义。</p>
+<ol start="4">
+<li>“智能体式思考”的真正含义</li>
+</ol>
+<p>智能体式思考是一个不同的优化目标。推理式思考通常以最终答案之前的内部推敲质量来衡量：模型能否解出定理、写出证明、产生正确的代码、通过基准测试。智能体式思考关注的是模型能否在与环境交互的同时持续取得进展。</p>
+<p>核心问题从”模型能否思考足够长时间？”转变为”模型能否以一种维持有效行动的方式来思考？”智能体式思考必须处理纯推理模型基本可以回避的几件事：</p>
+<ul>
+<li>决定何时停止思考并采取行动</li>
+<li>选择调用哪个工具以及以什么顺序</li>
+<li>整合来自环境的嘈杂或部分观测</li>
+<li>在失败后修正计划</li>
+<li>在多轮对话和多次工具调用之间保持连贯性</li>
+</ul>
+<p>智能体式思考就是一个通过行动来推理的模型。</p>
+<ol start="5">
+<li>为什么智能体式RL基础设施更难</li>
+</ol>
+<p>一旦目标从解决基准测试问题转向解决交互式任务，RL栈就会发生变化。用于经典推理RL的基础设施不再够用。在推理RL中，你通常可以将rollout视为基本自包含的轨迹，配合相对干净的评估器。在智能体式RL中，策略（policy）被嵌入到一个更大的执行套件（harness）中：工具服务器、浏览器、终端、搜索引擎、模拟器、执行沙箱、API层、记忆系统和编排框架。环境不再是一个静态验证器；它是训练系统的一部分。</p>
+<p>这创造了一个新的系统需求：训练和推理必须更清晰地解耦。没有这种解耦，rollout的吞吐量就会崩溃。考虑一个编程智能体，它必须将生成的代码在一个实时测试套件（test harness）上执行：推理侧因等待执行反馈而停滞，训练侧因缺少已完成的轨迹而饥饿，整个流水线的GPU利用率远低于你在经典推理RL中的预期。加上工具延迟、部分可观测性和有状态环境，这些低效被进一步放大。结果是，在你达到目标能力水平之前，实验速度就已经变得缓慢而痛苦。</p>
+<p>环境本身也变成了一等研究工件。在SFT时代，我们执着于数据多样性。在智能体时代，我们应该执着于环境质量：稳定性、真实性、覆盖度、难度、状态多样性、反馈丰富度、抗利用性，以及rollout生成的可扩展性。环境构建已经开始成为一个真正的创业类别，而不是一个附带项目。如果智能体被训练在类生产环境中运作，那么环境就是核心能力栈的一部分。</p>
+<ol start="6">
+<li>下一个前沿是更有用的思考</li>
+</ol>
+<p>我的预期是，智能体式思考将成为思考的主导形式。我认为它最终可能会取代大部分旧的静态独白式推理思考：那些过度冗长的、孤立的内部推理轨迹，试图通过输出越来越多的文字来弥补缺乏交互的不足。即使在非常困难的数学或编程任务上，一个真正先进的系统也应该有权去搜索、模拟、执行、检查、验证和修正。目标是稳健且高效地解决问题。</p>
+<p>训练此类系统的最大挑战是奖励作弊（reward hacking）。一旦模型获得有意义的工具访问权限，奖励作弊就变得更加危险。一个有搜索能力的模型可能在RL期间学会直接查找答案。一个编程智能体可能利用仓库中的未来信息、滥用日志，或发现使任务失效的捷径。一个存在隐藏泄露的环境可以让策略表现得如同超人，但实际上是在训练它作弊。这就是智能体时代比推理时代更加微妙的地方。更好的工具使模型更有用，但也扩大了虚假优化的攻击面。我们应该预期下一批严重的研究瓶颈将来自环境设计、评估器鲁棒性、反作弊协议，以及策略与世界之间更有原则的接口。不过，方向是明确的。工具赋能的思考就是比孤立的思考更有用，也有更大的机会提升真实生产力。</p>
+<p>智能体式思考还意味着套件工程（harness engineering）。核心智能将越来越多地来自多个智能体的组织方式：一个负责规划和分配工作的编排者，充当领域专家的专业智能体，以及执行更窄任务的子智能体——同时帮助控制上下文、避免污染，并维持不同推理层次之间的分离。未来是从训练模型到训练智能体，再从训练智能体到训练系统的转变。</p>
+<p>结论</p>
+<p>推理浪潮的第一阶段确立了一件重要的事：当反馈信号可靠且基础设施能支撑时，在语言模型之上的RL可以产生本质上更强的认知能力。</p>
+<p>更深层的转变是从推理式思考到智能体式思考：从思考得更长到为了行动而思考。训练的核心对象已经转移。它是模型加环境的系统——或者更具体地说，是智能体及其周围的执行套件（harness）。这改变了哪些研究工件最为重要：模型架构和训练数据，当然，但还有环境设计、rollout基础设施、评估器鲁棒性，以及多个智能体相互协调的接口。这改变了”好的思考”的含义：在真实世界约束下最有助于维持行动的推理轨迹，而不是最长或最显眼的那个。</p>
+<p>这也改变了竞争优势的来源。在推理时代，优势来自更好的RL算法、更强的反馈信号和更可扩展的训练流水线。在智能体时代，优势将来自更好的环境、更紧密的训练-服务集成、更强的套件工程（harness engineering），以及在模型的决策与这些决策产生的后果之间闭合回路的能力。</p>
+<p>交流与合作</p>
+<p>我目前正在看机会，详情请见 年底的逆向招聘尝试 2025.11</p>
+<p>如果希望和我交流讨论，或参与相关的讨论群，或者建立合作，请加微信，联系方式请点击 -&gt; 专栏简介 及 联系方式 2024。</p>
+<p>本文于2026.3.26 首发于微信公众号。</p>
+<hr>
+<p>原文链接：<a target="_blank" rel="noopener" href="https://mp.weixin.qq.com/s/U_FXuSlwF5O2FlT4g5h2yw">https://mp.weixin.qq.com/s/U_FXuSlwF5O2FlT4g5h2yw</a></p>
+</section>
+    
+
+    <footer id="post-meta" class="clearfix">
+        <a href="/about/">
+        <img class="avatar" src="/images/avatar.png">
+        <div>
+            <span class="dark">Api Intelligence Daily Life</span>
+            <span>知识库 &amp; 博客</span>
+        </div>
+        </a>
+        <section id="sharing">
+            <a title="Share to Twitter" class="twitter" target="_blank" rel="noopener" href="https://twitter.com/intent/tweet?text=https://arbow.github.io/2026/03/28/digest-2026-03-28-agentic-thinking-review/ - 文摘：浅评林俊旸的 Agentic Thinking 一文 @"><span class="icon-twitter">tweet</span></a>
+            <a title="Share to Facebook" class="facebook" href="#" onclick="
+                window.open(
+                  'https://www.facebook.com/sharer/sharer.php?u='+encodeURIComponent(location.href),
+                  'facebook-share-dialog',
+                  'width=626,height=436');
+                return false;"><span class="icon-facebook-sign">Share</span>
+            </a>
+        </section>
+    </footer>
+
+
+  <section id="comment">
+    <button class="btn" id="loadcmts" onclick="cmts.load();">加载评论</button>
+    <div id="gitment"></div>
+    <script src='/js/gitment.browser.js'></script>
+    <link rel="stylesheet" href=''>
+    <script>
+      var cmts={
+        load:function cmts(){
+          var gitment = new Gitment({
+          
+            id: "文摘：浅评林俊旸的 Agentic Thinking 一文",
+          
+            owner: "",
+            repo: "",
+            oauth: {
+              client_id: "",
+              client_secret: "",
+            },
+          })
+          gitment.render('gitment');
+          var loadcmt = document.getElementById("loadcmts");
+          var imyourfather = loadcmt.parentNode;
+          imyourfather.removeChild(loadcmts)
+        }
+      }
+    </script>
+  </section>
+
+
+	<footer id="footer">
+	<div id="social">
+		<p class="small">©  Arbow| Powered by Hexo & 
+			<a target="_blank" rel="noopener" href="https://github.com/F0r3at/Lights"> Lights</a>
+		</p>
+	</div>
+</footer>
+
+</section>
+
+	<script src="//cdnjs.loli.net/ajax/libs/instantclick/3.0.1/instantclick.min.js" data-no-instant></script>
+	<script data-no-instant>
+		
+		InstantClick.init('mousedown');
+	</script>
+
+
+

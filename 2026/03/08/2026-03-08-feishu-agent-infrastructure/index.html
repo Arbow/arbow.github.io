@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=0">
+
+  <meta name="description" content="个人知识库与技术笔记">
+
+
+<link rel="alternate" href="/atom.xml" title="Api Intelligence Daily Life" type="application/atom+xml">
+<meta name="theme-color" content="#a1d0f6">
+<title>飞书正在成为智能体时代的默认入口 - Api Intelligence Daily Life</title>
+<!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+<link rel="shortcut icon" href="/favicon.png">
+
+<link rel="stylesheet" href="/css/style.css">
+
+<nav class="main-nav">
+	
+	    <a href="/">← 主页</a>
+	
+	
+	    <a href="/about/">About</a>
+	
+	    <a href="/archives/">Archives</a>
+	
+	<a class="cta" href="/atom.xml" data-no-instant>订阅</a>
+</nav>
+
+<section id="wrapper">
+    <article class="post">
+    <header>
+        
+            <h1>飞书正在成为智能体时代的默认入口</h1>
+        
+        <h2 class="headline">Mar 08 2026
+        
+            
+            <a href="/categories/思考/#思考">思考</a>
+        
+        </h2>
+    </header>
+</article>
+<section id="post-body"><p>今天读到一篇很有意思的文章《苹果和飞书，快成新时代的Agent基建了》，结合自己最近的观察和体验，想聊聊飞书在智能体时代的战略卡位。</p>
+<h2 id="从-OpenClaw-说起"><a href="#从-OpenClaw-说起" class="headerlink" title="从 OpenClaw 说起"></a>从 OpenClaw 说起</h2><p>两个月前，OpenClaw 爆火。这个事件意外地带火了两家公司：苹果和飞书。</p>
+<p><strong>苹果</strong>的角色转变很有意思：原本被认为在 AI 时代掉队，结果 Mac 凭借 Unix 系统、统一内存架构、低功耗 7×24 小时运行的特性，突然成为 Agent 最适合运行的平台。一台补贴后不到四千块的 Mac mini，就是一个”永不下班的 Agent 节点”。</p>
+<p>但今天的重点是<strong>飞书</strong>。</p>
+<h2 id="飞书为什么能成为入口？"><a href="#飞书为什么能成为入口？" class="headerlink" title="飞书为什么能成为入口？"></a>飞书为什么能成为入口？</h2><p>文章作者的观点是：飞书作为一个办公 IM 产品，恰好拥有 Agent 最需要的东西——<strong>上下文</strong>。</p>
+<ul>
+<li>文档、表格、日历、审批、知识库、多维表格</li>
+<li>全是云端结构化数据</li>
+<li>全在一个体系里</li>
+<li>全有 API</li>
+<li>有非常完备的机器人体系</li>
+</ul>
+<p>没有这些上下文，再聪明的 Agent 也只是”空有智商但对你的世界一无所知的聪明废物”。</p>
+<h2 id="但这不是全部"><a href="#但这不是全部" class="headerlink" title="但这不是全部"></a>但这不是全部</h2><p>和 ChatGPT 讨论后，我发现飞书的优势不只是”有数据”，而是正在形成<strong>生态飞轮</strong>：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">官方支持更强 → 接入成本更低 → 社区教程更多 </span><br><span class="line">→ 新产品默认先接飞书 → 飞书上的可用 Agent 更多 </span><br><span class="line">→ 用户更愿意把飞书当默认入口 → 官方继续加码</span><br></pre></td></tr></table></figure>
+
+<h3 id="官方层面的动作"><a href="#官方层面的动作" class="headerlink" title="官方层面的动作"></a>官方层面的动作</h3><p>飞书对 OpenClaw 的支持不只是”有人做了个第三方插件”，而是<strong>官方直接上线”飞书 OpenClaw 官方插件”</strong>，主打让 OpenClaw 直接读取飞书文档、群聊上下文和日历。这是从”会对话”推进到”能在飞书里干活”。</p>
+<p>更重要的是，飞书通过这次 OpenClaw 接入，<strong>补齐了智能体接入的短板</strong>：</p>
+<ul>
+<li>API 不足 → 已完善</li>
+<li>额度太少 → 已优化</li>
+<li>接入文档不完善 → 官方 + 社区共同完善</li>
+</ul>
+<h3 id="社区层面的积累"><a href="#社区层面的积累" class="headerlink" title="社区层面的积累"></a>社区层面的积累</h3><p>GitHub 上已经有大量飞书接入的仓库和踩坑指南，涵盖：</p>
+<ul>
+<li>权限怎么开</li>
+<li>长连接事件怎么配</li>
+<li>哪些 API 会吃月度配额</li>
+<li>怎么规避健康检查带来的额度消耗</li>
+</ul>
+<p>这种”踩坑知识”一旦形成，后来的 Agent 产品接入飞书就会越来越顺。</p>
+<h2 id="入口之争的本质"><a href="#入口之争的本质" class="headerlink" title="入口之争的本质"></a>入口之争的本质</h2><p>飞书争的不是”谁家的 Agent 最强”，而是**”无论谁家的 Agent 变强，最后都要先进飞书”**。</p>
+<p>这是入口价值的核心。</p>
+<p>未来无论是大厂还是开源做出更先进的智能体，都会更倾向优先接入飞书。不是因为飞书”最好”，而是因为飞书最像一个**”有现成需求密度的基础设施”**：</p>
+<ol>
+<li>接进去后能不能马上有真实使用场景？✅</li>
+<li>用户是不是已经每天在线？✅</li>
+<li>Agent 能不能立刻调用文档、消息、表格、审批、日程？✅</li>
+<li>社区里有没有现成教程和案例可复用？✅</li>
+</ol>
+<h2 id="对比钉钉"><a href="#对比钉钉" class="headerlink" title="对比钉钉"></a>对比钉钉</h2><p>钉钉也在做同样的事情（AI 助理、智能文档、智能应用），但从最近这波 OpenClaw 的热度和可见度来看，飞书在”形成社区共识”这件事上更占上风。</p>
+<p>关键差异在于：飞书更像是**”官方推动 + 开发者社区 + 场景包装”三者同时发力**。</p>
+<h2 id="局限与边界"><a href="#局限与边界" class="headerlink" title="局限与边界"></a>局限与边界</h2><p>需要承认的是，飞书的强势主要集中在<strong>企业内部协同&#x2F;业务流程</strong>场景：</p>
+<table>
+<thead>
+<tr>
+<th>场景</th>
+<th>优势平台</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>企业内部协同</td>
+<td>飞书 ✅</td>
+</tr>
+<tr>
+<td>内部知识调用</td>
+<td>飞书 ✅</td>
+</tr>
+<tr>
+<td>流程触发&#x2F;任务执行</td>
+<td>飞书 ✅</td>
+</tr>
+<tr>
+<td>面向客户的私域触达</td>
+<td>企业微信</td>
+</tr>
+<tr>
+<td>大众内容分发</td>
+<td>微信生态</td>
+</tr>
+<tr>
+<td>消费端轻量入口</td>
+<td>腾讯元器、扣子、钉钉</td>
+</tr>
+</tbody></table>
+<p>所以更准确的说法是：<strong>飞书正在成为”中国企业场景下智能体的首选入口之一”</strong>，甚至在内部协同与业务执行类场景里，已经非常接近”默认入口”了。</p>
+<h2 id="结语"><a href="#结语" class="headerlink" title="结语"></a>结语</h2><p>飞书这波的意义，不是接入了某个智能体产品，而是开始形成**”新智能体优先适配飞书”的生态惯性**。</p>
+<p>谁家模型更强可能会变，但入口一旦占住，就很难再丢。</p>
+<hr>
+<p><em>参考文章：</em></p>
+<ul>
+<li><a target="_blank" rel="noopener" href="https://mp.weixin.qq.com/s/1KRk1ahr1t5w_d_WkiKH7A">苹果和飞书，快成新时代的Agent基建了</a></li>
+</ul>
+</section>
+    
+
+    <footer id="post-meta" class="clearfix">
+        <a href="/about/">
+        <img class="avatar" src="/images/avatar.png">
+        <div>
+            <span class="dark">Api Intelligence Daily Life</span>
+            <span>知识库 &amp; 博客</span>
+        </div>
+        </a>
+        <section id="sharing">
+            <a title="Share to Twitter" class="twitter" target="_blank" rel="noopener" href="https://twitter.com/intent/tweet?text=https://arbow.github.io/2026/03/08/2026-03-08-feishu-agent-infrastructure/ - 飞书正在成为智能体时代的默认入口 @"><span class="icon-twitter">tweet</span></a>
+            <a title="Share to Facebook" class="facebook" href="#" onclick="
+                window.open(
+                  'https://www.facebook.com/sharer/sharer.php?u='+encodeURIComponent(location.href),
+                  'facebook-share-dialog',
+                  'width=626,height=436');
+                return false;"><span class="icon-facebook-sign">Share</span>
+            </a>
+        </section>
+    </footer>
+
+
+  <section id="comment">
+    <button class="btn" id="loadcmts" onclick="cmts.load();">加载评论</button>
+    <div id="gitment"></div>
+    <script src='/js/gitment.browser.js'></script>
+    <link rel="stylesheet" href=''>
+    <script>
+      var cmts={
+        load:function cmts(){
+          var gitment = new Gitment({
+          
+            id: "飞书正在成为智能体时代的默认入口",
+          
+            owner: "",
+            repo: "",
+            oauth: {
+              client_id: "",
+              client_secret: "",
+            },
+          })
+          gitment.render('gitment');
+          var loadcmt = document.getElementById("loadcmts");
+          var imyourfather = loadcmt.parentNode;
+          imyourfather.removeChild(loadcmts)
+        }
+      }
+    </script>
+  </section>
+
+
+	<footer id="footer">
+	<div id="social">
+		<p class="small">©  Arbow| Powered by Hexo & 
+			<a target="_blank" rel="noopener" href="https://github.com/F0r3at/Lights"> Lights</a>
+		</p>
+	</div>
+</footer>
+
+</section>
+
+	<script src="//cdnjs.loli.net/ajax/libs/instantclick/3.0.1/instantclick.min.js" data-no-instant></script>
+	<script data-no-instant>
+		
+		InstantClick.init('mousedown');
+	</script>
+
+
+

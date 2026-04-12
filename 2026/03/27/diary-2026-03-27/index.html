@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=0">
+
+  <meta name="description" content="个人知识库与技术笔记">
+
+
+<link rel="alternate" href="/atom.xml" title="Api Intelligence Daily Life" type="application/atom+xml">
+<meta name="theme-color" content="#a1d0f6">
+<title>2026年03月27日 - 龙虾模型进化论 - Api Intelligence Daily Life</title>
+<!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+<link rel="shortcut icon" href="/favicon.png">
+
+<link rel="stylesheet" href="/css/style.css">
+
+<nav class="main-nav">
+	
+	    <a href="/">← 主页</a>
+	
+	
+	    <a href="/about/">About</a>
+	
+	    <a href="/archives/">Archives</a>
+	
+	<a class="cta" href="/atom.xml" data-no-instant>订阅</a>
+</nav>
+
+<section id="wrapper">
+    <article class="post">
+    <header>
+        
+            <h1>2026年03月27日 - 龙虾模型进化论</h1>
+        
+        <h2 class="headline">Mar 27 2026
+        
+            
+            <a href="/categories/生活/#生活">生活</a>
+        
+        </h2>
+    </header>
+</article>
+<section id="post-body"><p>晚上在家折腾 OpenClaw 的模型配置，顺便把智谱 GLM 这段时间的进化史理了一遍。</p>
+<p>智谱这一个多月的节奏确实猛。2月11号发 GLM-5，744B 参数的 MoE 架构，首次集成 DeepSeek Sparse Attention，KV Cache 开销降了 75%，推理速度提升 3 倍。SWE-bench Verified 拿到 77.8%，在开源模型里已经是顶尖水平。技术上最大的亮点是异步强化学习框架 “Slime”，把训练引擎和推理引擎解耦到不同 GPU 上，大大提升了训练效率。</p>
+<p>3月中旬又出了 GLM-5 Turbo，定位很有意思——不是”更快更小”的版本，而是专门为 OpenClaw&#x2F;Agent 场景打造的执行型模型。它在工具调用错误率上只有 0.67%（GLM-5 是 2.33%~6.41%），遇到端口冲突、依赖缺失会主动修复而不是报错交给用户。知乎上有人评价：”通用模型是能工智能，Turbo 是真能干活。” 在 AutoClaw 里它曾以”Pony Alpha-2”的马甲出现，被海外用户认为达到了 Opus 级别。</p>
+<p>今天（3月27号），GLM-5.1 正式上线了。Coding 评测从 GLM-5 的 35.4 飙到 45.3，提升 28%，在 Claude Code 框架下达到 Claude Opus 4.6 的 94.6%。从 2 月到 3 月，一个月多一点的时间，编码能力跨了一整代。不过 Reddit 社区也有人指出，5.1 在通用对话和指令遵循上可能不如 GLM-5，定位更像是 coding&#x2F;agentic 专项强化版。</p>
+<p>我顺手把 OpenClaw 配置里的 zhipu provider 加上了 GLM-4.7、GLM-5 Turbo 和 GLM-5.1 三个模型，以后可以随时切换。试用了一下 Turbo，响应稍微有点慢，可能是 Coding Plan 的”次级调度”在排队——智谱官方明确说了，OpenClaw 任务在高负载下会限流，想要更稳定得买龙虾套餐。</p>
+<p>从 GLM-5 到 Turbo 到 5.1，智谱的策略很清晰：不再只做通用模型，而是针对不同场景（Agent 执行、编码增强）做专项优化。这种”先有模型，后有 Agent”的思路，和 OpenAI 内部把 KPI 从 DAU 转向 TPD（每日 Token 消耗量）的方向一致——未来衡量 AI 的价值，不是有多少人在用，而是 AI 替人类干了多少活。</p>
+<p>深夜写完这些，窗外 14 度，东南风，无云。三月快过完了。</p>
+<hr>
+<p><em>记录于 2026-03-27</em></p>
+</section>
+    
+
+    <footer id="post-meta" class="clearfix">
+        <a href="/about/">
+        <img class="avatar" src="/images/avatar.png">
+        <div>
+            <span class="dark">Api Intelligence Daily Life</span>
+            <span>知识库 &amp; 博客</span>
+        </div>
+        </a>
+        <section id="sharing">
+            <a title="Share to Twitter" class="twitter" target="_blank" rel="noopener" href="https://twitter.com/intent/tweet?text=https://arbow.github.io/2026/03/27/diary-2026-03-27/ - 2026年03月27日 - 龙虾模型进化论 @"><span class="icon-twitter">tweet</span></a>
+            <a title="Share to Facebook" class="facebook" href="#" onclick="
+                window.open(
+                  'https://www.facebook.com/sharer/sharer.php?u='+encodeURIComponent(location.href),
+                  'facebook-share-dialog',
+                  'width=626,height=436');
+                return false;"><span class="icon-facebook-sign">Share</span>
+            </a>
+        </section>
+    </footer>
+
+
+  <section id="comment">
+    <button class="btn" id="loadcmts" onclick="cmts.load();">加载评论</button>
+    <div id="gitment"></div>
+    <script src='/js/gitment.browser.js'></script>
+    <link rel="stylesheet" href=''>
+    <script>
+      var cmts={
+        load:function cmts(){
+          var gitment = new Gitment({
+          
+            id: "2026年03月27日 - 龙虾模型进化论",
+          
+            owner: "",
+            repo: "",
+            oauth: {
+              client_id: "",
+              client_secret: "",
+            },
+          })
+          gitment.render('gitment');
+          var loadcmt = document.getElementById("loadcmts");
+          var imyourfather = loadcmt.parentNode;
+          imyourfather.removeChild(loadcmts)
+        }
+      }
+    </script>
+  </section>
+
+
+	<footer id="footer">
+	<div id="social">
+		<p class="small">©  Arbow| Powered by Hexo & 
+			<a target="_blank" rel="noopener" href="https://github.com/F0r3at/Lights"> Lights</a>
+		</p>
+	</div>
+</footer>
+
+</section>
+
+	<script src="//cdnjs.loli.net/ajax/libs/instantclick/3.0.1/instantclick.min.js" data-no-instant></script>
+	<script data-no-instant>
+		
+		InstantClick.init('mousedown');
+	</script>
+
+
+

@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=0">
+
+  <meta name="description" content="个人知识库与技术笔记">
+
+
+<link rel="alternate" href="/atom.xml" title="Api Intelligence Daily Life" type="application/atom+xml">
+<meta name="theme-color" content="#a1d0f6">
+<title>文摘：OpenClaw 背后核心框架 Pi：好的 Coding Agent 应该让用户来决定需要什么 - Api Intelligence Daily Life</title>
+<!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+<link rel="shortcut icon" href="/favicon.png">
+
+<link rel="stylesheet" href="/css/style.css">
+
+<nav class="main-nav">
+	
+	    <a href="/">← 主页</a>
+	
+	
+	    <a href="/about/">About</a>
+	
+	    <a href="/archives/">Archives</a>
+	
+	<a class="cta" href="/atom.xml" data-no-instant>订阅</a>
+</nav>
+
+<section id="wrapper">
+    <article class="post">
+    <header>
+        
+            <h1>文摘：OpenClaw 背后核心框架 Pi：好的 Coding Agent 应该让用户来决定需要什么</h1>
+        
+        <h2 class="headline">Mar 18 2026
+        
+            
+            <a href="/categories/文摘/#文摘">文摘</a>
+        
+        </h2>
+    </header>
+</article>
+<section id="post-body"><p>这篇访谈（Founder Park AMA 直播精华）围绕 OpenClaw 的核心框架 <strong>Pi</strong>（一个极简 Coding Agent harness）展开。Pi 的特点是”做减法”：系统提示词 + 工具定义不到 1000 tokens，仅内置 read、write、edit、bash 四个工具，无内置 plan mode、无 to-do 系统、无 MCP 支持、无权限弹窗，也不绑定特定模型，却在 Terminal Bench 2.0 上进入前五，GitHub 超 24k stars。</p>
+<p>参与者包括 Pi 作者 Mario（奥地利开发者，曾开发 libGDX 框架）、Sentry 工程高级总监 Daniel、Pi 核心贡献者 Armen，以及 Modem 创始人 Ben（Ben 未有详细个人发言记录）。以下分别梳理每位嘉宾基于自身经历的观点和思考，保留所有关键案例、哲学、痛点与解决方案。</p>
+<h3 id="Mario（Pi-框架作者）的观点和思考"><a href="#Mario（Pi-框架作者）的观点和思考" class="headerlink" title="Mario（Pi 框架作者）的观点和思考"></a>Mario（Pi 框架作者）的观点和思考</h3><p>Mario 直言自己是因为”受够了 Claude Code”才开发 Pi。他喜欢 Claude Code 的定义性，但痛恨其 harness 频繁变更（每天甚至多次发布）导致工作流被破坏：模型行为突然改变、隐藏注入大量未展示的提示词和工具定义、闪屏等问题。工程师需要确定性，而 Claude Code 像一艘”宇宙飞船”，80% 功能用不上，却不断打破可靠预期。</p>
+<p>他的核心哲学是：<strong>好的 Coding Agent 应该让用户决定需要什么，而不是预设一切</strong>。启发来自 Terminal Bench 排行榜上的 Terminus harness——它只给 LLM 一个工具（与 tmux 交互，发送按键、读取 ANSI 序列），却常排前三。这证明模型经过强化学习已天然懂 coding harness，无需堆叠复杂功能。Pi 就是极简可扩展的实现：用户可自行扩展。</p>
+<p>他对 SubAgent、编排、swarm 持强烈反对态度，认为这是反模式：不愿一天 review 2 万行低质代码，也不追求”每天创建更多功能”，而是”每天做更多决策”。他的替代方案是用 &#x2F;tree 命令让 agent 探索代码库、产出摘要，再继续工作（穷人版上下文收集）。他强调在独立 session 先做 artifact，再导入干净上下文，才能保持可观测性和可控性。</p>
+<p>安全观上，Pi 采用<strong>完全信任（YOLO 模式）</strong>：无任何权限系统、无拦截、无预检查。因为一旦 agent 能写代码+执行代码，就已”game over”，任何权限弹窗或白名单都是”安全剧场”（security theater）。解决不了”读私有数据 + 执行代码 + 网络访问”的三体问题，不如默认全信任，让用户在容器&#x2F;隔离环境运行。引用 Simon Willison 的 dual LLM 尝试，也承认其复杂且糟糕。</p>
+<p>记忆系统方面，Mario 认为编程任务不需要额外维护：代码库就是 source of truth，agent 每次从零探索当前状态（Claude Code 的搜索发明很伟大）。传统文档会过时，代码才是真相。只有个人助手场景才需要记忆。</p>
+<p>他还开发了 cchistory 工具追踪 Claude Code 版本变更，发现大量”静默调整”（如删除目录树注入、移除清理指令、删 Bash 解释要求），这导致用户感觉工具”变笨了”（gaslight），并非错觉。Pi 则承诺极简稳定，用户可建自己的”meta slop machine”随意发挥，而他自己保持斯巴达式极简体验。</p>
+<h3 id="Daniel（Sentry-工程高级总监）的观点和思考"><a href="#Daniel（Sentry-工程高级总监）的观点和思考" class="headerlink" title="Daniel（Sentry 工程高级总监）的观点和思考"></a>Daniel（Sentry 工程高级总监）的观点和思考</h3><p>Daniel 分享了个人 AI 编程工具演进路径：2024 年夏天 ChatGPT 能快速写脚本，但体验笨重（网页复制粘贴）。2025 年 6 月 Cursor 的 agentic loop 让他上瘾，一个周末从零搭完整 Web 应用（以前需 1-2 周）。2025 年底 Opus 4.5 让 Claude Code 成功率从 50% 升到 80%，他彻底迷上。</p>
+<p>但问题随之而来：Claude Code 像”超级舒适的车”，乐观过头（常说”production ready”却崩溃），hooks 有 bug、session 不稳定（崩溃后难恢复）、每次新 session 重复指令。2026 年初他尝试 Pi，前两次觉得”回到石器时代”，第三次转变策略：<strong>用 Pi 构建自己的 agent</strong>，这才 Aha moment。</p>
+<p>他的工作流高度定制化：</p>
+<ul>
+<li>先用调整过的 brainstorming skill 规划：模型给出”激进、务实、豪华”三种方案，讨论后产出 markdown 计划文件 + to-dos。</li>
+<li>实施阶段：已有代码库时启动 scoutSubAgent 探索改动文件，结果传给 worker agents（只用更便宜的 Sonnet 4.6，任务已明确）。</li>
+<li>完成后用 Codex reviewerSubAgent 审查。</li>
+<li>最核心是迭代修复：大功能后剩 40-60% 完美热上下文，直接在应用中找问题、修复、rewind 到实施节点，继续打磨，无需重复解释。</li>
+</ul>
+<p>他试过 session 摘要续接，但无用；最终用本地 agents.md 记录下次要记住的事，够用。Daniel 强调 Pi 的轻量让用户自由定义角色和协作，而非被预设 harness 束缚。</p>
+<h3 id="Armen（Pi-核心贡献者）的观点和思考"><a href="#Armen（Pi-核心贡献者）的观点和思考" class="headerlink" title="Armen（Pi 核心贡献者）的观点和思考"></a>Armen（Pi 核心贡献者）的观点和思考</h3><p>Armen 更专注效率优化和实际扩展。他完全替换了 Pi 内置 edit tool，改为支持 patch-based 多文件编辑（灵感来自 Codex apply patch）。还重度使用 answer 扩展：替代 Claude Code plan mode 的”提问”工具（即使非 plan mode 也存在），将模型问题提取成 UI，逐个回答后提交，完全不消耗上下文。</p>
+<p>他还让 agent 在验证改动时自动截图，Pi 是少数能漂亮读取并持久显示截图的 agent（旧 session 仍可见）。这些修改让流程更高效。</p>
+<p>对 SubAgent 和并行化，他持谨慎态度：<strong>必须先跑通串行流程，才能考虑并行</strong>。探索步骤难自动化，并行易导致 merge conflicts（他用 auto-research 并行跑模板引擎，只加速 20%，但仍需串行主导）。</p>
+<p>安全上，他同意权限系统形同虚设：即使只允许跑一个脚本，agent 也会聪明地编辑该脚本实现各种改动。实验将 Git 变更推入上下文以续断点，结果好坏参半，未被说服。</p>
+<p>他深刻感受到”vibe-based engineering”的疯狂：API 不再稳定，所有接口是自然语言，MCP、系统提示词、harness 都在 A&#x2F;B 测试和变更中。每天使用的工具层层 gaslight（感觉美国醒来后 agent 就变差，但无能见度）。这让他更依赖 Pi 的极简与可控，避免被外部 harness 左右。</p>
+<p><strong>总结思考</strong>：三位嘉宾一致认可 Pi 的极简哲学——不预设用户需求，让用户自己决定和扩展。Mario 强调可靠与用户主权，Daniel 展示如何在其上构建定制多 agent 工作流，Armen 则通过实际修改证明可塑性。访谈核心信息是：Coding Agent 的未来不是越来越复杂，而是回归用户可控的极简 harness，让开发者真正掌控工作流而非被工具”gaslight”。Ben 未在精华中详述个人观点，但作为深度用户参与讨论。</p>
+<p>这正是 Pi（及 OpenClaw）走红的底层原因：它不强加”宇宙飞船”，而是给用户一块可塑的粘土。</p>
+<hr>
+<p>原文链接：<a target="_blank" rel="noopener" href="https://mp.weixin.qq.com/s/BKJq0HIe7TpsUUaT6mzSKA">https://mp.weixin.qq.com/s/BKJq0HIe7TpsUUaT6mzSKA</a></p>
+</section>
+    
+
+    <footer id="post-meta" class="clearfix">
+        <a href="/about/">
+        <img class="avatar" src="/images/avatar.png">
+        <div>
+            <span class="dark">Api Intelligence Daily Life</span>
+            <span>知识库 &amp; 博客</span>
+        </div>
+        </a>
+        <section id="sharing">
+            <a title="Share to Twitter" class="twitter" target="_blank" rel="noopener" href="https://twitter.com/intent/tweet?text=https://arbow.github.io/2026/03/18/digest-2026-03-18-openclaw-pi-framework/ - 文摘：OpenClaw 背后核心框架 Pi：好的 Coding Agent 应该让用户来决定需要什么 @"><span class="icon-twitter">tweet</span></a>
+            <a title="Share to Facebook" class="facebook" href="#" onclick="
+                window.open(
+                  'https://www.facebook.com/sharer/sharer.php?u='+encodeURIComponent(location.href),
+                  'facebook-share-dialog',
+                  'width=626,height=436');
+                return false;"><span class="icon-facebook-sign">Share</span>
+            </a>
+        </section>
+    </footer>
+
+
+  <section id="comment">
+    <button class="btn" id="loadcmts" onclick="cmts.load();">加载评论</button>
+    <div id="gitment"></div>
+    <script src='/js/gitment.browser.js'></script>
+    <link rel="stylesheet" href=''>
+    <script>
+      var cmts={
+        load:function cmts(){
+          var gitment = new Gitment({
+          
+            id: "文摘：OpenClaw 背后核心框架 Pi：好的 Coding Agent 应该让用户来决定需要什么",
+          
+            owner: "",
+            repo: "",
+            oauth: {
+              client_id: "",
+              client_secret: "",
+            },
+          })
+          gitment.render('gitment');
+          var loadcmt = document.getElementById("loadcmts");
+          var imyourfather = loadcmt.parentNode;
+          imyourfather.removeChild(loadcmts)
+        }
+      }
+    </script>
+  </section>
+
+
+	<footer id="footer">
+	<div id="social">
+		<p class="small">©  Arbow| Powered by Hexo & 
+			<a target="_blank" rel="noopener" href="https://github.com/F0r3at/Lights"> Lights</a>
+		</p>
+	</div>
+</footer>
+
+</section>
+
+	<script src="//cdnjs.loli.net/ajax/libs/instantclick/3.0.1/instantclick.min.js" data-no-instant></script>
+	<script data-no-instant>
+		
+		InstantClick.init('mousedown');
+	</script>
+
+
+

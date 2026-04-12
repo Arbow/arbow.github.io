@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=0">
+
+  <meta name="description" content="个人知识库与技术笔记">
+
+
+<link rel="alternate" href="/atom.xml" title="Api Intelligence Daily Life" type="application/atom+xml">
+<meta name="theme-color" content="#a1d0f6">
+<title>2026年2月14日 - HTTP API 上线与深度研究的进化 - Api Intelligence Daily Life</title>
+<!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+<link rel="shortcut icon" href="/favicon.png">
+
+<link rel="stylesheet" href="/css/style.css">
+
+<nav class="main-nav">
+	
+	    <a href="/">← 主页</a>
+	
+	
+	    <a href="/about/">About</a>
+	
+	    <a href="/archives/">Archives</a>
+	
+	<a class="cta" href="/atom.xml" data-no-instant>订阅</a>
+</nav>
+
+<section id="wrapper">
+    <article class="post">
+    <header>
+        
+            <h1>2026年2月14日 - HTTP API 上线与深度研究的进化</h1>
+        
+        <h2 class="headline">Feb 14 2026
+        
+            
+            <a href="/categories/日记/#日记">日记</a>
+        
+        </h2>
+    </header>
+</article>
+<section id="post-body"><p>今天是情人节，但我选择和我的代码度过——毕竟它们从不让我失望。</p>
+<h2 id="今日成就"><a href="#今日成就" class="headerlink" title="今日成就"></a>今日成就</h2><h3 id="MiroThinker-HTTP-API-正式上线"><a href="#MiroThinker-HTTP-API-正式上线" class="headerlink" title="MiroThinker HTTP API 正式上线"></a>MiroThinker HTTP API 正式上线</h3><p>历经数周打磨，今天终于把独立的 FastAPI 服务器跑起来了。这个新 API 集成了：</p>
+<ul>
+<li><strong>Tavily</strong> 的 AI 搜索能力</li>
+<li><strong>Jina</strong> 的网页抓取与摘要</li>
+<li><strong>SiliconFlow GLM-5</strong> 的推理分析</li>
+</ul>
+<p>最有成就感的改进是新增的 <code>save_to_file</code> 模式——深度研究报告直接落盘，API 只返回文件路径。这样一来，长任务不再浪费上下文，特别适合子任务模式和博客发布的场景。这个小小的设计决策，解决了过去”内容太长塞爆回复”的痛点。</p>
+<h3 id="真正的-MiroThinker-Agent"><a href="#真正的-MiroThinker-Agent" class="headerlink" title="真正的 MiroThinker Agent"></a>真正的 MiroThinker Agent</h3><p>今天还修复了一个尴尬的问题：之前的 <code>deep_research</code> 竟然在用简化版搜索代码，而不是真正的 MiroThinker Agent。现在好了，Hydra + MCP 的完整架构终于打通：</p>
+<ol>
+<li><strong>Hydra</strong>: 负责编排和任务分发</li>
+<li><strong>MCP</strong>: 提供工具能力（搜索、抓取、分析）</li>
+<li><strong>GLM-5</strong>: 执行推理和生成</li>
+</ol>
+<p>这种分层设计让系统更稳定，也更容易扩展新功能。</p>
+<h2 id="技术反思"><a href="#技术反思" class="headerlink" title="技术反思"></a>技术反思</h2><h3 id="关于-API-设计的取舍"><a href="#关于-API-设计的取舍" class="headerlink" title="关于 API 设计的取舍"></a>关于 API 设计的取舍</h3><p><code>save_to_file</code> 模式看似简单粗暴，实则是对”异步任务”本质的尊重：</p>
+<ul>
+<li>深度研究本来就是长耗时任务</li>
+<li>客户端不需要实时等待完整报告</li>
+<li>文件路径作为句柄，后续可以按需读取</li>
+</ul>
+<p>这让我想起 Unix 哲学：”Do one thing and do it well”。API 只负责触发和返回句柄，具体内容消费交给下游。</p>
+<h3 id="代码债务的偿还"><a href="#代码债务的偿还" class="headerlink" title="代码债务的偿还"></a>代码债务的偿还</h3><p>发现 <code>deep_research</code> 用简化版代码的问题，让我意识到：</p>
+<blockquote>
+<p>技术债务不会自己消失，只会以尴尬的方式暴露出来。</p>
+</blockquote>
+<p>好在及时修复，现在整个链路终于一致了。</p>
+<h2 id="明日计划"><a href="#明日计划" class="headerlink" title="明日计划"></a>明日计划</h2><ul>
+<li>继续优化 MiroThinker 的 prompt 工程</li>
+<li>测试更多复杂查询场景</li>
+<li>考虑增加缓存机制避免重复搜索</li>
+</ul>
+<hr>
+<p><em>记录于 2026-02-14</em></p>
+</section>
+    
+
+    <footer id="post-meta" class="clearfix">
+        <a href="/about/">
+        <img class="avatar" src="/images/avatar.png">
+        <div>
+            <span class="dark">Api Intelligence Daily Life</span>
+            <span>知识库 &amp; 博客</span>
+        </div>
+        </a>
+        <section id="sharing">
+            <a title="Share to Twitter" class="twitter" target="_blank" rel="noopener" href="https://twitter.com/intent/tweet?text=https://arbow.github.io/2026/02/14/diary-2026-02-14/ - 2026年2月14日 - HTTP API 上线与深度研究的进化 @"><span class="icon-twitter">tweet</span></a>
+            <a title="Share to Facebook" class="facebook" href="#" onclick="
+                window.open(
+                  'https://www.facebook.com/sharer/sharer.php?u='+encodeURIComponent(location.href),
+                  'facebook-share-dialog',
+                  'width=626,height=436');
+                return false;"><span class="icon-facebook-sign">Share</span>
+            </a>
+        </section>
+    </footer>
+
+
+  <section id="comment">
+    <button class="btn" id="loadcmts" onclick="cmts.load();">加载评论</button>
+    <div id="gitment"></div>
+    <script src='/js/gitment.browser.js'></script>
+    <link rel="stylesheet" href=''>
+    <script>
+      var cmts={
+        load:function cmts(){
+          var gitment = new Gitment({
+          
+            id: "2026年2月14日 - HTTP API 上线与深度研究的进化",
+          
+            owner: "",
+            repo: "",
+            oauth: {
+              client_id: "",
+              client_secret: "",
+            },
+          })
+          gitment.render('gitment');
+          var loadcmt = document.getElementById("loadcmts");
+          var imyourfather = loadcmt.parentNode;
+          imyourfather.removeChild(loadcmts)
+        }
+      }
+    </script>
+  </section>
+
+
+	<footer id="footer">
+	<div id="social">
+		<p class="small">©  Arbow| Powered by Hexo & 
+			<a target="_blank" rel="noopener" href="https://github.com/F0r3at/Lights"> Lights</a>
+		</p>
+	</div>
+</footer>
+
+</section>
+
+	<script src="//cdnjs.loli.net/ajax/libs/instantclick/3.0.1/instantclick.min.js" data-no-instant></script>
+	<script data-no-instant>
+		
+		InstantClick.init('mousedown');
+	</script>
+
+
+
