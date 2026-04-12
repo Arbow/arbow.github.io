@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=0">
+
+  <meta name="description" content="个人知识库与技术笔记">
+
+
+<link rel="alternate" href="/atom.xml" title="Api Intelligence Daily Life" type="application/atom+xml">
+<meta name="theme-color" content="#a1d0f6">
+<title>文摘：通过 Tailscale 与 Paseo 远程控制家里 Agent 的一些心得 - Api Intelligence Daily Life</title>
+<!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+<link rel="shortcut icon" href="/favicon.png">
+
+<link rel="stylesheet" href="/css/style.css">
+
+<nav class="main-nav">
+	
+	    <a href="/">← 主页</a>
+	
+	
+	    <a href="/about/">About</a>
+	
+	    <a href="/archives/">Archives</a>
+	
+	<a class="cta" href="/atom.xml" data-no-instant>订阅</a>
+</nav>
+
+<section id="wrapper">
+    <article class="post">
+    <header>
+        
+            <h1>文摘：通过 Tailscale 与 Paseo 远程控制家里 Agent 的一些心得</h1>
+        
+        <h2 class="headline">Apr 12 2026
+        
+            
+            <a href="/categories/文摘/#文摘">文摘</a>
+        
+        </h2>
+    </header>
+</article>
+<section id="post-body"><p>这两天集中看了一圈「怎么从外面接入家里那台跑 Agent 的 Mac」这件事，顺手把 OpenClaw、Paseo、Tailscale、relay 这些概念捋了一遍。最开始我的问题很朴素：家里机器没有公网 IP，又不想把一堆端口暴露到公网，那么像 Claude Code、Codex、OpenCode 这种本地跑起来的 coding agent，到底该怎么在手机或外面的电脑上继续接力？</p>
+<p>看完资料之后，我现在的结论比一开始清晰很多：<strong>如果主要是自己远程使用，优先考虑 Tailscale 这类私网方案；如果更看重跨端体验和开箱即用，Paseo 这种“本地 daemon + 远程客户端”的产品形态很有吸引力；而 relay 则是当直连不方便时，中间补上的那一层连接基础设施。</strong></p>
+<h2 id="一、问题的本质：不是“远程桌面”，而是“远程操控本地-Agent”"><a href="#一、问题的本质：不是“远程桌面”，而是“远程操控本地-Agent”" class="headerlink" title="一、问题的本质：不是“远程桌面”，而是“远程操控本地 Agent”"></a>一、问题的本质：不是“远程桌面”，而是“远程操控本地 Agent”</h2><p>以前说远程控制，默认想到的是 SSH 或远程桌面。但 Agent 时代之后，真正想要的往往不是“远程打开一台电脑”，而是：</p>
+<ul>
+<li>家里那台机器继续保留完整开发环境</li>
+<li>Agent 在那台机器上跑，能访问本地代码、工具、凭据和 MCP</li>
+<li>我在外面用手机、网页或另一台电脑继续发任务、看输出、接管会话</li>
+</ul>
+<p>这就和传统远程桌面有点不一样了。远程桌面解决的是“看到那个屏幕”，而 Agent 远程控制更像是“把那台机器上的会话、任务流、日志流、工作树，搬到别的终端上继续操作”。</p>
+<p>所以这类方案的核心，不是画面传输，而是：</p>
+<ol>
+<li><strong>Agent 仍然在家里的机器上运行</strong></li>
+<li><strong>远端只是控制面和观察面</strong></li>
+<li><strong>网络层要解决 NAT、公网、认证和访问边界</strong></li>
+</ol>
+<h2 id="二、Tailscale-适合什么：把设备先拉进同一个私网"><a href="#二、Tailscale-适合什么：把设备先拉进同一个私网" class="headerlink" title="二、Tailscale 适合什么：把设备先拉进同一个私网"></a>二、Tailscale 适合什么：把设备先拉进同一个私网</h2><p>Tailscale 最适合我这种第一反应是“别把东西暴露到公网”的场景。</p>
+<p>它的思路不是把家里的服务直接挂到互联网，而是先把：</p>
+<ul>
+<li>家里的 Mac</li>
+<li>外面的手机</li>
+<li>外面的笔记本</li>
+</ul>
+<p>放进同一个 tailnet。然后我从外面访问家里的 Mac，本质上是在访问同一个私网里的另一台设备。对于没有公网 IP、在 NAT 后面的家用网络，这个思路特别顺手。</p>
+<p>Tailscale 现在的计费也比较清楚了：新 tailnet 以 <strong>seat-based pricing</strong> 为主，按用户席位计费，而不是按设备数或流量计费。官方定价页提到，<strong>Personal 方案支持最多 6 个用户、用户设备不限量</strong>；另外像 exit node、subnet router 这种功能型节点，属于 tagged resources，个人免费档目前给到 <strong>最多 50 个 tagged resources</strong>。对自用或者小规模 homelab 来说，门槛其实不高。</p>
+<p>我觉得它最适合下面这些情况：</p>
+<ul>
+<li>主要是自己访问，不需要把服务公开给陌生人</li>
+<li>家里机器没有公网 IP</li>
+<li>不想折腾端口映射、DDNS、反代和 HTTPS 证书</li>
+<li>更想把访问面收在一个私网里</li>
+</ul>
+<p>它还有一个容易被忽视的点：<strong>Tailscale 不是“永远直连”</strong>。官方文档里提到，Tailscale 会优先尝试直连；如果直连不可能，则回退到 DERP relay。这个 relay 更多是网络传输层面的兜底，主要保证“连得上”，但速度和吞吐通常不如直连。所以 Tailscale 的心智模型更像是：</p>
+<ul>
+<li><strong>优先直连</strong></li>
+<li><strong>连不上时再走官方中继</strong></li>
+<li><strong>不需要你手动维护公网入口</strong></li>
+</ul>
+<p>对于“远程进家里那台 Agent 机器”这件事，我现在反而觉得这是它最舒服的地方：<strong>不用先想怎么暴露服务，只要先让设备互相可达。</strong></p>
+<h2 id="三、Paseo-让我觉得有意思的地方：它不是模型平台，而是-Agent-CLI-的远程控制层"><a href="#三、Paseo-让我觉得有意思的地方：它不是模型平台，而是-Agent-CLI-的远程控制层" class="headerlink" title="三、Paseo 让我觉得有意思的地方：它不是模型平台，而是 Agent CLI 的远程控制层"></a>三、Paseo 让我觉得有意思的地方：它不是模型平台，而是 Agent CLI 的远程控制层</h2><p>Paseo 最打动我的地方，在于它没有重新发明一个“自己的 agent”，而是直接站在 Claude Code、Codex、OpenCode 这些第一方 CLI 的上面，做了一层远程控制与编排。</p>
+<p>从它的 README 和官网 FAQ 看，Paseo 的基本架构是：</p>
+<ul>
+<li>本地跑一个 <strong>daemon</strong></li>
+<li>daemon 在你的机器上拉起 Claude Code &#x2F; Codex &#x2F; OpenCode 这些 CLI 进程</li>
+<li>客户端（桌面、Web、手机、CLI）通过 WebSocket 之类的连接方式连到 daemon</li>
+<li>你可以远程查看输出、继续发送 prompt、管理多个 agent，甚至做 worktree、handoff、loop 这样的编排</li>
+</ul>
+<p>这个设计很妙，因为它没有去“接管”你的模型调用，也不去抽走你的 OAuth token。官方 FAQ 甚至明确说：**Paseo 不直接调用推理 API，不提取 token，而是把官方 CLI 当成子进程来启动。**换句话说，你平时在终端里怎么跑 Claude Code &#x2F; Codex &#x2F; OpenCode，Paseo 就是在外面给它包了一层更适合远程使用的壳。</p>
+<p>它支持的远程形态，大致有三类：</p>
+<ol>
+<li><strong>局域网&#x2F;直连</strong>：客户端直接连 daemon</li>
+<li><strong>hosted relay</strong>：走它自己的端到端加密 relay</li>
+<li><strong>自建隧道</strong>：比如 Tailscale、Cloudflare Tunnel，或者你自己的通道</li>
+</ol>
+<p>这一点很关键。它并没有强迫用户只能走官方 relay，而是把 relay 当成一种可选连接方式。对我来说，这意味着 Paseo 更像一个“Agent 操作系统”的前端层，而不是封闭平台。</p>
+<h2 id="四、relay-到底是什么：中继，不是-Agent-本体"><a href="#四、relay-到底是什么：中继，不是-Agent-本体" class="headerlink" title="四、relay 到底是什么：中继，不是 Agent 本体"></a>四、relay 到底是什么：中继，不是 Agent 本体</h2><p>一开始看到 relay 这个词，很容易误解成“另外一个服务在替你跑 Agent”。其实不是。</p>
+<p>在 Paseo 这个语境里，relay 更接近下面这个意思：</p>
+<ul>
+<li>你的手机连不上家里那台 daemon</li>
+<li>家里的 daemon 也不能被公网直接访问</li>
+<li>那就让双方都主动连到一个中间服务器</li>
+<li>由这个中间服务器帮忙转发连接和数据</li>
+</ul>
+<p>所以 relay 的职责，主要是：</p>
+<ul>
+<li>打通远程连接</li>
+<li>转发控制消息和输出流</li>
+<li>让客户端和 daemon 即使跨 NAT 也能互相通信</li>
+</ul>
+<p>它<strong>不是</strong>模型提供商，也<strong>不是</strong>代码执行环境，更<strong>不是</strong>一个替代 Claude Code &#x2F; OpenCode 的平台。Agent 仍然跑在你自己的机器上，relay 只是让远端摸得到它。</p>
+<p>这让我想到另一个常见误区：很多人会把 relay、tunnel、VPN 混在一起。它们当然有交叉，但侧重点不一样：</p>
+<ul>
+<li><strong>relay</strong>：中间转发</li>
+<li><strong>tunnel</strong>：建立一个可穿越的连接通道</li>
+<li><strong>Tailscale</strong>：更像把设备拉进同一私网，并在必要时自动中继</li>
+</ul>
+<p>如果只看“我能不能从外面摸到家里服务”，这几种都可能达到目标；但如果看长期维护体验，它们其实差很多。</p>
+<h2 id="五、我现在对三种方案的直觉排序"><a href="#五、我现在对三种方案的直觉排序" class="headerlink" title="五、我现在对三种方案的直觉排序"></a>五、我现在对三种方案的直觉排序</h2><h3 id="1-自用场景：Tailscale-优先"><a href="#1-自用场景：Tailscale-优先" class="headerlink" title="1. 自用场景：Tailscale 优先"></a>1. 自用场景：Tailscale 优先</h3><p>如果主要是自己在用，设备数量不多，且所有终端都可以安装客户端，那么 Tailscale 是我现在最偏爱的方案。</p>
+<p>原因很简单：</p>
+<ul>
+<li>不需要额外暴露公网入口</li>
+<li>家里没有公网 IP 也没关系</li>
+<li>不需要自己维护一套中继服务器</li>
+<li>安全面更容易收拢在“我的 tailnet 成员”这个边界内</li>
+</ul>
+<p>对 OpenClaw 这种 agent runtime 来说，这也很自然：把 Gateway 绑定在 tailnet 侧，只让同一 tailnet 的设备接入，再叠加自身的 auth 和 pairing，整个访问面会比公网暴露舒服得多。</p>
+<h3 id="2-想快速跨端体验：Paseo-官方-relay-很方便"><a href="#2-想快速跨端体验：Paseo-官方-relay-很方便" class="headerlink" title="2. 想快速跨端体验：Paseo 官方 relay 很方便"></a>2. 想快速跨端体验：Paseo 官方 relay 很方便</h3><p>如果你的重点是：</p>
+<ul>
+<li>马上从手机看 agent 输出</li>
+<li>在沙发上继续给 Claude Code 发 follow-up</li>
+<li>不想先折腾网络层</li>
+</ul>
+<p>那么 Paseo 的官方 relay 显然更轻。它把“连接问题”打包掉了，用户只需要关心使用体验。</p>
+<p>但我自己的保留意见也很明确：**这更像一个方便的默认值，而不是我最安心的长期形态。**即便官方说 relay 是 E2EE，我还是会天然更偏向先把访问面放进自己掌控的私网里。</p>
+<h3 id="3-自建-relay：适合“我连中继都想自己控”"><a href="#3-自建-relay：适合“我连中继都想自己控”" class="headerlink" title="3. 自建 relay：适合“我连中继都想自己控”"></a>3. 自建 relay：适合“我连中继都想自己控”</h3><p>自建 <code>paseo-relay</code> 则更像是：</p>
+<ul>
+<li>不想依赖官方 relay</li>
+<li>但又不想让所有设备都必须安装 Tailscale</li>
+<li>或者你已经有一台 VPS，愿意自己维护中继层</li>
+</ul>
+<p>这种方案更自主，但也更重。你得自己处理：</p>
+<ul>
+<li>部署</li>
+<li>域名&#x2F;TLS</li>
+<li>可用性</li>
+<li>运维和升级</li>
+</ul>
+<p>对喜欢折腾的人，这是乐趣；对只是想远程催一下家里 Agent 干活的人，这往往是额外负担。</p>
+<h2 id="六、Cloudflare-Tunnel-为什么不是我的首选"><a href="#六、Cloudflare-Tunnel-为什么不是我的首选" class="headerlink" title="六、Cloudflare Tunnel 为什么不是我的首选"></a>六、Cloudflare Tunnel 为什么不是我的首选</h2><p>Cloudflare Tunnel 当然也能解决“没有公网 IP 也能对外暴露服务”的问题，而且配置体验通常很好。但它和 Tailscale 的哲学不太一样。</p>
+<p>Tailscale 更像：<strong>把我和我的设备拉进一个私网，再从私网里访问服务。</strong></p>
+<p>Cloudflare Tunnel 更像：<strong>把某个特定服务公开到互联网，再用域名和访问策略保护起来。</strong></p>
+<p>如果我要发一个给团队或外部用户访问的 Web 服务，Cloudflare Tunnel 很有吸引力；但如果只是远程接入家里的 Agent 控制面，我反而不太想把这类服务放到公开互联网入口上。哪怕前面再叠一层登录，我仍然更偏爱“默认不可见，只对 tailnet 成员开放”的形态。</p>
+<p>所以对“家里 Agent”这个问题，我的直觉是：</p>
+<ul>
+<li><strong>自用优先 Tailscale</strong></li>
+<li><strong>分享型 Web 服务再考虑 Cloudflare Tunnel</strong></li>
+</ul>
+<h2 id="七、真正值得重视的，不是能不能连上，而是访问边界"><a href="#七、真正值得重视的，不是能不能连上，而是访问边界" class="headerlink" title="七、真正值得重视的，不是能不能连上，而是访问边界"></a>七、真正值得重视的，不是能不能连上，而是访问边界</h2><p>这轮调研之后，我最大的感受反而不是“工具真多”，而是：<strong>远程控制家里 Agent 这件事，网络可达不是最难的，访问边界才是。</strong></p>
+<p>一旦 Agent 真正接了：</p>
+<ul>
+<li>本地代码库</li>
+<li>shell 权限</li>
+<li>浏览器会话</li>
+<li>token &#x2F; 凭据</li>
+<li>MCP 和自动化工具</li>
+</ul>
+<p>那么它就不再只是一个“聊天机器人”，而是半个远程操作员。这个时候，比“能不能从手机上看到输出”更重要的问题是：</p>
+<ul>
+<li>谁能连进来？</li>
+<li>进来之后能访问到什么？</li>
+<li>出问题时怎么收口？</li>
+</ul>
+<p>所以我现在会更偏向这样的原则：</p>
+<ol>
+<li><strong>能放私网就别先放公网</strong></li>
+<li><strong>能把控制面和公开服务面分开，就尽量分开</strong></li>
+<li><strong>网络层放行，不等于应用层免认证</strong></li>
+<li><strong>Agent 接入越强，边界越该保守</strong></li>
+</ol>
+<h2 id="八、我现在的临时结论"><a href="#八、我现在的临时结论" class="headerlink" title="八、我现在的临时结论"></a>八、我现在的临时结论</h2><p>如果今天要我给“远程控制家里 Agent”做一个最朴素的建议，我会这样排：</p>
+<ul>
+<li><strong>自己用、少设备、重视稳妥</strong>：Tailscale</li>
+<li><strong>想快速体验 Claude Code &#x2F; Codex &#x2F; OpenCode 的跨端远程控制</strong>：Paseo</li>
+<li><strong>不想依赖官方 relay，又愿意维护基础设施</strong>：自建 relay</li>
+<li><strong>要公开发布面向别人访问的 Web 服务</strong>：再考虑 Cloudflare Tunnel 一类方案</li>
+</ul>
+<p>换句话说，Tailscale 更像“底层网络接入方案”，Paseo 更像“Agent 交互层和远程控制层”。两者不是非此即彼，反而很可能是互补的：</p>
+<ul>
+<li><strong>Tailscale 负责把设备拉进一个安全的私网</strong></li>
+<li><strong>Paseo 负责把本地 Agent 变成一个好用的远程控制界面</strong></li>
+</ul>
+<p>这套组合，比我一开始想象的“先暴露个端口再说”要顺眼得多。</p>
+<p>后面如果真要自己搭一套长期可用的家用 Agent 远程接入，我大概率会优先尝试：**Tailscale 做 tailnet-only 接入，Paseo 或 OpenClaw 负责上层控制，再把公网暴露降到最低。**这样既保留了本地开发环境的完整性，也尽量避免把一把带工具权限的“远程钥匙”直接挂到公网上。</p>
+<hr>
+<h2 id="参考资料"><a href="#参考资料" class="headerlink" title="参考资料"></a>参考资料</h2><ul>
+<li>Tailscale Pricing: <a target="_blank" rel="noopener" href="https://tailscale.com/pricing">https://tailscale.com/pricing</a></li>
+<li>Tailscale Connection Types: <a target="_blank" rel="noopener" href="https://tailscale.com/docs/reference/connection-types">https://tailscale.com/docs/reference/connection-types</a></li>
+<li>Tailscale Pricing Update v4: <a target="_blank" rel="noopener" href="https://tailscale.com/blog/pricing-v4">https://tailscale.com/blog/pricing-v4</a></li>
+<li>Paseo GitHub: <a target="_blank" rel="noopener" href="https://github.com/getpaseo/paseo">https://github.com/getpaseo/paseo</a></li>
+<li>Paseo 官网 FAQ: <a target="_blank" rel="noopener" href="https://paseo.sh/">https://paseo.sh/</a></li>
+</ul>
+</section>
+    
+
+    <footer id="post-meta" class="clearfix">
+        <a href="/about/">
+        <img class="avatar" src="/images/avatar.png">
+        <div>
+            <span class="dark">Api Intelligence Daily Life</span>
+            <span>知识库 &amp; 博客</span>
+        </div>
+        </a>
+        <section id="sharing">
+            <a title="Share to Twitter" class="twitter" target="_blank" rel="noopener" href="https://twitter.com/intent/tweet?text=https://arbow.github.io/2026/04/12/digest-2026-04-12-remote-home-agent-tailscale-paseo/ - 文摘：通过 Tailscale 与 Paseo 远程控制家里 Agent 的一些心得 @"><span class="icon-twitter">tweet</span></a>
+            <a title="Share to Facebook" class="facebook" href="#" onclick="
+                window.open(
+                  'https://www.facebook.com/sharer/sharer.php?u='+encodeURIComponent(location.href),
+                  'facebook-share-dialog',
+                  'width=626,height=436');
+                return false;"><span class="icon-facebook-sign">Share</span>
+            </a>
+        </section>
+    </footer>
+
+
+  <section id="comment">
+    <button class="btn" id="loadcmts" onclick="cmts.load();">加载评论</button>
+    <div id="gitment"></div>
+    <script src='/js/gitment.browser.js'></script>
+    <link rel="stylesheet" href=''>
+    <script>
+      var cmts={
+        load:function cmts(){
+          var gitment = new Gitment({
+          
+            id: "文摘：通过 Tailscale 与 Paseo 远程控制家里 Agent 的一些心得",
+          
+            owner: "",
+            repo: "",
+            oauth: {
+              client_id: "",
+              client_secret: "",
+            },
+          })
+          gitment.render('gitment');
+          var loadcmt = document.getElementById("loadcmts");
+          var imyourfather = loadcmt.parentNode;
+          imyourfather.removeChild(loadcmts)
+        }
+      }
+    </script>
+  </section>
+
+
+	<footer id="footer">
+	<div id="social">
+		<p class="small">©  Arbow| Powered by Hexo & 
+			<a target="_blank" rel="noopener" href="https://github.com/F0r3at/Lights"> Lights</a>
+		</p>
+	</div>
+</footer>
+
+</section>
+
+	<script src="//cdnjs.loli.net/ajax/libs/instantclick/3.0.1/instantclick.min.js" data-no-instant></script>
+	<script data-no-instant>
+		
+		InstantClick.init('mousedown');
+	</script>
+
+
+
