@@ -44,11 +44,11 @@
 <section id="post-body"><p>这两天集中看了一圈「怎么从外面接入家里那台跑 Agent 的 Mac」这件事，顺手把 <a target="_blank" rel="noopener" href="https://github.com/openclaw/openclaw">OpenClaw</a>、<a target="_blank" rel="noopener" href="https://github.com/getpaseo/paseo">Paseo</a>、<a target="_blank" rel="noopener" href="https://tailscale.com/">Tailscale</a> 和 relay 这些概念捋了一遍。最开始我的问题很朴素：家里机器没有公网 IP，又不想把一堆端口暴露到公网，那么像 <a target="_blank" rel="noopener" href="https://www.anthropic.com/claude-code">Claude Code</a>、<a target="_blank" rel="noopener" href="https://developers.openai.com/codex/cli">Codex</a> 、<a target="_blank" rel="noopener" href="https://opencode.ai/">OpenCode</a> 这种本地跑起来的 coding agent，到底该怎么在手机或外面的电脑上继续接力？</p>
 <p>看完资料之后，我现在的结论比一开始清晰很多：<strong>如果主要是自己远程使用，优先考虑 <a target="_blank" rel="noopener" href="https://tailscale.com/">Tailscale</a> 这类私网方案；如果更看重跨端体验和开箱即用，<a target="_blank" rel="noopener" href="https://github.com/getpaseo/paseo">Paseo</a> 这种“本地 daemon + 远程客户端”的产品形态很有吸引力；而 relay 则是当直连不方便时，中间补上的那一层连接基础设施。</strong></p>
 <p><img src="/images/remote-home-agent-claude-official.png" alt="Tailscale 与 Paseo 远程控制家里 Agent 的总览图（Claude Official 风格）"></p>
-<p><em>图 1：总览图。远程设备通过 Tailscale tailnet 或可选 relay 接入家里的 Mac；Agent 仍然在本地运行，Paseo &#x2F; OpenClaw 负责上层控制。</em></p>
+<p><em>图 1：总览。两条路径：Tailscale 直连，或 Paseo relay 桥接。</em></p>
 <p><img src="/images/tailscale-direct-path-claude-official.png" alt="Tailscale 直连家里 Agent 的链路图（Claude Official 风格）"></p>
-<p><em>图 2：Tailscale 直连链路。远程设备先加入同一个 tailnet，再直接访问家里 Mac 上的 OpenClaw Gateway 或 Paseo daemon。</em></p>
+<p><em>图 2：Tailscale 直连。先加入 tailnet，再直接访问家里的服务。</em></p>
 <p><img src="/images/paseo-relay-path-claude-official.png" alt="Paseo relay 连接家里 Agent 的链路图（Claude Official 风格）"></p>
-<p><em>图 3：Paseo relay 链路。直连不方便时，远程客户端和家里的 Paseo daemon 都连到 relay，由 relay 在中间转发控制与输出流。</em></p>
+<p><em>图 3：Paseo relay。客户端与家里的 daemon 通过 relay 建桥。</em></p>
 <h2 id="一、问题的本质：不是“远程桌面”，而是“远程操控本地-Agent”"><a href="#一、问题的本质：不是“远程桌面”，而是“远程操控本地-Agent”" class="headerlink" title="一、问题的本质：不是“远程桌面”，而是“远程操控本地 Agent”"></a>一、问题的本质：不是“远程桌面”，而是“远程操控本地 Agent”</h2><p>以前说远程控制，默认想到的是 SSH 或远程桌面。但 Agent 时代之后，真正想要的往往不是“远程打开一台电脑”，而是：</p>
 <ul>
 <li>家里那台机器继续保留完整开发环境</li>
