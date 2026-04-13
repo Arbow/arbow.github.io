@@ -1,0 +1,83 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 620" width="1200" height="620">
+  <defs>
+    <marker id="arrowA" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#d97757"/>
+    </marker>
+    <marker id="arrowB" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#7b8b5c"/>
+    </marker>
+    <marker id="arrowC" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#8c6f5a"/>
+    </marker>
+    <marker id="arrowE" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#b45309"/>
+    </marker>
+    <marker id="arrowF" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#9a6fb0"/>
+    </marker>
+    <marker id="arrowG" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#d97757"/>
+    </marker>
+    <marker id="arrowH" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#8f8a80"/>
+    </marker>
+    <style>
+    text { font-family: 'Helvetica Neue', Helvetica, Arial, 'PingFang SC', 'Microsoft YaHei', sans-serif; }
+    .title { font-size: 24px; font-weight: 700; fill: #141413; }
+    .subtitle { font-size: 13px; font-weight: 500; fill: #8f8a80; }
+    .section { font-size: 13px; font-weight: 700; fill: #8b7355; letter-spacing: 1.4px; }
+    .section-sub { font-size: 12px; font-weight: 500; fill: #b4aba0; }
+    .node-title { font-size: 18px; font-weight: 700; fill: #141413; }
+    .node-sub { font-size: 12px; font-weight: 500; fill: #6b6257; }
+    .node-type { font-size: 11px; font-weight: 700; fill: #a29a8f; letter-spacing: 0.08em; }
+    .arrow-label { font-size: 12px; font-weight: 600; fill: #6b6257; }
+    .legend { font-size: 12px; font-weight: 500; fill: #6b6257; }
+    .footnote { font-size: 12px; font-weight: 500; fill: #a29a8f; }
+    </style>
+  </defs>
+  <rect width="1200.0" height="620.0" fill="#f8f6f3"/>
+  <text x="48.0" y="48" text-anchor="start" class="title">Hermes Agent vs OpenClaw</text>
+  <text x="48.0" y="72" text-anchor="start" class="subtitle">Platform-first versus personal-assistant-first</text>
+  <line x1="48" y1="100" x2="1152.0" y2="100" stroke="#ded8cf" stroke-width="1"/>
+  <rect x="60.0" y="140.0" width="500.0" height="340.0" rx="16.0" fill="none" stroke="#ded8cf" stroke-width="1.4" stroke-dasharray="5 4"/>
+  <text x="78.0" y="164.0" class="section">HERMES AGENT</text>
+  <text x="42.0" y="310.0" text-anchor="end" dominant-baseline="middle" font-size="14.0" font-weight="600" fill="#6b6257">Platform</text>
+  <rect x="640.0" y="140.0" width="500.0" height="340.0" rx="16.0" fill="none" stroke="#ded8cf" stroke-width="1.4" stroke-dasharray="5 4"/>
+  <text x="658.0" y="164.0" class="section">OPENCLAW</text>
+  <text x="622.0" y="310.0" text-anchor="end" dominant-baseline="middle" font-size="14.0" font-weight="600" fill="#6b6257">Assistant</text>
+  <path d="M 180.0,262.0 L 180.0,356.0 L 210.0,356.0" fill="none" stroke="#b45309" stroke-width="2.0" marker-end="url(#arrowE)"/>
+  <path d="M 390.0,262.0 L 390.0,356.0 L 360.0,356.0" fill="none" stroke="#b45309" stroke-width="2.0" marker-end="url(#arrowE)"/>
+  <path d="M 760.0,262.0 L 760.0,356.0 L 790.0,356.0" fill="none" stroke="#b45309" stroke-width="2.0" marker-end="url(#arrowE)"/>
+  <path d="M 970.0,262.0 L 970.0,356.0 L 940.0,356.0" fill="none" stroke="#b45309" stroke-width="2.0" marker-end="url(#arrowE)"/>
+  <path d="M 285.0,392.0 L 285.0,551.0 L 520.0,551.0" fill="none" stroke="#8c6f5a" stroke-width="2.0" marker-end="url(#arrowC)"/>
+  <path d="M 865.0,392.0 L 865.0,551.0 L 680.0,551.0" fill="none" stroke="#8c6f5a" stroke-width="2.0" marker-end="url(#arrowC)"/>
+  <rect x="105.0" y="190.0" width="150.0" height="72.0" rx="10.0" fill="#a8c5e6" stroke="#4a4a4a" stroke-width="1.8"/>
+  <text x="180.0" y="226.0" text-anchor="middle" class="node-title">Many channels</text>
+  <rect x="315.0" y="190.0" width="150.0" height="72.0" rx="10.0" fill="#f4e4c1" stroke="#4a4a4a" stroke-width="1.8"/>
+  <text x="390.0" y="226.0" text-anchor="middle" class="node-title">Many backends</text>
+  <rect x="210.0" y="320.0" width="150.0" height="72.0" rx="10.0" fill="#9dd4c7" stroke="#4a4a4a" stroke-width="1.8"/>
+  <text x="285.0" y="356.0" text-anchor="middle" class="node-title">Automation</text>
+  <text x="285.0" y="378.0" text-anchor="middle" class="node-sub">cron batch skills</text>
+  <rect x="685.0" y="190.0" width="150.0" height="72.0" rx="10.0" fill="#a8c5e6" stroke="#4a4a4a" stroke-width="1.8"/>
+  <text x="760.0" y="226.0" text-anchor="middle" class="node-title">Personal use</text>
+  <rect x="895.0" y="190.0" width="150.0" height="72.0" rx="10.0" fill="#f4e4c1" stroke="#4a4a4a" stroke-width="1.8"/>
+  <text x="970.0" y="226.0" text-anchor="middle" class="node-title">Local tools</text>
+  <rect x="790.0" y="320.0" width="150.0" height="72.0" rx="10.0" fill="#9dd4c7" stroke="#4a4a4a" stroke-width="1.8"/>
+  <text x="865.0" y="356.0" text-anchor="middle" class="node-title">Remote helper</text>
+  <text x="865.0" y="378.0" text-anchor="middle" class="node-sub">browser node device</text>
+  <rect x="520.0" y="515.0" width="160.0" height="72.0" rx="10.0" fill="#e8e6e3" stroke="#4a4a4a" stroke-width="1.8"/>
+  <text x="600.0" y="551.0" text-anchor="middle" class="node-title">Agent systems</text>
+  <text x="600.0" y="573.0" text-anchor="middle" class="node-sub">different priorities</text>
+  <rect x="137.5" y="295.0" width="49" height="20" rx="6" fill="#f8f6f3" opacity="0.96"/>
+  <text x="162.0" y="309.0" text-anchor="middle" class="arrow-label">scale</text>
+  <rect x="390.0" y="295.0" width="36" height="20" rx="6" fill="#f8f6f3" opacity="0.96"/>
+  <text x="408.0" y="309.0" text-anchor="middle" class="arrow-label">run</text>
+  <rect x="717.5" y="295.0" width="49" height="20" rx="6" fill="#f8f6f3" opacity="0.96"/>
+  <text x="742.0" y="309.0" text-anchor="middle" class="arrow-label">daily</text>
+  <rect x="970.0" y="295.0" width="36" height="20" rx="6" fill="#f8f6f3" opacity="0.96"/>
+  <text x="988.0" y="309.0" text-anchor="middle" class="arrow-label">act</text>
+  <rect x="367.5" y="521.0" width="70" height="20" rx="6" fill="#f8f6f3" opacity="0.96"/>
+  <text x="402.5" y="535.0" text-anchor="middle" class="arrow-label">platform</text>
+  <rect x="734.0" y="521.0" width="77" height="20" rx="6" fill="#f8f6f3" opacity="0.96"/>
+  <text x="772.5" y="535.0" text-anchor="middle" class="arrow-label">assistant</text>
+</svg>
