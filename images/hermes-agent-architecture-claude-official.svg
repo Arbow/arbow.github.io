@@ -1,0 +1,84 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 620" width="1200" height="620">
+  <defs>
+    <marker id="arrowA" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#d97757"/>
+    </marker>
+    <marker id="arrowB" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#7b8b5c"/>
+    </marker>
+    <marker id="arrowC" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#8c6f5a"/>
+    </marker>
+    <marker id="arrowE" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#b45309"/>
+    </marker>
+    <marker id="arrowF" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#9a6fb0"/>
+    </marker>
+    <marker id="arrowG" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#d97757"/>
+    </marker>
+    <marker id="arrowH" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#8f8a80"/>
+    </marker>
+    <style>
+    text { font-family: 'Helvetica Neue', Helvetica, Arial, 'PingFang SC', 'Microsoft YaHei', sans-serif; }
+    .title { font-size: 24px; font-weight: 700; fill: #141413; }
+    .subtitle { font-size: 13px; font-weight: 500; fill: #8f8a80; }
+    .section { font-size: 13px; font-weight: 700; fill: #8b7355; letter-spacing: 1.4px; }
+    .section-sub { font-size: 12px; font-weight: 500; fill: #b4aba0; }
+    .node-title { font-size: 18px; font-weight: 700; fill: #141413; }
+    .node-sub { font-size: 12px; font-weight: 500; fill: #6b6257; }
+    .node-type { font-size: 11px; font-weight: 700; fill: #a29a8f; letter-spacing: 0.08em; }
+    .arrow-label { font-size: 12px; font-weight: 600; fill: #6b6257; }
+    .legend { font-size: 12px; font-weight: 500; fill: #6b6257; }
+    .footnote { font-size: 12px; font-weight: 500; fill: #a29a8f; }
+    </style>
+  </defs>
+  <rect width="1200.0" height="620.0" fill="#f8f6f3"/>
+  <text x="48.0" y="48" text-anchor="start" class="title">Hermes Agent Architecture</text>
+  <text x="48.0" y="72" text-anchor="start" class="subtitle">Many channels, many execution backends, one agent platform</text>
+  <line x1="48" y1="100" x2="1152.0" y2="100" stroke="#ded8cf" stroke-width="1"/>
+  <rect x="50.0" y="130.0" width="240.0" height="320.0" rx="16.0" fill="none" stroke="#ded8cf" stroke-width="1.4" stroke-dasharray="5 4"/>
+  <text x="68.0" y="154.0" class="section">CHANNELS</text>
+  <rect x="340.0" y="130.0" width="240.0" height="320.0" rx="16.0" fill="none" stroke="#ded8cf" stroke-width="1.4" stroke-dasharray="5 4"/>
+  <text x="358.0" y="154.0" class="section">HERMES CORE</text>
+  <rect x="630.0" y="130.0" width="520.0" height="320.0" rx="16.0" fill="none" stroke="#ded8cf" stroke-width="1.4" stroke-dasharray="5 4"/>
+  <text x="648.0" y="154.0" class="section">EXECUTION + AUTOMATION</text>
+  <path d="M 245.0,238.0 L 265.4,238.0 L 364.6,218.0 L 385.0,218.0" fill="none" stroke="#b45309" stroke-width="2.0" marker-end="url(#arrowE)"/>
+  <path d="M 460.0,256.0 L 460.0,310.0" fill="none" stroke="#8c6f5a" stroke-width="2.0" marker-end="url(#arrowC)"/>
+  <path d="M 535.0,218.0 L 705.0,218.0" fill="none" stroke="#b45309" stroke-width="2.0" marker-end="url(#arrowE)"/>
+  <path d="M 535.0,348.0 L 555.4,348.0 L 904.6,218.0 L 925.0,218.0" fill="none" stroke="#d97757" stroke-width="2.0" marker-end="url(#arrowA)" stroke-dasharray="6,4"/>
+  <path d="M 790.0,256.0 L 790.0,348.0 L 815.0,348.0" fill="none" stroke="#8c6f5a" stroke-width="2.0" marker-end="url(#arrowC)"/>
+  <path d="M 1010.0,256.0 L 1010.0,348.0 L 985.0,348.0" fill="none" stroke="#8c6f5a" stroke-width="2.0" marker-end="url(#arrowC)"/>
+  <rect x="95.0" y="200.0" width="150.0" height="76.0" rx="10.0" fill="#a8c5e6" stroke="#4a4a4a" stroke-width="1.8"/>
+  <text x="170.0" y="238.0" text-anchor="middle" class="node-title">Telegram Slack</text>
+  <text x="170.0" y="260.0" text-anchor="middle" class="node-sub">Discord Email Weixin</text>
+  <rect x="385.0" y="180.0" width="150.0" height="76.0" rx="10.0" fill="#9dd4c7" stroke="#4a4a4a" stroke-width="1.8"/>
+  <text x="460.0" y="218.0" text-anchor="middle" class="node-title">Gateway</text>
+  <text x="460.0" y="240.0" text-anchor="middle" class="node-sub">multi-entry</text>
+  <rect x="385.0" y="310.0" width="150.0" height="76.0" rx="10.0" fill="#e8e6e3" stroke="#4a4a4a" stroke-width="1.8"/>
+  <text x="460.0" y="348.0" text-anchor="middle" class="node-title">Sessions</text>
+  <text x="460.0" y="370.0" text-anchor="middle" class="node-sub">memory skills</text>
+  <rect x="705.0" y="180.0" width="170.0" height="76.0" rx="10.0" fill="#f4e4c1" stroke="#4a4a4a" stroke-width="1.8"/>
+  <text x="790.0" y="218.0" text-anchor="middle" class="node-title">Backends</text>
+  <text x="790.0" y="240.0" text-anchor="middle" class="node-sub">local docker ssh</text>
+  <rect x="925.0" y="180.0" width="170.0" height="76.0" rx="10.0" fill="#f4e4c1" stroke="#4a4a4a" stroke-width="1.8"/>
+  <text x="1010.0" y="218.0" text-anchor="middle" class="node-title">Automation</text>
+  <text x="1010.0" y="240.0" text-anchor="middle" class="node-sub">cron batch delegate</text>
+  <rect x="815.0" y="310.0" width="170.0" height="76.0" rx="10.0" fill="#9dd4c7" stroke="#4a4a4a" stroke-width="1.8"/>
+  <text x="900.0" y="348.0" text-anchor="middle" class="node-title">Agent platform</text>
+  <text x="900.0" y="370.0" text-anchor="middle" class="node-sub">long-running service</text>
+  <rect x="290.5" y="198.0" width="49" height="20" rx="6" fill="#f8f6f3" opacity="0.96"/>
+  <text x="315.0" y="212.0" text-anchor="middle" class="arrow-label">enter</text>
+  <rect x="417.5" y="269.0" width="49" height="20" rx="6" fill="#f8f6f3" opacity="0.96"/>
+  <text x="442.0" y="283.0" text-anchor="middle" class="arrow-label">route</text>
+  <rect x="588.5" y="188.0" width="63" height="20" rx="6" fill="#f8f6f3" opacity="0.96"/>
+  <text x="620.0" y="202.0" text-anchor="middle" class="arrow-label">execute</text>
+  <rect x="684.5" y="285.0" width="91" height="20" rx="6" fill="#f8f6f3" opacity="0.96"/>
+  <text x="730.0" y="299.0" text-anchor="middle" class="arrow-label">orchestrate</text>
+  <rect x="772.0" y="288.0" width="36" height="20" rx="6" fill="#f8f6f3" opacity="0.96"/>
+  <text x="790.0" y="302.0" text-anchor="middle" class="arrow-label">run</text>
+  <rect x="993.0" y="288.0" width="70" height="20" rx="6" fill="#f8f6f3" opacity="0.96"/>
+  <text x="1028.0" y="302.0" text-anchor="middle" class="arrow-label">maintain</text>
+</svg>
