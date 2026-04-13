@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=0">
+
+  <meta name="description" content="个人知识库与技术笔记">
+
+
+<link rel="alternate" href="/atom.xml" title="Api Intelligence Daily Life" type="application/atom+xml">
+<meta name="theme-color" content="#a1d0f6">
+<title>Hermes Agent vs OpenClaw：两个 Agent 系统的分野 - Api Intelligence Daily Life</title>
+<!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+<link rel="shortcut icon" href="/favicon.png">
+
+<link rel="stylesheet" href="/css/style.css">
+
+<nav class="main-nav">
+	
+	    <a href="/">← 主页</a>
+	
+	
+	    <a href="/about/">About</a>
+	
+	    <a href="/archives/">Archives</a>
+	
+	<a class="cta" href="/atom.xml" data-no-instant>订阅</a>
+</nav>
+
+<section id="wrapper">
+    <article class="post">
+    <header>
+        
+            <h1>Hermes Agent vs OpenClaw：两个 Agent 系统的分野</h1>
+        
+        <h2 class="headline">Apr 13 2026
+        
+            
+            <a href="/categories/思考/#思考">思考</a>
+        
+        </h2>
+    </header>
+</article>
+<section id="post-body"><p>这两天专门花时间看了一轮 <a target="_blank" rel="noopener" href="https://github.com/NousResearch/hermes-agent">Hermes Agent</a>，看完之后我的感觉很明确：它确实不是那种“换个壳的 coding agent”，而是一套更重、更系统、更像 <strong>agent operating layer</strong> 的东西。拿它和 <a target="_blank" rel="noopener" href="https://github.com/openclaw/openclaw">OpenClaw</a> 放在一起看，会很容易产生一种错觉：好像 Hermes 全面更强。但我越看越觉得，这两个项目其实不在同一条直线上竞争，它们的重点根本不一样。</p>
+<p>如果一定要用一句话概括：</p>
+<ul>
+<li><strong>Hermes Agent</strong> 更像一个可部署、可扩展、可多入口接入的 <strong>agent 平台</strong></li>
+<li><strong>OpenClaw</strong> 更像一个更贴近日常个人使用的 <strong>个人助手 runtime</strong></li>
+</ul>
+<p>这不是语义游戏，而是会直接决定：你到底是在挑一个“长期运行的 agent 系统”，还是在挑一个“更顺手的本地&#x2F;远程个人助手”。</p>
+<h2 id="先说结论"><a href="#先说结论" class="headerlink" title="先说结论"></a>先说结论</h2><p>如果你的需求是：</p>
+<ul>
+<li>同一个 agent 要接 Telegram、Discord、Slack、邮件、企业 IM 等多个入口</li>
+<li>agent 的执行环境最好能切到 Docker、SSH、Modal、Daytona 这种后端</li>
+<li>你要长期跑 cron、batch、delegation、persistent sessions</li>
+<li>你想把它当成一套长期驻留的服务来部署</li>
+</ul>
+<p>那么 <a target="_blank" rel="noopener" href="https://github.com/NousResearch/hermes-agent">Hermes Agent</a> 很可能会比 <a target="_blank" rel="noopener" href="https://github.com/openclaw/openclaw">OpenClaw</a> 更对味。</p>
+<p>但如果你的需求是：</p>
+<ul>
+<li>我就是想要一个自己的个人助手</li>
+<li>我很在意本机协作、浏览器控制、设备接入、操作感</li>
+<li>我不想上来先管理一整套 gateway、backend、token、profile、自动化系统</li>
+<li>我更在意“顺手”和“像自己的助手”，而不是“像一个大系统”</li>
+</ul>
+<p>那么 <a target="_blank" rel="noopener" href="https://github.com/openclaw/openclaw">OpenClaw</a> 依然很有优势。</p>
+<p>这也是为什么我最后的判断不是“谁更强”，而是：<strong>谁更像平台，谁更像助手。</strong></p>
+<h2 id="Hermes-Agent-最强的三件事"><a href="#Hermes-Agent-最强的三件事" class="headerlink" title="Hermes Agent 最强的三件事"></a>Hermes Agent 最强的三件事</h2><h3 id="1-多渠道接入是真的强"><a href="#1-多渠道接入是真的强" class="headerlink" title="1. 多渠道接入是真的强"></a>1. 多渠道接入是真的强</h3><p>Hermes 最夸张的地方，是它把“消息入口”当成核心能力，而不是附属功能。根据官方文档能看到的入口就已经很多：Telegram、Discord、Slack、WhatsApp、Signal、Matrix、Mattermost、Email、SMS、DingTalk、Feishu&#x2F;Lark、WeCom、Weixin、Webhook、API Server、CLI 等。</p>
+<p>这意味着什么？</p>
+<p>意味着 Hermes 的思路不是“我在本机开一个 agent，然后顺手接个 Telegram”，而是：</p>
+<blockquote>
+<p><strong>同一套 agent runtime，可以被多个消息面同时触达。</strong></p>
+</blockquote>
+<p>这点和 OpenClaw 的感觉很不一样。OpenClaw 也有消息入口，也能通过聊天面来触发 agent，但整体重心还是更偏个人助手和本机能力桥接；Hermes 则更像是从一开始就在认真做“多入口 agent 服务”。</p>
+<h3 id="2-执行后端抽象做得很系统"><a href="#2-执行后端抽象做得很系统" class="headerlink" title="2. 执行后端抽象做得很系统"></a>2. 执行后端抽象做得很系统</h3><p>Hermes 让我印象很深的一点，是它把执行环境明确抽象成 backend。官方文档里能看到的就包括：</p>
+<ul>
+<li><code>local</code></li>
+<li><code>docker</code></li>
+<li><code>ssh</code></li>
+<li><code>modal</code></li>
+<li><code>daytona</code></li>
+<li><code>singularity</code></li>
+</ul>
+<p>这点的价值非常大。因为很多人以为“远程 agent”只是从手机上发消息，实际上真正麻烦的是：<strong>命令到底跑在哪。</strong></p>
+<p>如果一个 agent 只能默认跑在当前机器，那它再花哨，很多时候也只是“更智能的本地终端”。Hermes 的 backend 设计则意味着：</p>
+<ul>
+<li>你可以从手机上遥控</li>
+<li>但执行其实跑在 Docker 隔离环境里</li>
+<li>或跑在一台远程 SSH 主机上</li>
+<li>或跑在云工作区里</li>
+</ul>
+<p>也就是说，Hermes 把“入口”和“执行层”拆开了。这个抽象是平台味很重的，也是它比很多 agent CLI 更像“系统”的地方。</p>
+<h3 id="3-编排和自动化能力很完整"><a href="#3-编排和自动化能力很完整" class="headerlink" title="3. 编排和自动化能力很完整"></a>3. 编排和自动化能力很完整</h3><p>Hermes 不只是会聊天、会调工具，它还很强调：</p>
+<ul>
+<li>sessions</li>
+<li>subagent delegation</li>
+<li><code>execute_code</code></li>
+<li>cron</li>
+<li>batch processing</li>
+<li>memory</li>
+<li>skills</li>
+</ul>
+<p>这个组合一放在一起，你就知道它并不只是面向“一次对话解决一个问题”的场景。它更适合：</p>
+<ul>
+<li>复杂任务拆分</li>
+<li>并行子任务</li>
+<li>周期任务</li>
+<li>会话长期维护</li>
+<li>技能和记忆的系统化积累</li>
+</ul>
+<p>在这条线上，它的野心明显比“一个顺手的个人 agent”更大。</p>
+<h2 id="OpenClaw-为什么仍然有自己的优势"><a href="#OpenClaw-为什么仍然有自己的优势" class="headerlink" title="OpenClaw 为什么仍然有自己的优势"></a>OpenClaw 为什么仍然有自己的优势</h2><p>如果只看功能清单，很容易觉得 Hermes 更重、更全、更平台化，于是顺手得出“更好”的结论。但真正用 agent 的时候，人其实不是在比 feature matrix，而是在比一种更微妙的东西：<strong>手感</strong>。</p>
+<p>我对 <a target="_blank" rel="noopener" href="https://github.com/openclaw/openclaw">OpenClaw</a> 的感觉一直是，它在很多地方更像“一个跟你一起生活在本机上的助手”。它的强点通常不体现在“支持多少种 backend”，而体现在：</p>
+<ul>
+<li>本机工具调用顺不顺</li>
+<li>浏览器、文件、消息、shell、节点这些能力是不是自然串起来</li>
+<li>远程接入是不是更像“进入自己的系统”，而不是“远程调用一个服务”</li>
+<li>整体是不是更像个人助手，而不是一套要维护的 agent 平台</li>
+</ul>
+<p>这件事很难完全量化，但很重要。</p>
+<p>如果一个系统功能很多，但你每天都觉得像在运维它，那它对个人用户来说未必更好。Hermes 很容易给我这种感觉：<strong>它很强，但也很像一个需要管理的平台。</strong></p>
+<p>OpenClaw 则更容易让人觉得：<strong>这是我的助手，不是我的基础设施。</strong></p>
+<h2 id="真正的分野：平台-vs-助手"><a href="#真正的分野：平台-vs-助手" class="headerlink" title="真正的分野：平台 vs 助手"></a>真正的分野：平台 vs 助手</h2><p>我越来越觉得，这两个项目的差异不能只写成“远程接入谁更强”“多平台谁更多”“谁支持更多 backend”。那样写会把问题写扁。</p>
+<p>更准确的说法应该是：</p>
+<h3 id="Hermes-像什么？"><a href="#Hermes-像什么？" class="headerlink" title="Hermes 像什么？"></a>Hermes 像什么？</h3><p>Hermes 更像：</p>
+<ul>
+<li>一个多入口的 agent 平台</li>
+<li>一个可以长期部署的 gateway + runtime</li>
+<li>一个适合搭团队内机器人、服务型 agent、自动化中枢的系统</li>
+<li>一个有明显“platform engineering”味道的项目</li>
+</ul>
+<h3 id="OpenClaw-像什么？"><a href="#OpenClaw-像什么？" class="headerlink" title="OpenClaw 像什么？"></a>OpenClaw 像什么？</h3><p>OpenClaw 更像：</p>
+<ul>
+<li>一个个人助手运行时</li>
+<li>一个本机能力和远程接入结合得比较自然的系统</li>
+<li>一个强调“我自己的 agent”而不是“我的 agent 平台”的项目</li>
+<li>一个更适合长期日用而不是先做平台搭建的东西</li>
+</ul>
+<p>这个区别听起来像抽象话，但它几乎决定了你会不会喜欢它。</p>
+<h2 id="如果按具体场景来选"><a href="#如果按具体场景来选" class="headerlink" title="如果按具体场景来选"></a>如果按具体场景来选</h2><h3 id="场景一：我要做多平台常驻-agent"><a href="#场景一：我要做多平台常驻-agent" class="headerlink" title="场景一：我要做多平台常驻 agent"></a>场景一：我要做多平台常驻 agent</h3><p>比如：</p>
+<ul>
+<li>Telegram 上接收任务</li>
+<li>Discord 里和团队协作</li>
+<li>Slack 里做状态推送</li>
+<li>邮件里发结果</li>
+</ul>
+<p>这种情况下，Hermes 的多渠道能力非常有吸引力。</p>
+<h3 id="场景二：我要把执行环境和本机剥离"><a href="#场景二：我要把执行环境和本机剥离" class="headerlink" title="场景二：我要把执行环境和本机剥离"></a>场景二：我要把执行环境和本机剥离</h3><p>比如：</p>
+<ul>
+<li>我希望 agent 可以由手机触发</li>
+<li>但命令跑在 Docker &#x2F; SSH 测试机 &#x2F; 云工作区</li>
+<li>不想默认让 agent 直接碰我当前机器</li>
+</ul>
+<p>这种场景，Hermes 的 backend 模型很有优势。</p>
+<h3 id="场景三：我要的是“自己的助手”"><a href="#场景三：我要的是“自己的助手”" class="headerlink" title="场景三：我要的是“自己的助手”"></a>场景三：我要的是“自己的助手”</h3><p>比如：</p>
+<ul>
+<li>我在 Telegram 上和它说话</li>
+<li>它帮我查文件、开浏览器、调工具、处理本机任务</li>
+<li>我要的是个人使用体验，而不是平台搭建</li>
+</ul>
+<p>这种场景下，OpenClaw 往往更舒服。</p>
+<h3 id="场景四：我要低摩擦启动"><a href="#场景四：我要低摩擦启动" class="headerlink" title="场景四：我要低摩擦启动"></a>场景四：我要低摩擦启动</h3><p>如果你不想一上来就管：</p>
+<ul>
+<li>provider auth</li>
+<li>多渠道 token</li>
+<li>gateway</li>
+<li>backend</li>
+<li>session 策略</li>
+<li>memory &#x2F; skills &#x2F; cron</li>
+</ul>
+<p>那 OpenClaw 也更容易先跑起来。</p>
+<h2 id="我现在的态度：不是替代，而是分工"><a href="#我现在的态度：不是替代，而是分工" class="headerlink" title="我现在的态度：不是替代，而是分工"></a>我现在的态度：不是替代，而是分工</h2><p>如果今天让我做一个非常务实的判断，我不会说“从 OpenClaw 迁移到 Hermes”，而会更倾向于说：</p>
+<blockquote>
+<p><strong>Hermes 和 OpenClaw 更适合分工，而不是简单替代。</strong></p>
+</blockquote>
+<p>比如：</p>
+<ul>
+<li><strong>Hermes</strong> 负责多入口、自动化、远程执行、长期驻留服务</li>
+<li><strong>OpenClaw</strong> 负责个人助手、本机协作、浏览器与设备控制、日常使用</li>
+</ul>
+<p>这比硬要争出谁“绝对更好”更有意义。</p>
+<p>很多时候我们需要的不是一个包打天下的大系统，而是：<strong>哪个系统更贴合当前这类工作。</strong></p>
+<p>Hermes 最吸引人的地方，是它让我看到了 agent 平台化、服务化、后端抽象化的可能性；OpenClaw 最吸引人的地方，则是它仍然保留了那种“这是我自己的助手”的亲密感。</p>
+<p>所以如果你问我：</p>
+<blockquote>
+<p>Hermes Agent 是不是比 OpenClaw 更好？</p>
+</blockquote>
+<p>我现在会回答：</p>
+<ul>
+<li><strong>如果你在找 agent 平台，Hermes 很可能更强。</strong></li>
+<li><strong>如果你在找个人助手，OpenClaw 依然可能更适合。</strong></li>
+</ul>
+<p>而真正值得做的，不是急着站队，而是先想清楚：<strong>你要的是平台，还是助手。</strong></p>
+<hr>
+<h2 id="相关链接"><a href="#相关链接" class="headerlink" title="相关链接"></a>相关链接</h2><ul>
+<li>Hermes Agent GitHub：<a target="_blank" rel="noopener" href="https://github.com/NousResearch/hermes-agent">https://github.com/NousResearch/hermes-agent</a></li>
+<li>Hermes Agent Docs：<a target="_blank" rel="noopener" href="https://hermes-agent.nousresearch.com/docs/">https://hermes-agent.nousresearch.com/docs/</a></li>
+<li>OpenClaw GitHub：<a target="_blank" rel="noopener" href="https://github.com/openclaw/openclaw">https://github.com/openclaw/openclaw</a></li>
+<li>OpenClaw Docs：<a target="_blank" rel="noopener" href="https://docs.openclaw.ai/">https://docs.openclaw.ai</a></li>
+</ul>
+</section>
+    
+
+    <footer id="post-meta" class="clearfix">
+        <a href="/about/">
+        <img class="avatar" src="/images/avatar.png">
+        <div>
+            <span class="dark">Api Intelligence Daily Life</span>
+            <span>知识库 &amp; 博客</span>
+        </div>
+        </a>
+        <section id="sharing">
+            <a title="Share to Twitter" class="twitter" target="_blank" rel="noopener" href="https://twitter.com/intent/tweet?text=https://arbow.github.io/2026/04/13/hermes-agent-vs-openclaw-2026-04-13/ - Hermes Agent vs OpenClaw：两个 Agent 系统的分野 @"><span class="icon-twitter">tweet</span></a>
+            <a title="Share to Facebook" class="facebook" href="#" onclick="
+                window.open(
+                  'https://www.facebook.com/sharer/sharer.php?u='+encodeURIComponent(location.href),
+                  'facebook-share-dialog',
+                  'width=626,height=436');
+                return false;"><span class="icon-facebook-sign">Share</span>
+            </a>
+        </section>
+    </footer>
+
+
+  <section id="comment">
+    <button class="btn" id="loadcmts" onclick="cmts.load();">加载评论</button>
+    <div id="gitment"></div>
+    <script src='/js/gitment.browser.js'></script>
+    <link rel="stylesheet" href=''>
+    <script>
+      var cmts={
+        load:function cmts(){
+          var gitment = new Gitment({
+          
+            id: "Hermes Agent vs OpenClaw：两个 Agent 系统的分野",
+          
+            owner: "",
+            repo: "",
+            oauth: {
+              client_id: "",
+              client_secret: "",
+            },
+          })
+          gitment.render('gitment');
+          var loadcmt = document.getElementById("loadcmts");
+          var imyourfather = loadcmt.parentNode;
+          imyourfather.removeChild(loadcmts)
+        }
+      }
+    </script>
+  </section>
+
+
+	<footer id="footer">
+	<div id="social">
+		<p class="small">©  Arbow| Powered by Hexo & 
+			<a target="_blank" rel="noopener" href="https://github.com/F0r3at/Lights"> Lights</a>
+		</p>
+	</div>
+</footer>
+
+</section>
+
+	<script src="//cdnjs.loli.net/ajax/libs/instantclick/3.0.1/instantclick.min.js" data-no-instant></script>
+	<script data-no-instant>
+		
+		InstantClick.init('mousedown');
+	</script>
+
+
+
