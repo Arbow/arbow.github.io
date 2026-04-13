@@ -71,6 +71,61 @@
 </ul>
 <p>那么 <a target="_blank" rel="noopener" href="https://github.com/openclaw/openclaw">OpenClaw</a> 依然很有优势。</p>
 <p>这也是为什么我最后的判断不是“谁更强”，而是：<strong>谁更像平台，谁更像助手。</strong></p>
+<h2 id="一张表先看懂：Hermes-Agent-vs-OpenClaw"><a href="#一张表先看懂：Hermes-Agent-vs-OpenClaw" class="headerlink" title="一张表先看懂：Hermes Agent vs OpenClaw"></a>一张表先看懂：Hermes Agent vs OpenClaw</h2><table>
+<thead>
+<tr>
+<th>维度</th>
+<th>Hermes Agent</th>
+<th>OpenClaw</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>核心定位</td>
+<td>多入口、可部署的 agent 平台</td>
+<td>个人助手 runtime</td>
+</tr>
+<tr>
+<td>主要强项</td>
+<td>多渠道接入、backend 抽象、自动化编排</td>
+<td>本机工具协作、浏览器&#x2F;节点、日常使用体验</td>
+</tr>
+<tr>
+<td>远程接入</td>
+<td>强在多消息入口 + 远程执行后端</td>
+<td>强在个人远程接入、设备&#x2F;节点协作</td>
+</tr>
+<tr>
+<td>执行环境</td>
+<td><code>local</code> &#x2F; <code>docker</code> &#x2F; <code>ssh</code> &#x2F; <code>modal</code> &#x2F; <code>daytona</code> &#x2F; <code>singularity</code></td>
+<td>更偏本机与节点协作，强调工具控制体验</td>
+</tr>
+<tr>
+<td>会话与编排</td>
+<td>sessions、delegation、<code>execute_code</code>、cron、batch</td>
+<td>有会话与自动化能力，但整体更偏个人助手式工作流</td>
+</tr>
+<tr>
+<td>消息渠道</td>
+<td>非常强，覆盖 Telegram&#x2F;Discord&#x2F;Slack&#x2F;Email&#x2F;企业 IM 等</td>
+<td>有消息入口，但重点不在“超宽渠道矩阵”</td>
+</tr>
+<tr>
+<td>Memory &#x2F; Skills</td>
+<td>更系统、更平台化</td>
+<td>更本地化、更可读、更贴近 workspace 习惯</td>
+</tr>
+<tr>
+<td>部署复杂度</td>
+<td>高，适合长期搭建</td>
+<td>相对更轻，更适合快速上手</td>
+</tr>
+<tr>
+<td>更适合谁</td>
+<td>想搭长期运行的 agent 平台的人</td>
+<td>想要一个自己的个人助手的人</td>
+</tr>
+</tbody></table>
+<p>如果只看“功能面”，Hermes 往往更像大系统；如果看“日常使用的顺手程度”，OpenClaw 仍然很有竞争力。</p>
 <h2 id="Hermes-Agent-最强的三件事"><a href="#Hermes-Agent-最强的三件事" class="headerlink" title="Hermes Agent 最强的三件事"></a>Hermes Agent 最强的三件事</h2><h3 id="1-多渠道接入是真的强"><a href="#1-多渠道接入是真的强" class="headerlink" title="1. 多渠道接入是真的强"></a>1. 多渠道接入是真的强</h3><p>Hermes 最夸张的地方，是它把“消息入口”当成核心能力，而不是附属功能。根据官方文档能看到的入口就已经很多：Telegram、Discord、Slack、WhatsApp、Signal、Matrix、Mattermost、Email、SMS、DingTalk、Feishu&#x2F;Lark、WeCom、Weixin、Webhook、API Server、CLI 等。</p>
 <p>这意味着什么？</p>
 <p>意味着 Hermes 的思路不是“我在本机开一个 agent，然后顺手接个 Telegram”，而是：</p>
@@ -143,6 +198,11 @@
 <li>一个更适合长期日用而不是先做平台搭建的东西</li>
 </ul>
 <p>这个区别听起来像抽象话，但它几乎决定了你会不会喜欢它。</p>
+<h2 id="怎么选：一句话建议"><a href="#怎么选：一句话建议" class="headerlink" title="怎么选：一句话建议"></a>怎么选：一句话建议</h2><ul>
+<li><strong>你想搭一套长期运行、多入口、多后端的 agent 平台</strong>：优先看 Hermes Agent</li>
+<li><strong>你想要一个贴近日常、本机协作顺手、像“自己的助手”的系统</strong>：优先看 OpenClaw</li>
+<li><strong>你两种都想要</strong>：最现实的做法通常不是替代，而是分工</li>
+</ul>
 <h2 id="如果按具体场景来选"><a href="#如果按具体场景来选" class="headerlink" title="如果按具体场景来选"></a>如果按具体场景来选</h2><h3 id="场景一：我要做多平台常驻-agent"><a href="#场景一：我要做多平台常驻-agent" class="headerlink" title="场景一：我要做多平台常驻 agent"></a>场景一：我要做多平台常驻 agent</h3><p>比如：</p>
 <ul>
 <li>Telegram 上接收任务</li>
