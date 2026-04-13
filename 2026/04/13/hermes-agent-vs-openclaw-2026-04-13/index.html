@@ -116,8 +116,13 @@
 </tr>
 <tr>
 <td>记忆设计</td>
-<td>更强调跨会话 recall、user modeling、skills 沉淀</td>
+<td>更强调跨会话 recall、user modeling、skills 沉淀，以及主动整理记忆</td>
 <td>更强调文件化人格与长期记忆，如 workspace &#x2F; memory 文件</td>
+</tr>
+<tr>
+<td>Skill 机制</td>
+<td>不只装技能，还强调从经验里自动生成 &#x2F; 改进 skill</td>
+<td>生态更大，但主要仍是人写 skill、显式安装与维护</td>
 </tr>
 <tr>
 <td>自动化能力</td>
@@ -126,7 +131,7 @@
 </tr>
 <tr>
 <td>安全模型</td>
-<td>更强调多 backend 隔离与沙箱化执行</td>
+<td>更强调多 backend 隔离、记忆写入前扫描、沙箱化执行</td>
 <td>更强调个人助理 trust model 与本地&#x2F;网关审计</td>
 </tr>
 <tr>
@@ -185,6 +190,7 @@
 <li>技能和记忆的系统化积累</li>
 </ul>
 <p>在这条线上，它的野心明显比“一个顺手的个人 agent”更大。</p>
+<p>更值得一提的是，Hermes 的一些公开材料把“记忆 → 技能 → 行为改进”串成了一个更完整的闭环：不是只把历史存起来，而是希望把经验逐步炼成能力。这个味道和 OpenClaw 很不一样。OpenClaw 更像把状态、规则、人格、工具说明都清楚地摊开在文件系统里，让人一眼知道系统现在是什么状态；Hermes 则更像希望 agent 自己从经验里做抽取、压缩、归纳，再反哺后续行为。</p>
 <h2 id="OpenClaw-为什么仍然有自己的优势"><a href="#OpenClaw-为什么仍然有自己的优势" class="headerlink" title="OpenClaw 为什么仍然有自己的优势"></a>OpenClaw 为什么仍然有自己的优势</h2><p>如果只看功能清单，很容易觉得 Hermes 更重、更全、更平台化，于是顺手得出“更好”的结论。但真正用 agent 的时候，人其实不是在比 feature matrix，而是在比一种更微妙的东西：<strong>手感</strong>。</p>
 <p>我对 <a target="_blank" rel="noopener" href="https://github.com/openclaw/openclaw">OpenClaw</a> 的感觉一直是，它在很多地方更像“一个跟你一起生活在本机上的助手”。它的强点通常不体现在“支持多少种 backend”，而体现在：</p>
 <ul>
@@ -196,6 +202,13 @@
 <p>这件事很难完全量化，但很重要。</p>
 <p>如果一个系统功能很多，但你每天都觉得像在运维它，那它对个人用户来说未必更好。Hermes 很容易给我这种感觉：<strong>它很强，但也很像一个需要管理的平台。</strong></p>
 <p>OpenClaw 则更容易让人觉得：<strong>这是我的助手，不是我的基础设施。</strong></p>
+<p>还有一个微信文章里提到、我觉得确实值得补进来的观察：<strong>OpenClaw 更像“执行型操作系统”，Hermes 更像“成长型大脑”。</strong></p>
+<p>这个说法虽然带点修辞，但很抓重点。</p>
+<ul>
+<li>OpenClaw 的强项是把状态拆清楚：SOUL、MEMORY、USER、daily memory、workspace、tools、skills，各自职能比较明确</li>
+<li>Hermes 的强项则更像把这些东西重新收编，尽量减少“你得自己记得哪些信息放在哪”的负担</li>
+</ul>
+<p>换句话说，OpenClaw 更强调<strong>透明、可控、可检查</strong>；Hermes 更强调<strong>压缩、归纳、自动吸收</strong>。这也是为什么它们即便功能表面相似，给人的系统气质却完全不同。</p>
 <h2 id="真正的分野：平台-vs-助手"><a href="#真正的分野：平台-vs-助手" class="headerlink" title="真正的分野：平台 vs 助手"></a>真正的分野：平台 vs 助手</h2><p>我越来越觉得，这两个项目的差异不能只写成“远程接入谁更强”“多平台谁更多”“谁支持更多 backend”。那样写会把问题写扁。</p>
 <p>更准确的说法应该是：</p>
 <h3 id="Hermes-像什么？"><a href="#Hermes-像什么？" class="headerlink" title="Hermes 像什么？"></a>Hermes 像什么？</h3><p>Hermes 更像：</p>
