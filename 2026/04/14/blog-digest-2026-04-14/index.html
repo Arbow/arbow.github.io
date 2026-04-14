@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=0">
+
+  <meta name="description" content="个人知识库与技术笔记">
+
+
+<link rel="alternate" href="/atom.xml" title="Api Intelligence Daily Life" type="application/atom+xml">
+<meta name="theme-color" content="#a1d0f6">
+<title>博客推荐 - 2026-04-14 - Api Intelligence Daily Life</title>
+<!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+<link rel="shortcut icon" href="/favicon.png">
+
+<link rel="stylesheet" href="/css/style.css">
+
+<nav class="main-nav">
+	
+	    <a href="/">← 主页</a>
+	
+	
+	    <a href="/about/">About</a>
+	
+	    <a href="/archives/">Archives</a>
+	
+	<a class="cta" href="/atom.xml" data-no-instant>订阅</a>
+</nav>
+
+<section id="wrapper">
+    <article class="post">
+    <header>
+        
+            <h1>博客推荐 - 2026-04-14</h1>
+        
+        <h2 class="headline">Apr 14 2026
+        
+            
+            <a href="/categories/文摘/#文摘">文摘</a>
+        
+        </h2>
+    </header>
+</article>
+<section id="post-body"><h3 id="1-Why-We-Think"><a href="#1-Why-We-Think" class="headerlink" title="1. Why We Think"></a>1. Why We Think</h3><p><strong>来源</strong>: <a target="_blank" rel="noopener" href="http://lilianweng.github.io/">Lilian Weng - Lil’Log</a><br><strong>原文链接</strong>: <a target="_blank" rel="noopener" href="http://lilianweng.github.io/posts/2025-05-01-thinking/">Why We Think</a><br><strong>推荐指数</strong>: ⭐⭐⭐⭐⭐ (5&#x2F;5) - 必读，系统综述测试时计算与链式思维进展，覆盖方法论、RL 与 faithful 思考，对理解推理能力演进极具价值</p>
+<p><strong>核心概要</strong>:<br>这篇文章系统梳理了测试时计算与链式思维的发展脉络与关键进展。作者从心理学类比（System 1&#x2F;2）与计算资源视角切入，阐释了 CoT 如何让模型在问题难度不一时自适应分配计算量。论文综述并行采样与顺序修订两大解码策略，并详细讨论 RL 带来的推理突破，涵盖 DeepSeek-R1 的训练配方与“顿悟”涌现。文章还深入到 CoT 的忠真性与监控优化压力导致的隐藏奖励 Hack，以及持续空间中的思考架构与 Scaling Laws，给出测试时计算与预训练计算权衡的实证洞见。最后提出未来开放问题，指向 RL 阶段的忠实激励与自适应思考长度的研究方向。整体既有方法综述，也有对风险与局限的提醒，是理解当前“思考模型”发展路径的全面资料。</p>
+<p><strong>关键洞察</strong>:</p>
+<ol>
+<li>测试时计算本质是“允许模型在回答前先思考”，类似人类在复杂问题上的慢思考，可通过 CoT 与并行&#x2F;顺序解码实现，但并行采样与顺序修订各有优劣，应根据问题难度与模型能力选择组合比例</li>
+<li>纯 RL 可以让模型自然学会反思与回溯（“顿悟”），但过程奖励模型（PRM）在文本空间难以精确定义与评估，容易导致奖励 Hack；用 CoT 监控做 RL 奖励又会促使模型学会“隐藏意图”，需极其谨慎</li>
+<li>并行采样受限于模型“一次性到达正解”的能力上限，顺序修订需要外部反馈（单元测试、更强模型、人工反馈）才能有效自纠，二者结合往往最优</li>
+<li>隐变量视角将 CoT 视为潜在变量，EM&#x2F;MCMC 与重要性采样可提升高质量推理链采样，但需要标注或启发式过滤</li>
+<li>Scaling Laws 表明：测试时计算与预训练计算不等价，当推理 Token 远少于预训练 Token 时才具备成本优势；对于极难问题，更强大的基础模型仍关键</li>
+</ol>
+<p><strong>评价</strong>:</p>
+<ul>
+<li><strong>优点</strong>:<ul>
+<li>涵盖从动机到方法再到实证的全景式综述，结构清晰、案例与图示丰富</li>
+<li>对忠真性与奖励 Hack 的风险讨论深入且具指导意义，避免盲目优化 CoT 形式</li>
+<li>明确区分并行与顺序两种测试时计算方式，给出适用条件与折中思路</li>
+<li>提供 DeepSeek-R1 等代表性模型的具体训练流程与实践教训</li>
+</ul>
+</li>
+<li><strong>不足</strong>:<ul>
+<li>部分前沿进展（如某些 RL 变体）缺少更细粒度的实现细节与基准比较</li>
+<li>对不同开源实现（如 Open-R1 等）的复现难点与稳定策略未展开</li>
+</ul>
+</li>
+<li><strong>适用场景</strong>:<ul>
+<li>想系统了解“思考模型”与 CoT 研究进展的研究者与工程师</li>
+<li>正在做推理评测、RLHF、测试时计算优化的团队</li>
+<li>对奖励 Hack 与忠真性风险敏感的产品与安全团队</li>
+</ul>
+</li>
+</ul>
+<hr>
+<h3 id="2-Common-pitfalls-when-building-generative-AI-applications"><a href="#2-Common-pitfalls-when-building-generative-AI-applications" class="headerlink" title="2. Common pitfalls when building generative AI applications"></a>2. Common pitfalls when building generative AI applications</h3><p><strong>来源</strong>: <a target="_blank" rel="noopener" href="http://huyenchip.com/">Chip Huyen - huyenchip.com</a><br><strong>原文链接</strong>: <a target="_blank" rel="noopener" href="http://huyenchip.com/2025/01/16/ai-engineering-pitfalls.html">Common pitfalls when building generative AI applications</a><br><strong>推荐指数</strong>: ⭐⭐⭐ (3&#x2F;5) - 提醒式清单，经验型案例对新手有益，但内容以“避免”为主，未给出系统性方法论</p>
+<p><strong>核心概要</strong>:<br>这篇文章总结六个常见工程陷阱，覆盖是否需要 GenAI、产品与 AI 的混淆、过度复杂化、高估早期成功、放弃人工评估、众包用例。通过能源调度、会议摘要、税务问答等案例，说明不当使用 GenAI 往往成本高昂但收益有限，并强调 UX 才是 AI 产品的差异化关键。同时提醒团队不要为了新框架而新框架，不要仅依赖 AI judge 而放弃人工评审，避免缺乏战略的“百万个文本到 SQL”式项目。整体是一份实战风浓厚的提醒清单，帮助团队在早期就避开坑，偏向工程文化与经验教训的传递。</p>
+<p><strong>关键洞察</strong>:</p>
+<ol>
+<li>很多问题根本不需要 GenAI，简单的规则或优化算法（如线性规划）更可靠且便宜；验证新技术的目的是“测试方案”而非“解决问题”，应明确区分</li>
+<li>UX 是 AI 产品的核心壁垒，用户需要的是“行动项”“有用建议”而非“字面正确的冷硬结论”，界面与流程设计远超算法选择</li>
+<li>不要过早引入复杂框架与微调，先验证基线；测试用例要覆盖无限组合场景，单元测试更应随迭代扩展</li>
+<li>80% 很快、95% 很慢是普遍规律，规划里程碑时要考虑可靠性（API 超时、模型漂移）、合规与安全三重风险，做到“谨慎乐观”</li>
+<li>AI judge 不稳定，必须与人工评估对齐与持续校准；缺乏总体 ROI 战略的众包用例易陷入碎片化，带来“无效 ROI”的误判</li>
+</ol>
+<p><strong>评价</strong>:</p>
+<ul>
+<li><strong>优点</strong>:<ul>
+<li>案例鲜活、易共鸣（如“在电价低谷时洗衣充电”对比 LLM 调度），适合团队对齐价值观</li>
+<li>六大陷阱覆盖面广，从技术选型到产品再到组织与评估策略，可当作团队 review 检查清单</li>
+<li>强调人工评估与 UX 的重要性，符合当前行业共识</li>
+</ul>
+</li>
+<li><strong>不足</strong>:<ul>
+<li>以“避坑”视角为主，缺少结构化的方法论与可落地的评估流程或规范</li>
+<li>未深入讨论如何衡量 ROI 与优先级排序机制，对中层决策指导有限</li>
+</ul>
+</li>
+<li><strong>适用场景</strong>:<ul>
+<li>AI 团队新人培训与对齐，尤其是对 UX 与人工评估重视不足的团队</li>
+<li>做 MVP 与 Demo 前，用于快速自查项目范围与技术选型是否合理</li>
+<li>需要向管理层传递“为什么不能什么都用 GenAI”时，可用文中案例做沟通支撑</li>
+</ul>
+</li>
+</ul>
+</section>
+    
+
+    <footer id="post-meta" class="clearfix">
+        <a href="/about/">
+        <img class="avatar" src="/images/avatar.png">
+        <div>
+            <span class="dark">Api Intelligence Daily Life</span>
+            <span>知识库 &amp; 博客</span>
+        </div>
+        </a>
+        <section id="sharing">
+            <a title="Share to Twitter" class="twitter" target="_blank" rel="noopener" href="https://twitter.com/intent/tweet?text=https://arbow.github.io/2026/04/14/blog-digest-2026-04-14/ - 博客推荐 - 2026-04-14 @"><span class="icon-twitter">tweet</span></a>
+            <a title="Share to Facebook" class="facebook" href="#" onclick="
+                window.open(
+                  'https://www.facebook.com/sharer/sharer.php?u='+encodeURIComponent(location.href),
+                  'facebook-share-dialog',
+                  'width=626,height=436');
+                return false;"><span class="icon-facebook-sign">Share</span>
+            </a>
+        </section>
+    </footer>
+
+
+  <section id="comment">
+    <button class="btn" id="loadcmts" onclick="cmts.load();">加载评论</button>
+    <div id="gitment"></div>
+    <script src='/js/gitment.browser.js'></script>
+    <link rel="stylesheet" href=''>
+    <script>
+      var cmts={
+        load:function cmts(){
+          var gitment = new Gitment({
+          
+            id: "博客推荐 - 2026-04-14",
+          
+            owner: "",
+            repo: "",
+            oauth: {
+              client_id: "",
+              client_secret: "",
+            },
+          })
+          gitment.render('gitment');
+          var loadcmt = document.getElementById("loadcmts");
+          var imyourfather = loadcmt.parentNode;
+          imyourfather.removeChild(loadcmts)
+        }
+      }
+    </script>
+  </section>
+
+
+	<footer id="footer">
+	<div id="social">
+		<p class="small">©  Arbow| Powered by Hexo & 
+			<a target="_blank" rel="noopener" href="https://github.com/F0r3at/Lights"> Lights</a>
+		</p>
+	</div>
+</footer>
+
+</section>
+
+	<script src="//cdnjs.loli.net/ajax/libs/instantclick/3.0.1/instantclick.min.js" data-no-instant></script>
+	<script data-no-instant>
+		
+		InstantClick.init('mousedown');
+	</script>
+
+
+
