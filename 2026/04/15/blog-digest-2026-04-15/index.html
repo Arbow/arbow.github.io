@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=0">
+
+  <meta name="description" content="个人知识库与技术笔记">
+
+
+<link rel="alternate" href="/atom.xml" title="Api Intelligence Daily Life" type="application/atom+xml">
+<meta name="theme-color" content="#a1d0f6">
+<title>博客推荐 - 2026-04-15 - Api Intelligence Daily Life</title>
+<!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+<link rel="shortcut icon" href="/favicon.png">
+
+<link rel="stylesheet" href="/css/style.css">
+
+<nav class="main-nav">
+	
+	    <a href="/">← 主页</a>
+	
+	
+	    <a href="/about/">About</a>
+	
+	    <a href="/archives/">Archives</a>
+	
+	<a class="cta" href="/atom.xml" data-no-instant>订阅</a>
+</nav>
+
+<section id="wrapper">
+    <article class="post">
+    <header>
+        
+            <h1>博客推荐 - 2026-04-15</h1>
+        
+        <h2 class="headline">Apr 15 2026
+        
+        </h2>
+    </header>
+</article>
+<section id="post-body"><h2 id="今日博客推荐汇总"><a href="#今日博客推荐汇总" class="headerlink" title="今日博客推荐汇总"></a>今日博客推荐汇总</h2><h3 id="1-为什么你的”AI-优先”战略可能大错特错？"><a href="#1-为什么你的”AI-优先”战略可能大错特错？" class="headerlink" title="1. 为什么你的”AI 优先”战略可能大错特错？"></a>1. 为什么你的”AI 优先”战略可能大错特错？</h3><p><strong>来源</strong>: <a target="_blank" rel="noopener" href="https://baoyu.io/blog">宝玉的分享</a><br><strong>原文链接</strong>: <a target="_blank" rel="noopener" href="https://baoyu.io/blog/2026-04-13/ai-first">为什么你的”AI 优先”战略可能大错特错？</a><br><strong>推荐指数</strong>: ⭐⭐⭐⭐ (4&#x2F;5) - 深度剖析 AI First 战略的本质，提出工程基础优先的观点，案例详实但适用场景有限</p>
+<p><strong>核心概要</strong>:<br>文章讨论了企业推行”AI 优先”战略时的常见误区。作者指出，许多公司所谓的”AI First”只是将 AI 工具强行塞入现有工作流，例如用 Cursor 辅助写代码、用 ChatGPT 写需求文档，本质流程并未改变，效率提升有限。真正的 AI First 需要彻底重构工程研发流程，以”AI 是主力构建者”为假设，重新设计产品规划、代码实现、测试部署和组织方式。</p>
+<p>文章强调了一个关键观点：AI 时代，传统的研发流程中的人成了新瓶颈。产品经理花几周规划功能，AI 两小时就能实现；QA 测三天，AI 写代码只要两小时；团队规模有限，竞争对手人数是百倍。解决方案不是用 AI 辅助人，而是把人从链条中拿掉——AI 写代码、AI 审查代码、AI 跑测试、AI 部署上线、AI 监控状态，人只在关键节点做判断。</p>
+<p>作者基于 CREAO 智能体平台的实践，详细介绍了如何构建”脚手架工程”（Harness Engineering）：统一代码库、六阶段 CI&#x2F;CD 流水线、AI 代码审查、自愈反馈闭环、功能开关管理。通过这套体系，团队每天能进行 3-8 次生产环境部署，功能当天上线、当天撤下，数据说话。文章还指出，这种模式并非万能：适合后端逻辑为主、界面不复杂的产品，以及早期产品快速试错场景；但不适合 UI 密集、质量敏感或安全性要求高的场景。</p>
+<p><strong>关键洞察</strong>:</p>
+<ol>
+<li><strong>真正的 AI First ≠ AI 辅助</strong>：前者是重构整个流程架构，让 AI 成为构建主力；后者只是把 AI 强行塞入旧流程，提升有限。</li>
+<li><strong>五大工程前提</strong>：要落地 AI First，必须先具备自动化测试、CI&#x2F;CD 流程、A&#x2F;B 测试和线上监控、任务管理、良好系统架构这五大基础，否则就是沙上盖楼。</li>
+<li><strong>脚手架工程理念</strong>：工程团队的核心工作从”写代码”变为”赋能智能体”，通过结构化上下文、专业智能体、持久记忆和执行闭环，让 AI 清晰理解系统能力和约束。</li>
+<li><strong>工程师角色分化</strong>：未来只存在两类工程师——少数架构师（设计标准、批判 AI、定义”好”的标准）和多数操作员（由 AI 分配任务，审核风险、验证修复）。</li>
+<li><strong>适用场景的边界</strong>：AI First 只适合特定场景（后端驱动、快速试错），不适合 UI 密集、质量敏感或安全性要求高的产品，盲目照搬会出问题。</li>
+</ol>
+<p><strong>评价</strong>:</p>
+<ul>
+<li><strong>优点</strong>：文章提供了真实的 AI First 实践案例，技术栈和流程描述详细（统一代码库、六阶段 CI&#x2F;CD、自愈闭环、功能开关），观点具有启发性——强调”软件工程 First”而非简单堆 AI 工具，抓住了本质。对工程师角色演变的观察（架构师 vs 操作员）和对初级工程师适应更快的现象分析，具有现实参考价值。</li>
+<li><strong>不足</strong>：案例基于特定类型产品（后端驱动的智能体平台），推广到其他场景（如前端密集、高安全要求）时适用性有限。文章对转型代价的描述较少，实际推行中遇到的阻力（员工焦虑、资深工程师技能贬值、组织重构）可能比描述的更复杂。对测试覆盖度、架构成熟度等前提条件的要求较高，许多企业难以一步到位。</li>
+<li><strong>适用场景</strong>：适合技术负责人、CTO、工程管理者阅读，特别是那些考虑推行 AI First 战略但缺乏实践案例参考的团队。后端为主、产品迭代快、对测试和自动化有基础积累的团队更能从中受益。UI 密集型产品团队、银行等安全敏感领域需谨慎参考，重点可放在工程基础建设上。</li>
+</ul>
+</section>
+    
+
+    <footer id="post-meta" class="clearfix">
+        <a href="/about/">
+        <img class="avatar" src="/images/avatar.png">
+        <div>
+            <span class="dark">Api Intelligence Daily Life</span>
+            <span>知识库 &amp; 博客</span>
+        </div>
+        </a>
+        <section id="sharing">
+            <a title="Share to Twitter" class="twitter" target="_blank" rel="noopener" href="https://twitter.com/intent/tweet?text=https://arbow.github.io/2026/04/15/blog-digest-2026-04-15/ - 博客推荐 - 2026-04-15 @"><span class="icon-twitter">tweet</span></a>
+            <a title="Share to Facebook" class="facebook" href="#" onclick="
+                window.open(
+                  'https://www.facebook.com/sharer/sharer.php?u='+encodeURIComponent(location.href),
+                  'facebook-share-dialog',
+                  'width=626,height=436');
+                return false;"><span class="icon-facebook-sign">Share</span>
+            </a>
+        </section>
+    </footer>
+
+
+  <section id="comment">
+    <button class="btn" id="loadcmts" onclick="cmts.load();">加载评论</button>
+    <div id="gitment"></div>
+    <script src='/js/gitment.browser.js'></script>
+    <link rel="stylesheet" href=''>
+    <script>
+      var cmts={
+        load:function cmts(){
+          var gitment = new Gitment({
+          
+            id: "博客推荐 - 2026-04-15",
+          
+            owner: "",
+            repo: "",
+            oauth: {
+              client_id: "",
+              client_secret: "",
+            },
+          })
+          gitment.render('gitment');
+          var loadcmt = document.getElementById("loadcmts");
+          var imyourfather = loadcmt.parentNode;
+          imyourfather.removeChild(loadcmts)
+        }
+      }
+    </script>
+  </section>
+
+
+	<footer id="footer">
+	<div id="social">
+		<p class="small">©  Arbow| Powered by Hexo & 
+			<a target="_blank" rel="noopener" href="https://github.com/F0r3at/Lights"> Lights</a>
+		</p>
+	</div>
+</footer>
+
+</section>
+
+	<script src="//cdnjs.loli.net/ajax/libs/instantclick/3.0.1/instantclick.min.js" data-no-instant></script>
+	<script data-no-instant>
+		
+		InstantClick.init('mousedown');
+	</script>
+
+
+
