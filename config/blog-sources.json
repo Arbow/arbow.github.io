@@ -1,0 +1,32 @@
+{
+  "sources": [
+    {
+      "name": "云风的博客",
+      "url": "https://blog.codingnow.com/",
+      "type": "rss",
+      "rss_url": "https://blog.codingnow.com/index.xml",
+      "enabled": true
+    },
+    {
+      "name": "阮一峰的网络日志",
+      "url": "https://www.ruanyifeng.com/blog/",
+      "type": "rss",
+      "rss_url": "https://www.ruanyifeng.com/blog/atom.xml",
+      "enabled": true
+    },
+    {
+      "name": "美团技术团队",
+      "url": "https://tech.meituan.com/",
+      "type": "rss",
+      "rss_url": "https://tech.meituan.com/rss.xml",
+      "enabled": true
+    },
+    {
+      "name": "字节跳动技术博客",
+      "url": "https://techblog.toutiao.com/",
+      "type": "html",
+      "enabled": true
+    }
+  ],
+  "last_updated": "2026-04-20T00:00:00Z"
+}
