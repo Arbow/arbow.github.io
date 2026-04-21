@@ -1,32 +1,64 @@
 {
-  "sources": [
+  "blogs": [
+    {
+      "name": "OpenAI Engineering",
+      "url": "https://openai.com/news/engineering/",
+      "feedUrl": "http://127.0.0.1:1200/openai/engineering",
+      "type": "rsshub"
+    },
+    {
+      "name": "Anthropic Engineering",
+      "url": "https://www.anthropic.com/engineering",
+      "feedUrl": "http://127.0.0.1:1200/anthropic/engineering",
+      "type": "rsshub"
+    },
     {
       "name": "云风的博客",
       "url": "https://blog.codingnow.com/",
-      "type": "rss",
-      "rss_url": "https://blog.codingnow.com/index.xml",
-      "enabled": true
+      "feedUrl": "https://blog.codingnow.com/atom.xml",
+      "type": "rss"
     },
     {
-      "name": "阮一峰的网络日志",
-      "url": "https://www.ruanyifeng.com/blog/",
-      "type": "rss",
-      "rss_url": "https://www.ruanyifeng.com/blog/atom.xml",
-      "enabled": true
+      "name": "liruifengv",
+      "url": "https://liruifengv.com/posts/",
+      "feedUrl": "http://127.0.0.1:1200/liruifengv/blog",
+      "type": "rsshub"
     },
     {
-      "name": "美团技术团队",
-      "url": "https://tech.meituan.com/",
-      "type": "rss",
-      "rss_url": "https://tech.meituan.com/rss.xml",
-      "enabled": true
+      "name": "宝玉",
+      "url": "https://baoyu.io/blog",
+      "feedUrl": "http://127.0.0.1:1200/baoyu/blog",
+      "type": "rsshub"
     },
     {
-      "name": "字节跳动技术博客",
-      "url": "https://techblog.toutiao.com/",
-      "type": "html",
-      "enabled": true
+      "name": "Chip Huyen",
+      "url": "https://huyenchip.com/blog/",
+      "feedUrl": "https://huyenchip.com/feed.xml",
+      "type": "rss"
+    },
+    {
+      "name": "Lilian Weng",
+      "url": "https://lilianweng.github.io/",
+      "feedUrl": "https://lilianweng.github.io/index.xml",
+      "type": "rss"
+    },
+    {
+      "name": "李乾坤",
+      "url": "https://qiankunli.github.io/",
+      "feedUrl": "https://qiankunli.github.io/feed.xml",
+      "type": "rss"
+    },
+    {
+      "name": "卢向东",
+      "url": "https://luxiangdong.com/",
+      "feedUrl": "https://www.luxiangdong.com/rss2.xml",
+      "type": "rss"
+    },
+    {
+      "name": "Armin Ronacher",
+      "url": "https://lucumr.pocoo.org/",
+      "feedUrl": "https://lucumr.pocoo.org/feed.xml",
+      "type": "rss"
     }
-  ],
-  "last_updated": "2026-04-20T00:00:00Z"
+  ]
 }
