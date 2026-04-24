@@ -1,0 +1,903 @@
+{
+  "truly_new_articles": [
+    {
+      "title": "两小时激辩：黄仁勋为什么不怕 TPU、不怕华为、不怕出口管制？",
+      "link": "https://baoyu.io/blog/jensen-huang-dwarkesh-interview",
+      "pubDate": "2026-04-17T00:00:00+00:00",
+      "summary": "黄仁勋最近接受了 Dwarkesh Patel 长达两个小时的高密度专访。这场访谈没有客套寒暄，只有密集的观点碰撞。如果你没时间看完，那就记住这一句话——掌控全球 AI 基础设施命脉的老黄，用这样一句话定义了 Nvidia 的使命： \n \n “输入是电子，输出是 Token，中间是 Nvidia。”\n（“The input is electron, the output is tokens. That is in the middle, Nvidia.”） \n \n   \n 整场对话的气氛激烈又直白。主持人 Dwarkesh 在每个话题都紧追不放，尤其涉及中国芯片出口时，两人更是直接“杠”了整整二十分钟。老黄强烈反对把 AI 芯片当作武器的类比，而 Dwarkesh 则紧盯着刚发布不久、网络攻击能力惊人的 Anthropic Claude Mythos 模型，穷追猛打。 \n   \n 访谈来源：Dwarkesh Patel Podcast（2026 年 4 月初）\n原始视频： YouTube 链接  \n \n 要点速览 \n \n  Nvidia 的经营哲学是“少做，但每件事都是独一无二” 。这",
+      "source": "宝玉"
+    },
+    {
+      "title": "使用 Claude Code：会话管理与 100 万 上下文",
+      "link": "https://baoyu.io/translations/claude-code-session-management",
+      "pubDate": "2026-04-15T00:00:00+00:00",
+      "summary": "作者：Thariq \n原文： Using Claude Code: Session Management &amp; 1M Context  \n 【注：Thariq 是 Anthropic 员工，Claude Code 的核心对外布道者。这篇本质是产品使用指南，有官方推广成分，但操作建议确实实用。】 \n 今天，我们为  /usage  命令推出了一项全新更新，旨在帮助你更清晰地了解自己在 Claude Code 中的使用情况。这个决定的背后，是我们近期与用户进行的多次深入交流。 \n 在这些交流中，我们反复听到了一个现象：大家在管理会话时的习惯可谓是五花八门。尤其是最近 Claude Code 将上下文窗口（Context Window）升级到了 100 万大关，这种差异就更明显了。 \n 你是习惯在终端里只保持一两个开着的会话？还是每次输入提示词都重新开个新会话？你通常在什么时候会用到压缩（Compact）、回溯（Rewind）或者子智能体（Subagents）？又是什么原因导致了一次糟糕的压缩呢？ \n 这里头其实大有学问。这些看似不起眼的细节，极大地影响着你使用 Claude Code",
+      "source": "宝玉"
+    },
+    {
+      "title": "Vibe Coding 是中年男人的钓鱼",
+      "link": "https://baoyu.io/blog/2026-04-14/vibe-coding-and-fishing",
+      "pubDate": "2026-04-15T00:00:00+00:00",
+      "summary": "我发现 AI 对于很多中年男人来说，就跟钓鱼一样，是一种合法且体面的独处方式。 \n 中年男人的生活，大多处在一种身份叠加的夹缝之中。白天，他可能是部门经理，需要照顾团队绩效与上下级关系；晚上回到家，他是丈夫、是爸爸，要操心家里的大事小情；到了周末或节假日，又得参加各种社交，应付朋友之间的人情往来。总之，他生命里的每一分钟，好像都属于别人，唯独不属于自己。 \n   \n 于是钓鱼成了一种奇妙的避难所。当男人坐在河边，拿着鱼竿凝视着水面的时候，他拥有了一个无可辩驳的理由拒绝外界的干扰： \"我在钓鱼呢\" 。简简单单五个字，构筑起一道旁人难以跨越的屏障，彻底保护住那段名正言顺的孤独时光。 \n AI，其实也是同样的道理。 \n 当深夜降临，老婆孩子都睡下，你打开电脑，开始一段 Vibe Coding。对着屏幕，你只需要简单地对 AI 说一句：\"帮我做个能查天气的小工具\"，接下来，你甚至不用完全理解代码是如何生成的。看着屏幕上的文字快速滚动、项目神奇地运行起来，那种快感，跟钓鱼时鱼竿突然猛地一沉几乎一模一样。 \n 其实，钓鱼的人未必真在乎鱼，玩 Vibe Coding 的人也未必真在乎那个最终的产品。",
+      "source": "宝玉"
+    },
+    {
+      "title": "为什么你的\"AI 优先\"战略可能大错特错？",
+      "link": "https://baoyu.io/blog/2026-04-13/ai-first",
+      "pubDate": "2026-04-13T00:00:00+00:00",
+      "summary": "今天刷到《Why Your”AI-First”Strategy Is Probably Wrong》这篇文章（原文翻译我放到下面）几次，说点不一样的。 与其说 AI First，不如说软件工程 First。  \n   \n 这篇文章看着在讲 AI，底下全是软件工程。 \n 抛开后面讲组织和人的部分，原文前半段的重点简单总结一下： \n  AI 时代，人成了瓶颈。  PM 花几周做需求，AI 两小时就能实现，PM 成了瓶颈。QA 测三天，AI 写代码只要两小时，QA 成了瓶颈。团队 25 个人，对手几百人，人力也是瓶颈。 \n 怎么办？ 把人从链条里拿掉。  AI 写代码、AI 审查代码、AI 跑测试、AI 部署上线、AI 监控线上状态，出了问题自动回滚。每天定时扫描日志，自动发现问题、分配任务、跟踪修复。整条流水线跑起来，人只需要在关键节点做判断。 \n 至于文中提到的统一代码库，锦上添花，和 AI First 关系不大。有当然更好，没有也有很多替代方案。 \n 整套方案听下来，逻辑自洽，效果也漂亮：一天部署好几次，功能当天上当天撤，数据说了算。 \n 先对照自己，想五件事 \n 但先别急着照搬，先对",
+      "source": "宝玉"
+    },
+    {
+      "title": "除法的意义",
+      "link": "https://blog.codingnow.com/2026/04/division.html",
+      "pubDate": "2026-04-12T12:52:17+00:00",
+      "summary": "可可已经在三年级下学期了，数学似乎还是有点问题。这个阶段考试成绩其实都不会太差，但一旦作业或考卷上的错题并非粗心大意就值得警惕。乘除法是二年级学的，三年级已经在学两位数除一位数的除法。但会计算并不难，计算只是一项机械性技能，难的是理解乘除法的意义。理解乘除比理解加减法困难的多。 我翻出几个月前的一篇 blog，发现过了 4 个月，她的问题依旧：乘除法作为一项计算技能和其背后的意义是割裂的。这导致了很多问题到底如何解决一筹莫展。固然多作练习就能开悟，毕竟几乎没有成人回头看小学数学会觉得难以理解的。但我还是想尽力搞清楚她的小脑袋里到底是哪打结了。 今晚讲一道相当简单的数学题： 有 96 个鸡蛋，8 个一盒装，可以装多少盒？...",
+      "source": "云风的博客"
+    },
+    {
+      "title": "“多智能体协作指南：五种主流模式怎么选、怎么用？”",
+      "link": "https://baoyu.io/translations/2026-04-11/multi-agent-coordination-patterns",
+      "pubDate": "2026-04-12T00:00:00+00:00",
+      "summary": "在之前的一篇文章中，我们探讨了多智能体 (Multi-agent) 系统何时能发挥最大价值，以及什么时候只用单个智能体 (Agent) 其实更好。这篇文章则是为那些已经决定采用“多智能体”路线的团队准备的：面对手头的问题，到底该选哪种协作模式？ \n 我们常常看到，有些团队在挑选模式时，只顾着选听起来“高大上”的，却忽略了到底适不适合手头的问题。我们的建议是： 从最简单的、能跑通的模式开始，观察它在哪里会遇到瓶颈，然后再逐步升级。  今天这篇文章，我们就来拆解五种常见模式的运作原理和局限性： \n \n  生成 - 验证者 (Generator-verifier) ：适用于看重输出质量、且有明确评估标准的场景。 \n  调度 - 子智能体 (Orchestrator-subagent) ：适用于任务拆解清晰、子任务边界分明的场景。 \n  智能体团队 (Agent teams) ：适用于可以并行处理、互不干扰且需要长时间运行的子任务。 \n  消息总线 (Message bus) ：适用于事件驱动的流水线作业，以及系统还在不断扩展新智能体的场景。 \n  共享状态 (Shared-state) ：适",
+      "source": "宝玉"
+    },
+    {
+      "title": "The Center Has a Bias",
+      "link": "https://lucumr.pocoo.org/2026/4/11/the-center-has-a-bias/",
+      "pubDate": "2026-04-11T00:00:00+00:00",
+      "summary": "Whenever a new technology shows up, the conversation quickly splits into camps.\nThere are the people who reject it outright, and there are the people who seem\nto adopt it with religious enthusiasm.  For more than a year now, no topic has\nbeen more polarising than AI coding agents. \n What I keep noticing is that a lot of the criticism directed at these tools is\nperfectly legitimate, but it often comes from people without a meaningful amount\nof direct experience with them.  They are not necessaril",
+      "source": "Armin Ronacher"
+    },
+    {
+      "title": "从长期回报、Credit Assignment 到 PPO",
+      "link": "https://qiankunli.github.io/2026/04/06/rl-mainline.html",
+      "pubDate": "2026-04-06T00:00:00+08:00",
+      "summary": "MathJax = {\n    tex: {\n      inlineMath: [['$', '$'],['$$', '$$']],\n      displayMath: [['$$', '$$']],\n    },\n    svg: {\n      fontCache: 'global'\n    }\n  };\n \n\n  \n\n 简介 \n\n \n    简介  \n    什么是强化学习  \n    一张 RL 家谱图      \n        Value-based  \n        Policy Gradient  \n        再补一个视角：Model-based 和 Model-free  \n     \n   \n    第一问：怎么定义长期回报，而不是只看眼前这一步      \n        Monte Carlo  \n        Temporal Difference  \n     \n   \n    第二问：怎么把“整段轨迹最后才知道好不好”这件事，分摊到中间每一个 action 上      \n        Policy Gradient  \n     \n   ",
+      "source": "李乾坤"
+    },
+    {
+      "title": "访谈｜Codex 团队如何用自己的产品构建产品——整个 Spec 只有 10 个要点",
+      "link": "https://baoyu.io/blog/2026-04-06/how-openais-codex-team-builds-with-codex",
+      "pubDate": "2026-04-06T00:00:00+00:00",
+      "summary": "OpenAI Codex 团队的 产品规格文档只有 10 个要点 。不是说每个功能的文档只有 10 个要点，而是整个产品的 spec 就这么多。 设计师写的代码量超过了六个月前工程师写的 。50 到 100 人的团队，直到最近才有了第二个产品经理。 \n 这些数字来自 OpenAI Codex 产品负责人 Alexander Embiricos 和开发者体验负责人 Romain Huet。两人在 Peter Yang 主持的 Behind the Craft 节目中，详细讲述了 Codex 团队如何用自己的产品构建产品，为什么中期路线图在 OpenAI 行不通，以及 PM 这个岗位可能正在从“领导者”变成“填空人”。 \n  \n原始视频： https://www.youtube.com/watch?v=9qXc-THAvc0  \n \n Alexander Embiricos（下文简称 Alex）是 Codex 的产品负责人，此前有五年结对编程产品创业经验。Romain Huet 是 OpenAI 开发者体验负责人，此前在 Stripe 担任开发者平台产品负责人。 \n \n  要点速览：  \n",
+      "source": "宝玉"
+    },
+    {
+      "title": "OpenAI 总裁 Greg Brockman：AI 自我改进、Super App 豪赌、通往 AGI 之路、算力扩张",
+      "link": "https://baoyu.io/blog/openai-president-greg-brockman-ai-self-improvement-the-superapp-bet-path-to-agi-scaling-compute",
+      "pubDate": "2026-04-01T00:00:00+00:00",
+      "summary": "Greg Brockman 坐进 Big Technology Podcast 的演播室时，OpenAI 刚做完三件大事： 砍掉 Sora，收到 1100 亿美元融资，完成下一代模型 Spud 的预训练。 砍一个明星产品、拿一笔天价融资、押注一个新模型，三件事同时发生，每一件都需要解释。接下来 90 分钟里，这位 OpenAI 联合创始人兼总裁要完成一项高难度任务： 把每一个看似被动的决策重新包装为前瞻性的战略选择。  \n 他做到了吗？大部分时候做到了，但叙事的缝隙里藏着一些值得细看的线索。 \n Brockman 过去 18 个月主要负责公司的“规模”（Scale）部门，管 GPU 基础设施、数据中心和供应链。这场访谈覆盖的话题跨度极大：从 Sora 为什么被砍，到 Super App 长什么样，到下一代模型能做什么，到 1100 亿美元怎么花，到他为什么给 MAGA Inc 捐了 2500 万美元。 \n   \n 原始视频： https://www.youtube.com/watch?v=J6vYvk7R190  \n 要点速览 \n \n  砍掉 Sora 是“聚焦技术主线”还是止血？  ",
+      "source": "宝玉"
+    },
+    {
+      "title": "Claude Code 源码泄漏了，但我不打算写源码分析分析文章",
+      "link": "https://baoyu.io/blog/2026-04-01/learn-from-open-source",
+      "pubDate": "2026-04-01T00:00:00+00:00",
+      "summary": "Claude Code 源码泄漏了，满屏都是“深度分析”文章。也有朋友让我写一篇分析文章，但代码才泄漏十几个小时，50 多万行代码，想深度分析清楚还是有难度的。不过授人以鱼不如授人以渔，我更想聊聊： 拿到一份开源代码，怎么把它真正学到手。  \n 这套方法不只适用于 Claude Code，任何大型开源项目都一样。 \n   \n 第一步：先跑起来 \n 拿到源码之后，大部分人的第一反应是打开文件开始读。 \n  别急。先跑起来。  \n 这次泄漏的 Claude Code 代码是 source map 还原后的结果，缺了很多脚手架和私有 package，没法直接运行。我本来打算自己折腾一下，结果发现已经有人搞定了（ https://github.com/claude-code-best/claude-code），直接用就好。  \n \n 注：这个项目作者我不认识，只是我可以正常下载运行，所以推荐，后续项目如何发展我并不清楚，而且被下架的可能性很大。有兴趣的可以尽早把代码下载到本地，并让 AI 分析一下代码有无安全问题后再运行。 \n \n 为什么一定要跑起来？两个原因。 \n 一是你能直观看到运行结果。",
+      "source": "宝玉"
+    },
+    {
+      "title": "飞书 CLI 开源了，为什么 AI Agent 时代，大家都在做命令行工具？",
+      "link": "https://baoyu.io/blog/2026-03-28/lark-cli-ai-agents",
+      "pubDate": "2026-03-28T00:00:00+00:00",
+      "summary": "飞书刚开源了一个命令行工具 lark-cli，能让 AI Agent 直接操作飞书：发消息、查日历、写文档、建多维表格、发邮件、管任务。你跟 AI 说一句话，它自己去操作飞书完成任务。 \n 类似的 CLI 还很多，三周前 Google 也开源了 gws，让 AI Agent 操作 Google Workspace。2026 年了，所有想接入 AI Agent 的产品，都在做 CLI。 \n 先说 CLI 是什么 \n CLI（Command Line Interface），就是你在电脑上打开一个黑底白字的终端窗口，敲一行命令，回车，电脑帮你干活。 \n 比如你要查今天的日程，不用打开飞书 App 找日历，敲一行： \n  lark-cli calendar +agenda\n  \n 日程就列出来了。 \n 没有按钮，没有图标，没有花哨的界面。CLI 比图形界面早了二十多年，在 Windows 时代逐渐没什么人用了。但 AI Agent 时代，又火起来了。 \n 为什么 AI Agent 时代，大家都在做 CLI \n AI Agent 要干活，就得有操作工具的能力。你让 AI 帮你订会议室，它需要能访",
+      "source": "宝玉"
+    },
+    {
+      "title": "ãä¸å­é¿æãOpenClaw ç«äºï¼ä¼ä¸æä¹ç¨ææ¯æ­£ç¡®çï¼",
+      "link": "https://www.luxiangdong.com/2026/03/22/openclaw/",
+      "pubDate": "2026-03-22T09:24:02+00:00",
+      "summary": "ä»âå¨æ°å»é¾è¾âå°ä¼ä¸è½å°ï¼å·®çä»æ¥ä¸åªæ¯ä¸ä¸ª Agent   2026 å¹´å¼å¹´ï¼OpenClaw å ä¹æ¯ä»¥âç°è±¡çº§äº§åâçå§¿æé¯è¿å¤§ä¼è§éã \n å ä¸ºé£ä¸ªçº¢è²é¾è¾å¾æ ï¼å¤§å®¶ç»å®èµ·äºä¸ªå¾æ¥å°æ°çåå­ï¼ é¾è¾ ãå¾å¿«ï¼ææ¯åå¨è®¨è®ºå®ï¼äº§åç»çå¨ç ç©¶å®ï¼ç½é¢å¨ä½éªå®ï¼ç¤¾äº¤åªä½ä¸çè³åºç°äºâ ä»å¤©ä½ å»é¾è¾äºå âè¿æ ·çåç©ç¬å¼é®åãå®ä¸åªæ¯ä¸ä¸ªå¼æºé¡¹ç®ï¼æ´åæ¯ä¸åºå³äºâAI å¼å§ç",
+      "source": "卢向东"
+    },
+    {
+      "title": "AI 发展太快跟不上？一张四象限图帮你做减法",
+      "link": "https://baoyu.io/blog/ai-learning-priority-quadrant",
+      "pubDate": "2026-03-20T00:00:00+00:00",
+      "summary": "有读者问了一个好问题： \n \n AI 发展日新月异，急速迭代，概念/技术/产品层出不穷。但是当前工作繁重（工作本身跟 AI 直接关系不大），即便是很多比较流行的 AI 相关的东西，也不可能都花时间去了解/理解/深度使用研究。一方面希望跟上 AI 的浪潮，另一方面目前的精力又不允许。哪些原则可以辅助做以下判断：“哪些东西不必花时间/哪些东西简单了解即可/哪些东西需要花一些时间去学习/哪些有必要深度使用学习”，以及为什么有这个原则 \n \n 这个问题很典型，我也一样，每天处理大量信息做选择题。说到底就是 时间有限，AI 新东西出得太快，生怕错过（FOMO） 。 \n 可以试试用四象限的办法来筛选。 \n 两根轴，四种策略 \n 判断一个 AI 新事物值不值得花时间，就问两个问题： \n  第一个：它离我现在的生产力有多近？  \n 注意，不是离“AI 行业”有多近，是离 你的 生产力。你每天在做的事、反复在干的活，它能不能让你少花时间，或者产出质量更高？能说出具体场景，就是近。想了半天说不出它能帮你干嘛，就是远。 \n  第二个：这个知识的保鲜期有多长？  \n 有些东西今天学了，三年后还能用，投入的时间",
+      "source": "宝玉"
+    },
+    {
+      "title": "Some Things Just Take Time",
+      "link": "https://lucumr.pocoo.org/2026/3/20/some-things-just-take-time/",
+      "pubDate": "2026-03-20T00:00:00+00:00",
+      "summary": "Trees take quite a while to grow.  If someone 50 years ago planted a row of oaks\nor a chestnut tree on your plot of land, you have something that no amount of\nmoney or effort can replicate.  The only way is to wait.  Tree-lined roads, old\ngardens, houses sheltered by decades of canopy: if you want to start fresh on an\nempty plot, you will not be able to get that. \n Because some things just take time. \n We know this intuitively.  We pay premiums for Swiss watches, Hermès bags and\nold properties p",
+      "source": "Armin Ronacher"
+    },
+    {
+      "title": "被美国遣返、禁止入境 5 年，他在温哥华的卧室里做出了日处理 400 万工作流的 AI 平台",
+      "link": "https://baoyu.io/blog/gumloop-max-interview",
+      "pubDate": "2026-03-18T00:00:00+00:00",
+      "summary": "Max Brodeur-Urbas 是 Gumloop 的联合创始人兼 CEO。这家公司刚拿了  Benchmark 领投的 5000 万美元 B 轮融资 ，客户包括 Instacart、Shopify、DoorDash、Gusto。在这之前，他是微软的一名普通工程师，因为过边境被遣返而被迫走上创业这条路。 \n 这次访谈来自 YouTube 频道 EO（Entrepreneur &amp; Opportunities），2026 年 3 月 16 日发布。Max 没有回避任何尴尬的经历：被遣返的震惊、每周换一个创业想法的焦虑、不敢定价超过 ChatGPT 的心虚。他也批判了 AI 圈里”50 个 Agent 自动运转公司”的营销泡沫。 \n 原始视频： https://www.youtube.com/watch?v=CxFQykWiJqY  \n \n 1.“50 个 AI Agent 帮我运营公司”是骗局 \n Max 上来就聊 Twitter 上最流行的一类叙事：我自动化了一切，每周只工作一小时，周末用 SaaS 赚了一千万。 \n 他的评价很直接： 绝大部分都是在撒谎 。 \n \n 希望是最",
+      "source": "宝玉"
+    },
+    {
+      "title": "构建 Claude Code 的经验：我们如何使用 Skills",
+      "link": "https://baoyu.io/translations/2026-03-17/claude-code-skills-lessons",
+      "pubDate": "2026-03-17T00:00:00+00:00",
+      "summary": "构建 Claude Code 的经验：我们如何使用 Skills \n 作者：Thariq Shihipar \n原文： Lessons from Building Claude Code: How We Use Skills  \n \n  译者导读  \n 本文作者 Thariq Shihipar（@trq212）是 Anthropic 的 Claude Code 团队工程师，也是 Skills 功能的核心推动者之一。在加入 Anthropic 之前，他在 MIT Media Lab 读研期间联合创建了开源学术发布平台 PubPub，后来参加了 Y Combinator（W20 批次）。他在 X 上经常分享 Claude Code 的一手使用经验和新功能动态。 \n 这篇文章的价值在于：它是来自 Anthropic 内部团队的实战总结。Anthropic 内部活跃使用的 Skills 已经有几百个，文中的分类体系和编写技巧都是从这些真实的内部实践中提炼出来的。 \n 如果你已经在用 Claude Code 但还没认真做过 Skills，这篇文章能帮你建立一个系统化的思路：做什么类型的 Skill",
+      "source": "宝玉"
+    },
+    {
+      "title": "智能体工程的 8 个等级",
+      "link": "https://baoyu.io/translations/2026-03-11/levels-of-agentic-engineering",
+      "pubDate": "2026-03-16T00:00:00+00:00",
+      "summary": "AI 的编程能力正在超越我们驾驭它的能力。这就是为什么所有那些拼命刷 SWE-bench 分数的努力，并没有与工程领导层真正关心的生产力指标同步。Anthropic 团队用 10 天就上线了 Cowork，而另一个团队用着同样的模型却连一个 POC（概念验证）都搞不定——区别在于一个团队已经弥合了能力与实践之间的差距，而另一个还没有。 \n 这个差距不会一夜之间消失，而是分等级逐步缩小。总共 8 个等级。读到这篇文章的大多数人可能已经过了前几个等级，而你应该迫不及待地想达到下一个——因为每升一级都意味着产出的巨大飞跃，而每次模型能力的提升都会进一步放大这些收益。 \n 你应该在意的另一个原因是 多人协作效应 。你的产出比你想象的更依赖于队友的等级。假设你是 7 级高手，晚上睡觉时后台智能体就在帮你提好几个 PR。但如果你的代码仓库需要一位同事审批才能合并，而这位同事还停留在 2 级，仍在手动审查 PR，那你的吞吐量就被卡死了。所以帮队友升级，对你自己也有利。 \n 通过和许多团队及个人交流他们使用 AI 辅助编程的实践，以下是我观察到的等级进阶路径（顺序并不绝对严格）： \n   \n  智能体",
+      "source": "宝玉"
+    },
+    {
+      "title": "编程 Agent 如何重塑工程、产品和设计",
+      "link": "https://baoyu.io/translations/2026-03-11/coding-agents-reshaping-epd",
+      "pubDate": "2026-03-11T00:00:00+00:00",
+      "summary": "编程 Agent 如何重塑工程、产品和设计 \n 软件公司的 EPD（工程、产品、设计）存在的意义就是做出好软件。虽然分了不同角色，但最终目标一样：做出能解决业务问题、用户用得上的功能软件。说到底，产出就是代码。这一点必须认清——因为编程 Agent 突然让写代码变得异常简单。那么，EPD 的角色定位会怎么变？ \n 流程的变化： \n \n PRD 已死 \n 瓶颈从实现转向评审 \n PRD 万岁 \n \n 对角色的影响： \n \n 通才比以往更有价值 \n 使用编程 Agent 是必选项 \n 好的 PM 更好，差的 PM 更差 \n 每个人都需要产品意识 \n 专业化的门槛更高了 \n 你要么是建设者，要么是评审者 \n 每个人都觉得自己的角色从编程 Agent 中受益最大——而且都没说错 \n \n PRD 已死 \n PRD（产品需求文档）曾是 Claude 时代之前软件开发的核心枢纽。EPD 的流程大致是这样的： \n \n 有人（通常是产品经理）冒出一个想法 \n 产品经理写一份 PRD \n 设计师拿着 PRD 做出设计稿 \n 工程师把设计稿变成代码 \n \n   \n 这并不是铁律（在初创公司，这些步骤往往混在",
+      "source": "宝玉"
+    },
+    {
+      "title": "品牌时代",
+      "link": "https://baoyu.io/translations/2026-03-05/the-brand-age-pg",
+      "pubDate": "2026-03-08T00:00:00+00:00",
+      "summary": "作者：Paul Graham\n2026 年 3 月 \n \n 译注：Paul Graham 借瑞士钟表业从黄金时代滑入品牌时代的历史，拆开一个尖锐问题：当产品的实质差异被技术抹平，品牌就会接管一切，而设计也开始向品牌妥协。\" \n \n 石英危机：三重打击 \n 二十世纪七十年代初，瑞士制表业遭受了重创。现在人们把那段历史叫做\"石英危机\"，但准确来说，那是三场独立的灾难在几乎同一时间爆发。 \n 第一场是来自日本的竞争。整个六十年代，瑞士人一直把日本人看作身后的追赶者，而且对方进步的速度已经让他们感到不安。即便如此，1968 年日本人在日内瓦天文台钟表竞赛（Geneva Observatory trials，当时全球最权威的钟表精度评测赛事）中横扫机械表的所有顶级奖项，还是让瑞士人大吃一惊。 \n 瑞士人清楚大势已去。多年来，日本人一直能造出更便宜的表；现在，他们连更好的表也能造了。 \n 更糟的是，瑞士表的价格即将大幅上涨。自 1945 年起，布雷顿森林协议（Bretton Woods agreement，二战后确立的国际货币体系，将各国货币与美元挂钩，美元再与黄金挂钩，人为固定了汇率）将瑞郎兑美",
+      "source": "宝玉"
+    },
+    {
+      "title": "我用 AI 翻译的三个阶段：提示词时代 → 推理模型时代 → Agent 时代",
+      "link": "https://baoyu.io/blog/2026-03-05/i-built-a-translator-skill",
+      "pubDate": "2026-03-05T00:00:00+00:00",
+      "summary": "我做 AI 翻译这件事，前前后后折腾了快两年。从最早手写提示词，到现在用 Agent 自动分块、并行翻译、审校润色，中间踩了不少坑，也攒了不少经验。最近把这些经验整理成了一个可复用的翻译 Skill，这篇文章聊聊这个 Skill 是怎么一步步迭代出来的。 \n 翻译这个场景比看上去复杂。提示词本身很简单，“把这段话翻译成中文”谁都会写。但要做成一个通用的 Skill，你得考虑：输入千奇百怪，有人贴一句话，有人丢一篇万字长文，还有人给个 Markdown 文件；每个人常用的语言对不一样；有时候只想快速看个大意，有时候要求翻译质量必须高。 \n 太长的内容模型处理不了或者效果变差，需要分块，分块了又不好保证前后一致。这些问题不是一次想清楚的，是一轮轮迭代踩出来的。 \n 我用 AI 翻译的三个阶段 \n   \n  第一个阶段是推理模型出来之前。  \n 那时候翻译质量全靠提示词，角色设定、语气要求、术语表，能塞的都塞进去。我应该是最早公开提出用“两步翻译”和“三步翻译”来提升翻译质量的。 \n  两步翻译 就是先直译再意译，原理类似推理链，让模型先老老实实把原文意思对上，再用更自然的方式重新表达。效果",
+      "source": "宝玉"
+    },
+    {
+      "title": "多稿合并：从手动比稿到一键 Skill",
+      "link": "https://baoyu.io/blog/2026-03-04/ai-merge-drafts-into-skills",
+      "pubDate": "2026-03-05T00:00:00+00:00",
+      "summary": "AI 翻译或者辅助写作的时候，我通常不会只生成一个版本。 \n 有时候是同一个模型跑多次，有时候是不同模型各跑一次，甚至是不同的提示词分别跑一次。几个版本拿到手里一比较，你会发现一个很纠结的事情： 没有哪个版本是完美的，但每个版本都有自己的亮点 。 \n A 版本整体结构最好，但有几段翻译太生硬；B 版本某几段特别出彩，但漏掉了一些关键信息；C 版本信息最全，但读起来像机器翻的。 \n 怎么把它们的优点合到一起？ \n   \n 手动合并：能用，但费事 \n 我之前的做法很简单粗暴： \n 先通读所有版本，选一篇整体最好的当基础。然后对着其他版本逐段比较，看到哪段写得更好就复制过来替换，看到基础版本缺的信息就补进去。最后再通读一遍，润色一下拼接处，确保读起来像一个人写的，没有拼接的痕迹。 \n 效果还不错，但费时间。尤其是稿子多的时候，三四个版本比来比去很消耗注意力。而且人工比较容易漏东西，某个版本里一个很好的细节可能就这么错过了。 \n 让 AI 来做这件事 \n 既然 AI 擅长处理大量文本，这个活儿为什么不让它来？ \n 我试了一下，把所有版本一起发给 AI，配上这样的指令： \n \n 阅读所有稿子，从",
+      "source": "宝玉"
+    },
+    {
+      "title": "AI And The Ship of Theseus",
+      "link": "https://lucumr.pocoo.org/2026/3/5/theseus/",
+      "pubDate": "2026-03-05T00:00:00+00:00",
+      "summary": "Because code gets cheaper and cheaper to write, this includes\nre-implementations.  I mentioned recently that I had an AI port one of my\nlibraries to another language and it ended up choosing a different\ndesign for that implementation.  In many ways, the functionality was the same,\nbut the path it took to get there was different.  The way that port worked was\nby going via the test suite. \n Something related, but different,  happened with\nchardet .\nThe current maintainer reimplemented it from scra",
+      "source": "Armin Ronacher"
+    },
+    {
+      "title": "陶哲轩最新演讲：AI 不是来抢数学家蛋糕的，是来把蛋糕做大的",
+      "link": "https://baoyu.io/blog/2026-03-04/terence-tao-mathematics-in-the-age-of-ai",
+      "pubDate": "2026-03-04T00:00:00+00:00",
+      "summary": "陶哲轩办公室有 6 块黑板，他说绝不放弃。但他刚带 50 个人用 AI 和代码解决了  2200 万道数学题 。 \n 这位 Fields 奖得主在 2026 年 2 月的 SAIR 基金会“AI for Science: Kickoff 2026”活动上，用 17 分钟讲了一件事： 数学这个几百年没变过工作方式的领域，正在被新技术撬动。  而撬动它的关键，不是 AI 本身，而是一个大多数人没听说过的东西。 \n   \n  \n原始视频链接： https://www.youtube.com/watch?v=mS9Lr43cIB4  \n  要点速览：  \n \n 数学可能是 最保守的学科 ：200 年前的教材今天还能用，数学家是最后还在用粉笔黑板的学术群体 \n 数学家不爱协作有 结构性原因 ：准入门槛高、容错率为零、工作流无法扩展到互联网规模 \n  形式验证 是大规模数学协作的“秘密武器”，它打破了信任壁垒，让匿名贡献成为可能 \n 陶哲轩主导的等式理论项目在 三个月内解决了 2200 万个代数问题 ，此前同类项目只处理过约 20 个 \n LLM 能解奥赛题但连简单算术都会出错， 必须配合验证器 ",
+      "source": "宝玉"
+    },
+    {
+      "title": "Greg Brockman（OpenAI 联合创始人）把“那场宫斗”讲完整了：董事会、请愿书、马斯克与控制权",
+      "link": "https://baoyu.io/blog/2026-03-01/greg-brockman",
+      "pubDate": "2026-03-02T00:00:00+00:00",
+      "summary": "Greg Brockman 做客 Rick Rubin 的  Tetragrammaton  播客，录了一期超过三小时的长谈。Brockman 是 OpenAI 联合创始人兼总裁，但他不是那种典型的科技公司高管。他至今还在写代码，亲自设计数据中心架构，Fortune 杂志称他为 OpenAI 的\" builder-in-chief \"（首席建造者）。 \n 这期播客之所以特别，是因为 Rick Rubin 不是科技记者。他是传奇音乐制作人，提问视角完全不同。他不追技术细节，而是追动机、追情感、追意义。结果是 Brockman 展现了科技高管极少展示的一面：面对背叛时的决策逻辑、和马斯克谈判的完整内幕、以及一个北达科他州小镇少年如何走到 AI 最前沿。 \n 原始视频链接： https://www.youtube.com/watch?v=mI30_ueZ7CU  \n  以下是要点速览：  \n \n Brockman 在 Sam Altman 被解雇当天辞职，告诉妻子假设所有股权归零。72 小时后， 95% 的员工签署请愿书 ，Google Docs 被挤崩，他们夺回了公司。 \n \n 2.马斯克",
+      "source": "宝玉"
+    },
+    {
+      "title": "设计流程已死：Anthropic 设计负责人 Jenny Wen 谈 AI 时代的设计变革",
+      "link": "https://baoyu.io/blog/2026-03-01/jenny-wen-design-process",
+      "pubDate": "2026-03-02T00:00:00+00:00",
+      "summary": "Jenny Wen  是 Anthropic 的 Claude 设计负责人，目前主导  Claude Co-work  的设计工作。加入 Anthropic 之前，她是  Figma 的设计总监 ，主导了 FigJam 和 Slides 两个产品从概念到发布的全过程。更早之前在 Dropbox、Square 和 Shopify 做设计。 \n 这期  Lenny's Podcast  聊了五件大事：传统设计流程为什么走到了尽头、在 AI 实验室做设计是什么感受、AI 会不会取代人类的品味和判断力、Co-work 是怎么做出来的、以及现在招什么样的设计师。 \n 来源：Lenny's Podcast，2026 年 3 月 1 日\n原始视频： https://www.youtube.com/watch?v=eh8bcBIAAFo  \n 要点速览 \n \n  传统设计流程“死亡” ：发散 - 收敛 - 发散 - 收敛的经典流程被工程速度倒逼，设计师做设计稿的时间从 60-70% 压缩到 30-40%，多出来的时间用于和工程师配对、甚至自己写代码 \n  愿景规划大幅缩短 ：时间窗口从 2-5 年缩到",
+      "source": "宝玉"
+    },
+    {
+      "title": "从写代码到管 Agent：斯坦福首门 AI 软件开发课的讲师说，大多数工程师还没准备好",
+      "link": "https://baoyu.io/blog/2026-02-27/from-writing-code-to-managing-agents",
+      "pubDate": "2026-02-27T00:00:00+00:00",
+      "summary": "Mihail Eric 在斯坦福开了一门课，CS146S“The Modern Software Developer”，2025 年秋季首次开设， 全美第一门把 AI 贯穿整个软件开发流程的大学课程 。开放选课几小时，超过 100 名学生抢着报名。 \n Mihail 同时在旧金山一家早期创业公司担任 AI 负责人，之前在 Amazon Alexa 带过技术团队，也创办过 YC 支持的 AI 编码公司，斯坦福 NLP 组出身，导师是 Christopher Manning。 \n 在 EO 频道“The Thinking Mode”系列的访谈中，他用 14 分钟谈了几个问题： 初级开发者正在遭遇什么、顶尖工程师如何管理 Agent、什么样的代码库对 Agent 友好 、以及为什么初级工程师的“无知无畏”在 AI 时代反而是优势。 \n   \n 原始视频链接： https://www.youtube.com/watch?v=wEsjK3Smovw  \n 要点速览 \n \n  初级开发者正面临“三重风暴” ：COVID 后企业裁员 20-30%、CS 毕业生十年内翻了一倍多、AI 让雇主考虑“少招",
+      "source": "宝玉"
+    },
+    {
+      "title": "Anthropic CEO Dario Amodei：海啸已在地平线上，但没人在看",
+      "link": "https://baoyu.io/blog/2026-02-26/the-ai-tsunami-is-here-dario-amodei",
+      "pubDate": "2026-02-27T00:00:00+00:00",
+      "summary": "Dario Amodei ，Anthropic 的 CEO、Claude 背后的人，本科物理、博士生物物理，原本想做教授去治病。从 OpenAI 出走创业四年多，公司估值已达  3800 亿美元 ，年化收入  140 亿美元 。 \n 2026 年 2 月，他第二次来到印度班加罗尔，坐在 Zerodha 联合创始人  Nikhil Kamath  对面，聊了一个多小时。Nikhil 不是技术背景出身，他的问题带着投资人的怀疑和创业者的焦虑，多次直接挑战 Dario 的安全叙事。话题从 scaling laws 的化学反应比喻到 AI 意识的“辞职按钮”，从“有钱人说资本主义不好”的尖锐追问到“年轻人该学什么”的实用建议。 \n Dario 一边说“AI 海啸已经到了地平线上”，一边承认“我对权力集中感到不安”；Nikhil 一边展示自己用 Claude Code 写金融程序的经历，一边追问“你不会拿走我平台上创业者的收入吗”。 \n   \n 原始视频： https://www.youtube.com/watch?v=68ylaeBbdsg \n节目：People by WTF，2026 年 2",
+      "source": "宝玉"
+    },
+    {
+      "title": "驾驭工程：在「智能体优先」的世界里借力 Codex",
+      "link": "https://baoyu.io/translations/2026-02-12/harness-engineering",
+      "pubDate": "2026-02-26T00:00:00+00:00",
+      "summary": "过去五个月，我们团队开展了一项实验：构建并发布一款软件产品的内部 Beta 版，其中  0 行代码由人工编写 。 \n 这款产品既有内部日活用户，也有外部 Alpha 测试者。 它照常发布、部署，会崩溃，也能修复。  唯一不同的是，每一行代码——从应用逻辑、测试、CI 配置，到文档、可观测性监控和内部工具—— 皆由  Codex 编写。据估算，我们完成这一切的时间，仅为纯手工编码的十分之一。 \n  人类掌舵，智能体执行。  \n 我们刻意选择这一限制，旨在倒逼自己构建必要的体系，将工程速度提升数个量级。要在几周内交付最终达百万行代码的系统，我们需要搞清楚：当软件工程团队的主要工作不再是写代码，而是设计环境、明确意图、建立反馈循环，以便让 Codex  智能体 (Agents)  可靠地工作时，一切会发生什么变化。 \n 本文记录了我们依靠智能体团队构建全新产品的经验教训——什么崩溃了，什么产生了复利，以及如何最大化利用唯一真正稀缺的资源：人类的时间和注意力。 \n 我们从一个空的 Git 仓库开始 \n 2025 年 8 月下旬，空仓库迎来了第一次提交。 \n 最初的脚手架——包括仓库结构、CI ",
+      "source": "宝玉"
+    },
+    {
+      "title": "92.6% 开发者每月使用 AI 编码助手，但每周节省时间只有 4 小时",
+      "link": "https://baoyu.io/blog/2026-02-25/laura-tacho-ai-pragmatic-summit",
+      "pubDate": "2026-02-25T00:00:00+00:00",
+      "summary": "Laura Tacho 是 DX 公司 CTO，Core 4 开发者生产力框架的联合作者，手里握着  12 万开发者、450 多家公司 的真实数据。2 月 11 日在旧金山 Pragmatic Summit 上，她做了一场 30 分钟的主题演讲，用最新行业基准数据回答一个问题： AI 到底有没有让组织变好？  \n   \n 【注：Pragmatic Summit 是 The Pragmatic Engineer 创始人 Gergely Orosz 于 2026 年 2 月举办的首届线下峰会，约 500 名工程领导者参加。DX 是一家帮助企业度量和改善工程效率的开发者体验平台公司。】 \n   \n 原始视频链接： https://www.youtube.com/watch?v=LOHgRw43fFk  \n  要点速览：  \n \n 12.1 万开发者样本显示， 92.6% 每月使用 AI 编码助手 ，但每周节省时间稳定在约 4 小时，连续几个季度没有增长 \n AI 编写并合并到生产环境的代码占比达  26.9% ，较上季度的 22% 显著提升，日活用户突破 30% \n  AI 是放大器 ：有些",
+      "source": "宝玉"
+    },
+    {
+      "title": "Coding Agent 有个甜蜜点，多数人直接跳过了",
+      "link": "https://baoyu.io/blog/2026-02-25/coding-agent-sweet-spot",
+      "pubDate": "2026-02-25T00:00:00+00:00",
+      "summary": "有两个 Vibe Coding 项目让我印象很深。 \n 一个是  Simon Willison （Django 框架的联合创始人），他一边陪家人装饰圣诞树、看电影，一边用 Codex CLI + GPT-5.2，把 Emil Stenström 的 JustHTML（一个纯 Python 的 HTML 解析库）迁移成了纯 JS、零依赖的版本，跑过了  9200 多个  html5lib-tests 用例，产出大约  9000 行代码 、 43 次提交 。整个过程他自己只发了  8 条左右的提示词 。 \n \n 《I ported JustHTML from Python to JavaScript with Codex CLI and GPT-5.2 in 4.5 hours》 https://simonwillison.net/2025/Dec/15/porting-justhtml/  \n \n 另一个是  Cloudflare ，一个工程经理带着 AI，用不到一周时间，在 Vite 上重新实现了 Next.js 的 API，做出了  vinext  这个项目。1700 多个单元测试、",
+      "source": "宝玉"
+    },
+    {
+      "title": "同样的模型，为什么 Cursor 跑不过 Claude Code？",
+      "link": "https://baoyu.io/blog/2026-02-23/claude-code-vs-cursor",
+      "pubDate": "2026-02-24T00:00:00+00:00",
+      "summary": "有网友问为什么 Claude Code 比 Cursor 好？ \n 我想从三个角度聊下这个问题： 上下文、场景、数据飞轮 。 \n 上下文：IDE 是优势，也是包袱 \n 我估计很多人会有我相同的感受：完成同样的任务，同样的 Claude 模型，在 Cursor 里和在 Claude Code 里跑， 效果可以差很多 ，既然模型是一样的，那问题多半出在上下文上面。 \n Cursor 最大的卖点是它把 AI 塞进了 IDE。你习惯了 VSCode，切过来几乎零成本，Tab 自动完成也确实做得好。 \n 但 IDE 带来的问题是： 它要帮你维护太多跟当前任务无关的上下文 。你打开了哪些 Tab、选中了哪些代码、侧边栏展示了什么，这些信息都会被塞进和模型交互的上下文里。你以为它在帮你，其实它在分散模型的注意力。 \n Claude Code 是命令行工具（CLI），它只关心文件本身。没有 Tab 状态，没有 UI 元素， 上下文干干净净 。这不仅省 Token，更重要的是让 Agent 能聚焦在你给它的任务上。 \n   \n 场景：当 Agent 成为中心，IDE 退居二线 \n CLI 有一个 IDE",
+      "source": "宝玉"
+    },
+    {
+      "title": "Cursor 设计负责人：只会画按钮的设计师，有麻烦了",
+      "link": "https://baoyu.io/blog/2026-02-21/cursor-ryo-lu-design-team",
+      "pubDate": "2026-02-22T03:46:14+00:00",
+      "summary": "Ryo Lu  是 Cursor 的设计负责人（Head of Design）。在加入 Cursor 之前，他是 Notion 的创始设计师之一，更早还在 Stripe 和 Asana 做过产品设计。在 Andrej Karpathy 造出“vibe coding”（凭感觉编程）这个词之前，Ryo 就在用 AI 辅助设计和编码了。  主持人  Soleio  是 Facebook 最早期的设计师之一，创造了 Like 按钮，后来担任 Dropbox 的设计负责人，现在是天使投资人，投资了 Figma、Vercel、Perplexity 等公司。两人背景高度相似，对谈中能感到一种“惺惺相惜”的默契。  这期访谈覆盖了几个话题：Cursor 的  4 人设计团队 如何工作；用 Cursor 构建 Cursor 的 递归飞轮 ；Agent 时代人类在什么层面与软件交互；为什么传统设计师的定义正在失效；以及 Cursor 作为一个产品到底想变成什么。  访谈来自 Soleio 主持的新节目 First of Kind 第二季第二集，2026 年 2 月 18 日发布。完整视频： https:/",
+      "source": "宝玉"
+    },
+    {
+      "title": "OpenAI Codex 产品负责人：代码不再由人类编写，但我们会有更多构建者（Builder）",
+      "link": "https://baoyu.io/blog/2026-02-22/openai-codex-embiricos-interview",
+      "pubDate": "2026-02-22T00:00:00+00:00",
+      "summary": "Alexander Embiricos  是 OpenAI Codex 的产品负责人。在加入 OpenAI 之前，他在 Dropbox 做过产品经理，后来创办了协作工具 Multi（前身为 Remotion），做了五年结对编程方向的创业，2024 年被 OpenAI 收购。他亲历了 AI 编程工具从“辅助补全”到“全权委托”的转变。Codex 自 2025 年 8 月以来增长了  20 倍 ，刚在 2026 年 2 月的一周内密集发布了 macOS 独立应用、GPT-5.3 模型、超级碗广告，并向免费用户开放。 \n 这期访谈覆盖了几个核心话题：AI 编码的现状与工程师的未来、人类为什么是 AGI 的真正瓶颈、OpenAI 内部怎么用 Codex、开放标准与竞争策略，以及 SaaS 行业和 Agent 市场的终局。 \n 来源：20VC with Harry Stebbings，2026 年 2 月 21 日\n原始视频： https://www.youtube.com/watch?v=S1rQngjpUdI  \n   \n 要点速览 \n \n OpenAI 内部大多数人已 不再打开 IDE ，",
+      "source": "宝玉"
+    },
+    {
+      "title": "OpenAI 应用 CTO 和 Codex 负责人：AI 正在重塑构建软件的方式",
+      "link": "https://baoyu.io/blog/2026-02-21/the-pragmatic-summit-inside-openai",
+      "pubDate": "2026-02-21T00:00:00+00:00",
+      "summary": "OpenAI 应用 CTO 和 Codex 工程负责人，在 The Pragmatic Summit 上聊了  OpenAI 内部工程师的真实工作状态 。Codex 不再只是写代码的工具，已经进化成了“队友”。工程师合上笔记本去开会，回来发现活已经干完了。设计师写的代码比六个月前的工程师还多。一个 PM 靠 Codex 把自己变成了 50 倍效率的项目经理。 \n  两位受访者：  Vijaye Raji（以下简称 VJ），OpenAI 应用 CTO（CTO of Applications），负责 ChatGPT 和 Codex 的产品工程，此前创办了产品实验平台 Statsig，2025 年 9 月被 OpenAI 以 11 亿美元收购，在微软和 Meta 有超过 20 年经验；Thibault Sottiaux（以下简称 Tibo），OpenAI Codex 工程负责人，此前在 DeepMind 和 Google 工作，现直接管理 33 人的 Codex 团队。 \n  主持人  Gergely Orosz 是科技行业最有影响力的工程管理类 newsletter The Pragmat",
+      "source": "宝玉"
+    },
+    {
+      "title": "Notion CEO：不能被 Agent 用的产品没有未来",
+      "link": "https://baoyu.io/blog/2026-02-19/notion-ceo-agent-future",
+      "pubDate": "2026-02-19T00:00:00+00:00",
+      "summary": "Ivan Zhao 是 Notion 联合创始人兼 CEO。Notion 年收入超过  6 亿美元 ，估值约  110 亿美元 ，正从协作工具转型为 AI Agent 平台。他 2025 年底发表的文章《 钢铁、蒸汽机与无限大脑 》提出了“无限心智的管理者”概念，后来被微软 CEO Satya Nadella 在达沃斯论坛上引用。 \n 这期 Access Podcast 里，Ivan 聊了不少内容：他怎么用 Agent 接管了邮件、为什么雇了一个 16 岁的高中生做程序员、Notion 正在推进的定价模式转型，以及他对 SaaS 行业未来的判断。 \n 原始视频链接： https://www.youtube.com/watch?v=vR39zcMWY0I  \n 要点速览 \n \n Notion Custom Agents 即将公开发布，核心场景是回答重复问题、分拣任务和写状态报告，alpha 客户 Ramp 已用它节省约  2000 人类工时  \n Ivan 基本不再用传统方式查看邮件，而是通过 Agent 对话式管理收件箱 \n AI 目前节省的时间是“水平的”而非“垂直的”，每个人省 5",
+      "source": "宝玉"
+    },
+    {
+      "title": "用 Claude Code 的 Hook + Skill，实现每次提交后自从 commit 提交变更",
+      "link": "https://baoyu.io/blog/2026-02-13/claude-code-auto-commit",
+      "pubDate": "2026-02-18T00:00:00+00:00",
+      "summary": "我用 Git 管理所有写作内容，文章、素材、提纲、草稿，全在仓库里。问题是我经常忘记提交。写完一篇文章，润色完，发布了，然后就去忙别的了。过几天一看  git status ，十几个文件的变更堆在那里，完全不记得哪次改了什么。Git 本来是用来追踪每一步修改的，结果变成了一个大杂烩的快照工具。 \n 现在我用 Claude Code 跑写作流程，从素材分析到成稿发布基本都交给它。既然每次任务它都在改文件，能不能让它改完就自己提交？ \n  两个机制配合就解决了。  \n Hook：任务结束时的拦截器 \n Claude Code 支持  Hook 机制 ，在特定事件（会话开始、工具调用前后、任务结束等）发生时自动执行脚本。思路和 Git Hook 类似，但挂在 Claude Code 的生命周期上。 \n 我在项目的  .claude/settings.local.json  里配了一个  Stop Hook ，每次 Claude Code 准备结束任务时触发： \n  \"hooks\": {\n  \"Stop\": [{\n    \"hooks\": [{\n      \"type\": \"command\",",
+      "source": "宝玉"
+    },
+    {
+      "title": "高中辍学生靠 ChatGPT 自学成才成了 OpenAI 的研究科学家",
+      "link": "https://baoyu.io/blog/2026-02-17/gabriel-petersson-openai-dropout",
+      "pubDate": "2026-02-17T00:00:00+00:00",
+      "summary": "Gabriel Petersson 是 OpenAI Sora 团队的研究科学家，负责视频生成模型的研发。在这个通常要求博士学位的岗位上，他 没有高中文凭，没有大学学历 ，靠 ChatGPT 自学了数学和机器学习。 \n   \n 他出生在瑞典中部一个叫 Vaggeryd 的小镇， 17 岁辍学 加入创业公司，19 岁当过瑞典最大云厨房的临时 CTO，此后在 Dataland、Midjourney 做工程师， 2024 年 12 月加入 OpenAI 。他拿的是 O-1 杰出人才签证，申请材料之一是 Stack Overflow 上的技术回答帖。 \n 在 Extraordinary 播客中，他和主持人 Sigil Wen 聊了这段经历的全过程：怎么辍学、怎么自学、怎么用 AI 做研究、怎么找工作、怎么看待教育。以下是这场对话的整理。 \n \n 要点速览 \n \n  自上而下学习法 ：传统学扩散模型要从微积分和线性代数学起，至少六年才能接触实际模型。Gabriel 用 ChatGPT 自上而下递归学习，三天就建立了扩散模型的核心理解。 \n  Sora 团队日常 ：盯着生成的视频找问题，改模型架构",
+      "source": "宝玉"
+    },
+    {
+      "title": "59% 用户投票选了更便宜的那个：Sonnet 4.6 全面解读",
+      "link": "https://baoyu.io/blog/2026-02-17/claude-sonnet-4-6-release",
+      "pubDate": "2026-02-17T00:00:00+00:00",
+      "summary": "Claude Sonnet 4.6 发布了。 \n 在 Claude Code 的早期测试中，用户  70% 的情况下更喜欢 Sonnet 4.6  而不是 Sonnet 4.5。更夸张的是， 59% 的情况下用户甚至更喜欢它而不是去年 11 月发布的旗舰模型 Opus 4.5 。一个便宜的模型，被用户投票打败了贵的模型。 \n Sonnet 4.6 在 编码、计算机操作（Computer Use）、长上下文推理、智能体规划、知识工作、设计 六个维度同时升级，还带了一个  100 万 token 的上下文窗口 （beta）。价格不变，$3/$15 每百万 token。 \n \n 【声明】本文根据 Anthropic 官方资料整理，文中数据和客户评价均来自官方发布内容，不代表本人真实体验结果。 \n \n 基准测试全景：水桶型选手 \n 先看数据。 \n   \n Sonnet 4.6 在  15 项评估中几乎全线领先或接近领先 。智能体工具使用、大规模工具调用、办公任务、金融分析，都是第一梯队。 \n 它和 Opus 4.5、Opus 4.6 的关系可以这么理解：Opus 仍然是天花板，尤其在代码库重构",
+      "source": "宝玉"
+    },
+    {
+      "title": "Jeff Dean 深度访谈：一页纸备忘录促成 Gemini 的诞生，Google AI 的反击与 10,000 Token 的未来",
+      "link": "https://baoyu.io/blog/2026-02-17/jeff-dean-latent-space",
+      "pubDate": "2026-02-17T00:00:00+00:00",
+      "summary": "从 MapReduce、BigTable 到 TPU、Google Brain，再到 Gemini， Jeff Dean  参与或主导了 Google 几乎所有核心 AI 基础设施的构建。他是 Google 的 第 30 号员工 ，现任首席科学家、Gemini 项目负责人。 \n 在 Latent Space 播客最近一期节目中，主持人 Alessio 和 Swyx 与 Jeff Dean 进行了一个多小时的深度对话。话题跨度极大：从蒸馏技术的真实起源，到“能否让 AI 关注整个互联网”的长上下文愿景；从用皮焦耳理解为什么 GPU 需要批处理，到那份改变了 Google AI 格局的一页纸备忘录。 \n 原始播客链接： https://www.latent.space/p/jeffdean  \n   \n 要点速览 \n \n  蒸馏是桥梁 ，前沿大模型是蒸馏的前提。Google 每一代 Gemini 都做到了“下一代 Flash 等于或超过上一代 Pro” \n Flash 模型已进入 Gmail、YouTube、Google 搜索 AI Mode，处理量超  50 万亿 token  \n 长上",
+      "source": "宝玉"
+    },
+    {
+      "title": "用 AI 辅助读书",
+      "link": "https://blog.codingnow.com/2026/02/ai_reading.html",
+      "pubDate": "2026-02-16T05:23:19+00:00",
+      "summary": "最近一年闲下来，我重新挖掘了读书的乐趣，尤其是读小说。 读小说真的需要时间和心境，因为进入心流状态更慢。如果长时间无法进入状态，很容易就读不下去；但一旦读进去了，比玩游戏（互动形式）或看影视剧（多媒体形式）更让人沉浸和回味。你可以对精彩处反复斟酌体会其中的情感，也更容易停下来脑补作者在情节上的留白。阅读节奏完全由自己控制，可快可慢。鉴于制作成本，小说的多样性远超其它媒介，提供的选择就更为宽泛。 我最近尝试使用 AI 来提升我的阅读体验。首先发现的是 AI 非常适合荐书。我使用的主要是 Gemini ，免费的版本就足够了。我可以先列举一些我很喜欢的书，让它帮我推荐更多。在初选的名单中，再通过对话了解书的特色。为了避免自己总是阅读类似的书，也会让 AI 推荐一些我之前没有尝试过的类型。当然，小说本身还是人创作的，通过推荐作者比推荐书本身更有效率。 这两个月我想读点太空歌剧类的小说，但老一点的名著基本都看过了，所以转向近十年的新作。另一方面的原因是大多数科幻小说本身就有时效性，这些年人类现实中的科技发展很快，文学家的幻想很容易随着时间和现实脱节。 但我很快就发现，想读新一点科幻小说最大的问题",
+      "source": "云风的博客"
+    },
+    {
+      "title": "快不等于好：Anthropic 和 OpenAI 的快速模式藏着什么",
+      "link": "https://baoyu.io/blog/2026-02-15/fast-mode-vs-codex-spark",
+      "pubDate": "2026-02-15T00:00:00+00:00",
+      "summary": "Anthropic 和 OpenAI 最近先后发布了各自的“快速模式”，都是给 AI 编程助手加速。但仔细看，两家走的是完全不同的技术路线，背后的产品哲学也很不一样。 \n 两种快速模式，到底有什么区别 \n Anthropic 的 Fast Mode 在 2 月 8 日上线，面向 Claude Code 和 API 用户。开启后， Opus 4.6 的输出速度从约 65 token/秒提升到约 170 token/秒，快了 2.5 倍 。代价是价格翻 6 倍：输入从 5 美元/百万 token 涨到 30 美元，输出从 25 美元涨到 150 美元。 \n 特别提醒一下用 Claude Code 的朋友， Fast Mode 的费用走 extra usage 通道，不从订阅配额里扣 。也就是说就算你是 $200 一月的订阅，Fast Mode 产生的费用都要你自己掏钱，慎重！不过用 GitHub Copilot 的话，里面的 Token 计费是普通模型 x6 倍，算在包月里面的，相对还可以接受。 \n  Fast Mode 不是另一个模型。  Anthropic 反复强调，快速模式跑的是完全",
+      "source": "宝玉"
+    },
+    {
+      "title": "Anthropic CEO Dario Amodei 访谈：我们正在接近指数的终点",
+      "link": "https://baoyu.io/blog/2026-02-14/dario-amodei-interview-analysis",
+      "pubDate": "2026-02-14T00:00:00+00:00",
+      "summary": "Anthropic CEO Dario Amodei 三年前在 Dwarkesh Podcast 上做了一期长访谈，当时他预测“三年后你和 AI 对话一小时，很难分辨它跟一个受过良好教育的人有什么区别”。这个预测基本兑现了。 \n 三年后他又来了。这次他说的话更大胆： 1-3 年内有 50% 的概率出现“数据中心里的天才之国”，10 年内 90% 确信 。他同时经营着一家收入每年翻 10 倍的公司，刚完成  300 亿美元 融资，估值  3800 亿 。 \n 这期访谈覆盖了几乎所有关键问题：Scaling 到底在 scale 什么？AI 编程的真实生产力是多少？AI 公司凭什么能盈利？监管会不会毁掉一切？中美能不能各有各的“天才之国”？ \n 原始视频链接： https://youtu.be/n1E9IZfvGMA  \n \n  要点速览：  \n \n  强化学习（RL）的规模扩展（scaling）  呈现出与预训练相同的对数线性规律，Dario 2017 年提出的“大算力团块假说”至今成立 \n 当前 AI 编程带来约  15-20% 的总生产力提升 ，半年前约 5%，正在加速 \n  1-3 ",
+      "source": "宝玉"
+    },
+    {
+      "title": "别再用提示词去 AI 味了，方向就是错的",
+      "link": "https://baoyu.io/blog/2026-02-14/remove-ai-writing-flavor",
+      "pubDate": "2026-02-14T00:00:00+00:00",
+      "summary": "小红书搜“去 AI 味”，上万条笔记。B 站相关视频播放量加起来过千万。微博上也有人问我同样的问题： \n \n “宝玉老师，求教怎么去除 AI 写作的 AI 味啊？” \n \n 这个问题我被问过太多次。每次我都想认真回答，但不知从何说起，因为大部分人期待的答案是一条提示词，而我想说的是： 所有去 AI 味提示词都是错的。  \n 【1】去 AI 味提示词：一场集体幻觉 \n 你一定见过这类内容：“一条提示词彻底去除 AI 味”，“让 ChatGPT 写出人味的万能公式”。 \n 它们教你在提示词里加上“请用口语化风格”、“请避免套话”、“请像真人一样写”。你试了，好像有点用。但过两天再看，还是那个味儿。 \n 为什么？ 三个原因。  \n  第一 ，所有人用同一套去 AI 味提示词，产出的内容又变成了新的同质化。你从 AI 味 1.0 切换到了 AI 味 2.0。 \n  第二 ，提示词是一次性的。你让它“口语化写一篇科技评论”，效果不错。换成写产品文案，又打回原形。你上次改过的那些不满意的地方，它完全不记得。 \n  第三 ，你从来没告诉 AI 要像谁。你跟它说了一堆“不要”，但它还是不知道你到底想要",
+      "source": "宝玉"
+    },
+    {
+      "title": "只有 30 个工程师的 X，是怎么重新杀回 App Store 第二的",
+      "link": "https://baoyu.io/blog/2026-02-13/nikita-bier-x-growth",
+      "pubDate": "2026-02-13T00:00:00+00:00",
+      "summary": "Nikita Bier 是 X 的产品负责人，也可能是硅谷最擅长做病毒式社交产品的人。他在大学毕业后花了  5 年时间连续失败了 14 个产品 ，最后在公司只剩 60 天现金流的时候做出了 TBH，一个让高中生匿名互相夸奖的 App， 两周冲到 App Store 第一，一个月被 Facebook 收购 。五年后他用  25000 美元 原封不动地复制了这个产品，改名叫 Gas， 90 天赚了 1000 万美元 ，然后卖给了 Discord。 \n 2025 年 6 月，Elon Musk 通过 X 的私信找到他，他第二天就飞到了 Palo Alto，凌晨两点开始工作，48 小时后拿出了新的引导流程设计，成功拿下了这份工作。 \n 在 Lightspeed 的 Out of Office 节目中，主持人 Michael Mignano 飞到 Nikita 长大的加州 Redondo Beach，边逛边聊了他在 X 的实战经历、Elon 的管理风格、链接降权的真相，以及他这些年摸索出来的增长方法论。 \n 要点速览 \n \n X 的核心产品工程团队 只有约 30 人 ，相当于 Facebook ",
+      "source": "宝玉"
+    },
+    {
+      "title": "马斯克说今年编程就要死了，你信吗？",
+      "link": "https://baoyu.io/blog/2026-02-13/musk-coding-dead",
+      "pubDate": "2026-02-13T00:00:00+00:00",
+      "summary": "最近一条推文在技术圈刷屏了。大意是： \n \n 马斯克预言编程今年就会消亡。不是演变，是消亡。AI 将跳过所有编程语言，直接生成机器能运行的二进制代码。再接上 Neuralink 脑机接口，你脑子里想什么，软件就自动生成。不需要键盘，不需要屏幕，不需要任何编程知识。整个编程职业将在一年内被抹除。 \n \n \n “We're not automating programming. We're erasing it from existence.” \n \n \n 我们不是在自动化编程，我们是在把它从世界上抹掉。 \n \n   \n 传播效果很好。引发了大量讨论、恐慌和嘲讽。 \n  只有一个问题：马斯克没这么说过。  \n 马斯克到底说了什么 \n 前几天 xAI 开了一场全员大会，马斯克讲到编程模型时说了这么一段话： \n \n “I think actually things will move maybe even by the end of this year to where you don't even bother doing coding. The AI just creates the bi",
+      "source": "宝玉"
+    },
+    {
+      "title": "The Final Bottleneck",
+      "link": "https://lucumr.pocoo.org/2026/2/13/the-final-bottleneck/",
+      "pubDate": "2026-02-13T00:00:00+00:00",
+      "summary": "Historically, writing code was slower than reviewing code. \n It might not have felt that way, because code reviews sat in queues until\nsomeone got around to picking it up.  But if you compare the\nactual acts themselves, creation was usually the more expensive part.  In teams\nwhere people both wrote and reviewed code, it never felt like &#8220;we should\nprobably program slower.&#8221; \n So when more and more people tell me they no longer know what code is in their\nown codebase, I feel like someth",
+      "source": "Armin Ronacher"
+    },
+    {
+      "title": "我们真的变成巫师了：OpenAI API 负责人谈 AI 如何重塑软件工程",
+      "link": "https://baoyu.io/blog/2026-02-12/sherwin-wu-ai-software-engineering",
+      "pubDate": "2026-02-12T00:00:00+00:00",
+      "summary": "Sherwin Wu 是  OpenAI API 和开发者平台的工程负责人 。如果说每家 AI 初创公司都通过 OpenAI 的 API 构建产品，那 Sherwin 的团队就是这个巨大生态的基础设施提供者。他 2014 年从 MIT 毕业，先后在 Quora 负责信息流、在 Opendoor 做了五年多的房屋定价模型，后来加入 OpenAI 成为早期成员。   他最近在  Lenny's Podcast  上做了一次深度对话（视频地址： www.youtube.com/watch?v=B26CwKm5C1k），从  OpenAI 内部的 AI 编码实践谈到工程管理哲学，从“一人十亿美元公司”的连锁效应谈到 AI 部署为什么经常失败。以下是这次访谈的完整整理。   “95% 的工程师在用 Codex，100% 的 PR 由 Codex 审查”  Lenny 开门见山：你还写代码吗？你团队有多少代码是 AI 写的？  Sherwin 说，他自己作为管理者，所有代码现在都是 Codex 写的。对管理者来说，用 AI 工具写代码反而比手写更容易了。  但团队层面的数据更能说明问题：   95",
+      "source": "宝玉"
+    },
+    {
+      "title": "日常锻炼的一些记录",
+      "link": "https://blog.codingnow.com/2026/02/physical_training.html",
+      "pubDate": "2026-02-11T09:28:25+00:00",
+      "summary": "我大概是去年 4 月左右开始跑步的。离上次的记录已过了半年。 最近坚持的还不错，每周可以保证至少 3 次跑步。现在的心肺能力明显好了很多。去年刚跑步时，每跑 5-10 分钟就需要步行几分钟缓缓，不然心率很容易超过 140 （我给自己定的心率上限）。现在差不多可以保持心率在 140 以下连续跑完 4 km 了。大约花费 30 分钟。这差不多是 8km/h 的平均速度，前半程会更快一点，后半程为了保持心率需要降一点速度。 我觉得另一方面的原因是在冬季，跑起来不那么热。现在会挑选中午有太阳的时候跑，晒晒太阳更舒适。跑完后也没特别累的感觉，只是在最后 10 分钟有一点点难受，希望快点结束。但每次还是坚持跑满 30 分钟。...",
+      "source": "云风的博客"
+    },
+    {
+      "title": "xAI 全员大会实录：递归自我改进、5000 万视频/天、月球上的质量驱动器",
+      "link": "https://baoyu.io/blog/2026-02-11/xai-all-hands-meeting",
+      "pubDate": "2026-02-11T00:00:00+00:00",
+      "summary": "马斯克的 AI 公司 xAI 刚刚经历了一场风暴。2 月 9 日和 10 日，联合创始人 Tony Wu 和 Jimmy Ba 在  48 小时内 先后宣布离职，至此  12 位创始成员已走了一半 。紧接着 2 月 11 日晚间，马斯克在旧金山总部召集全员大会，全程在 X 平台直播。 \n   \n 这场 46 分钟的会议覆盖了 xAI 的几乎所有核心业务：公司重组为四大方向，编程模型的“递归自我改进”实践，Imagine 视频生成的使用量，一个叫 Macrohard 的项目要“数字仿真整个公司”，Memphis 超级计算集群的扩张，X App 的增长数据，以及从轨道数据中心到月球质量驱动器的太空愿景。 \n 以下是完整实录整理。 \n 要点速览 \n \n xAI 内部正在实践“ 递归自我改进 ”：当前版本的 Grok Code 训练下一代 Grok Code，团队称这条路径在“指数级起飞” \n Imagine  每天生成近 5000 万个视频 ，自称超过所有竞争对手之和；30 天内生成  60 亿张图片  \n 公司重组为 四大方向 ：Grok Main（主模型 + 语音）、Coding、Ima",
+      "source": "宝玉"
+    },
+    {
+      "title": "介绍几款单人桌游",
+      "link": "https://blog.codingnow.com/2026/01/solo_boardgame.html",
+      "pubDate": "2026-01-24T13:08:25+00:00",
+      "summary": "上个月我花了不少时间在 dotAge 这个游戏中。我很喜欢这种通过精算规划应对确定风险的感觉。由于 dotAge 有很强的欧式桌游的设计感，所以我在桌游中尝试了一些有类似设计元素的单人游戏。 我感觉体验比较接近的有 Voidfall (2023) 和 Spirit Island (2017) 。因为灵魂岛（spirit island ）更早一些，而且 steam 上有官方的电子版，bgg 上总体排名也更高，所以我在上面花的时间最多。 这两个游戏的特点都是确定性战斗机制，即在战斗时完全没有投骰这类随机元素介入。在开战之前，玩家就能完全确定战斗结果。战斗只是规划的一环，考虑的是该支付多少成本或许多大的收益。而且灵魂岛作为一款卡牌驱动的游戏，完全排除了抽牌的随机性，只在从市场上加入新牌（新能力）时有一点随机性。一旦进入玩家牌组，什么时候什么卡牌可以使用，完全是在玩家规划之内的。这非常接近 dotAge 中规划应对危机时的体验。 灵魂岛的背景像极了电影 Avatar ：岛的灵魂通过原住民发挥神力赶走了外来殖民者。每个回合，把神力的成长、发威（玩家行动）和殖民者（系统危机）的入侵、成长和破坏以固",
+      "source": "云风的博客"
+    },
+    {
+      "title": "和 AI 聊游戏设计",
+      "link": "https://blog.codingnow.com/2026/01/ai_game_design.html",
+      "pubDate": "2026-01-15T08:05:08+00:00",
+      "summary": "最近一段时间和 AI 聊游戏设计比较多。我主要用的是 google 首页上的 AI 模式，也试过 twitter 上的 grok 。 去年也和朋友聊过很多，但对理清楚自己的想法帮助有限。因为和人聊容易陷入不断的细节解释当中，一些天马行空的想法更容易被质疑，一旦陷入辩论就不太容易跳出来。而且每个人的时间并不固定，很容易造成时间和精力的浪费。和 AI 聊要轻松得多，AI 毕竟见多识广，随便提到的点都能接得上话。不想聊下去尽可以中断，不用担心浪费时间。即使怀疑 AI 出现幻觉，也可以随时暂停下来通过搜索核实。 不过，我觉得和 AI 讨论也有另一方面的问题。那就是太容易顺着你的思路夸大其词。它更像是一个貌似领域知识渊博但只是想讨好你的同好，不断的放出一些华丽的辞藻却在逻辑上经不起推敲。分析起游戏来头头是道，直到谈到我真的玩过上百小时的游戏时，对游戏的细节错误百出。如果我没有这些游戏的真实体验，几乎不可能分辨真伪。一开始我还会想和真人讨论时一样指出它的错误，让它修正后重新发表观点。后来就渐渐放弃了从 AI 那里直接获得真知。把它当成一个比搜索引擎更方便的信息获取入口就够了。 但我依然偶尔被 AI",
+      "source": "云风的博客"
+    },
+    {
+      "title": "ä¼ä¸AIè½å°ä¸é¨æ²3ï¼çæ­£çè§åâç¥è¯æå»ºä¸ç¥è¯å¥åº·",
+      "link": "https://www.luxiangdong.com/2026/01/05/se03/",
+      "pubDate": "2026-01-05T15:14:54+00:00",
+      "summary": "å¨ä¼ä¸AIè½å°å®è·µä¸­ï¼ æ°æ®/ç¥è¯è´¨é  æ¯AIå¯é æ§çåºç³ãè¿ä¸ç¹å¯ç¨ä¸å¥ä¿è¯­æ¦æ¬ï¼ åå¾è¿ï¼åå¾åº ãå¦æè¾å¥ç»AIç³»ç»çæ¯è¿æ¶ãæ··ä¹±çè³éè¯¯çç¥è¯ï¼é£ä¹AIè¾åºå¿ç¶é¾ä»¥ä»¤äººæ»¡æãç°å®æ¡ä¾è¡¨æï¼ä¸å°ä¼ä¸æåæå»ºçç¥è¯åºç¼ºä¹è´¨éç®¡æ§ï¼å¯¼è´AIå¼ç¨äºéè¯¯çæ¬çæ¿ç­æä»¶ï¼ç»åºäºéè¯¯è§£ç­ãä¹æä»¥åºç°è¿ç§åå·®ï¼æ­£æ¯å ä¸ºçº¯ç²¹çææ¯æ¹æ¡ç¼ºä¹å¯¹ç¥è¯ æ¶ææ§ ã æå¨æ§ ",
+      "source": "卢向东"
+    },
+    {
+      "title": "ä¼ä¸AIè½å°ä¸é¨æ²2ï¼æ°å­åå·¥åå¢ââä»èªä¸»æºè½ä½å°ææ°çº§çäº§å",
+      "link": "https://www.luxiangdong.com/2025/12/24/se02/",
+      "pubDate": "2025-12-24T07:11:19+00:00",
+      "summary": "æ¬æçç¹ï¼ \n æ°å­åå·¥æ¯ä¸ç§å¯ä»¥æä¾çäº§åçè½¯ä»¶ï¼å¶çä»·å¼å¯ä»¥ç¨äººæè¡¡éï¼ \n è½¯ä»¶ä¸ä»ä»åªæ¯æå¡ï¼SaaSï¼ï¼ä¹å¯ä»¥æ¯â è½¯ä»¶å³äººæï¼SaaPï¼ âã \n \n å¨ä¸ä¸ç¯ã ä¼ä¸AIè½å°ä¸é¨æ²1ï¼ä¸ºä»ä¹95%çä¼ä¸AIé¡¹ç®å¤±è´¥ ãä¸­ï¼æä»¬æåºäºä¸ä¸ªå¤æ­ï¼ ä¼ä¸è¦çæ­£éæ¾ AI ççäº§åï¼æç»ä¸å®ä¼èµ°åâæ°å­åå·¥åå¢â ãå¨æçæ¥ï¼æ°å­åå·¥å¹¶ä¸æ¯æä¸ç§å·ä½å½¢æçäº§åï¼èæ¯ ä¼ä¸ AI è",
+      "source": "卢向东"
+    },
+    {
+      "title": "Skynet 升级到 Lua 5.5.0",
+      "link": "https://blog.codingnow.com/2025/12/skynet_lua_550.html",
+      "pubDate": "2025-12-23T02:19:52+00:00",
+      "summary": "Lua 5.5.0 已经正式发布。所以，skynet 的 Lua 版本也随之升级。 skynet 维护了一份修改版的 Lua ，允许在多个虚拟机之间共享函数原型。这可以节省初始化 Lua 服务的时间，减少内存占用。 跨虚拟机共享函数原型最困难的部分是函数原型会引用常量字符串，而 Lua 在处理短字符串时，需要在虚拟机内部做 interning 。所以 skynet 的这个 patch 主要解决的是正确处理被 interning 的短字符串和从外部导入的函数原型中包含的字符串共存的问题。具体方法记录在这篇 blog 中。...",
+      "source": "云风的博客"
+    },
+    {
+      "title": "ä¼ä¸AIè½å°ä¸é¨æ²ï¼ä¸ºä»ä¹95%çä¼ä¸AIé¡¹ç®å¤±è´¥",
+      "link": "https://www.luxiangdong.com/2025/12/16/se01/",
+      "pubDate": "2025-12-16T02:49:18+00:00",
+      "summary": "å«æAIå½ä½âå·¥å·âï¼èæ¯è¦å½ä½âåå·¥âæ¥è®¾è®¡ã  \n è¿æ­£æ¯âæ°å­åå·¥âæ¦å¿µçæ¥æºï¼æä»¬ä¼å¨ç¬¬äºç¯ä¸­å±å¼ã \n \n 2025å¹´çä¼ä¸ææ¯é¢åçåå±å¾æææãä¸æ¹é¢ï¼å¨çå¨äººå·¥æºè½é¢åçæ¯åºé¢è®¡å°çªç ´6000äº¿ç¾åï¼åºç¡è®¾æ½ååºç¨æèµçåæ¯å¢å¹é«è¾¾76%ãç¶èï¼å¨è¿åºèµæ¬çæ¬¢çé´å½±ä¸ï¼ä¸ä¸ªæ®é·çç»è®¡ç°å®æ­£å°æ°çæ¯ä¸ä¸ªæ¸´ææ°å­åè½¬åçè£äºä¼åCIOï¼é«è¾¾95%ççæå¼AIè¯",
+      "source": "卢向东"
+    },
+    {
+      "title": "带可可学数学",
+      "link": "https://blog.codingnow.com/2025/12/coco.html",
+      "pubDate": "2025-12-16T01:50:28+00:00",
+      "summary": "可可三年级，前段老师说她数学成绩不好，需要在家加强一下。 这段时间我每天晚上给她讲一点点数学，都是课本上的内容，然后我再稍稍发挥一下。几次之后，我发现最大的问题是她觉得数学很无聊。 她似乎比较抗拒学新的知识，更喜欢用熟悉的方法。去年我发现她计算能力有问题，每天给她做加减法练习，总算不再用更早年我教她的 +1 法算加法了：即计算 7+8 的时候，算 8 次 +1 ，也就是数数。二年级学了乘法，乘法表也背了，但现在做应用题，本该用乘法的场合，她还是习惯连续算加法，一旦乘数太大就会出错。要用除法的时候就更混乱了，并不是用减法，而是靠猜测来试。大脑里完全没有建立乘除的概念。乘法表更像是独立的有背诵任务的诗词，还没古诗那么有趣。 我说：数学其实是这个世界上最有趣的东西。 她说：为什么呢？ 我说：这个世界上有趣的东西很多，但数学是性价比最高的。一本数学书很便宜，但可以让你读很久。从中发现有那么多有趣的事实。原来解决不了的问题，知道方法突然就明白了。如果是自己找到的方法，就更让人兴奋了。 她说：我还是觉得数学没意思。 我说：慢慢来，不着急。首先不要排斥它。学数学其实不需要硬背那么多东西，我小时候最不",
+      "source": "云风的博客"
+    },
+    {
+      "title": "最近玩的几款卡牌构筑类电子游戏",
+      "link": "https://blog.codingnow.com/2025/12/deckbuilder_games.html",
+      "pubDate": "2025-12-15T08:32:32+00:00",
+      "summary": "最近玩了几个卡牌构筑类的电子游戏，觉得颇为有趣，值得记录一下。 首先是 Decktamer（训牌师）。我玩了十几个小时，把初级难度通关了。 它的新设计是用卡牌构筑的形式重新做了一个宝可梦。和杀戮尖塔开创的战斗结束后抽卡，用战斗胜利的奖励钱买卡、洗卡、升级的模式不同。它的战斗卡是不需要洗的，战斗中死亡就直接消失；新卡片是在战斗中捕获对手获得。加强战斗卡的方式主要是用道具卡杂交战斗卡：从一张战斗卡上抽取需要的技能，加到另一张战斗卡上。 战斗过程更像是万智牌那种更传统的卡牌战斗模式：摆放战斗卡都场上，再由上场的卡片发动能力。这种传统战斗模式不同，发动战斗技能没有额外的资源消耗，而修改成每回合必然从卡片上所有技能中选择一个。这可以避免给同一张卡片合成太多能力造成的不平衡。更多能力往往只是增加了容错性，可以应付更多场景。 玩家卡牌被分成了两个牌堆：战斗卡堆和道具卡堆。这种双卡堆的模式最近的卡牌构筑游戏中比较常见，下面还会再提到。不过这里道具卡堆并不是抽牌堆，更像是一个道具背包，可以随时使用。 我在简单难度通关的感受是：只有最终 boss 有挑战。而这种挑战更像是一个谜题。所以第一次面对最终 bo",
+      "source": "云风的博客"
+    },
+    {
+      "title": "嵌入主线程消息循环的任务调度器",
+      "link": "https://blog.codingnow.com/2025/11/task_schedule_in_eventloop.html",
+      "pubDate": "2025-11-22T05:52:56+00:00",
+      "summary": "最近在网友协助下把 soluna port 到包括 wasm 在内的非 windows 平台。其间遇到很多难题，大多是多线程环境的问题。因为 soluna 的根基就是基于 ltask 的多线程调度器，如果用单线程实现它，整个项目的意义就几乎不存在，所以它是把项目维护下去必须解决的问题。 好在 lua 有优秀的 coroutine 支持，它可以把运行流程抽象成数据，而 Lua 本身并未限制数据的具体储存方式，所以完全可以存在于内存堆中，脱离于 C 栈存在，这为各种在 C 环境下的多线程难题开了后门。C 语言依赖栈运行代码逻辑，而栈绑定于线程，线程调度通常由操作系统完成，所以用常规方式无法让代码跨线程运行：即，无法通过常规手法让一段代码的流程前半段在一个线程运行，而用另一个线程运行后半段；但是，在 C 上建立一个 Lua 层，则很容易绕开这个限制，只用标准方法就可以自由控制程序运行流程。 上一次发现利用一些技巧就可以完成一些看似不可能却的确可行的调度方式是 多线程串行运行 Lua 虚拟机 。 简单复述一下当时的需求：...",
+      "source": "云风的博客"
+    },
+    {
+      "title": "欧陆风云 5 的经济系统",
+      "link": "https://blog.codingnow.com/2025/11/eu5.html",
+      "pubDate": "2025-11-04T22:07:40+00:00",
+      "summary": "很早从“舅舅”那里拿到了《欧陆风云 5》的试玩版。因为开发期的缘故，更新版本后需要重玩，所以一开始只是陆陆续续玩了十几个小时。前段时间从阳朔攀岩回来，据说已经是发售前最后一版了，便投入精力好好玩了 50 小时，感觉非常好。 我没有玩过这个系列的前作，但有 800 小时《群星》的经验，还有维多利亚 2/3 以及十字军之王 2/3 的近百小时游戏时间，对 P 社的大战略游戏的套路还是比较了解的。这一作中有很多似曾相识的机制，但玩进去又颇为新鲜，未曾在其它游戏中体验过。 我特别喜欢 P 社这种在微观上使用简洁公式，宏观展现出深度的游戏设计。我试着对游戏的一小部分设计作一些分析，记录一下它的经济系统是如何构建的。...",
+      "source": "云风的博客"
+    },
+    {
+      "title": "Agent评估",
+      "link": "https://qiankunli.github.io/2025/11/04/agent_evaluate.html",
+      "pubDate": "2025-11-04T00:00:00+08:00",
+      "summary": "简介(未完成) 评估什么 核心能力评估（第一层） 应用效果评估（第二层） 如何评估 其它 简介(未完成) Agent评估采用三层金字塔模型，按重要性和实施优先级划分： 第一层：核心能力，规划、工具使用、推理、记忆 第二层：应用效果 ，任务完成、输出质量、用户满意度 第三层：生产就绪度，成本、延迟、安全、稳定性 评估什么 核心能力评估（第一层） 规划与推理能力，Agent能否将复杂任务分解并逐步执行 任务完成进度 = 已完成步骤/理想步骤数 正确选择工具比例 = 正确调用/总调用 遇错误后调整能力 = 成功恢复次数/错误次数 工具使用能力，Agent能否正确调用和组合各种工具：L1: 单工具调用 → L2: 顺序调用 → L3: 并行调用 → L4: 动态发现 工具名称+参数正确性 优先使用API而非浏览器 工具组合效率：最少调用达成目标 记忆管理能力，Agent能否维护和利用长期记忆 准确检索，从历史中提取正确信息 在线学习，对话中新增学习 长程理解，跨多轮维持一致性 选择遗忘，过滤无关信息 自我反思与改进能力，Agent能否从反馈中学习并改进 初次尝试 → Agent执行任务（可能失",
+      "source": "李乾坤"
+    },
+    {
+      "title": "OS Agent",
+      "link": "https://qiankunli.github.io/2025/10/01/os_agent.html",
+      "pubDate": "2025-10-01T00:00:00+08:00",
+      "summary": "简介(未完成) Browser Use CDP computer use GUI Agent code sandbox agent与sandbox 其它 简介(未完成) xx-use 可以将一些老旧软件“api”化。 agent infra。 Browser Use https://github.com/browser-use/browser-use 如何让AI“看懂”网页？拆解 Browser-Use 的三大核心技术模块 Browser Use 是什么 Browser Use 是一种基于 AI 模型的浏览器自动化工具，基于 Playwright（浏览器自动化框架） Browser Use 是是一个开源的Python库，基于 LangChain 生态构建 Playwright 是一个底层浏览器自动化驱动层，负责： 启动、控制浏览器进程； 执行 DOM 操作、点击、输入、截图； 模拟网络请求、地理位置、时间； 拦截 / 注入脚本； 提供 API 接口给上层应用调用。 它相当于“浏览器的远程控制器”，用来跑测试、爬取数据、或者做自动化交互。 # 初始化AI模型 llm = ChatOpen",
+      "source": "李乾坤"
+    },
+    {
+      "title": "ä¼ä¸AIç¥è¯åºä¸æ­¢æ¯RAGï¼æ´éè¦çæ¯âç¥è¯å¼æä¸å¤§æ¯æ±â",
+      "link": "https://www.luxiangdong.com/2025/09/18/3points/",
+      "pubDate": "2025-09-18T03:00:21+00:00",
+      "summary": "ä»å¹´è¢«é®çæå¤çé®é¢ä¹ä¸åºè¯¥å°±æ¯âä½ ä»¬åDifyãRagflowæä»ä¹åºå«ï¼â \n å¶å®è¿ä¸ªé®é¢å¹¶ä¸å¥½åç­ï¼æ¯ä¸ªäº§åé½æèªå·±çä¼å¿åç¹å®ç¨æ·ç¾¤ä½ãå¦æä½ é·å¥åè½æ¨¡ååææ¯åæ°çæ¯è¾ï¼é£ä¹å°±ä¼è±ç¦»åé äº§åæ¯ä¸ºäºå®ç°å®¢æ·ä»·å¼è¿ä¸ªåè¡·ãæä»¥åç­è¿ä¸ªé®é¢æä½³çæ¹å¼æ¯åæä¸ä¸æä»¬ç°æå®¢æ·ï¼å¦å¾®ä¼é¶è¡ãæµªæ½®ä¿¡æ¯ãç©äº§ä¸­å¤§ç­ï¼ä¸ºä»ä¹éæ©æä»¬çTorchVä¼ä¸çº§AIç¥è¯åºã \n æ",
+      "source": "卢向东"
+    },
+    {
+      "title": "ä¼ä¸AIè½å°ä¸é¡ºï¼é®é¢å¯è½åºå¨ä½ æ²¡ææç¥è¯åº",
+      "link": "https://www.luxiangdong.com/2025/08/05/zhishiku/",
+      "pubDate": "2025-08-05T03:36:05+00:00",
+      "summary": "å¯¼è¯»ï¼ \n \n ä¸ºä»ä¹ä¼ä¸AIè½å°å¾å¾ä¸é¡ºï¼ \n éæ°è®¤è¯ä¸ä¸ç¥è¯ï¼ä¸æ¯æ°æ®ï¼ä¹ä¸æ¯ææ¡£ï¼ \n AIä¼ä¸ç¥è¯åºä¸ç­äºRAGï¼ \n å¦ä½å°ææ¡£ãæ°æ®åæç¥è¯ï¼TorchVå¯¹SECIæ¨¡åçå®ç°ä»ç»ã \n \n \n   ä¸ãAIæ¶ä»£ç¥è¯ä¸ºä»ä¹å¾éè¦  ä»å¹´çAIåºç¨éï¼è®©æææè³çåºè¯¥æ¯GeminiçDeep Researchï¼proçæ¬ï¼åManusäºï¼ä¼¼ä¹AIççèµ°å°äºèªå·±æèåæ§è¡äºé¡¹çæ¶ä»£ï¼ç¸ä¿¡å·²ç»ç¨ä¸è¿äºäº§åçæåä¼æåæ ·çæå",
+      "source": "卢向东"
+    },
+    {
+      "title": "TorchVåä¸ä¸å¹´åå¤ç,æä»¬å¨åªåå®ä¹AIä¼ä¸ç¥è¯åº",
+      "link": "https://www.luxiangdong.com/2025/08/05/oneyearhalf/",
+      "pubDate": "2025-08-05T03:22:38+00:00",
+      "summary": "ä¸»è¦åå®¹ï¼ \n TorchVåä¸ä¸å¹´åçç»åï¼ä»¥åå¯¹äº§ååå¸åºçææ³ã \n æä»¬å¯¹AIä¼ä¸ç¥è¯åºçå®ä¹ã \n \n æ¨å¤©ï¼2025.05.29ï¼æ¯TorchVåä¸ä¸å¹´åçæ¥å­ï¼æ¬æ¥ä¸æ³åä»ä¹çï¼å ä¸ºæè¿è¢«ä¸å¡æ¨è¿çéåº¦æ§æ®çé½æ²¡æå¥½å¥½ä¼æ¯ãä½æ¯çªç¶çå°çº¢è¯èå¸çæç« éé¢å¼ç¨äºSrinivas Raoçã99% ç AI ååå¬å¸å°å¨ 2026 å¹´åæ¶äº¡ãï¼è®©æçªç¶ææ³åä¸ç¯åä¸ææ³çå²å¨ãå¨è¿ä¸ªæ¶åçå°è¿ç¯æç« ï¼å",
+      "source": "卢向东"
+    },
+    {
+      "title": "Why We Think",
+      "link": "https://lilianweng.github.io/posts/2025-05-01-thinking/",
+      "pubDate": "2025-05-01T00:00:00+00:00",
+      "summary": "Special thanks to  John Schulman  for a lot of super valuable feedback and direct edits on this post.  \n Test time compute ( Graves et al. 2016 ,  Ling, et al. 2017 ,  Cobbe et al. 2021 ) and Chain-of-thought (CoT) ( Wei et al. 2022 ,  Nye et al. 2021 ), have led to significant improvements in model performance, while raising many research questions. This post aims to review recent developments in how to effectively use test-time compute (i.e. &ldquo;thinking time&rdquo;) and why it helps.",
+      "source": "Lilian Weng"
+    },
+    {
+      "title": "DeepSeekç«çç°è±¡èåä¼ä¸å¯ä»¥å¾å°ä»ä¹å®è´¨æåï¼",
+      "link": "https://www.luxiangdong.com/2025/02/13/deepseek/",
+      "pubDate": "2025-02-13T09:49:25+00:00",
+      "summary": "DeepSeekç«çç°è±¡èåä¼ä¸å¯ä»¥å¾å°ä»ä¹å®è´¨æåï¼  æ¬æçä¸»è¦åå®¹ï¼ \n \n \n DeepSeekç«çæå¼å¾å³æ³¨çç¹ï¼ \n ä¼ä¸å¯ä»¥å¨DeepSeekè¿åä¸­å¾å°åªäºå¥½å¤ï¼ \n ä¼ä¸å¦ä½æ´è¿ä¸æ­¥æ¥æ±AIã \n \n \n DeepSeek-R1ï¼å¶å®è¿æV3ï¼è¿ä¸ªæ¥èççå¤ªç«çäºï¼æè§æ¯ä¸ä¸ä¸ªæ¥èæé´çSoraå¸¦æ¥çè½°å¨è¦æ´å å¼ºçï¼èä¸å¨æç»ææä¸ä¹éå¸¸è½å°åæåï¼åªä½ç­åº¦åDeepSeekçæå¡å¨ä¸æ ·ï¼è¿20å¤©äºä¾ç¶ç­å¾åç«ãä½",
+      "source": "卢向东"
+    },
+    {
+      "title": "Agents",
+      "link": "https://huyenchip.com//2025/01/07/agents.html",
+      "pubDate": "2025-01-07T00:00:00+00:00",
+      "summary": "Intelligent agents are considered by many to be the ultimate goal of AI. The classic book by Stuart Russell and Peter Norvig,  Artificial Intelligence: A Modern Approach  (Prentice Hall, 1995), defines the field of AI research as “ the study and design of rational agents. ” \n\n The unprecedented capabilities of foundation models have opened the door to agentic applications that were previously unimaginable. These new capabilities make it finally possible to develop autonomous, intelligent agents ",
+      "source": "Chip Huyen"
+    },
+    {
+      "title": "Reward Hacking in Reinforcement Learning",
+      "link": "https://lilianweng.github.io/posts/2024-11-28-reward-hacking/",
+      "pubDate": "2024-11-28T00:00:00+00:00",
+      "summary": "Reward hacking occurs when a  reinforcement learning (RL)  agent  exploits  flaws or ambiguities in the reward function to achieve high rewards, without genuinely learning or completing the intended task. Reward hacking exists because RL environments are often imperfect, and it is fundamentally challenging to accurately specify a reward function. \n With the rise of  language models  generalizing to a broad spectrum of tasks and RLHF becomes a de facto method for alignment training, reward hackin",
+      "source": "Lilian Weng"
+    },
+    {
+      "title": "RAGç2024âééèåï¼ä»çç­å°çæ§",
+      "link": "https://www.luxiangdong.com/2024/11/14/rag2024/",
+      "pubDate": "2024-11-14T01:51:41+00:00",
+      "summary": "è½¬ç¼å°äº2024å¹´å°¾ï¼åå°ä¼ä¼´ä¸èµ·åç«TorchVä¹æ¥è¿ä¸å¹´ãè½ç¶è¿ä¸å¹´åäºå¾å¤äºæï¼ä½ä»ææ¯å±é¢ä¸æ¥è¯´ï¼RAGè¯å®æ¯ä¸å¾ä¸æçï¼æä»¥ä»å¤©åäº«ä¸ä¸ä½ä¸ºå¤§æ¨¡ååºç¨åä¸èææç¥çè¿ä¸å¹´ï¼RAGææ¯åå¸åºç¯å¢çååã \n   é¦åç³æï¼æ¬ææ´å¤æ¥èªäºæ¬äººä¸»è§æåï¼ä¸åå®¹æ´å¤æ¯åé¡¾æ§çç»è®ºï¼ä¸å»ºè®®ä½ä¸ºå¶ä»æç« çå¼ç¨ææã   \n ä¸»è¦åå®¹åæ¬ï¼ \n \n \n RAGææ¯åå \n ä¸»è¦æ¶æåå \n",
+      "source": "卢向东"
+    },
+    {
+      "title": "ãç¿»è¯ãRRF â å¦ä½å¨ RAG ä¸­å¯¹å¤ç§æ£ç´¢æ¹æ³çç»æè¿è¡è¯å",
+      "link": "https://www.luxiangdong.com/2024/11/08/rrf/",
+      "pubDate": "2024-11-08T02:46:42+00:00",
+      "summary": "åä½èï¼ Deval Shah  \n åæï¼ Reciprocal Rank Fusion (RRF) explained in 4 mins â How to score results form multiple retrieval methods in RAG  \n   \n  å¾ï¼RAG ä¸­çåæ°ç§©èåï¼å¾çç±ä½èæä¾ï¼  \n æ£ç´¢å¢å¼ºçæ ï¼RAGï¼ æ¯èªç¶è¯­è¨å¤çä¸­çä¸ç§å¼ºå¤§ææ¯ï¼ç»åäºåºäºæ£ç´¢çæ¨¡ååçææ¨¡åçä¼å¿ã æ£ç´¢é¶æ®µå¯ä»¥æå°±æç ´åæ¨ç RAG ç®¡éã å¦ææ£ç´¢å¨æªè½ä»æ£ç´¢å¨ä¸­è·åç¸å³ææ¡£ï¼åç²¾åº¦è¾ä½ï¼å¹»è§çå¯è½æ",
+      "source": "卢向东"
+    },
+    {
+      "title": "èä¸ª5åéçä¼ä¸AIåºç¨éæ±ååè¶å¿",
+      "link": "https://www.luxiangdong.com/2024/09/09/trend/",
+      "pubDate": "2024-09-09T06:18:54+00:00",
+      "summary": "å¥½ä¹æ²¡æçBlogäºï¼ä»å¤©æ½æ¶é´èèå½ä¸çä¼ä¸AIåºç¨éæ±è¶å¿ã \n   \n    ä¸ãä¼ä¸AIåºç¨éæ±çåºå±é»è¾   å¦æä»å»å¹´å¹´åºå¼å§ç®ï¼æä»¬æ¥è§¦çéæ±ä¹ä¸å°äºï¼å·ä½æ°éè¯å®å¨åäºç¾ä¸ªä»¥ä¸ï¼åç±»éæ±é½æãå¦æä¸å®è¦åä¸ªå½çº³åç±»ï¼é£å¯ä»¥ä»å®¢æ·éæ±çåºåç¹åå¥æ¥åç±»ï¼æèè¯´ä»åºå±é»è¾æ¥åç±»ã \n    01ç¨æ°ææ¯è§£å³èé®é¢",
+      "source": "卢向东"
+    },
+    {
+      "title": "ä»ç»TorchV AIçä¸¤æ¬¾åºç¨ï¼åç®æ´å´éè¦çäºæ",
+      "link": "https://www.luxiangdong.com/2024/08/01/2p/",
+      "pubDate": "2024-08-01T00:50:18+00:00",
+      "summary": "åå¨åé¢   å¨æçäº§åç åçæ¶¯ä¸­ï¼åºåçäº§åå·²ç»è¶è¿åä¸ªäºï¼æ toGãtoBä¹ætoCï¼æå¤æçï¼ä¹æéå¸¸ç®åçãåé¡¾è¿åå¤ä¸ªäº§åï¼ä¹åç°ä¸ä¸ªæææçæ³è±¡ï¼ ä½å¡ç°å¨ä¾ç¶è¿è¢«å¾å¤å®¢æ·å¨ä½¿ç¨çï¼å¾å¾é½æ¯ç®çå¾çº¯ç²¹çäº§åï¼è³å°ä»äº§ååè¡·æ¥è¯´ï¼é½æ¯ä»ä¸ºäºè§£å³ä¸ä¸ªæ ¸å¿é®é¢ç ãèé£äºåä¸ªäº§åå°±å¸¦æå¾å¤åè½çtoGç³»ç»ï¼ç°å¨åºæ¬ä¸é½å·²ç»è¢«æè¿åå¾æ¡¶äºâ¦â¦ \n æä»¥å",
+      "source": "卢向东"
+    },
+    {
+      "title": "Extrinsic Hallucinations in LLMs",
+      "link": "https://lilianweng.github.io/posts/2024-07-07-hallucination/",
+      "pubDate": "2024-07-07T00:00:00+00:00",
+      "summary": "Hallucination in large language models usually refers to the model generating unfaithful, fabricated, inconsistent, or nonsensical content. As a term, hallucination has been somewhat generalized to cases when the model makes mistakes. Here, I would like to narrow down the problem of hallucination to cases where the model output is fabricated and  not grounded  by either the provided context or world knowledge. \n There are two types of hallucination: \n \n In-context hallucination: The model output",
+      "source": "Lilian Weng"
+    },
+    {
+      "title": "ç¨åæéåäº«ââRAGå¨ä¼ä¸åºç¨ä¸­è½å°çé¾ç¹ä¸åæ°ï¼æå­ç¨¿ï¼",
+      "link": "https://www.luxiangdong.com/2024/07/04/xitu/",
+      "pubDate": "2024-07-04T05:41:24+00:00",
+      "summary": "0629è®²ç¨¿  ä»¥ä¸æ¯æå¨2024å¹´6æ29æ¥ä¸åå¨åäº¬å¯åä¸ä¸½éåºä¸¾è¡çç¨åæéå¼åèå¤§ä¼RAGä¸åºçåäº«åå®¹ï¼åæ¬æå­ç¨¿ï¼ä¸å¹¶åäº«ç»å¤§å®¶ï¼ \n   \n æåä»¬ï¼ä¸åå¥½ï¼ \n æå«å¢åä¸ï¼æ¥èªæ­å·ï¼ä»å¤©ä¸ºå¤§å®¶åäº«çæ¯æä»¬å¨å¤§æ¨¡ååºç¨çä¼ä¸è½å°æ¶ç¢°å°çä¸äºå³äºRAGçé¾ç¹ååæ°ã \n   \n å¯è½å¾å¤æåè®¤è¯ææ¯å ä¸ºå¬ä¼å·âåççåå¤âï¼ä»å»å¹´6ã7æä»½å¼å§æç»­åäº«äºå³äºRAGåå¤§æ¨¡å",
+      "source": "卢向东"
+    },
+    {
+      "title": "TorchV AIç¨æ·æå0609",
+      "link": "https://www.luxiangdong.com/2024/06/11/manual/",
+      "pubDate": "2024-06-11T01:04:46+00:00",
+      "summary": "title: ç¨æ·æå-å¿«éå¥é¨ slug: /getting-started displayed_sidebar: mainSidebar \n \n çæ¬åå² \n \n \n \n çæ¬ \n ä½è \n æ¥æ \n å¤æ³¨ \n \n \n  \n beta v1.0.0 \n å¢åä¸( yuanwai@mengjia.net )ãèçæ°( xiaoymin@mengjia.net ) \n 2024/02/28 \n åå§å \n \n \n beta v1.6.0 \n å¢åä¸( yuanwai@mengjia.net )ãèçæ°( xiaoymin@mengjia.net ) \n 2024/03/31 \n æ­£å¼çæ¬v1.0 \n \n \n beta v1.7.0 \n å¢åä¸( yuanwai@mengjia.net )ãèçæ°( xiaoymin@mengjia.net )ãåæ­æ³¢( &#x6c;&#x69;&#",
+      "source": "卢向东"
+    },
+    {
+      "title": "LLMä¼ä¸åºç¨è½å°åºæ¯ä¸­çé®é¢ä¸è§ ï½LLM ï½RAG ï½Agent ï½TorchV",
+      "link": "https://www.luxiangdong.com/2024/05/18/llmentprise/",
+      "pubDate": "2024-05-18T04:59:07+00:00",
+      "summary": "æè¿ä¸¤ä¸ªå¤æåæç« çé¢çææ¾ä½äºå¾å¤ï¼ä¸æ¯å ä¸ºæäºï¼èæ¯å¿çåLLMåºç¨çå®¢æ·åºæ¯è½å°å»äºãä»å¤©æå®¢æ·åºæ¯è½å°ä¸­çä¸äºå¿å¾æ»ç»åäº«ä¸ä¸ï¼å¸æå¯¹å¹¿å¤§ææLLMåºç¨è½å°çä¼ä¸æä¸äºå¸®å©ã  \n   åè¿°  ä¸å¾å¤ä¼ä¸å®¢æ·çæ·±åº¦æ¥è§¦ä¹åï¼åç°ç»å¤§å¤æ°ä¼ä¸å¨LLMåºç¨è½å°ä¸­å­å¨ä¸ä¸ªæ¾èé®é¢ï¼è¿äºä¼ä¸åæ¬ä¸ç500å¼ºä¼ä¸ãå¤®ä¼ãèååçå¬å¸ï¼ä¹åæ¬åæä»¬ä¸æ ·ä½éAIè¡ä¸ç",
+      "source": "卢向东"
+    },
+    {
+      "title": "ãç¿»è¯ãAI Agents Are All You Need",
+      "link": "https://www.luxiangdong.com/2024/04/28/agents2/",
+      "pubDate": "2024-04-28T13:34:17+00:00",
+      "summary": "å¤§è¯­è¨æ¨¡å(LLM)  å·²ç»å­å¨äºå å¹´ï¼å®ä»¬æ­£å¨è¿éå  AI Agents å Agents Workflow åå±ãä¸è¦è¯¯è§£æçææï¼å¤§è¯­è¨æ¨¡å(LLM)æ¯å¾æ£çï¼ä½ä»ä»¬å¨èªå¨åæ¹é¢ä»ç¶ä¸å¤ææãå¤§è¯­è¨æ¨¡åä¸å¶ä»å·¥å·ç¸ç»åæ¯å©ç¨å¤§è¯­è¨æ¨¡å(LLM)ææ¥æçéç¨æºè½çä¸ç§éå¸¸ææçæ¹å¼ï¼éè¿æ¶èå¤§éçTokensãå¤§è¯­è¨æ¨¡åæå¤§çé®é¢æ¯ä»ä»¬æè¿·å¤±çå¾å(å¹»è§åèªæä¸è´æ§)ï¼æä»¬æ°¸è¿ä¸ç¥éå¤§è¯­è¨æ¨¡å(LLM)",
+      "source": "卢向东"
+    },
+    {
+      "title": "æ¢è®¨å®ç°AI Agentsçä¸ç§æ¹å¼ï¼ä¸åçæ¹å¼å¸¦æ¥ä¸åçå®¢ç¾¤ååºæ¯ ï½LLM ï½Agent ï½RAG",
+      "link": "https://www.luxiangdong.com/2024/04/26/agents/",
+      "pubDate": "2024-04-26T03:42:00+00:00",
+      "summary": "æ¨å¤©å»åå å¨ä¸æµ·ä¸¾åçNVIDIAåä¸èä¼è®®ï¼æåäºAIåä¸çç­æï¼è¿å¬äºDify CEOå¼ è·¯å®çåäº«ãå ä¸å´æ©è¾¾å¨çº¢æåäº«ä¼ä¸å¯¹AI Agentsçæ¨å¨ï¼å¸¦å¨äºå½åå¤§éèªåªä½å¯¹AI Agentsççè½°æ»¥ç¸ãæä»¥ä¹æ³ä»æèªå·±çè§åº¦æ¥åäº«ä¸äºæèã \n åè´´ä¸ä¸å´æ©è¾¾åäº«çåç§AI Agentsè®¾è®¡æ¨¡å¼ï¼ \n \n  èªæåæï¼Reflectionï¼ ï¼å¯ä»¥èªæä¿®æ­£ï¼ \n  ä½¿ç¨å·¥å·ï¼Tool Useï¼ ï¼é¾æ¥å¶ä»ç³»ç»å»åä¸äºäºæï¼æ¯å",
+      "source": "卢向东"
+    },
+    {
+      "title": "ãç¿»è¯ãDSPYç®ææç¨",
+      "link": "https://www.luxiangdong.com/2024/04/19/dspy1/",
+      "pubDate": "2024-04-19T00:30:30+00:00",
+      "summary": "ç®åï¼ä½¿ç¨å¤§åè¯­è¨æ¨¡å(LLMs)æå»ºåºç¨ç¨åºä¸ä»å¤æèä¸èå¼±ãå¸åçpipelineséå¸¸ä½¿ç¨promptsæ¥å®ç°ï¼è¿äºpromptsæ¯éè¿åå¤è¯éªæå·¥å¶ä½çï¼å ä¸º LLMså¯¹promptsçæ¹å¼å¾ææ ãå æ­¤ï¼å½æ¨æ´æ¹pipelinesä¸­çæä¸ªé¨å(ä¾å¦LLMææ°æ®)æ¶ï¼å¯è½ä¼åå¼±å¶æ§è½âé¤éæ¨è°æ´prompts(æå¾®è°æ­¥éª¤)ã \n \n å½æ¨æ´æ¹pipelineä¸­çä¸é¨åæ¶ï¼ä¾å¦LLMææ°æ®ï¼æ¨å¯è½ä¼åå¼±å¶æ§è½â¦â¦ \n \n  DSPy [1]æ¯ä¸ä¸ªæ¡æ¶",
+      "source": "卢向东"
+    },
+    {
+      "title": "ãç¿»è¯ãLLMçFunction-Callç®ææç¨",
+      "link": "https://www.luxiangdong.com/2024/04/13/func-call/",
+      "pubDate": "2024-04-13T09:30:14+00:00",
+      "summary": "Function Callï¼å½æ°è°ç¨ï¼å¹¶ä¸æ¯ä»ä¹æ°é²äºã2023 å¹´ 7 æï¼OpenAI ä¸ºå¶ GPT æ¨¡åå¼å¥äºå½æ°è°ç¨ï¼è¯¥åè½ç°å¨å·²è¢«ç«äºå¯¹æéç¨ãGoogle ç Gemini API æè¿æ¯æå®ï¼Anthropic æ­£å¨å°å¶éæå° Claude ä¸­ãå½æ°è°ç¨å¯¹äºå¤§åè¯­è¨æ¨¡å ï¼LLMs ï¼æ¥è¯´åå¾è³å³éè¦ï¼ä»èå¢å¼ºäºå®ä»¬çåè½ã \n èèå°è¿ä¸ç¹ï¼æçç®æ æ¯ç¼åä¸ä¸ªå¨é¢çæç¨ï¼æ¶µçåºæ¬ä»ç»ä¹å¤çå½æ°è°ç¨ï¼å·²ç»æå¾å¤æç¨äºï¼ãé",
+      "source": "卢向东"
+    },
+    {
+      "title": "Diffusion Models for Video Generation",
+      "link": "https://lilianweng.github.io/posts/2024-04-12-diffusion-video/",
+      "pubDate": "2024-04-12T00:00:00+00:00",
+      "summary": "Diffusion models  have demonstrated strong results on image synthesis in past years. Now the research community has started working on a harder task&mdash;using it for video generation. The task itself is a superset of the image case, since an image is a video of 1 frame, and it is much more challenging because: \n \n It has extra requirements on temporal consistency across frames in time, which naturally demands more world knowledge to be encoded into the model. \n In comparison to text or images,",
+      "source": "Lilian Weng"
+    },
+    {
+      "title": "ãç¿»è¯ãç¥ç»ç½ç»èåçæ°å­¦åç",
+      "link": "https://www.luxiangdong.com/2024/04/10/math/",
+      "pubDate": "2024-04-10T12:00:32+00:00",
+      "summary": "ç¥ç»ç½ç»æ¯äººå·¥æºè½ ï¼AIï¼ çæ ¸å¿ï¼ä¸ºä»åç°ç§çä¸­çç©ä½å°ç¿»è¯è¯­è¨çåç§åºç¨æä¾å¨åãå¨æ¬æä¸­ï¼æä»¬å°æ·±å¥æ¢è®¨ç¥ç»ç½ç»æ¯ä»ä¹ï¼å®ä»¬æ¯å¦ä½å·¥ä½çï¼ä»¥åä¸ºä»ä¹å®ä»¬å¨å½ä»ææ¯é©±å¨çä¸çä¸­å¾éè¦ã \n  Index ææ°  \n Â·1ï¼ äºè§£åºç¡ç¥è¯  â 1.1ï¼ ä»ä¹æ¯ç¥ç»ç½ç»ï¼ â 1.2ï¼ ç¥ç»ç½ç»çç±»å Â·2ï¼ ç¥ç»ç½ç»çæ¶æ  â 2.1ï¼ ç¥ç»åçç»æ â 2.2ï¼ å¾å± â 2.3ï¼ å±å¨å­¦ä¹ ä¸­ç",
+      "source": "卢向东"
+    },
+    {
+      "title": "What I learned from looking at 900 most popular open source AI tools",
+      "link": "https://huyenchip.com//2024/03/14/ai-oss.html",
+      "pubDate": "2024-03-14T00:00:00+00:00",
+      "summary": "[  Hacker News discussion ,  LinkedIn discussion ,  Twitter thread  ] \n\n  Update (Feb 2026) :  The full list of open source AI repos is hosted at  Good AI List , updated daily. It’s balooned to 15K repos, and you can submit missing repos. You can also find some of them on my  cool-llm-repos  list on GitHub.  \n\n Four years ago, I did an analysis of the  open source ML ecosystem . Since then, the landscape has changed, so I revisited the topic. This time, I focused exclusively on the stack around ",
+      "source": "Chip Huyen"
+    },
+    {
+      "title": "Predictive Human Preference: From Model Ranking to Model Routing",
+      "link": "https://huyenchip.com//2024/02/28/predictive-human-preference.html",
+      "pubDate": "2024-02-28T00:00:00+00:00",
+      "summary": "A challenge of building AI applications is choosing which model to use. What if we don’t have to? What if we can predict the best model for any prompt? Predictive human preference aims to predict which model users might prefer for a specific query. \n\n Human preference has emerged to be both the Northstar and a powerful tool for AI model development. Human preference guides post-training techniques including  RLHF  and  DPO . Human preference is also used to rank AI models, as used by LMSYS’s  Ch",
+      "source": "Chip Huyen"
+    },
+    {
+      "title": "Thinking about High-Quality Human Data",
+      "link": "https://lilianweng.github.io/posts/2024-02-05-human-data-quality/",
+      "pubDate": "2024-02-05T00:00:00+00:00",
+      "summary": "[Special thank you to  Ian Kivlichan  for many useful pointers (E.g. the 100+ year old Nature paper &ldquo;Vox populi&rdquo;) and nice feedback. 🙏 ]   \n High-quality data is the fuel for modern data deep learning model training. Most of the task-specific labeled data comes from human annotation, such as classification task or  RLHF  labeling (which can be constructed as classification format) for LLM alignment training. Lots of ML techniques in the post can help with data quality, but fundamenta",
+      "source": "Lilian Weng"
+    },
+    {
+      "title": "Generation configurations: temperature, top-k, top-p, and test time compute",
+      "link": "https://huyenchip.com//2024/01/16/sampling.html",
+      "pubDate": "2024-01-16T00:00:00+00:00",
+      "summary": "ML models are probabilistic. Imagine that you want to know what’s the best cuisine in the world. If you ask someone this question twice, a minute apart, their answers both times should be the same. If you ask a model the same question twice, its answer can change. If the model thinks that Vietnamese cuisine has a 70% chance of being the best cuisine and Italian cuisine has a 30% chance, it’ll answer “Vietnamese” 70% of the time, and “Italian” 30%. \n\n This probabilistic nature makes AI great for ",
+      "source": "Chip Huyen"
+    },
+    {
+      "title": "Adversarial Attacks on LLMs",
+      "link": "https://lilianweng.github.io/posts/2023-10-25-adv-attack-llm/",
+      "pubDate": "2023-10-25T00:00:00+00:00",
+      "summary": "The use of large language models in the real world has strongly accelerated by the launch of ChatGPT. We (including my team at OpenAI, shoutout to them) have invested a lot of effort to build default safe behavior into the model during the alignment process (e.g. via  RLHF ). However, adversarial attacks or jailbreak prompts could potentially trigger the model to output something undesired. \n A large body of ground work on adversarial attacks is on images, and differently it operates in the cont",
+      "source": "Lilian Weng"
+    },
+    {
+      "title": "Multimodality and Large Multimodal Models (LMMs)",
+      "link": "https://huyenchip.com//2023/10/10/multimodal.html",
+      "pubDate": "2023-10-10T00:00:00+00:00",
+      "summary": "For a long time, each ML model operated in one data mode – text (translation, language modeling), image (object detection, image classification), or audio (speech recognition). \n\n However, natural intelligence is not limited to just a single modality. Humans can read, talk, and see. We listen to music to relax and watch out for strange noises to detect danger. Being able to work with multimodal data is essential for us or any AI to operate in the real world. \n\n OpenAI noted in their  GPT-4V syst",
+      "source": "Chip Huyen"
+    },
+    {
+      "title": "LLM Powered Autonomous Agents",
+      "link": "https://lilianweng.github.io/posts/2023-06-23-agent/",
+      "pubDate": "2023-06-23T00:00:00+00:00",
+      "summary": "Building agents with LLM (large language model) as its core controller is a cool concept. Several proof-of-concepts demos, such as  AutoGPT ,  GPT-Engineer  and  BabyAGI , serve as inspiring examples. The potentiality of LLM extends beyond generating well-written copies, stories, essays and programs; it can be framed as a powerful general problem solver. \n Agent System Overview \n In a LLM-powered autonomous agent system, LLM functions as the agent&rsquo;s brain, complemented by several key compo",
+      "source": "Lilian Weng"
+    },
+    {
+      "title": "Generative AI Strategy",
+      "link": "https://huyenchip.com//2023/06/07/generative-ai-strategy.html",
+      "pubDate": "2023-06-07T00:00:00+00:00",
+      "summary": "I had a lot of fun preparing the talk:  “Leadership needs us to do generative AI. What do we do?”  for  Fully Connected . The idea for the talk came from many conversations I’ve had recently with friends who need to figure out their generative AI strategy, but aren’t sure what exactly to do. \n\n This talk is a simple framework to explore what to do with generative AI. Many ideas are still being fleshed out. I hope to convert this into a proper post when I have more time. In the meantime, I’d love",
+      "source": "Chip Huyen"
+    },
+    {
+      "title": "Prompt Engineering",
+      "link": "https://lilianweng.github.io/posts/2023-03-15-prompt-engineering/",
+      "pubDate": "2023-03-15T00:00:00+00:00",
+      "summary": "Prompt Engineering , also known as  In-Context Prompting , refers to methods for how to communicate with LLM to steer its behavior for desired outcomes  without  updating the model weights. It is an empirical science and the effect of prompt engineering methods can vary a lot among models, thus requiring heavy experimentation and heuristics. \n This post only focuses on prompt engineering for autoregressive language models, so nothing with Cloze tests, image generation or multimodality models. At",
+      "source": "Lilian Weng"
+    },
+    {
+      "title": "Large Transformer Model Inference Optimization",
+      "link": "https://lilianweng.github.io/posts/2023-01-10-inference-optimization/",
+      "pubDate": "2023-01-10T10:00:00-07:00",
+      "summary": "[Updated on 2023-01-24: add a small section on  Distillation .]   \n Large transformer models are mainstream nowadays, creating SoTA results for a variety of tasks. They are powerful but very expensive to train and use. The extremely high inference cost, in both time and memory, is a big bottleneck for adopting a powerful transformer for solving real-world tasks at scale. \n  Why is it hard to run inference for large transformer models?  Besides the increasing size of SoTA models, there are two ma",
+      "source": "Lilian Weng"
+    },
+    {
+      "title": "Generalized Visual Language Models",
+      "link": "https://lilianweng.github.io/posts/2022-06-09-vlm/",
+      "pubDate": "2022-06-09T15:10:30-07:00",
+      "summary": "Processing images to generate text, such as image captioning and visual question-answering, has been studied for years. Traditionally such systems rely on an object detection network as a vision encoder to capture visual features and then produce text via a text decoder. Given a large amount of existing literature, in this post, I would like to only focus on one approach for solving vision language tasks, which is to  extend pre-trained  generalized language models  to be capable of consuming vi",
+      "source": "Lilian Weng"
+    },
+    {
+      "title": "Learning with not Enough Data Part 3: Data Generation",
+      "link": "https://lilianweng.github.io/posts/2022-04-15-data-gen/",
+      "pubDate": "2022-04-15T15:10:30-07:00",
+      "summary": "Here comes the Part 3 on learning with not enough data (Previous:  Part 1  and  Part 2 ). Let’s consider two approaches for generating synthetic data for training. \n \n  Augmented data . Given a set of existing training samples, we can apply a variety of augmentation, distortion and transformation to derive new data points without losing the key attributes. We have covered a bunch of augmentation methods on text and images in a  previous post  on contrastive learning. For the sake of post complet",
+      "source": "Lilian Weng"
+    },
+    {
+      "title": "Learning with not Enough Data Part 1: Semi-Supervised Learning",
+      "link": "https://lilianweng.github.io/posts/2021-12-05-semi-supervised/",
+      "pubDate": "2021-12-05T00:00:00+00:00",
+      "summary": "When facing a limited amount of labeled data for supervised learning tasks, four approaches are commonly discussed.",
+      "source": "Lilian Weng"
+    },
+    {
+      "title": "How to Train Really Large Models on Many GPUs?",
+      "link": "https://lilianweng.github.io/posts/2021-09-25-train-large/",
+      "pubDate": "2021-09-24T00:00:00+00:00",
+      "summary": "[Updated on 2022-03-13: add  expert choice routing .]  \n [Updated on 2022-06-10]:  Greg  and I wrote a shorted and upgraded version of this post, published on OpenAI Blog:  &ldquo;Techniques for Training Large Neural Networks&rdquo;",
+      "source": "Lilian Weng"
+    },
+    {
+      "title": "What are Diffusion Models?",
+      "link": "https://lilianweng.github.io/posts/2021-07-11-diffusion-models/",
+      "pubDate": "2021-07-11T00:00:00+00:00",
+      "summary": "[Updated on 2021-09-19: Highly recommend this blog post on  score-based generative modeling  by Yang Song (author of several key papers in the references)].  \n [Updated on 2022-08-27: Added  classifier-free guidance ,  GLIDE ,  unCLIP  and  Imagen .  \n [Updated on 2022-08-31: Added  latent diffusion model .  \n [Updated on 2024-04-13: Added  progressive distillation ,  consistency models , and the  Model Architecture section .",
+      "source": "Lilian Weng"
+    },
+    {
+      "title": "Contrastive Representation Learning",
+      "link": "https://lilianweng.github.io/posts/2021-05-31-contrastive/",
+      "pubDate": "2021-05-31T00:00:00+00:00",
+      "summary": "The goal of contrastive representation learning is to learn such an embedding space in which similar sample pairs stay close to each other while dissimilar ones are far apart. Contrastive learning can be applied to both supervised and unsupervised settings. When working with unsupervised data, contrastive learning is one of the most powerful approaches in  self-supervised learning .",
+      "source": "Lilian Weng"
+    },
+    {
+      "title": "Reducing Toxicity in Language Models",
+      "link": "https://lilianweng.github.io/posts/2021-03-21-lm-toxicity/",
+      "pubDate": "2021-03-21T00:00:00+00:00",
+      "summary": "Large pretrained  language models  are trained over a sizable collection of online data. They unavoidably acquire certain toxic behavior and biases from the Internet. Pretrained language models are very powerful and have shown great success in many NLP tasks. However, to safely deploy them for practical real-world applications demands a strong safety control over the model generation process.",
+      "source": "Lilian Weng"
+    },
+    {
+      "title": "Controllable Neural Text Generation",
+      "link": "https://lilianweng.github.io/posts/2021-01-02-controllable-text-generation/",
+      "pubDate": "2021-01-02T00:00:00+00:00",
+      "summary": "[Updated on 2021-02-01: Updated to version 2.0 with several work added and many typos fixed.] \n \n [Updated on 2021-05-26: Add P-tuning and Prompt Tuning in the  &ldquo;prompt design&rdquo;  section.] \n \n [Updated on 2021-09-19: Add  &ldquo;unlikelihood training&rdquo; .]",
+      "source": "Lilian Weng"
+    },
+    {
+      "title": "How to Build an Open-Domain Question Answering System?",
+      "link": "https://lilianweng.github.io/posts/2020-10-29-odqa/",
+      "pubDate": "2020-10-29T00:00:00+00:00",
+      "summary": "[Updated on 2020-11-12: add  an example  on closed-book factual QA using OpenAI API (beta).  \n A model that can answer any question with regard to factual knowledge can lead to many useful and practical applications, such as working as a chatbot or an AI assistant🤖. In this post, we will review several common approaches for building such an open-domain question answering system.",
+      "source": "Lilian Weng"
+    },
+    {
+      "title": "Neural Architecture Search",
+      "link": "https://lilianweng.github.io/posts/2020-08-06-nas/",
+      "pubDate": "2020-08-06T00:00:00+00:00",
+      "summary": "Although most popular and successful model architectures are designed by human experts, it doesn&rsquo;t mean we have explored the entire network architecture space and settled down with the best option. We would have a better chance to find the optimal solution if we adopt a systematic and automatic way of learning high-performance model architectures.",
+      "source": "Lilian Weng"
+    },
+    {
+      "title": "Exploration Strategies in Deep Reinforcement Learning",
+      "link": "https://lilianweng.github.io/posts/2020-06-07-exploration-drl/",
+      "pubDate": "2020-06-07T00:00:00+00:00",
+      "summary": "[Updated on 2020-06-17: Add  &ldquo;exploration via disagreement&rdquo;  in the &ldquo;Forward Dynamics&rdquo;  section .  \n  Exploitation versus exploration  is a critical topic in Reinforcement Learning. We&rsquo;d like the RL agent to find the best solution as fast as possible. However, in the meantime, committing to solutions too quickly without enough exploration sounds pretty bad, as it could lead to local minima or total failure. Modern  RL   algorithms  that optimize for the best returns",
+      "source": "Lilian Weng"
+    },
+    {
+      "title": "The Transformer Family",
+      "link": "https://lilianweng.github.io/posts/2020-04-07-the-transformer-family/",
+      "pubDate": "2020-04-07T00:00:00+00:00",
+      "summary": "[Updated on   2023-01-27  : After almost three years, I did a big refactoring update of this post to incorporate a bunch of new Transformer models since 2020. The enhanced version of this post is here:    The Transformer Family Version 2.0   . Please refer to that post on this topic.]",
+      "source": "Lilian Weng"
+    },
+    {
+      "title": "Curriculum for Reinforcement Learning",
+      "link": "https://lilianweng.github.io/posts/2020-01-29-curriculum-rl/",
+      "pubDate": "2020-01-29T00:00:00+00:00",
+      "summary": "[Updated on 2020-02-03: mentioning  PCG  in the &ldquo;Task-Specific Curriculum&rdquo; section.  \n [Updated on 2020-02-04: Add a new  &ldquo;curriculum through distillation&rdquo;  section.",
+      "source": "Lilian Weng"
+    },
+    {
+      "title": "Self-Supervised Representation Learning",
+      "link": "https://lilianweng.github.io/posts/2019-11-10-self-supervised/",
+      "pubDate": "2019-11-10T00:00:00+00:00",
+      "summary": "[Updated on 2020-01-09: add a new section on  Contrastive Predictive Coding ]. \n \n  [Updated on 2020-04-13: add a &ldquo;Momentum Contrast&rdquo; section on MoCo, SimCLR and CURL.]  \n \n [Updated on 2020-07-08: add a  &ldquo;Bisimulation&rdquo;  section on DeepMDP and DBC.] \n \n  [Updated on 2020-09-12: add  MoCo V2  and  BYOL  in the &ldquo;Momentum Contrast&rdquo; section.]  \n \n [Updated on 2021-05-31: remove section on &ldquo;Momentum Contrast&rdquo; and add a pointer to a full post on  &ldquo;",
+      "source": "Lilian Weng"
+    },
+    {
+      "title": "Evolution Strategies",
+      "link": "https://lilianweng.github.io/posts/2019-09-05-evolution-strategies/",
+      "pubDate": "2019-09-05T00:00:00+00:00",
+      "summary": "Stochastic gradient descent is a universal choice for optimizing deep learning models. However, it is not the only option. With black-box optimization algorithms, you can evaluate a target function $f(x): \\mathbb{R}^n \\to \\mathbb{R}$, even when you don&rsquo;t know the precise analytic form of $f(x)$ and thus cannot compute gradients or the Hessian matrix. Examples of black-box optimization methods include  Simulated Annealing ,  Hill Climbing  and  Nelder-Mead method .",
+      "source": "Lilian Weng"
+    },
+    {
+      "title": "Meta Reinforcement Learning",
+      "link": "https://lilianweng.github.io/posts/2019-06-23-meta-rl/",
+      "pubDate": "2019-06-23T00:00:00+00:00",
+      "summary": "In my earlier post on  meta-learning , the problem is mainly defined in the context of few-shot classification. Here I would like to explore more into cases when we try to &ldquo;meta-learn&rdquo;  Reinforcement Learning (RL)  tasks by developing an agent that can solve unseen tasks fast and efficiently.",
+      "source": "Lilian Weng"
+    },
+    {
+      "title": "Domain Randomization for Sim2Real Transfer",
+      "link": "https://lilianweng.github.io/posts/2019-05-05-domain-randomization/",
+      "pubDate": "2019-05-05T00:00:00+00:00",
+      "summary": "In Robotics, one of the hardest problems is how to make your model transfer to the real world. Due to the sample inefficiency of deep RL algorithms and the cost of data collection on real robots, we often need to train models in a simulator which theoretically provides an infinite amount of data. However, the reality gap between the simulator and the physical world often leads to failure when working with physical robots. The gap is triggered by an inconsistency between physical parameters (i.e.",
+      "source": "Lilian Weng"
+    },
+    {
+      "title": "Are Deep Neural Networks Dramatically Overfitted?",
+      "link": "https://lilianweng.github.io/posts/2019-03-14-overfit/",
+      "pubDate": "2019-03-14T00:00:00+00:00",
+      "summary": "[Updated on 2019-05-27: add the  section  on Lottery Ticket Hypothesis.]  \n If you are like me, entering into the field of deep learning with experience in traditional machine learning, you may often ponder over this question: Since a typical deep neural network has so many parameters and training error can easily be perfect, it should surely suffer from substantial overfitting. How could it be ever generalized to out-of-sample data points?",
+      "source": "Lilian Weng"
+    },
+    {
+      "title": "Generalized Language Models",
+      "link": "https://lilianweng.github.io/posts/2019-01-31-lm/",
+      "pubDate": "2019-01-31T00:00:00+00:00",
+      "summary": "[Updated on 2019-02-14: add  ULMFiT  and  GPT-2 .]  \n [Updated on 2020-02-29: add  ALBERT .]  \n [Updated on 2020-10-25: add  RoBERTa .]  \n [Updated on 2020-12-13: add  T5 .]  \n [Updated on 2020-12-30: add  GPT-3 .]  \n [Updated on 2021-11-13: add  XLNet ,  BART  and  ELECTRA ; Also updated the  Summary  section.]  \n \n \n\t \n\t I guess they are Elmo & Bert? (Image source:  here ) \n \n We have seen amazing progress in NLP in 2018. Large-scale pre-trained language modes like  OpenAI GPT  and  BERT  have",
+      "source": "Lilian Weng"
+    },
+    {
+      "title": "Object Detection Part 4: Fast Detection Models",
+      "link": "https://lilianweng.github.io/posts/2018-12-27-object-recognition-part-4/",
+      "pubDate": "2018-12-27T00:00:00+00:00",
+      "summary": "In  Part 3 , we have reviewed models in the R-CNN family. All of them are region-based object detection algorithms. They can achieve high accuracy but could be too slow for certain applications such as autonomous driving. In Part 4, we only focus on fast object detection models, including SSD, RetinaNet, and models in the YOLO family.",
+      "source": "Lilian Weng"
+    },
+    {
+      "title": "Meta-Learning: Learning to Learn Fast",
+      "link": "https://lilianweng.github.io/posts/2018-11-30-meta-learning/",
+      "pubDate": "2018-11-30T00:00:00+00:00",
+      "summary": "[Updated on 2019-10-01: thanks to Tianhao, we have this post translated in  Chinese !]",
+      "source": "Lilian Weng"
+    },
+    {
+      "title": "Attention? Attention!",
+      "link": "https://lilianweng.github.io/posts/2018-06-24-attention/",
+      "pubDate": "2018-06-24T00:00:00+00:00",
+      "summary": "[Updated on 2018-10-28: Add  Pointer Network  and the  link  to my implementation of Transformer.]  \n [Updated on 2018-11-06: Add a  link  to the implementation of Transformer model.]  \n [Updated on 2018-11-18: Add  Neural Turing Machines .]  \n [Updated on 2019-07-18: Correct the mistake on using the term &ldquo;self-attention&rdquo; when introducing the  show-attention-tell  paper; moved it to  Self-Attention  section.]  \n [Updated on 2020-04-07: A follow-up post on improved Transformer models ",
+      "source": "Lilian Weng"
+    },
+    {
+      "title": "Implementing Deep Reinforcement Learning Models with Tensorflow + OpenAI Gym",
+      "link": "https://lilianweng.github.io/posts/2018-05-05-drl-implementation/",
+      "pubDate": "2018-05-05T00:00:00+00:00",
+      "summary": "The full implementation is available in  lilianweng/deep-reinforcement-learning-gym  \n In the previous two posts, I have introduced the algorithms of many deep reinforcement learning models. Now it is the time to get our hands dirty and practice how to implement the models in the wild. The implementation is gonna be built in Tensorflow and OpenAI  gym  environment. The full version of the code in this tutorial is available in  [lilian/deep-reinforcement-learning-gym] .",
+      "source": "Lilian Weng"
+    },
+    {
+      "title": "Policy Gradient Algorithms",
+      "link": "https://lilianweng.github.io/posts/2018-04-08-policy-gradient/",
+      "pubDate": "2018-04-08T00:00:00+00:00",
+      "summary": "[Updated on 2018-06-30: add two new policy gradient methods,  SAC  and  D4PG .] \n \n [Updated on 2018-09-30: add a new policy gradient method,  TD3 .] \n \n [Updated on 2019-02-09: add  SAC with automatically adjusted temperature ]. \n \n [Updated on 2019-06-26: Thanks to Chanseok, we have a version of this post in  Korean ]. \n \n [Updated on 2019-09-12: add a new policy gradient method  SVPG .] \n \n [Updated on 2019-12-22: add a new policy gradient method  IMPALA .] \n \n [Updated on 2020-10-15: add a n",
+      "source": "Lilian Weng"
+    },
+    {
+      "title": "A (Long) Peek into Reinforcement Learning",
+      "link": "https://lilianweng.github.io/posts/2018-02-19-rl-overview/",
+      "pubDate": "2018-02-19T00:00:00+00:00",
+      "summary": "[Updated on 2020-09-03: Updated the algorithm of  SARSA  and  Q-learning  so that the difference is more pronounced. \n \n [Updated on 2021-09-19: Thanks to 爱吃猫的鱼, we have this post in  Chinese ].",
+      "source": "Lilian Weng"
+    },
+    {
+      "title": "The Multi-Armed Bandit Problem and Its Solutions",
+      "link": "https://lilianweng.github.io/posts/2018-01-23-multi-armed-bandit/",
+      "pubDate": "2018-01-23T00:00:00+00:00",
+      "summary": "The algorithms are implemented for Bernoulli bandit in  lilianweng/multi-armed-bandit . \n Exploitation vs Exploration \n The exploration vs exploitation dilemma exists in many aspects of our life. Say, your favorite restaurant is right around the corner. If you go there every day, you would be confident of what you will get, but miss the chances of discovering an even better option. If you try new places all the time, very likely you are gonna have to eat unpleasant food from time to time. Simila",
+      "source": "Lilian Weng"
+    },
+    {
+      "title": "Object Detection for Dummies Part 3: R-CNN Family",
+      "link": "https://lilianweng.github.io/posts/2017-12-31-object-recognition-part-3/",
+      "pubDate": "2017-12-31T00:00:00+00:00",
+      "summary": "[Updated on 2018-12-20: Remove YOLO here. Part 4 will cover multiple fast object detection algorithms, including YOLO.] \n \n [Updated on 2018-12-27: Add  bbox regression  and  tricks  sections for R-CNN.]  \n In the series of &ldquo;Object Detection for Dummies&rdquo;, we started with basic concepts in image processing, such as gradient vectors and HOG, in  Part 1 . Then we introduced classic convolutional neural network architecture designs for classification and pioneer models for object recogni",
+      "source": "Lilian Weng"
+    },
+    {
+      "title": "Object Detection for Dummies Part 2: CNN, DPM and Overfeat",
+      "link": "https://lilianweng.github.io/posts/2017-12-15-object-recognition-part-2/",
+      "pubDate": "2017-12-15T00:00:00+00:00",
+      "summary": "Part 1  of the &ldquo;Object Detection for Dummies&rdquo; series introduced: (1) the concept of image gradient vector and how HOG algorithm summarizes the information across all the gradient vectors in one image; (2) how the image segmentation algorithm works to detect regions that potentially contain objects; (3) how the Selective Search algorithm refines the outcomes of image segmentation for better region proposal.",
+      "source": "Lilian Weng"
+    },
+    {
+      "title": "Object Detection for Dummies Part 1: Gradient Vector, HOG, and SS",
+      "link": "https://lilianweng.github.io/posts/2017-10-29-object-recognition-part-1/",
+      "pubDate": "2017-10-29T00:00:00+00:00",
+      "summary": "I&rsquo;ve never worked in the field of computer vision and has no idea how the magic could work when an autonomous car is configured to tell apart a stop sign from a pedestrian in a red hat. To motivate myself to look into the maths behind object recognition and detection algorithms, I&rsquo;m writing a few posts on this topic &ldquo;Object Detection for Dummies&rdquo;. This post, part 1, starts with super rudimentary concepts in image processing and a few methods for image segmentation. Nothin",
+      "source": "Lilian Weng"
+    },
+    {
+      "title": "Learning Word Embedding",
+      "link": "https://lilianweng.github.io/posts/2017-10-15-word-embedding/",
+      "pubDate": "2017-10-15T00:00:00+00:00",
+      "summary": "Human vocabulary comes in free text. In order to make a machine learning model understand and process the natural language, we need to transform the free-text words into numeric values. One of the simplest transformation approaches is to do a one-hot encoding in which each distinct word stands for one dimension of the resulting vector and a binary value indicates whether the word presents (1) or not (0).",
+      "source": "Lilian Weng"
+    },
+    {
+      "title": "Anatomize Deep Learning with Information Theory",
+      "link": "https://lilianweng.github.io/posts/2017-09-28-information-bottleneck/",
+      "pubDate": "2017-09-28T00:00:00+00:00",
+      "summary": "Professor Naftali Tishby passed away in 2021. Hope the post can introduce his cool idea of information bottleneck to more people.  \n Recently I watched the talk  &ldquo;Information Theory in Deep Learning&rdquo;  by Prof Naftali Tishby and found it very interesting. He presented how to apply the information theory to study the growth and transformation of deep neural networks during training. Using the  Information Bottleneck (IB)  method, he proposed a new learning bound for deep neural network",
+      "source": "Lilian Weng"
+    },
+    {
+      "title": "From GAN to WGAN",
+      "link": "https://lilianweng.github.io/posts/2017-08-20-gan/",
+      "pubDate": "2017-08-20T00:00:00+00:00",
+      "summary": "[Updated on 2018-09-30: thanks to Yoonju, we have this post translated in  Korean !] \n \n [Updated on 2019-04-18: this post is also available on  arXiv .]  \n  Generative adversarial network  (GAN) has shown great results in many generative tasks to replicate the real-world rich content such as images, human language, and music. It is inspired by game theory: two models, a generator and a critic, are competing with each other while making each other stronger at the same time. However, it is rather",
+      "source": "Lilian Weng"
+    },
+    {
+      "title": "How to Explain the Prediction of a Machine Learning Model?",
+      "link": "https://lilianweng.github.io/posts/2017-08-01-interpretation/",
+      "pubDate": "2017-08-01T00:00:00+00:00",
+      "summary": "The machine learning models have started penetrating into critical areas like health care, justice systems, and financial industry. Thus to figure out how the models make the decisions and make sure the decisioning process is aligned with the ethnic requirements or legal regulations becomes a necessity.",
+      "source": "Lilian Weng"
+    },
+    {
+      "title": "Predict Stock Prices Using RNN: Part 2",
+      "link": "https://lilianweng.github.io/posts/2017-07-22-stock-rnn-part-2/",
+      "pubDate": "2017-07-22T00:00:00+00:00",
+      "summary": "In the Part 2 tutorial, I would like to continue the topic on stock price prediction and to endow the recurrent neural network that I have built in  Part 1  with the capability of responding to multiple stocks. In order to distinguish the patterns associated with different price sequences, I use the stock symbol embedding vectors as part of the input.",
+      "source": "Lilian Weng"
+    },
+    {
+      "title": "An Overview of Deep Learning for Curious People",
+      "link": "https://lilianweng.github.io/posts/2017-06-21-overview/",
+      "pubDate": "2017-06-21T00:00:00+00:00",
+      "summary": "(The post was originated from my talk for  WiMLDS x Fintech meetup  hosted by  Affirm .)  \n I believe many of you have watched or heard of the  games  between AlphaGo and professional Go player  Lee Sedol  in 2016. Lee has the highest rank of nine dan and many world championships. No doubt, he is one of the best Go players in the world, but he  lost by 1-4  in this series versus AlphaGo. Before this, Go was considered to be an intractable game for computers to master, as its simple rules lay out",
+      "source": "Lilian Weng"
+    }
+  ],
+  "filtered_count": 0,
+  "total_fetched": 128,
+  "truly_new_count": 128
+}
