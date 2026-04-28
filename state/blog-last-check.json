@@ -61,5 +61,17 @@
       "last_post_date": "2026-04-11T00:00:00.000Z",
       "last_check_date": "2026-04-16T00:00:00.000Z"
     }
+  },
+  "chip-huyen": {
+    "url": "https://huyenchip.com/blog/",
+    "last_post_date": "2025-01-16T00:00:00+00:00"
+  },
+  "lilian-weng": {
+    "url": "https://lilianweng.github.io/",
+    "last_post_date": "2025-05-01T00:00:00+00:00"
+  },
+  "armin-ronacher": {
+    "url": "https://lucumr.pocoo.org/",
+    "last_post_date": "2026-04-23T00:00:00+00:00"
   }
 }
