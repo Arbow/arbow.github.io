@@ -1,0 +1,1486 @@
+<?xml version="1.0" encoding="utf-8"?>
+<rss version="2.0">
+  <channel>
+    <title>Armin Ronacher's Thoughts and Writings</title>
+    <link>https://lucumr.pocoo.org/</link>
+    <description>Armin Ronacher's personal blog about programming, games and random thoughts that come to his mind.</description>
+    <language>en</language>
+    <lastBuildDate>Wed, 29 Apr 2026 18:26:24 +0000</lastBuildDate>
+    <item>
+      <title>Before GitHub</title>
+      <link>https://lucumr.pocoo.org/2026/4/28/before-github/</link>
+      <guid isPermaLink="true">https://lucumr.pocoo.org/2026/4/28/before-github/</guid>
+      <pubDate>Tue, 28 Apr 2026 00:00:00 +0000</pubDate>
+      <description><![CDATA[<p>GitHub was not the first home of my Open Source software.  <a href="https://sourceforge.net/projects/pocoo/">SourceForge
+was</a>.</p>
+<p>Before GitHub, I had my own Trac installation.  I had Subversion repositories,
+tickets, tarballs, and documentation on infrastructure I controlled.  Later I
+moved projects to Bitbucket, back when Bitbucket still felt like a serious
+alternative place for Open Source projects, especially for people who were not
+all-in on Git yet.</p>
+<p>And then, eventually, GitHub became the place, and I moved all of it there.</p>
+<p>It is hard for me to overstate how important GitHub became in my life.  A large
+part of my Open Source identity formed there.  Projects I worked on found users
+there.  People found me there, and I found other people there.  Many professional
+relationships and many friendships started because some repository, issue, pull
+request, or comment thread made two people aware of each other.</p>
+<p>That is why I find what is happening to GitHub today so sad and so
+disappointing.  I do not look at it as just the folks at Microsoft making
+product decisions I dislike.  GitHub was part of the social infrastructure of
+Open Source for a very long time.  For many of us, it was not merely where the
+code lived; it was where a large part of the community lived.</p>
+<p>So when I think about GitHub&#8217;s decline, I also think about what came before it,
+and what might come after it.  I have written a few times over the years about
+dependencies, and in particular about the problem of <a href="/2016/3/24/open-source-trust-scaling/">micro
+dependencies</a>.  In my mind, GitHub gave
+life to that phenomenon.  It was something I definitely did not completely
+support, but it also made Open Source more inclusive.  GitHub changed how Open
+Source feels,
+and later npm and other systems changed how dependencies feel.  Put them
+together and you get a world in which publishing code is almost frictionless,
+consuming code is almost frictionless, and the number of projects in the world
+explodes.</p>
+<p>That has many upsides.  But it is worth remembering that Open Source did not
+always work this way.</p>
+<h2>A Smaller World</h2>
+<p>Before GitHub, Open Source was a much smaller world.  Not necessarily in the
+number of people who cared about it, but in the number of projects most of us
+could realistically depend on.</p>
+<p>There were well-known projects, maintained over long periods of time by a
+comparatively small number of people.  You <a href="/2024/3/31/skin-in-the-game/">knew the
+names</a>.  You knew the mailing lists.  You knew who
+had been around for years and who had earned trust.  That trust was not perfect,
+and the old world had plenty of gatekeeping, but reputation mattered in a very
+direct way.  We took pride (and got frustrated) when the Debian folks came and
+told us our licensing stuff was murky or the copyright headers were not up to
+snuff, because they packaged things up.</p>
+<p>A dependency was not just a package name.  It was a project with a history, a
+website, a maintainer, a release process, a lot of friction, and often a place in
+a larger community.  You did not add dependencies casually, because the act of
+depending on something usually meant you had to understand where it came from.</p>
+<p>Not all of this was necessarily intentional, but because these projects were
+comparatively large, they also needed to bring their own infrastructure.  Small
+projects might run on a university server, and many of them were on SourceForge,
+but the larger ones ran their own show.  They grouped together into larger
+collectives to make it work.</p>
+<h2>We Ran Our Own Infrastructure</h2>
+<p>My first Open Source projects lived on infrastructure I ran myself.  There was a
+Trac installation, Subversion repositories, tarballs, documentation, and release
+files served from my own machines or from servers under my control.  That was
+normal.  If you wanted to publish software, you often also became a small-time
+system administrator.  <a href="https://github.com/birkenfeld">Georg</a> and I ran our own
+collective for our Open Source projects: <a href="http://www.pocoo.org/">Pocoo</a>.  We
+shared server costs and the burden of maintaining Subversion and Trac, mailing
+lists and more.</p>
+<p>Subversion in particular made this &#8220;running your own forge&#8221; natural.  It was
+centralized: you needed a server, and somebody had to operate it.
+The project had a home, and that home was usually quite literal: a hostname, a
+directory, a Trac instance, a mailing list archive.</p>
+<p>When Mercurial and Git arrived, they were philosophically the opposite.  Both
+were distributed.  Everybody could have the full repository.  Everybody could
+have their own copy, their own branches, their own history.  In principle, those
+distributed version control systems should have reduced the need for a single
+center.  But despite all of this, GitHub became the center.</p>
+<p>That is one of the great ironies of modern Open Source.  The distributed version
+control system won, and then the world standardized on one enormous centralized
+service for hosting it.</p>
+<h2>What GitHub Gave Us</h2>
+<p>It is easy now to talk only about GitHub&#8217;s failures, of which there are currently
+many, but that would be unfair: GitHub was, and continues to be, a tremendous
+gift to Open Source.</p>
+<p>It made creating a project easy and it made discovering projects easy.  It made
+contributing understandable to people who had never subscribed to a development
+mailing list in their life.  It gave projects issue trackers, pull requests,
+release pages, wikis, organization pages, API access, webhooks, and later CI.
+It normalized the idea that Open Source happens in the open, with visible
+history and visible collaboration.  And it was an excellent and reasonable
+default choice for a decade.</p>
+<p>But maybe the most underappreciated thing GitHub did was archival work: GitHub
+became a library.  It became an index of a huge part of the software commons
+because even abandoned projects remained findable.  You could find forks, and
+old issues and discussions all stayed online.  For all the complaints one can
+make about centralization, that centralization also created discoverable memory.
+The <a href="https://github.blog/news-insights/policy-news-and-insights/advancing-developer-freedom-github-is-fully-available-in-iran/">leaders there once
+cared</a>
+a lot about keeping GitHub available even in countries that were sanctioned by
+the US.</p>
+<p>I know what the alternative looks like, because I was living it.  Some of my
+earliest Open Source projects are <a href="https://pypi.org/project/Colubrid/0.9/">technically still on
+PyPI</a>, but the actual packages are gone.
+The metadata points to my old server, and that server has long stopped serving
+those files.</p>
+<p>That was normal before the large platforms.  A personal domain expired, a VPS
+was shut down, a developer passed away, and with them went the services they
+paid for.  The web was once full of little software homes, and many of them are
+gone <sup class="footnote-ref" id="fnref-1"><a href="#fn-1">1</a></sup>.</p>
+<h2>npm and the Dependency Explosion</h2>
+<p>The micro-dependency problem was not just that people published very small
+packages.  The hosted infrastructure of GitHub and npm made it feel as if there
+was no cost to create, publish, discover, install, and depend on them.</p>
+<p>In the pre-GitHub world, reputation and longevity were part of the dependency
+selection process almost by necessity, and it often required vendoring.  Plenty
+of our early dependencies were just vendored into our own Subversion trees by
+default, in part because we could not even rely on other services being up when
+we needed them and because maintaining scripts that fetched them, in the pre-API
+days, was painful.  The implied friction forced some reflection, and it resulted
+in different developer behavior.  With npm-style ecosystems, the package graph can
+grow faster than anybody&#8217;s ability to reason about it.</p>
+<p>The problem that this type of thinking created also meant that solutions had to
+be found along the way.  GitHub helped compensate for the accountability problem
+and it helped with licensing.  At one point, the newfound influx of developers
+and merged pull requests left a lot of open questions about what the state of
+licenses actually was.  GitHub even attempted to <a href="https://github.blog/news-insights/new-github-terms-of-service/">rectify
+this</a> with their
+terms of service.</p>
+<p>The thinking for many years was that if I am going to depend on some tiny
+package, I at least want to see its repository.  I want to see whether the
+maintainer exists, whether there are issues, whether there were recent changes,
+whether other projects use it, whether the code is what the package claims it
+is.  GitHub became part of the system that provides trust, and more recently it has
+even become one of the few systems that can publish packages to npm and other
+registries with trusted publishing.</p>
+<p>That means when trust in GitHub erodes, the problem is not isolated to source
+hosting.  It affects the whole supply chain culture that formed around it.</p>
+<h2>GitHub Is Slowly Dying</h2>
+<p>GitHub is currently losing some of what made it feel inevitable.  Maybe that&#8217;s
+just the life and death of large centralized platforms: they always disappoint
+eventually.  Right now people are tired of the instability, the product churn,
+the Copilot AI noise, the unclear leadership, and the feeling that the platform
+is no longer primarily designed for the community that made it valuable.</p>
+<p>Obviously, GitHub also finds itself in the midst of the agentic coding revolution
+and that causes enormous pressure on the folks over there.  But the site has no
+leadership!  It&#8217;s a miracle that things are going as well as they are.</p>
+<p>For a while, leaving GitHub felt like a symbolic move mostly made by smaller
+projects or by people with strong views about software freedom.  I definitely
+cringed when Zig moved to Codeberg!  But I now see people with real weight and
+signal talking about leaving GitHub.  The most obvious one is Mitchell
+Hashimoto, who <a href="https://mitchellh.com/writing/ghostty-leaving-github">announced that Ghostty will
+move</a>.  Where it will
+move is not clear, but it&#8217;s a strong signal.  But there are others, too.
+<a href="https://codeberg.org/uzu/strudel">Strudel moved to Codeberg</a> and so did
+<a href="https://codeberg.org/tenacityteam/tenacity">Tenacity</a>.  Will they cause enough
+of a shift?  Probably not, but I find myself on non-GitHub properties more
+frequently again compared to just a year ago.</p>
+<p>One can argue that this is good: it is healthy for Open Source to stop
+pretending that one company should be the default home of everything.  Git
+itself was designed for a world with many homes.</p>
+<h2>Dispersion Has a Cost</h2>
+<p>Going back to many forges, many servers, many small homes, and many independent
+communities will increase decentralization, and in many ways it will force
+systems to adapt.  This can restore autonomy and make projects less
+dependent on the whims of Microsoft leadership.  It can also allow different
+communities to choose different workflows.  What&#8217;s happening in
+<a href="https://pi.dev/">Pi</a>&#8216;s issue tracker currently is largely a result of GitHub&#8217;s
+product choices not working in the present-day world of Open Source.  It was
+built for engagement, not for maintainer sanity.</p>
+<p>It can also make the web forget again.  <a href="/2024/10/30/make-it-ephemeral/">I quite like software that
+forgets</a> because it has a cleansing element.
+Maybe the real risk of loss will make us reflect more on actually taking
+advantage of a distributed version control system.</p>
+<p>But if projects move to something more akin to self-hosted forges, to their own
+self-hosted Mercurial or cgit servers, we run the risk of losing things that we
+don&#8217;t want to lose.  The code might be distributed in theory, but the social
+context often is not.  Issues, reviews, design discussions, release notes,
+security advisories, and old tarballs are fragile.  They disappear much more
+easily than we like to admit.  Mailing lists, which carried a lot of this in
+earlier years, have not kept up with the needs of today, and are largely a user
+experience disaster.</p>
+<h2>We Need an Archive</h2>
+<p>As much as I like the idea of things fading out of existence, we absolutely need
+libraries and archives.</p>
+<p>Regardless of whether GitHub is here to stay or projects find new homes, what I
+would like to see is some public, boring, well-funded archive for Open Source
+software.  Something with the power of an endowment or public funding to keep it
+afloat.  Something whose job is not to win the developer productivity market but
+just to make sure that the most important things we create do not disappear.</p>
+<p>The bells and whistles can be someone else&#8217;s problem, but source archives,
+release artifacts, metadata, and enough project context to understand what
+happened should be preserved somewhere that is not tied to the business model or
+leadership mood of a single company.</p>
+<p>GitHub accidentally became that archive because it became the center of Open
+Source activity.  Once that no longer holds, we should not assume some magic
+archival function will emerge or that GitHub will continue to function as such.
+We have already seen what happens when project homes are just personal servers
+and good intentions, and we have seen what happened to Google Code and
+Bitbucket.</p>
+<p>I hope GitHub recovers, I really do, in part because a lot of history lives
+there and because the people still working on it inherited something genuinely
+important.  But I no longer think it is responsible to let the continued memory
+of Open Source depend on GitHub remaining a healthy product.</p>
+<p>The world before GitHub had more autonomy and more loss, and in some ways, we&#8217;re
+probably going to move back there, at least for a while.  Whatever people want
+to start building next should try to keep the memory and lose the dependence.
+It should be easier to move projects, easier to mirror their social context,
+easier to preserve releases, and harder for one company&#8217;s drift to become a
+cultural crisis for everyone else.</p>
+<p>I do not want to go back to the old web of broken tarball links and abandoned
+Trac instances.  I also do not want Open Source to pretend that the last twenty
+years were normal or permanent.  GitHub wrote a remarkable chapter of Open
+Source, and if that chapter is ending, the next one should learn from it and also
+from what came before.</p>
+<div class="footnotes">
+<ol>
+<li id="fn-1">
+<p>This is also a good reminder that we rely so very much on the Internet
+Archive for many projects of the time.<a href="#fnref-1" class="footnote">&#8617;</a></p></li>
+</ol>
+</div>
+]]></description>
+    </item>
+    <item>
+      <title>Equity for Europeans</title>
+      <link>https://lucumr.pocoo.org/2026/4/23/equity-for-europeans/</link>
+      <guid isPermaLink="true">https://lucumr.pocoo.org/2026/4/23/equity-for-europeans/</guid>
+      <pubDate>Thu, 23 Apr 2026 00:00:00 +0000</pubDate>
+      <description><![CDATA[<p>If you spend enough time in US business or finance conversations, one word keeps
+showing up: <strong>equity</strong>.</p>
+<p>Coming from a German-speaking, central European background, I found it
+surprisingly hard to fully internalize what that word means.  More than that, I
+find it very <a href="https://x.com/mitsuhiko/status/2047321138104045974">hard to talk with other
+Europeans</a> about it.  Worst
+of all it&#8217;s almost impossible to explain it in German without either sounding
+overly technical or losing an important part of the meaning.</p>
+<p>This post is in English, but it is written mostly for readers in Germany,
+Austria, and Switzerland, and more broadly for people from continental Europe.
+I move between “German-speaking” and “continental European” a bit.  They are not
+the same thing, of course, but many continental European countries share a
+civil-law background that differs sharply from the English common-law and equity
+tradition.  The words differ by language and jurisdiction, but the conceptual gap
+I am interested in shows up in similar ways.</p>
+<p>In US usage, the word &#8220;equity&#8221; appears everywhere:</p>
+<ul>
+<li>real estate: &#8220;build equity in your home&#8221;</li>
+<li>startups: &#8220;employees get equity&#8221;</li>
+<li>public markets: &#8220;equity investors&#8221;</li>
+<li>private deals: &#8220;take an equity stake&#8221;</li>
+<li>personal finance: &#8220;negative equity in a car&#8221;</li>
+<li>social policy: &#8220;diversity, equity, and inclusion&#8221;</li>
+</ul>
+<p>If you try to translate this into German, you have to choose words.  Of course
+we can say <em>Eigenkapital</em>, <em>Beteiligung</em>, <em>Anteil</em>, <em>Vermögen</em>,
+<em>Nettovermögen</em>, or sometimes <em>Substanzwert</em>.  In narrow contexts, each can be
+correct, but none of them carries the full concept.  I find that gap
+interesting, because language affects default behavior and how we think about
+things.</p>
+<h2>One Word, Shared Meanings</h2>
+<p>In the English language, &#8220;equity&#8221; often carries multiple things at once.  I
+believe the following ones to be the most important ones:</p>
+<ol>
+<li>A legal-fairness dimension: historically tied to <a href="https://en.wikipedia.org/wiki/Equity_(law)">equity in law</a></li>
+<li>A financial-accounting dimension: residual <a href="https://en.wikipedia.org/wiki/Equity_(finance)">value after debt</a></li>
+<li>A cultural dimension: ownership as a <a href="https://en.wikipedia.org/wiki/Intergenerational_equity">path to wealth and agency</a></li>
+</ol>
+<p>If you open Wikipedia, you will find many more distinct meanings of equity, but
+they all relate to much the same concept, just from different angles.</p>
+<p>German, on the other hand, can express each of these layers precisely, including
+the subtleties within each, but it uses different words and there is no common,
+everyday umbrella word that naturally bundles all three.</p>
+<p>When a concept has one short, reusable, positive word, people can move it across
+contexts very easily.  When the concept is split into technical fragments, it
+tends to stay technical, and people do not necessarily think of these things as
+related at all in a continental European context.</p>
+<h2>How Equity Got Here</h2>
+<p>What is hard for Europeans to understand is how the financial meaning of equity
+appeared, because it did not appear out of nowhere.  The word&#8217;s original meaning
+comes from fairness or impartiality, and it made it to modern English via Old
+French and Latin (<em>equité</em> / <em>aequitas</em>).</p>
+<p>Historically, English law had separate traditions: common law courts and courts
+of equity (especially the
+<a href="https://en.wikipedia.org/wiki/Court_of_Chancery">Court of Chancery</a>).  Equity in law was
+about fairness, conscience, and remedies where strict common law rules were too
+rigid.  Take mortgages for instance: in older English practice, a mortgage could
+transfer title as security.  Under strict common law, missing a deadline could
+mean losing the property entirely.  Courts of equity developed the &#8220;<a href="https://en.wikipedia.org/wiki/Equity_of_redemption">equity of
+redemption</a>&#8221;: a borrower
+could still redeem by paying what was owed.</p>
+<p>That equitable interest became foundational for how ownership and claims were
+understood.  In finance, equity came to mean not just a number, but a claim: the
+residual owner&#8217;s stake after prior claims are satisfied.</p>
+<h2>The European Split</h2>
+<p>German and continental European legal development took a different path.  Civil
+law systems did not build the same separate institutional track of &#8220;equity
+courts&#8221; versus common law courts.  Fairness principles absolutely exist, but
+inside the codified system, not as a parallel jurisdiction with its own language
+and mythology.</p>
+<p>As a result, German vocabulary has many different words, and they are highly
+domain-specific.  There are equivalents in other languages, and to some degree
+they exist in English too:</p>
+<ul>
+<li>company balance sheet: <em>Eigenkapital</em></li>
+<li>ownership share: <em>Beteiligung</em>, <em>Anteil</em></li>
+<li>unrealized asset value: <em>stille Reserven</em></li>
+<li>household wealth: <em>Vermögen</em>, <em>Nettovermögen</em></li>
+<li>investment action: <em>Anlage</em>, <em>Investition</em></li>
+<li>residual net assets: <em>Reinvermögen</em></li>
+</ul>
+<p>This precision is useful for legal drafting and accounting.  But it also means
+we have less of the shared mental package that many Americans get from &#8220;equity&#8221;:
+own a piece, carry risk, participate in upside, build wealth.</p>
+<h2>Schuld Is Not Just Debt</h2>
+<p>There is another linguistic oddity worth noting: in German, &#8220;Schuld&#8221; can mean
+both debt/liability and guilt, and I think that too has changed how we think
+about equity.</p>
+<p>&#8220;Schuld&#8221; in everyday language makes debt feel more morally charged than it does
+in the US.  Indebtedness is often framed as a burden, and it is not thought of
+as a tool at all.</p>
+<p>US financial language, by contrast, often frames debt more instrumentally and
+pairs it with an explicit positive counterpart: equity.  Equity is what is yours
+after debt, what can appreciate, what can be transferred, and what can give you
+control.</p>
+<p>In American financial language, debt is not as morally burdened, and equity is
+more than the absence of debt: it is the positive claim on the balance sheet —
+ownership, optionality, control, and upside.</p>
+<h2>Practical Matters</h2>
+<p>If you grew up with German-speaking framing, many US statements around equity
+can sound ideological or naive.  From a continental European lens, they can
+sound like imported jargon or hollow.  But if we ignore the concept, we lose
+something practical:</p>
+<ul>
+<li>We discuss salaries in cash terms but under-discuss ownership.</li>
+<li>We treat employee participation as exotic instead of normal.</li>
+<li>We under-explain compounding and intergenerational transfer.</li>
+<li>We miss a language for talking about agency through ownership.</li>
+</ul>
+<p>I am not saying German-speaking Europeans are incapable of this mindset.
+Obviously we are not.  But we clearly tend to think about these things
+differently.</p>
+<h2>Normalize Equity</h2>
+<p>When you hear “equity,” it helps to think of it as a rightful stake.
+Historically, it is connected to fairness and the recognition of a claim where
+strict rules would be too rigid.  Financially, it is the part that remains after
+prior obligations.  Culturally, it is something that can grow into control,
+agency, and upside.</p>
+<p>That is not a perfect definition, but it captures why the term is so sticky in
+American discourse.  It combines a present claim with a future possibility.  It
+is not just what remains after debt; it is the part that can grow, compound, and
+give you agency.</p>
+<p>If Europeans want to talk more seriously about entrepreneurship, retirement,
+housing, and wealth building, we would benefit from a stronger everyday
+vocabulary for exactly this idea.  We need a longing for equity so that
+ownership does not remain something for founders, lawyers, accountants, and
+wealthy families, but becomes a normal part of how people think about work,
+risk, and their future.</p>
+<p>Not because we should imitate America, but because this mental model helps
+people make clearer decisions about ownership, incentives, and long-term agency.
+For Europe, <a href="https://lucumr.pocoo.org/2025/10/21/eu-resigation/">that shift feels long
+overdue</a>.</p>
+]]></description>
+    </item>
+    <item>
+      <title>The Center Has a Bias</title>
+      <link>https://lucumr.pocoo.org/2026/4/11/the-center-has-a-bias/</link>
+      <guid isPermaLink="true">https://lucumr.pocoo.org/2026/4/11/the-center-has-a-bias/</guid>
+      <pubDate>Sat, 11 Apr 2026 00:00:00 +0000</pubDate>
+      <description><![CDATA[<p>Whenever a new technology shows up, the conversation quickly splits into camps.
+There are the people who reject it outright, and there are the people who seem
+to adopt it with religious enthusiasm.  For more than a year now, no topic has
+been more polarising than AI coding agents.</p>
+<p>What I keep noticing is that a lot of the criticism directed at these tools is
+perfectly legitimate, but it often comes from people without a meaningful amount
+of direct experience with them.  They are not necessarily wrong.  In fact, many
+of them cite studies, polls and all kinds of sources that themselves spent time
+investigating and surveying.  And quite legitimately they identified real
+issues: the output can be bad, the security implications are scary, the
+economics are strange and potentially unsustainable, there is an environmental
+impact, the social consequences are unclear, and the hype is exhausting.</p>
+<p>But there is something important missing from that criticism when it comes from
+a position of non-use: it is too abstract.</p>
+<p>There is a difference between saying &#8220;this looks flawed in principle&#8221; and saying
+&#8220;I used this enough to understand where it breaks, where it helps, and how it
+changes my work.&#8221;  The second type of criticism is expensive.  It costs time,
+frustration, and a genuine willingness to engage.</p>
+<p>The enthusiast camp consists of true believers.  These are the people who
+have adopted the technology despite its shortcomings, sometimes even because
+they enjoy wrestling with them.  They have already decided that the tool is
+worth fitting into their lives, so they naturally end up forgiving a lot.  They
+might not even recognize the flaws because for them the benefits or excitement
+have already won.</p>
+<p>But what does the center look like?  I consider myself to be part of the center:
+cautiously excited, but also not without criticism.  By my observation though
+that center is not neutral in the way people imagine it to be.  Its bias is not
+towards endorsement so much as towards engagement, because the middle ground
+between rejecting a technology outright and embracing it fully is usually
+occupied by people willing to explore it seriously enough to judge it.</p>
+<h2>Bias on Both Sides</h2>
+<p>The compositions of the groups of people in the discussions about new technology
+are oddly shaped because one side has paid the cost of direct experience and the
+other has not, or not to the same degree.  That alone creates an asymmetry.</p>
+<p>Take coding agents as an example.  If you do not use them, or at least not for
+productive work, you can still criticize them on many grounds.  You can say they
+generate sloppy code, that they lower your skills, etc.  But if you have not
+actually spent serious time with them, then your view of their practical reality
+is going to be inherited from somewhere else.  You will know them through
+screenshots, anecdotes, the most annoying users on Twitter, conference talks,
+company slogans, and whatever filtered back from the people who <em>did</em> use them.
+That is not nothing, but it is not the same as contact.</p>
+<p>The problem is not that such criticism is worthless.  The problem is that people
+often mistake non-use for neutrality.  It is not.  A serious opinion on a new
+language, framework, device, or way of working usually has some minimum buy-in.
+You have to cross a threshold of use before your criticism becomes grounded in
+the thing itself rather than in its reputation.</p>
+<p>That threshold is inconvenient.  It asks you to spend time on something that may
+not pay off, and to risk finding yourself at least partially won over.  It is a
+lot to ask of people.  But because that threshold exists, the measured middle is
+rarely populated by people who are perfectly indifferent to change.  It is
+populated by people who were willing to move toward it enough in order to
+evaluate it properly.</p>
+<p>Simultaneously, it&#8217;s important to remember that usage does not automatically
+create wisdom.  The enthusiastic adopter might have their own distortions.  They
+may enjoy the novelty, feel a need to justify the time they invested, or
+overgeneralize from the niche where the technology works wonderfully.  They may
+simply like progress and want to be associated with it.</p>
+<p>This is particularly visible with AI.  There are clearly people who have decided
+that the future is here, all objections are temporary, and every workflow must
+now be rebuilt around agents.  What makes AI weirder is that it&#8217;s such a massive
+shift in capabilities that has triggered a tremendous injection of money, and a
+meaningful number of adopters have bet their future on that technology.</p>
+<p>So if one pole is uninformed abstraction and the other is overcommitted
+enthusiasm, then surely the center must sit right in the middle between them?</p>
+<h2>Engagement Is Not Endorsement</h2>
+<p>The center, I would argue, naturally needs to lean towards engagement.  The
+reason is simple: a genuinely measured opinion on a new technology requires real
+engagement with it.</p>
+<p>You do not get an informed view by trying something for 15 minutes, getting
+annoyed once, and returning to your previous tools.  You also do not get it by
+admiring demos, listening to podcasts or discussing on social media.  You have
+to use it enough to get past both the first disappointment and the honeymoon
+phase.  Seemingly with AI tools, true understanding is not a matter of hours but
+weeks of investment.</p>
+<p>That means the people in the center are selected from a particular group: people
+who were willing to give the thing a fair chance without yet assuming it
+deserved a permanent place in their lives.</p>
+<p>That willingness is already a bias towards curiosity and experimentation which
+makes the center look more like adopters in behavior, because exploration
+requires use, but it does not make the center identical to enthusiasts in
+judgment.</p>
+<p>This matters because from the perspective of the outright rejecter, all of these
+people can look the same.  If someone spent serious time with coding agents,
+found them useful in some areas, harmful in others, and came away with a nuanced
+view, they may still be thrown into the same bucket as the person who thinks
+agents can do no wrong.</p>
+<p>But those are not the same position at all.  It&#8217;s important to recognize that
+engagement with those tools does not automatically imply endorsement or at the
+very least not blanket endorsement.</p>
+<h2>The Center Looks Suspicious</h2>
+<p>This is why discussions about new technology, and AI in particular feel so
+polarized.  The actual center is hard to see because it does not appear visually
+centered.  From the outside, serious exploration can look a lot like adoption.</p>
+<p>If you map opinions onto a line, you might imagine the middle as the point
+equally distant from rejection and enthusiasm.  But in practice that is not how
+it works.  The middle is shifted toward the side of the people who have actually
+interacted with the technology enough to say something concrete about it.  That
+does not mean the middle has accepted the adopter&#8217;s conclusion.  It means the
+middle has adopted some of the adopter&#8217;s behavior, because investigation
+requires contact.</p>
+<p>That creates a strange effect because the people with the most grounded
+criticism are often also adopters.  I would argue some of the best criticism of
+coding agents right now comes from people who use them extensively.  Take
+<a href="https://mariozechner.at/">Mario</a>: he created a coding agent, yet is also one of
+the most vocal voices of criticism in the space.  These folks can tell you in
+detail how they fail and they can tell you where they waste time, where they
+regress code quality, where they need carefully designed tooling, where they
+only work well in some ecosystems, and where the whole thing falls apart.</p>
+<p>But because those people kept using the tools long enough to learn those
+lessons, they can appear compromised to outsiders.  And worse: if they continue
+to use them, contribute thoughts and criticism back, they are increasingly
+thrown in with the same people who are devoid of any criticism.</p>
+<h2>Failure Is Possible</h2>
+<p>This line of thinking could be seen as an inherent &#8220;pro-innovation bias.&#8221;  That
+would be wrong, as plenty of technology deserves resistance.  Many people are
+right to resist, and sometimes the people who never gave a technology a chance
+saw problems earlier than everyone else.  Crypto is a good reminder: plenty of
+projects looked every bit as exciting as coding agents do now, and still
+collapsed when the economics no longer worked.</p>
+<p>What matters here is a narrower point.  The center is not biased towards novelty
+so much as towards contact with the thing that creates potential change.  The
+middle ground is not between use and non-use, but between refusal and commitment
+and the people in the center will often look more like adopters than skeptics,
+not because they have already made up their minds, but because getting an
+informed view requires exploration.</p>
+<p>If you want to criticize a new thing well, you first have to get close enough to
+dislike it for the right reasons.  And for some technologies, you also have to
+hang around long enough to understand what, exactly, deserves criticism.</p>
+]]></description>
+    </item>
+    <item>
+      <title>Mario and Earendil</title>
+      <link>https://lucumr.pocoo.org/2026/4/8/mario-and-earendil/</link>
+      <guid isPermaLink="true">https://lucumr.pocoo.org/2026/4/8/mario-and-earendil/</guid>
+      <pubDate>Wed, 08 Apr 2026 00:00:00 +0000</pubDate>
+      <description><![CDATA[<p>Today I&#8217;m very happy to share that Mario Zechner is joining <a
+href="https://earendil.com/">Earendil</a>.</p>
+<p>First things first: I think you should <a href="https://mariozechner.at/posts/2026-04-08-ive-sold-out/">read Mario&#8217;s
+post</a>.  This is his news
+more than it is ours, and he tells his side of it better than I could.  What I
+want to do here is add a more personal note about why this matters so much to
+me, how the last months led us here, and why I am so excited to have him on
+board.</p>
+<p>Last year changed the way many of us thought about software.  It certainly
+changed the way I did.  I spent much of 2025 building, probing, and questioning
+how to build software, and in many more ways what I want to do.  If you are a
+regular reader of this blog you were along for the ride.  I wrote a lot,
+experimented a lot, and tried to get a better sense for what these systems can
+actually do and what kinds of companies make sense to build around them.  There
+was, and continues to be, a lot of excitement in the air, but also a lot of
+noise.  It has become clear to me that it&#8217;s not a question of whether AI systems
+can be useful but what kind of software and human-machine interactions we want
+to bring into the world with them.</p>
+<p>That is one of the reasons I have been so drawn to Mario&#8217;s work and approaches.</p>
+<p><a href="https://pi.dev/">Pi</a> is, in my opinion, one of the most thoughtful
+coding agents and agent infrastructure libraries in this space.  Not because it
+is trying to be the loudest or the fastest, but because it is clearly built by
+someone who cares deeply about software quality, taste, extensibility, and
+design.  In a moment where much of the industry is racing to ship ever more
+quickly, often at the cost of coherence and craft, Mario kept insisting on
+making something solid. That matters to me a great deal.</p>
+<p>I have known Mario for a long time, and one of the things I admire most about
+him is that he does not confuse velocity with progress.  He has a strong sense
+for what good tools should feel like.  He cares about details. He cares about
+whether something is well made.  And he cares about building in a way that can
+last.  Mario has been running Pi in a rather unusual way. He exerts back-pressure
+on the issue tracker and the pull requests through OSS vacations and other
+means.</p>
+<p>The last year has also made something else clearer to me: these systems are not
+only exciting, they are also capable of producing a great deal of damage.
+Sometimes that damage is obvious; sometimes it looks like low-grade degradation
+everywhere at once.  More slop, more noise, more disingenuous emails in my inbox.
+There is a version of this future that makes people more distracted, more
+alienated, and less careful with one another.</p>
+<p>That is not a future I want to help build.</p>
+<p>At Earendil, Colin and I have been trying to think very carefully about what a
+different path might look like.  That is a big part of what led us to <a
+href="https://lefos.com/">Lefos</a>.</p>
+<p>Lefos is our attempt to build a machine entity that is more thoughtful and more
+deliberate by design.  Not an agent whose main purpose is to make everything a
+little more efficient so that we can produce even more forgettable output, but
+one that can help people communicate with more care, more clarity, and joy.</p>
+<p>Good software should not aim to optimize every minute of your life, but should
+create room for better and more joyful experiences, better relationships, and
+better ways of relating to one another.  Especially in communication and software
+engineering, I think we should be aiming for more thought rather than more
+throughput.  We should want tools that help people be more considerate, more
+present, and more human.  If all we do is use these systems to accelerate the
+production of slop, we will have missed the opportunity entirely.</p>
+<p>This is also why Mario joining Earendil feels so meaningful to me.  Pi and Lefos
+come from different starting points.  There was a year of distance collaboration,
+but they are animated by a similar instinct: that quality matters, that design
+matters, and that trust is earned through care rather than captured through
+hype.</p>
+<p>I am very happy that Pi is coming along for the ride.  Me and Colin care a lot
+about it, and we want to be good stewards of it.  It has already played an
+important role in our own work over the last months, and I continue to believe
+it is one of the best foundations for building capable agents.  We will have more
+to say soon about how we think about Pi&#8217;s future and its relationship to Lefos,
+but the short version is simple: we want Pi to continue to exist as a
+high-quality, open, extensible piece of software, and we want to invest in
+making that future real.  As for our thoughts of Pi&#8217;s license, <a href="https://rfc.earendil.com/0015/">read more
+here</a> and our <a
+href="https://earendil.com/posts/announcement-reflection/">company post
+here</a>.</p>
+]]></description>
+    </item>
+    <item>
+      <title>Absurd In Production</title>
+      <link>https://lucumr.pocoo.org/2026/4/4/absurd-in-production/</link>
+      <guid isPermaLink="true">https://lucumr.pocoo.org/2026/4/4/absurd-in-production/</guid>
+      <pubDate>Sat, 04 Apr 2026 00:00:00 +0000</pubDate>
+      <description><![CDATA[<p>About five months ago I wrote about <a href="/2025/11/3/absurd-workflows/">Absurd</a>, a
+durable execution system we built for our own use at Earendil, sitting entirely
+on top of Postgres and Postgres alone.  The pitch was simple: you don&#8217;t need a
+<a href="https://hatchet.run/">separate</a> <a href="https://www.inngest.com/">service</a>, <a href="https://useworkflow.dev/">a
+compiler plugin</a>, or <a href="https://temporal.io/">an entire
+runtime</a> to get durable workflows.  You need a SQL file
+and a thin SDK.</p>
+<p>Since then we&#8217;ve been running it in production, and I figured it&#8217;s worth
+sharing what the experience has been like.  The short version: the design
+held up, the system has been a pleasure to work with, and other people seem
+to agree.</p>
+<h2>A Quick Refresher</h2>
+<p>Absurd is a durable execution system that lives entirely inside Postgres.
+The core is a single SQL file
+(<a href="https://github.com/earendil-works/absurd/blob/main/sql/absurd.sql">absurd.sql</a>)
+that defines stored procedures for task management, checkpoint storage, event
+handling, and claim-based scheduling.  On top of that sit thin SDKs (currently
+<a href="https://www.npmjs.com/package/absurd-sdk">TypeScript</a>,
+<a href="https://pypi.org/project/absurd-sdk/">Python</a> and an experimental
+<a href="https://github.com/earendil-works/absurd/tree/main/sdks/go/absurd">Go</a> one)
+that make the system ergonomic in your language of choice.</p>
+<p>The model is straightforward: you register tasks, decompose them into steps,
+and each step acts as a checkpoint.  If anything fails, the task retries from
+the last completed step.  Tasks can sleep, wait for external events, and
+suspend for days or weeks.  All state lives in Postgres.</p>
+<p>If you want the full introduction, the <a href="/2025/11/3/absurd-workflows/">original blog
+post</a> covers the fundamentals.  What follows here
+is what we&#8217;ve learned since.</p>
+<h2>What Changed</h2>
+<p>The project got multiple releases over the last five months.  Most of the
+changes are things you&#8217;d expect from a system that people actually started
+depending on: hardened claim handling, watchdogs that terminate broken workers,
+deadlock prevention, proper lease management, event race conditions, and all the
+edge cases that only show up when you&#8217;re running real workloads.</p>
+<p>A few things worth calling out specifically.</p>
+<p><strong>Decomposed steps.</strong>  The original design only had <code>ctx.step()</code>, where you pass
+in a function and get back its checkpointed result.  That works well for many
+cases but not all.  Sometimes you need to know whether a step already ran before
+deciding what to do next.  So we added <code>beginStep()</code> / <code>completeStep()</code>, which
+give you a handle you can inspect before committing the result.  This turned out
+to be very useful for modeling intentional failures and conditional logic.
+This in particular is necessary when working with &#8220;before call&#8221; and &#8220;after call&#8221;
+type hook APIs.</p>
+<p><strong>Task results.</strong>  You can now spawn a task, go do other things, and later
+come back to fetch or await its result.  This sounds obvious in hindsight, but
+the original system was purely fire-and-forget.  Having proper result inspection
+made it possible to use Absurd for things like spawning child tasks from within
+a parent workflow and waiting for them to finish.  This is particularly useful
+for debugging with agents too.</p>
+<p><strong><a href="https://earendil-works.github.io/absurd/tools/absurdctl/">absurdctl</a>.</strong>  We built this out as a proper CLI tool.  You can initialize
+schemas, run migrations, create queues, spawn tasks, emit events, retry failures
+from the command line.  It&#8217;s installable via <code>uvx</code> or as a standalone binary.
+This has been invaluable for debugging production issues.  When something is
+stuck, being able to just <code>absurdctl dump-task --task-id=&lt;id&gt;</code> and see exactly
+where it stopped is a very different experience from digging through logs.</p>
+<p><strong><a href="https://earendil-works.github.io/absurd/tools/habitat/">Habitat</a>.</strong>  A small Go application that serves up a web dashboard for
+monitoring tasks, runs, checkpoints, and events.  It connects directly to
+Postgres and gives you a live view of what&#8217;s happening.  It&#8217;s simple, but it&#8217;s
+the kind of thing that makes the system more enjoyable for humans.</p>
+<p><strong>Agent integration.</strong>  Since Absurd was originally built for agent workloads,
+we added a bundled skill that coding agents can discover and use to debug
+workflow state via <code>absurdctl</code>.  There&#8217;s also a documented pattern for making
+<a href="https://pi.dev/">pi</a> agent turns durable by logging each message as a
+checkpoint.</p>
+<h2>What Held Up</h2>
+<p>The thing I&#8217;m most pleased about is that the core design didn&#8217;t need to change
+all that much.  The fundamental model of tasks, steps, checkpoints, events, and
+suspending is still exactly what it was initially.  We added features around it,
+but nothing forced us to rethink the basic abstractions.</p>
+<p>Putting the complexity in SQL and keeping the SDKs thin turned out to be a
+genuinely good call.  The TypeScript SDK is about 1,400 lines.  The Python SDK
+is about 1,900 but most of this comes from the complexity of supporting colored
+functions.  Compare that to Temporal&#8217;s Python SDK at around 170,000 lines.  It
+means the SDKs are easy to understand, easy to debug, and easy to port.  When
+something goes wrong, you can read the entire SDK in an afternoon and understand
+what it does.</p>
+<p>The checkpoint-based replay model also aged well.  Unlike systems that require
+deterministic replay of your entire workflow function, Absurd just loads the
+cached step results and skips over completed work.  That means your code doesn&#8217;t
+need to be deterministic outside of steps.  You can call <code>Math.random()</code> or
+<code>datetime.now()</code> in between steps and things still work, because only the step
+boundaries matter.  In practice, this makes it much easier to reason about
+what&#8217;s safe and what isn&#8217;t.</p>
+<p>Pull-based scheduling was the right choice too.  Workers pull tasks from
+Postgres as they have capacity.  There&#8217;s no coordinator, no push mechanism, no
+HTTP callbacks.  That makes it trivially self-hostable and means you don&#8217;t have
+to think about load management at the infrastructure level.</p>
+<h2>What Might Not Be Optimal</h2>
+<p>I had some discussions with folks about whether the right abstraction should have been
+a <a href="https://www.distributed-async-await.io/specification/programming-model/durable-promise-specification">durable
+promise</a>.
+It&#8217;s a very appealing idea, but it turns out to be much more complex to
+implement in practice.  It&#8217;s however in theory also more powerful.  I did make
+some attempts to see what absurd would look like if it was based on durable
+promises but so far did not get anywhere with it.  It&#8217;s however an experiment
+that I think would be fun to try!</p>
+<h2>What We Use It For</h2>
+<p>The primary use case is still agent workflows.  An agent is essentially a loop
+that calls an LLM, processes tool results, and repeats until it decides it&#8217;s
+done.  Each iteration becomes a step, and each step&#8217;s result is checkpointed.
+If the process dies on iteration 7, it restarts and replays iterations 1 through
+6 from the store, then continues from 7.</p>
+<p>But we&#8217;ve found it useful for a lot of other things too.  All our crons just
+dispatch distributed workflows with a pre-generated deduplication key from the
+invocation.  We can have two cron processes running and they will only trigger
+one absurd task invocation.  We also use it for background processing that needs
+to survive deploys.  Basically anything where you&#8217;d otherwise build your own
+retry-and-resume logic on top of a queue.</p>
+<h2>What&#8217;s Still Missing</h2>
+<p>Absurd is deliberately minimal, but there are things I&#8217;d like to see.</p>
+<p>There&#8217;s no built-in scheduler.  If you want cron-like behavior, you run your own
+scheduler loop and use idempotency keys to deduplicate.  That works, and we have
+a <a href="https://earendil-works.github.io/absurd/patterns/cron/">documented pattern for
+it</a>, but it would be
+nice to have something more integrated.</p>
+<p>There&#8217;s no push model.  Everything is pull.  If you need an HTTP endpoint to
+receive webhooks and wake up tasks, you build that yourself.  I think that&#8217;s the
+right default as push systems are harder to operate and easier to overwhelm but
+there are cases where it would be convenient.  In particular there are quite a
+few agentic systems where it would be super nice to have webhooks natively
+integrated (wake on incoming POST request).  I definitely don&#8217;t want to have
+this in the core, but that sounds like the kind of problem that could be a nice
+adjacent library that builds on top of absurd.</p>
+<p>The biggest omission is that it does not support partitioning yet.  That&#8217;s
+unfortunate because it makes cleaning up data more expensive than it has to be.
+In theory supporting partitions would be pretty simple.  You could have weekly
+partitions and then detach and delete them when they expire.  The only thing
+that really stands in the way of that is that Postgres does not have a
+convenient way of actually doing that.</p>
+<p>The hard part is not partitioning itself, it&#8217;s partition lifecycle management under
+real workloads.  If a worker inserts a row whose <code>expires_at</code> lands in a month
+without a partition, the insert fails and the workflow crashes.  So you need a
+separate maintenance loop that always creates future partitions far enough ahead
+for sleeps/retries, and does that for every queue.</p>
+<p>On the delete side, the safe approach is <code>DETACH PARTITION CONCURRENTLY</code>, but
+getting that to run from <code>pg_cron</code> doesn&#8217;t work because it cannot be run within a
+transaction, but <code>pg_cron</code> runs everything in one.</p>
+<p>I don&#8217;t think it&#8217;s an unsolvable problem, but it&#8217;s one I have not found a good
+solution for and I would love <a href="https://github.com/earendil-works/absurd/issues/4">to get input
+on</a>.</p>
+<h2>Does Open Source Still Matter?</h2>
+<p>This brings me a bit to a meta point on the whole thing which is what the point
+of Open Source libraries in the age of agentic engineering is.  Durable
+Execution is now something that plenty of startups sell you.  On the other hand
+it&#8217;s also something that an agent would build you and people might not even look
+for solutions any more.  It&#8217;s kind of … weird?</p>
+<p>I don&#8217;t think a durable execution library can support a company, I really
+don&#8217;t.  On the other hand I think it&#8217;s just complex enough of a problem that it
+could be a good Open Source project void of commercial interests.  You do need a
+bit of an ecosystem around it, particularly for UI and good DX for debugging,
+and that&#8217;s hard to get from a throwaway implementation.</p>
+<p>I don&#8217;t think we have squared this yet, but it&#8217;s already much better to use than
+a few months ago.</p>
+<p>If you&#8217;re using Absurd, thinking about it, or building adjacent ideas, I&#8217;d love
+your feedback. Bug reports, rough edges, design critiques, and contributions are
+all very welcome—this project has gotten better every time someone poked at it
+from a different angle.</p>
+]]></description>
+    </item>
+    <item>
+      <title>Some Things Just Take Time</title>
+      <link>https://lucumr.pocoo.org/2026/3/20/some-things-just-take-time/</link>
+      <guid isPermaLink="true">https://lucumr.pocoo.org/2026/3/20/some-things-just-take-time/</guid>
+      <pubDate>Fri, 20 Mar 2026 00:00:00 +0000</pubDate>
+      <description><![CDATA[<p>Trees take quite a while to grow.  If someone 50 years ago planted a row of oaks
+or a chestnut tree on your plot of land, you have something that no amount of
+money or effort can replicate.  The only way is to wait.  Tree-lined roads, old
+gardens, houses sheltered by decades of canopy: if you want to start fresh on an
+empty plot, you will not be able to get that.</p>
+<p>Because some things just take time.</p>
+<p>We know this intuitively.  We pay premiums for Swiss watches, Hermès bags and
+old properties precisely because of the time embedded in them.  Either because
+of the time it took to build them or because of their age.  We require age
+minimums for driving, voting, and drinking because we believe maturity only
+comes through lived experience.</p>
+<p>Yet right now we also live in a time of instant gratification, and it&#8217;s entering
+how we build software and companies.  As much as we can speed up code
+generation, the real defining element of a successful company or an Open Source
+project will continue to be tenacity.  The ability of leadership or the
+maintainers to stick to a problem for years, to build relationships, to work
+through challenges fundamentally defined by human lifetimes.</p>
+<h2>Friction Is Good</h2>
+<p>The current generation of startup founders and programmers is obsessed
+with speed.  Fast iteration, rapid deployment, doing everything as quickly as
+possible.  For many things, that&#8217;s fine.  You can go fast, leave some quality on
+the table, and learn something along the way.</p>
+<p>But there are things where speed is actively harmful, where the friction exists
+for a reason.  Compliance is one of those cases.  There&#8217;s a strong desire to
+eliminate everything that processes like SOC2 require, and an entire industry of
+turnkey solutions has sprung up to help —
+<a href="https://substack.com/home/post/p-191342187">Delve</a> just being one example,
+there are more.</p>
+<p>There&#8217;s a feeling that all the things that create friction in your life should
+be automated away.  That human involvement should be replaced by AI-based
+decision-making.  Because it is the friction of the process that is the problem.
+When in fact many times the friction, or that things just take time, is
+precisely the point.</p>
+<p>There&#8217;s a reason we have cooling-off periods for some important decisions in
+one&#8217;s life.  We recognize that people need time to think about what they&#8217;re
+doing, and that doing something right once doesn&#8217;t mean much because you need to
+be able to do it over a longer period of time.</p>
+<h2>Vibe Slop At Inference Speeds</h2>
+<p>AI writes code fast which isn&#8217;t news anymore.  What&#8217;s interesting is that we&#8217;re
+pushing this force downstream: we seemingly have this desire to ship faster than
+ever, to run more experiments and that creates a new desire, one to remove all
+the remaining friction of reviews, designing and configuring infrastructure,
+anything that slows the pipeline.  If the machines are so great, why do we even
+need checklists or permission systems?  Express desire, enjoy result.</p>
+<p>Because we now believe it is important for us to just do everything faster.  But
+increasingly, I also feel like this means that the shelf life of much of the
+software being created today — software that people and businesses should depend
+on — can be measured only in months rather than decades, and the relationships
+alongside.</p>
+<p>In one of last year&#8217;s earlier YC batches, there was already a handful that just
+disappeared without even saying what they learned or saying goodbye to their
+customers.  They just shut down their public presence and moved on to other
+things.  And to me, that is not a sign of healthy iteration.  That is a sign of
+breaking the basic trust you need to build a relationship with customers.  A
+proper shutdown takes time and effort, and our current environment treats that
+as time not wisely spent.  Better to just move on to the next thing.</p>
+<p>This is extending to Open Source projects as well.  All of a sudden, everything
+is an Open Source project, but many of them only have commits for a week or so,
+and then they go away because the motivation of the creator already waned.  And
+in the name of experimentation, that is all good and well, but what makes a good
+Open Source project is that you think and truly believe that the person that
+created it is either going to stick with it for a very long period of time, or
+they are able to set up a strategy for succession, or they have created enough
+of a community that these projects will stand the test of time in one form or
+another.</p>
+<h2>My Time</h2>
+<p>Relatedly, I&#8217;m also increasingly skeptical of anyone who sells me something that
+supposedly saves my time.  When all that I see is that everybody who is like me,
+fully onboarded into AI and agentic tools, seemingly has less and less time
+available because we fall into a trap where we&#8217;re immediately filling it with
+more things.</p>
+<p>We all sell each other the idea that we&#8217;re going to save time, but that is not
+what&#8217;s happening.  Any time saved gets immediately captured by competition.
+Someone who actually takes a breath is outmaneuvered by someone who fills every
+freed-up hour with new output.  There is no easy way to bank the time and it
+just disappears.</p>
+<p>I feel this acutely.  I&#8217;m very close to the red-hot center of where economic
+activity around AI is taking place, and more than anything, I have less and less
+time, even when I try to purposefully scale back and create the space.  For me
+this is a problem.  It&#8217;s a problem because even with the best intentions, I
+actually find it very hard to create quality when we are quickly commoditizing
+software, and the machines make it so appealing.</p>
+<p>I keep coming back to the trees.  I&#8217;ve been maintaining Open Source projects for
+close to two decades now.  The last startup I worked on, I spent 10 years at.
+That&#8217;s not because I&#8217;m particularly disciplined or virtuous.  It&#8217;s because I or
+someone else, planted something, and then I kept showing up, and eventually the
+thing had roots that went deeper than my enthusiasm on any given day.  That&#8217;s
+what time does!  It turns some idea or plan into a commitment and a commitment
+into something that can shelter and grow other people.</p>
+<p>Nobody is going to mass-produce a 50-year-old oak.  And nobody is going to
+conjure trust, or quality, or community out of a weekend sprint.  The things
+I value most — the projects, the relationships, the communities — are all
+things that took years to become what they are.  No tool, no matter how fast,
+was going to get them there sooner.</p>
+<p>We recently <a href="https://earendil.com/">planted a new tree</a> with Colin.  I want it
+to grow into a large one.  I know that&#8217;s going to take time, and I&#8217;m not in a
+rush.</p>
+]]></description>
+    </item>
+    <item>
+      <title>AI And The Ship of Theseus</title>
+      <link>https://lucumr.pocoo.org/2026/3/5/theseus/</link>
+      <guid isPermaLink="true">https://lucumr.pocoo.org/2026/3/5/theseus/</guid>
+      <pubDate>Thu, 05 Mar 2026 00:00:00 +0000</pubDate>
+      <description><![CDATA[<p>Because code gets cheaper and cheaper to write, this includes
+re-implementations.  I mentioned recently that I had an AI port one of my
+libraries to another language and it ended up choosing a different
+design for that implementation.  In many ways, the functionality was the same,
+but the path it took to get there was different.  The way that port worked was
+by going via the test suite.</p>
+<p>Something related, but different, <a href="https://github.com/chardet/chardet/issues/327#issuecomment-4005195078">happened with
+chardet</a>.
+The current maintainer reimplemented it from scratch by only pointing it to the
+API and the test suite.  The motivation: enabling relicensing from LGPL to MIT.
+I personally have a horse in the race here because I too wanted chardet to be
+under a non-GPL license for many years.  So consider me a very biased person in
+that regard.</p>
+<p>Unsurprisingly, that new implementation caused a stir.  In particular, Mark
+Pilgrim, the original author of the library, objects to the new implementation
+and considers it a derived work.  The new maintainer, who has maintained it for
+the last 12 years, considers it a new work and instructs his coding agent to do
+precisely that.  According to author, validating with JPlag, the new
+implementation is distinct.  If you actually consider how it works, that&#8217;s not
+too surprising.  It&#8217;s significantly faster than the original implementation,
+supports multiple cores and uses a fundamentally different design.</p>
+<p>What I think is more interesting about this question is the consequences of
+where we are.  Copyleft code like the GPL heavily depends on copyrights and
+friction to enforce it.  But because it&#8217;s fundamentally in the open, with or
+without tests, you can trivially rewrite it these days.  I myself have been
+intending to do this for a little while now with some other GPL libraries.  In
+particular I started a re-implementation of readline a while ago for similar
+reasons, because of its GPL license.  There is an obvious moral question here,
+but that isn&#8217;t necessarily what I&#8217;m interested in.  For all the GPL software
+that might re-emerge as MIT software, so might be proprietary abandonware.</p>
+<p>For me personally, what is more interesting is that we might not even be able
+to copyright these creations at all.  A court still might rule that all
+AI-generated code is in the public domain, because there was not enough human
+input in it.  That&#8217;s quite possible, though probably not very likely.</p>
+<p>But this all causes some interesting new developments we are not necessarily
+ready for.  Vercel, for instance, happily <a href="https://just-bash.dev/">re-implemented
+bash</a> with Clankers but <a href="https://x.com/cramforce/status/2027155457597669785">got visibly
+upset</a> when someone
+re-implemented Next.js in the same way.</p>
+<p>There are huge consequences to this.  When the cost of generating code goes down
+that much, and we can re-implement it from test suites alone, what does that
+mean for the future of software?  Will we see a lot of software re-emerging
+under more permissive licenses?  Will we see a lot of proprietary software
+re-emerging as open source?  Will we see a lot of software re-emerging as
+proprietary?</p>
+<p>It&#8217;s a new world and we have very little idea of how to navigate it.  In the
+interim we will have some fights about copyrights but I have the feeling very
+few of those will go to court, because everyone involved will actually be
+somewhat scared of setting a precedent.</p>
+<p>In the GPL case, though, I think it warms up some old fights about copyleft vs
+permissive licenses that we have not seen in a long time.  It probably does not
+feel great to have one&#8217;s work rewritten with a Clanker and one&#8217;s authorship
+eradicated.  Unlike the <a href="https://en.wikipedia.org/wiki/Ship_of_Theseus">Ship of
+Theseus</a>, though, this seems more
+clear-cut: if you throw away all code and start from scratch, even if the end
+result behaves the same, it&#8217;s a new ship.  It only continues to carry the name.
+Which may be another argument for why authors should hold on to trademarks
+rather than rely on licenses and contract law.</p>
+<p>I personally think all of this is exciting.  I&#8217;m a strong supporter of putting
+things in the open with as little license enforcement as possible.  I think
+society is better off when we share, and I consider the GPL to run against that
+spirit by restricting what can be done with it.  This development plays into my
+worldview.  I understand, though, that not everyone shares that view, and I
+expect more fights over the emergence of slopforks as a result.  After all, it
+combines two very heated topics, licensing and AI, in the worst possible way.</p>
+]]></description>
+    </item>
+    <item>
+      <title>The Final Bottleneck</title>
+      <link>https://lucumr.pocoo.org/2026/2/13/the-final-bottleneck/</link>
+      <guid isPermaLink="true">https://lucumr.pocoo.org/2026/2/13/the-final-bottleneck/</guid>
+      <pubDate>Fri, 13 Feb 2026 00:00:00 +0000</pubDate>
+      <description><![CDATA[<p>Historically, writing code was slower than reviewing code.</p>
+<p>It might not have felt that way, because code reviews sat in queues until
+someone got around to picking it up.  But if you compare the
+actual acts themselves, creation was usually the more expensive part.  In teams
+where people both wrote and reviewed code, it never felt like &#8220;we should
+probably program slower.&#8221;</p>
+<p>So when more and more people tell me they no longer know what code is in their
+own codebase, I feel like something is very wrong here and it&#8217;s time to
+reflect.</p>
+<h2>You Are Here</h2>
+<p>Software engineers often believe that <a href="/2020/1/1/async-pressure/">if we make the bathtub
+bigger</a>, overflow disappears.  It doesn&#8217;t.
+<a href="https://en.wikipedia.org/wiki/OpenClaw">OpenClaw</a> right now has north of 2,500
+pull requests open.  That&#8217;s a big bathtub.</p>
+<p>Anyone who has worked with queues knows this: if input grows faster than
+throughput, you have an accumulating failure.  At that point, backpressure and
+load shedding are the only things that retain a system that can still operate.</p>
+<p>If you have ever been in a Starbucks overwhelmed by mobile orders, you know the
+feeling.  The in-store experience breaks down.  You no longer know how many
+orders are ahead of you.  There is no clear line, no reliable wait estimate, and
+often no real cancellation path unless you escalate and make noise.</p>
+<p>That is what many AI-adjacent open source projects feel like right now.  And
+increasingly, that is what a lot of internal company projects feel like in
+&#8220;AI-first&#8221; engineering teams, and that&#8217;s not sustainable.  You can&#8217;t triage, you
+can&#8217;t review, and many of the PRs cannot be merged after a certain point because
+they are too far out of date. And the creator might have lost the motivation to
+actually get it merged.</p>
+<p>There is huge excitement about newfound delivery speed, but in private
+conversations, I keep hearing the same second sentence: people are also confused
+about how to keep up with the pace they themselves created.</p>
+<h2>We Have Been Here Before</h2>
+<p>Humanity has been here before.  Many times over.  We already talk about the
+Luddites a lot in the context of AI, but it&#8217;s interesting to see what led up to
+it.  Mark Cartwright wrote a great <a href="https://www.worldhistory.org/article/2183/the-textile-industry-in-the-british-industrial-rev/">article about the textile
+industry</a>
+in Britain during the industrial revolution.  At its core was a simple idea:
+whenever a bottleneck was removed, innovation happened downstream from that.
+Weaving sped up? Yarn became the constraint. Faster spinning? Fibre needed to be
+improved to support the new speeds until finally the demand for cotton went up
+and that had to be automated too.  We saw the same thing in shipping that led
+to modern automated ports and containerization.</p>
+<p>As software engineers we have been here too.  Assembly did not scale to larger
+engineering teams, and we had to invent higher level languages.  A lot of what
+programming languages and software development frameworks did was allow us
+to write code faster and to scale to larger code bases.  What it did not do up
+to this point was take away the core skill of engineering.</p>
+<p>While it&#8217;s definitely easier to write C than assembly, many of the core problems
+are the same.  Memory latency still matters, physics are still our ultimate
+bottleneck, algorithmic complexity still makes or breaks software at scale.</p>
+<h2>Giving Up?</h2>
+<p>When one part of the pipeline becomes dramatically faster, you need to throttle
+input.  <a href="https://pi.dev/">Pi</a> is a great example of this.  PRs are auto closed
+unless people are trusted.  It takes <a href="https://x.com/badlogicgames/status/2021164603506368693">OSS
+vacations</a>.  That&#8217;s one
+option: you just throttle the inflow.  You push against your newfound powers
+until you can handle them.</p>
+<h2>Or Giving In</h2>
+<p>But what if the speed continues to increase?  What downstream of writing code do
+we have to speed up?  Sure, the pull request review clearly turns into the
+bottleneck.  But it cannot really be automated.  If the machine writes the code,
+the machine better review the code at the same time.  So what ultimately comes
+up for human review would already have passed the most critical possible review
+of the most capable machine.  What else is in the way?  If we continue with the
+fundamental belief that machines cannot be accountable, then humans need to be
+able to understand the output of the machine.  And the machine will ship
+relentlessly.  Support tickets of customers will go straight to machines to
+implement improvements and fixes, for other machines to review, for humans to
+rubber stamp in the morning.</p>
+<p>A lot of this sounds both unappealing and reminiscent of the textile industry.
+The individual weaver no longer carried responsibility for a bad piece of cloth.
+If it was bad, it became the responsibility of the factory as a whole and it was
+just replaced outright.  As we&#8217;re entering the phase of single-use plastic
+software, we might be moving the whole layer of responsibility elsewhere.</p>
+<h2>I Am The Bottleneck</h2>
+<p>But to me it still feels different.  Maybe that&#8217;s because my lowly brain can&#8217;t
+comprehend the change we are going through, and future generations will just
+laugh about our challenges.  It feels different to me, because what I see taking
+place in some Open Source projects, in some companies and teams feels deeply
+wrong and unsustainable.  Even Steve Yegge himself now <a href="https://steve-yegge.medium.com/the-ai-vampire-eda6e4f07163">casts
+doubts</a> about the
+sustainability of the ever-increasing pace of code creation.</p>
+<p>So what if we need to give in?  What if we need to pave the way for this new
+type of engineering to become the standard?  What affordances will we have to
+create to make it work?  I for one do not know.  I&#8217;m looking at this with
+fascination and bewilderment and trying to make sense of it.</p>
+<p>Because it is not the final bottleneck.  We will find ways to take
+responsibility for what we ship, because society will demand it.  Non-sentient
+machines will never be able to carry responsibility, and it looks like we will
+need to deal with this problem before machines achieve this status.
+Regardless of how <a href="https://en.wikipedia.org/wiki/Moltbook">bizarre they appear to
+act</a> already.</p>
+<p><a href="https://x.com/thorstenball/status/2022310010391302259">I too am the bottleneck
+now</a>.  But you know what?
+Two years ago, I too was the bottleneck.  I was the bottleneck all along.  The
+machine did not really change that.  And for as long as I carry responsibilities
+and am accountable, this will remain true.  If we manage to push accountability
+upwards, it might change, but so far, how that would happen is not clear.</p>
+]]></description>
+    </item>
+    <item>
+      <title>A Language For Agents</title>
+      <link>https://lucumr.pocoo.org/2026/2/9/a-language-for-agents/</link>
+      <guid isPermaLink="true">https://lucumr.pocoo.org/2026/2/9/a-language-for-agents/</guid>
+      <pubDate>Mon, 09 Feb 2026 00:00:00 +0000</pubDate>
+      <description><![CDATA[<p>Last year I first started thinking about what the future of programming
+languages might look like now that agentic engineering is a growing thing.
+Initially I felt that the enormous corpus of pre-existing code would cement
+existing languages in place but now I&#8217;m starting to think the opposite is true.
+Here I want to outline my thinking on why we are going to see more new
+programming languages and why there is quite a bit of space for interesting
+innovation.  And just in case someone wants to start building one, here are some
+of my thoughts on what we should aim for!</p>
+<h2>Why New Languages Work</h2>
+<p>Does an agent perform dramatically better on a language that it has in its
+weights?  Obviously yes.  But there are less obvious factors that affect how
+good an agent is at programming in a language: how good the tooling around it is
+and how much churn there is.</p>
+<p>Zig seems underrepresented in the weights (at least in the models I&#8217;ve used)
+and also changing quickly.  That combination is not optimal, but it&#8217;s still
+passable: you can program even in the upcoming Zig version if you point the
+agent at the right documentation.  But it&#8217;s not great.</p>
+<p>On the other hand, some languages are well represented in the weights but agents
+still don&#8217;t succeed as much because of tooling choices.  Swift is a good
+example: in my experience the tooling around building a Mac or iOS application
+can be so painful that agents struggle to navigate it.  Also not great.</p>
+<p>So, just because it exists doesn&#8217;t mean the agent succeeds and just because it&#8217;s
+new also doesn&#8217;t mean that the agent is going to struggle.  I&#8217;m convinced that
+you can build yourself up to a new language if you don&#8217;t want to depart
+everywhere all at once.</p>
+<p>The biggest reason new languages might work is that the cost of coding is going
+down dramatically.  The result is the breadth of an ecosystem matters less. I&#8217;m
+now routinely reaching for JavaScript in places where I would have used Python.
+Not because I love it or the ecosystem is better, but because the agent does
+much better with TypeScript.</p>
+<p>The way to think about this: if important functionality is missing in my
+language of choice, I just point the agent at a library from a different
+language and have it build a port.  As a concrete example, I recently built an
+Ethernet driver in JavaScript to implement the host controller for our sandbox.
+Implementations exist in Rust, C, and Go, but I wanted something pluggable and
+customizable in JavaScript.  It was easier to have the agent reimplement it than
+to make the build system and distribution work against a native binding.</p>
+<p>New languages will work if their value proposition is strong enough and they
+evolve with knowledge of how LLMs train.  People will adopt them despite being
+underrepresented in the weights.  And if they are designed to work well with
+agents, then they might be designed around familiar syntax that is already known
+to work well.</p>
+<h2>Why A New Language?</h2>
+<p>So why would we want a new language at all?  The reason this is interesting to
+think about is that many of today&#8217;s languages were designed with the assumption
+that punching keys is laborious, so we traded certain things for brevity.  As an
+example, many languages — particular modern ones — lean heavily on type
+inference so that you don&#8217;t have to write out types.  The downside is that you
+now need an LSP or the resulting compiler error messages to figure out what the
+type of an expression is.  Agents struggle with this too, and it&#8217;s also
+frustrating in pull request review where complex operations can make it very
+hard to figure out what the types actually are.  Fully dynamic languages are
+even worse in that regard.</p>
+<p>The cost of writing code is going down, but because we are also producing more
+of it, understanding what the code does is becoming more important.  We might
+actually want more code to be written if it means there is less ambiguity when
+we perform a review.</p>
+<p>I also want to point out that we are heading towards a world where some code is
+never seen by a human and is only consumed by machines.  Even in that case, we
+still want to give an indication to a user, who is potentially a non-programmer,
+about what is going on.  We want to be able to explain to a user what the code
+will do without going into the details of how.</p>
+<p>So the case for a new language comes down to: given the fundamental changes in
+who is programming and what the cost of code is, we should at least consider
+one.</p>
+<h2>What Agents Want</h2>
+<p>It&#8217;s tricky to say what an agent wants because agents will lie to you and they
+are influenced by all the code they&#8217;ve seen.  But one way to estimate how they
+are doing is to look at how many changes they have to perform on files and how
+many iterations they need for common tasks.</p>
+<p>There are some things I&#8217;ve found that I think will be true for a while.</p>
+<h3>Context Without LSP</h3>
+<p>The language server protocol lets an IDE infer information about what&#8217;s under
+the cursor or what should be autocompleted based on semantic knowledge of the
+codebase.  It&#8217;s a great system, but it comes at one specific cost that is tricky
+for agents: the LSP has to be running.</p>
+<p>There are situations when an agent just won&#8217;t run the LSP — not because of
+technical limitations, but because it&#8217;s also lazy and will skip that step if it
+doesn&#8217;t have to.  If you give it an example from documentation, there is no easy
+way to run the LSP because it&#8217;s a snippet that might not even be complete.  If
+you point it at a GitHub repository and it pulls down individual files, it will
+just look at the code.  It won&#8217;t set up an LSP for type information.</p>
+<p>A language that doesn&#8217;t split into two separate experiences (with-LSP and
+without-LSP) will be beneficial to agents because it gives them one unified way
+of working across many more situations.</p>
+<h3>Braces, Brackets, and Parentheses</h3>
+<p>It pains me as a Python developer to say this, but whitespace-based indentation
+is a problem.  The underlying token efficiency of getting whitespace right is
+tricky, and a language with significant whitespace is harder for an LLM to work
+with.  This is particularly noticeable if you try to make an LLM do surgical
+changes without an assisted tool.  Quite often they will intentionally disregard
+whitespace, add markers to enable or disable code and then rely on a code
+formatter to clean up indentation later.</p>
+<p>On the other hand, braces that are not separated by whitespace can cause issues
+too.  Depending on the tokenizer, runs of closing parentheses can end up split
+into tokens in surprising ways (a bit like the &#8220;strawberry&#8221; counting problem),
+and it&#8217;s easy for an LLM to get Lisp or Scheme wrong because it loses track of
+how many closing parentheses it has already emitted or is looking at.  Fixable
+with future LLMs?  Sure, but also something that was hard for humans to get
+right too without tooling.</p>
+<h3>Flow Context But Explicit</h3>
+<p>Readers of this blog might know that I&#8217;m a huge believer in async locals and
+flow execution context — basically the ability to carry data through every
+invocation that might only be needed many layers down the call chain.  Working
+at an observability company has really driven home the importance of this for
+me.</p>
+<p>The challenge is that anything that flows implicitly might not be configured.
+Take for instance the current time.  You might want to implicitly pass a timer
+to all functions.  But what if a timer is not configured and all of a sudden a
+new dependency appears?  Passing all of it explicitly is tedious for both humans
+and agents and bad shortcuts will be made.</p>
+<p>One thing I&#8217;ve experimented with is having effect markers on functions that are
+added through a code formatting step.  A function can declare that it needs the
+current time or the database, but if it doesn&#8217;t mark this explicitly, it&#8217;s
+essentially a linting warning that auto-formatting fixes.  The LLM can start
+using something like the current time in a function and any existing caller gets
+the warning; formatting propagates the annotation.</p>
+<p>This is nice because when the LLM builds a test, it can precisely mock out
+these side effects — it understands from the error messages what it has to
+supply.</p>
+<p>For instance:</p>
+<div class="highlight"><pre><span></span><span class="k">fn</span><span class="w"> </span><span class="nf">issue</span><span class="p">(</span><span class="n">sub</span><span class="p">:</span><span class="w"> </span><span class="nc">UserId</span><span class="p">,</span><span class="w"> </span><span class="n">scopes</span><span class="p">:</span><span class="w"> </span><span class="p">[]</span><span class="n">Scope</span><span class="p">)</span><span class="w"> </span><span class="p">-&gt;</span><span class="w"> </span><span class="nc">Token</span>
+<span class="w">    </span><span class="n">needs</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">time</span><span class="p">,</span><span class="w"> </span><span class="n">rng</span><span class="w"> </span><span class="p">}</span>
+<span class="p">{</span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="n">Token</span><span class="p">{</span>
+<span class="w">        </span><span class="n">sub</span><span class="p">,</span>
+<span class="w">        </span><span class="n">exp</span><span class="p">:</span><span class="w"> </span><span class="nc">time</span><span class="p">.</span><span class="n">now</span><span class="p">().</span><span class="n">add</span><span class="p">(</span><span class="mi">24</span><span class="n">h</span><span class="p">),</span>
+<span class="w">        </span><span class="n">scopes</span><span class="p">,</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="p">}</span>
+
+<span class="n">test</span><span class="w"> </span><span class="s">&quot;issue creates exp in the future&quot;</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="n">using</span><span class="w"> </span><span class="n">time</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">time</span><span class="p">.</span><span class="n">fixed</span><span class="p">(</span><span class="s">&quot;2026-02-06T23:00:00Z&quot;</span><span class="p">);</span>
+<span class="w">    </span><span class="n">using</span><span class="w"> </span><span class="n">rng</span><span class="w">  </span><span class="o">=</span><span class="w"> </span><span class="n">rng</span><span class="p">.</span><span class="n">deterministic</span><span class="p">(</span><span class="n">seed</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="p">);</span>
+
+<span class="w">    </span><span class="kd">let</span><span class="w"> </span><span class="n">t</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">issue</span><span class="p">(</span><span class="n">user</span><span class="p">(</span><span class="s">&quot;u1&quot;</span><span class="p">),</span><span class="w"> </span><span class="p">[</span><span class="s">&quot;read&quot;</span><span class="p">]);</span>
+<span class="w">    </span><span class="n">assert</span><span class="p">(</span><span class="n">t</span><span class="p">.</span><span class="n">exp</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="n">time</span><span class="p">.</span><span class="n">now</span><span class="p">());</span>
+<span class="p">}</span>
+</pre></div>
+<h3>Results over Exceptions</h3>
+<p>Agents struggle with exceptions, they are afraid of them.  I&#8217;m not sure to what
+degree this is solvable with RL (Reinforcement Learning), but right now agents
+will try to catch everything they can, log it, and do a pretty poor recovery.
+Given how little information is actually available about error paths, that makes
+sense.  Checked exceptions are one approach, but they propagate all the way up
+the call chain and don&#8217;t dramatically improve things.  Even if they end up as
+hints where a linter tracks which errors can fly by, there are still many call
+sites that need adjusting.  And like the auto-propagation proposed for context
+data, it might not be the right solution.</p>
+<p>Maybe the right approach is to go more in on typed results, but that&#8217;s still
+tricky for composability without a type and object system that supports it.</p>
+<h3>Minimal Diffs and Line Reading</h3>
+<p>The general approach agents use today to read files into memory is line-based,
+which means they often pick chunks that span multi-line strings.  One easy way
+to see this fall apart: have an agent work on a 2000-line file that also
+contains long embedded code strings — basically a code generator.  The agent
+will sometimes edit within a multi-line string assuming it&#8217;s the real code when
+it&#8217;s actually just embedded code in a multi-line string.  For multi-line
+strings, the only language I&#8217;m aware of with a good solution is Zig, but its
+prefix-based syntax is pretty foreign to most people.</p>
+<p>Reformatting also often causes constructs to move to different lines.  In many
+languages, trailing commas in lists are either not supported (JSON) or not
+customary.  If you want diff stability, you&#8217;d aim for a syntax that requires
+less reformatting and mostly avoids multi-line constructs.</p>
+<h3>Make It Greppable</h3>
+<p>What&#8217;s really nice about Go is that you mostly cannot import symbols from
+another package into scope without every use being prefixed with the package
+name.  Eg: <code>context.Context</code> instead of <code>Context</code>.  There are escape hatches
+(import aliases and dot-imports), but they&#8217;re relatively rare and usually
+frowned upon.</p>
+<p>That dramatically helps an agent understand what it&#8217;s looking at.  In general,
+making code findable through the most basic tools is great — it works with
+external files that aren&#8217;t indexed, and it means fewer false positives for
+large-scale automation driven by code generated on the fly (eg: <code>sed</code>, <code>perl</code>
+invocations).</p>
+<h3>Local Reasoning</h3>
+<p>Much of what I&#8217;ve said boils down to: agents really like local reasoning.  They
+want it to work in parts because they often work with just a few loaded files in
+context and don&#8217;t have much spatial awareness of the codebase.  They rely on
+external tooling like grep to find things, and anything that&#8217;s hard to grep or
+that hides information elsewhere is tricky.</p>
+<h3>Dependency Aware Builds</h3>
+<p>What makes agents fail or succeed in many languages is just how good the build
+tools are.  Many languages make it very hard to determine what actually needs to
+rebuild or be retested because there are too many cross-references.  Go is
+really good here: it forbids circular dependencies between packages (import
+cycles), packages have a clear layout, and test results are cached.</p>
+<h2>What Agents Hate</h2>
+<h3>Macros</h3>
+<p>Agents often struggle with macros.  It was already pretty clear that humans
+struggle with macros too, but the argument for them was mostly that code
+generation was a good way to have less code to write.  Since that is less of a
+concern now, we should aim for languages with less dependence on macros.</p>
+<p>There&#8217;s a separate question about generics and
+<a href="https://zig.guide/language-basics/comptime/">comptime</a>.  I think they fare
+somewhat better because they mostly generate the same structure with different
+placeholders and it&#8217;s much easier for an agent to understand that.</p>
+<h3>Re-Exports and Barrel Files</h3>
+<p>Related to greppability: agents often struggle to understand <a href="https://tkdodo.eu/blog/please-stop-using-barrel-files">barrel
+files</a> and they don&#8217;t
+like them.  Not being able to quickly figure out where a class or function comes
+from leads to imports from the wrong place, or missing things entirely and
+wasting context by reading too many files.  A one-to-one mapping from where
+something is declared to where it&#8217;s imported from is great.</p>
+<p>And it does not have to be overly strict either.  Go kind of goes this way, but
+not too extreme.  Any file within a directory can define a function, which isn&#8217;t
+optimal, but it&#8217;s quick enough to find and you don&#8217;t need to search too far.
+It works because packages are forced to be small enough to find everything with
+grep.</p>
+<p>The worst case is free re-exports all over the place that completely decouple
+the implementation from any trivially reconstructable location on disk.  Or
+worse: aliasing.</p>
+<h3>Aliasing</h3>
+<p>Agents often hate it when aliases are involved.  In fact, you can get them to
+even complain about it in thinking blocks if you let them refactor something
+that uses lots of aliases.  Ideally a language encourages good naming and
+discourages aliasing at import time as a result.</p>
+<h3>Flaky Tests and Dev Env Divergence</h3>
+<p>Nobody likes flaky tests, but agents even less so.  Ironic given how
+particularly good agents are at creating flaky tests in the first place.  That&#8217;s
+because agents currently love to mock and most languages do not support mocking
+well.  So many tests end up accidentally not being concurrency safe or depend on
+development environment state that then diverges in CI or production.</p>
+<p>Most programming languages and frameworks make it much easier to write flaky
+tests than non-flaky ones.  That&#8217;s because they encourage indeterminism
+everywhere.</p>
+<h3>Multiple Failure Conditions</h3>
+<p>In an ideal world the agent has one command, that lints and compiles and it
+tells the agent if all worked out fine.  Maybe another command to run all tests
+that need running.  In practice most environments don&#8217;t work like this.  For
+instance in TypeScript you can often run the code even <a href="/2025/8/4/shitty-types/">though it fails
+type checks</a>.  That can gaslight the agent.  Likewise
+different bundler setups can cause one thing to succeed just for a slightly
+different setup in CI to fail later.  The more uniform the tooling the better.</p>
+<p>Ideally it either runs or doesn&#8217;t and there is mechanical fixing for as many
+linting failures as possible so that the agent does not have to do it by hand.</p>
+<h2>Will We See New Languages?</h2>
+<p>I think we will.  We are writing more software now than we ever have — more
+websites, more open source projects, more of everything.  Even if the ratio of
+new languages stays the same, the absolute number will go up.  But I also truly
+believe that many more people will be willing to rethink the foundations of
+software engineering and the languages we work with.  That&#8217;s because while for
+some years it has felt you need to build a lot of infrastructure for a language
+to take off, now you can target a rather narrow use case: make sure the agent is
+happy and extend from there to the human.</p>
+<p>I just hope we see two things.  First, some outsider art: people who haven&#8217;t
+built languages before trying their hand at it and showing us new things.
+Second, a much more deliberate effort to document what works and what doesn&#8217;t
+from first principles.  We have actually learned a lot about what makes good
+languages and how to scale software engineering to large teams.  Yet,  finding
+it written down, as a consumable overview of good and bad language design, is
+very hard to come by.  Too much of it has been shaped by opinion on rather
+pointless things instead of hard facts.</p>
+<p>Now though, we are slowly getting to the point where facts matter more, because
+you can actually measure what works by seeing how well agents perform with it.
+No human wants to be subject to surveys, but <a href="/2025/6/17/measuring/">agents don&#8217;t
+care</a>.  We can see how successful they are and where they
+are struggling.</p>
+]]></description>
+    </item>
+    <item>
+      <title>Pi: The Minimal Agent Within OpenClaw</title>
+      <link>https://lucumr.pocoo.org/2026/1/31/pi/</link>
+      <guid isPermaLink="true">https://lucumr.pocoo.org/2026/1/31/pi/</guid>
+      <pubDate>Sat, 31 Jan 2026 00:00:00 +0000</pubDate>
+      <description><![CDATA[<p>If you haven&#8217;t been living under a rock, you will have noticed this week that a
+project of my friend Peter <a href="https://en.wikipedia.org/wiki/OpenClaw">went viral on the
+internet</a>.  It went by many names. The
+most recent one is <a href="https://openclaw.ai/">OpenClaw</a> but in the news you might
+have encountered it as ClawdBot or MoltBot depending on when you read about it.
+It is an agent connected to a communication channel of your choice that <a href="https://lucumr.pocoo.org/2025/7/3/tools/">just
+runs code</a>.</p>
+<p>What you might be less familiar with is that what&#8217;s under the hood of OpenClaw
+is a little coding agent called <a href="https://github.com/badlogic/pi-mono/">Pi</a>. And
+Pi happens to be, at this point, the coding agent that I use almost exclusively.
+Over the last few weeks I became more and more of a shill for the little agent.
+After I gave a talk on this recently, I realized that I did not actually write
+about Pi on this blog yet, so I feel like I might want to give some context on
+why I&#8217;m obsessed with it, and how it relates to OpenClaw.</p>
+<p>Pi is written by <a href="https://mariozechner.at/">Mario Zechner</a> and unlike Peter, who
+aims for &#8220;sci-fi with a touch of madness,&#8221; <sup class="footnote-ref" id="fnref-1"><a href="#fn-1">1</a></sup> Mario is very grounded.  Despite
+the differences in approach, both OpenClaw and Pi follow the same idea: LLMs are
+really good at writing and running code, so embrace this.  In some ways I think
+that&#8217;s not an accident because Peter got me and Mario hooked on this idea, and
+agents last year.</p>
+<h2>What is Pi?</h2>
+<p>So Pi is a coding agent.  And there are many coding agents.  Really, I think you
+can pick effectively anyone off the shelf at this point and you will be able to
+experience what it&#8217;s like to do agentic programming.  In reviews on this blog
+I&#8217;ve positively talked about AMP and one of the reasons I resonated so much with
+AMP is that it really felt like it was a product built by people who got both
+addicted to agentic programming but also had tried a few different things to see
+which ones work and not just to build a fancy UI around it.</p>
+<p>Pi is interesting to me because of two main reasons:</p>
+<ul>
+<li>First of all, it has a tiny core. It has the shortest system prompt of any
+agent that I&#8217;m aware of and it only has four tools: Read, Write, Edit, Bash. </li>
+<li>The second thing is that it makes up for its tiny core by providing an
+extension system that also allows extensions to persist state into sessions,
+which is incredibly powerful. </li>
+</ul>
+<p>And a little bonus: Pi itself is written like excellent software. It doesn&#8217;t
+flicker, it doesn&#8217;t consume a lot of memory, it doesn&#8217;t randomly break, it is
+very reliable and it is written by someone who takes great care of what goes
+into the software.</p>
+<p>Pi also is a collection of little components that you can build your own agent
+on top.  That&#8217;s how OpenClaw is built, and that&#8217;s also how I built my own little
+Telegram bot and how Mario built his
+<a href="https://github.com/badlogic/pi-mono/tree/main/packages/mom">mom</a>.  If you want
+to build your own agent, connected to something, Pi when pointed to itself and
+mom, will conjure one up for you.</p>
+<h2>What&#8217;s Not In Pi</h2>
+<p>And in order to understand what&#8217;s in Pi, it&#8217;s even more important to understand
+what&#8217;s not in Pi, why it&#8217;s not in Pi and more importantly: why it won&#8217;t be in
+Pi.  The most obvious omission is support for MCP.  There is no MCP support in
+it. While you could build an extension for it, you can also do what OpenClaw
+does to support MCP which is to use
+<a href="https://github.com/steipete/mcporter">mcporter</a>. mcporter exposes MCP calls via
+a CLI interface or TypeScript bindings and maybe your agent can do something
+with it.  Or not, I don&#8217;t know :)</p>
+<p>And this is not a lazy omission.  This is from the philosophy of how Pi works.
+Pi&#8217;s entire idea is that if you want the agent to do something that it doesn&#8217;t
+do yet, you don&#8217;t go and download an extension or a skill or something like
+this. You ask the agent to extend itself.  It celebrates the idea of code
+writing and running code.</p>
+<p>That&#8217;s not to say that you cannot download extensions.  It is very much
+supported. But instead of necessarily encouraging you to download someone else&#8217;s
+extension, you can also point your agent to an already existing extension, say
+like, build it like the thing you see over there, but make these changes to it
+that you like.</p>
+<h2>Agents Built for Agents Building Agents</h2>
+<p>When you look at what Pi and by extension OpenClaw are doing, there is an
+example of software that is malleable like clay.  And this sets certain
+requirements for the underlying architecture of it that are actually in many
+ways setting certain constraints on the system that really need to go into the
+core design.</p>
+<p>So for instance, Pi&#8217;s underlying AI SDK is written so that a session can really
+contain many different messages from many different model providers. It
+recognizes that the portability of sessions is somewhat limited between model
+providers and so it doesn&#8217;t lean in too much into any model-provider-specific
+feature set that cannot be transferred to another.</p>
+<p>The second is that in addition to the model messages it maintains custom
+messages in the session files which can be used by extensions to store state or
+by the system itself to maintain information that either not at all is sent to
+the AI or only parts of it.</p>
+<p>Because this system exists and extension state can also be persisted to disk, it
+has built-in hot reloading so that the agent can write code, reload, test it and
+go in a loop until your extension actually is functional.  It also ships with
+documentation and examples that the agent itself can use to extend itself.  Even
+better: sessions in Pi are trees.  You can branch and navigate within a session
+which opens up all kinds of interesting opportunities such as enabling workflows
+for making a side-quest to fix a broken agent tool without wasting context in
+the main session.  After the tool is fixed, I can rewind the session back to
+earlier and Pi summarizes what has happened on the other branch.</p>
+<p>This all matters because for instance if you consider how MCP works, on most
+model providers, tools for MCP, like any tool for the LLM, need to be loaded
+into the system context or the tool section thereof on session start.  That
+makes it very hard to impossible to fully reload what tools can do without
+trashing the complete cache or confusing the AI about how prior invocations work
+differently.</p>
+<h2>Tools Outside The Context</h2>
+<p>An extension in Pi can register a tool to be available to the LLM to call and
+every once in a while I find this useful. For instance, despite my criticism of
+how Beads is implemented, I do think that giving an agent access to a to-do list
+is a very useful thing. And I do use an agent-specific issue tracker that works
+locally that I had my agent build itself. And because I wanted the agent to also
+manage to-dos, in this particular case I decided to give it a tool rather than a
+CLI.  It felt appropriate for the scope of the problem and it is currently the
+only additional tool that I&#8217;m loading into my context.</p>
+<p>But for the most part all of what I&#8217;m adding to my agent are either skills or
+TUI extensions to make working with the agent more enjoyable for me.  Beyond
+slash commands, Pi extensions can render custom TUI components directly in the
+terminal: spinners, progress bars, interactive file pickers, data tables,
+preview panes.  The TUI is flexible enough that Mario proved you can <a href="https://x.com/badlogicgames/status/2008702661093454039">run Doom
+in it</a>.  Not practical,
+but if you can run Doom, you can certainly build a useful dashboard or debugging
+interface.</p>
+<p>I want to highlight some of my extensions to give you an idea of what&#8217;s
+possible.  While you can use them unmodified, the whole idea really is that you
+point your agent to one and remix it to your heart&#8217;s content.</p>
+<h3><a href="https://github.com/mitsuhiko/agent-stuff/blob/main/extensions/answer.ts"><code>/answer</code></a></h3>
+<p>I <a href="/2025/12/17/what-is-plan-mode/">don&#8217;t use plan mode</a>.  I encourage the agent
+to ask questions and there&#8217;s a productive back and forth.  But I don&#8217;t like
+structured question dialogs that happen if you give the agent a question tool.
+I prefer the agent&#8217;s natural prose with explanations and diagrams interspersed.</p>
+<p>The problem: answering questions inline gets messy.  So <code>/answer</code> reads the
+agent&#8217;s last response, extracts all the questions, and reformats them into a
+nice input box.</p>
+<img src="/static/pi-answer.png" alt="The /answer extension showing a question dialog" style="width: 100%">
+<h3><a href="https://github.com/mitsuhiko/agent-stuff/blob/main/extensions/todos.ts"><code>/todos</code></a></h3>
+<p>Even though I criticize <a href="https://github.com/steveyegge/beads">Beads</a> for its
+implementation, giving an agent a to-do list is genuinely useful.  The <code>/todos</code>
+command brings up all items stored in <code>.pi/todos</code> as markdown files.  Both the
+agent and I can manipulate them, and sessions can claim tasks to mark them as in
+progress.</p>
+<iframe width="100%" style="aspect-ratio: 16/9" src="https://www.youtube.com/embed/ZcKbzxziA5k" frameborder="0" allowfullscreen></iframe>
+<h3><a href="https://github.com/mitsuhiko/agent-stuff/blob/main/extensions/review.ts"><code>/review</code></a></h3>
+<p>As more code is written by agents, it makes little sense to throw unfinished
+work at humans before an agent has reviewed it first.  Because Pi sessions are
+trees, I can branch into a fresh review context, get findings, then bring fixes
+back to the main session.</p>
+<img src="/static/pi-review.png" alt="The /review extension showing review preset options" style="width: 100%">
+<p>The UI is modeled after Codex which provides easy to review commits, diffs,
+uncommitted changes, or remote PRs.  The prompt pays attention to things I care
+about so I get the call-outs I want (eg: I ask it to call out newly added
+dependencies.)</p>
+<h3><a href="https://github.com/mitsuhiko/agent-stuff/blob/main/extensions/control.ts"><code>/control</code></a></h3>
+<p>An extension I experiment with but don&#8217;t actively use.  It lets one Pi agent send
+prompts to another.  It is a simple multi-agent system without complex
+orchestration which is useful for experimentation.</p>
+<h3><a href="https://github.com/mitsuhiko/agent-stuff/blob/main/extensions/files.ts"><code>/files</code></a></h3>
+<p>Lists all files changed or referenced in the session.  You can reveal them in
+Finder, diff in VS Code, quick-look them, or reference them in your prompt.
+<code>shift+ctrl+r</code> quick-looks the most recently mentioned file which is handy when
+the agent produces a PDF.</p>
+<p>Others have built extensions too: <a href="https://github.com/nicobailon/pi-subagents">Nico&#8217;s subagent
+extension</a> and
+<a href="https://www.npmjs.com/package/pi-interactive-shell">interactive-shell</a> which
+lets Pi autonomously run interactive CLIs in an observable TUI overlay.</p>
+<h2>Software Building Software</h2>
+<p>These are all just ideas of what you can do with your agent.  The point of it
+mostly is that none of this was written by me, it was created by the agent to my
+specifications.  I told Pi to make an extension and it did.  There is no MCP, there are
+no community skills, nothing.  Don&#8217;t get me wrong, I use tons of skills.  But
+they are hand-crafted by my clanker and not downloaded from anywhere.  For
+instance I fully replaced all my CLIs or MCPs for browser automation with a
+<a href="https://github.com/mitsuhiko/agent-stuff/blob/main/skills/web-browser/SKILL.md">skill that just uses
+CDP</a>.
+Not because the alternatives don&#8217;t work, or are bad, but because this is just
+easy and natural.  The agent maintains its own functionality.</p>
+<p>My agent has <a href="https://github.com/mitsuhiko/agent-stuff/tree/main/skills">quite a few
+skills</a> and crucially
+I throw skills away if I don&#8217;t need them.  I for instance gave it a skill to
+read Pi sessions that other engineers shared, which helps with code review.  Or
+I have a skill to help the agent craft the commit messages and commit behavior I
+want, and how to update changelogs.  These were originally slash commands, but
+I&#8217;m currently migrating them to skills to see if this works equally well.  I
+also have a skill that hopefully helps Pi use <code>uv</code> rather than <code>pip</code>, but I also
+added a custom extension to intercept calls to <code>pip</code> and <code>python</code> to redirect
+them to <code>uv</code> instead.</p>
+<p>Part of the fascination that working with a minimal agent like Pi gave me is
+that it makes you live that idea of using software that builds more software.
+That taken to the extreme is when you remove the UI and output and connect it
+to your chat.  That&#8217;s what OpenClaw does and given its tremendous growth,
+I really feel more and more that this is going to become our future in one
+way or another.</p>
+<div class="footnotes">
+<ol>
+<li id="fn-1">
+<p><a href="https://x.com/steipete/status/2017313990548865292">https://x.com/steipete/status/2017313990548865292</a><a href="#fnref-1" class="footnote">&#8617;</a></p></li>
+</ol>
+</div>
+]]></description>
+    </item>
+  </channel>
+</rss>

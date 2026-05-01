@@ -1,0 +1,569 @@
+<?xml version="1.0" encoding="utf-8"?>
+<rss version="2.0"
+  xmlns:atom="http://www.w3.org/2005/Atom"
+  xmlns:content="http://purl.org/rss/1.0/modules/content/">
+  <channel>
+    <title>我的学习笔记</title>
+    <link>https://www.luxiangdong.com/</link>
+    
+    <image>
+      <url>https://www.luxiangdong.com/icon.png</url>
+      <title>我的学习笔记</title>
+      <link>https://www.luxiangdong.com/</link>
+    </image>
+    
+    <atom:link href="https://www.luxiangdong.com/rss2.xml" rel="self" type="application/rss+xml"/>
+    
+    <description>80后，退役码农，非专业产品经理</description>
+    <pubDate>Sun, 22 Mar 2026 09:31:38 GMT</pubDate>
+    <generator>http://hexo.io/</generator>
+    
+    <item>
+      <title>【万字长文】OpenClaw 火了，企业怎么用才是正确的？</title>
+      <link>https://www.luxiangdong.com/2026/03/22/openclaw/</link>
+      <guid>https://www.luxiangdong.com/2026/03/22/openclaw/</guid>
+      <pubDate>Sun, 22 Mar 2026 09:24:02 GMT</pubDate>
+      
+      <description>&lt;h2 id=&quot;从“全民养龙虾”到企业落地，差的从来不只是一个-Agent&quot;&gt;&lt;a href=&quot;#从“全民养龙虾”到企业落地，差的从来不只是一个-Agent&quot; class=&quot;headerlink&quot; title=&quot;从“全民养龙虾”到企业落地，差的从来不只是一个 Agent&quot;&gt;&lt;/a&gt;&lt;strong&gt;从“全民养龙虾”到企业落地，差的从来不只是一个 Agent&lt;/strong&gt;&lt;/h2&gt;&lt;p&gt;2026 年开年，OpenClaw 几乎是以“现象级产品”的姿态闯进大众视野。&lt;/p&gt;
+&lt;p&gt;因为那个红色龙虾图标，大家给它起了个很接地气的名字：&lt;strong&gt;龙虾&lt;/strong&gt;。很快，技术圈在讨论它，产品经理在研究它，白领在体验它，社交媒体上甚至出现了“&lt;strong&gt;今天你养龙虾了吗&lt;/strong&gt;”这样的半玩笑式问候。它不只是一个开源项目，更像是一场关于“AI 开始真正动手做事”的集体兴奋。&lt;/p&gt;
+&lt;p&gt;但热闹归热闹，一个很有意思的反差也同时出现了：&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;个人用户越狂热，企业用户越克制。&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;这并不难理解。对个人来说，OpenClaw 带来的是一种久违的轻盈感：你终于不用再只是“跟 AI 聊天”，而是可以把一些原本要自己亲手操作的事情交给它。可一旦进入企业环境，问题就变了，企业关心的从来不只是“它能不能做”，而是：&lt;/p&gt;</description>
+      
+      
+      
+      
+      
+      
+      <comments>https://www.luxiangdong.com/2026/03/22/openclaw/#disqus_thread</comments>
+      
+    </item>
+    
+    <item>
+      <title>企业AI落地三部曲3：真正的角力—知识构建与知识健康</title>
+      <link>https://www.luxiangdong.com/2026/01/05/se03/</link>
+      <guid>https://www.luxiangdong.com/2026/01/05/se03/</guid>
+      <pubDate>Mon, 05 Jan 2026 15:14:54 GMT</pubDate>
+      
+      <description>&lt;p&gt;在企业AI落地实践中，&lt;strong&gt;数据/知识质量&lt;/strong&gt; 是AI可靠性的基石。这一点可用一句俗语概括：&lt;strong&gt;垃圾进，垃圾出&lt;/strong&gt;。如果输入给AI系统的是过时、混乱甚至错误的知识，那么AI输出必然难以令人满意。现实案例表明，不少企业最初构建的知识库缺乏质量管控，导致AI引用了错误版本的政策文件，给出了错误解答。之所以出现这种偏差，正是因为纯粹的技术方案缺乏对知识&lt;strong&gt;时效性&lt;/strong&gt;、&lt;strong&gt;权威性&lt;/strong&gt;的考量  。因此，在启动任何AI应用之前，企业必须先确保其知识语料“干净”和“新鲜”，为AI模型提供高质量、高可信度的知识原料 。正如TorchV AIS知识引擎所强调的，知识构建环节的使命就是从源头上解决“垃圾进，垃圾出”问题，确保进入AI系统的是&lt;strong&gt;高质量、高纯度&lt;/strong&gt;的内容 。&lt;/p&gt;
+&lt;h2 id=&quot;知识需要被好好对待&quot;&gt;&lt;a href=&quot;#知识需要被好好对待&quot; class=&quot;headerlink&quot; title=&quot;知识需要被好好对待&quot;&gt;&lt;/a&gt;&lt;strong&gt;知识需要被好好对待&lt;/strong&gt;&lt;/h2&gt;&lt;p&gt;许多企业早期尝试采用 RAG方案，将大语言模型与企业内部知识库相结合，希望快速构建问答机器人。然而实践证明，&lt;strong&gt;RAG方案在生产环境中高达70%以失败告终&lt;/strong&gt; 。造成失败的根源往往在于&lt;strong&gt;对知识管理缺乏系统性方法论&lt;/strong&gt;，导致以下常见陷阱：&lt;/p&gt;</description>
+      
+      
+      
+      
+      
+      
+      <comments>https://www.luxiangdong.com/2026/01/05/se03/#disqus_thread</comments>
+      
+    </item>
+    
+    <item>
+      <title>企业AI落地三部曲2：数字员工军团——从自主智能体到指数级生产力</title>
+      <link>https://www.luxiangdong.com/2025/12/24/se02/</link>
+      <guid>https://www.luxiangdong.com/2025/12/24/se02/</guid>
+      <pubDate>Wed, 24 Dec 2025 07:11:19 GMT</pubDate>
+      
+      <description>&lt;blockquote&gt;
+&lt;p&gt;本文看点：&lt;/p&gt;
+&lt;p&gt;数字员工是一种可以提供生产力的软件，其的价值可以用人效衡量，&lt;/p&gt;
+&lt;p&gt;软件不仅仅只是服务（SaaS），也可以是“&lt;strong&gt;软件即人效（SaaP）&lt;/strong&gt;”。&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;在上一篇《&lt;strong&gt;企业AI落地三部曲1：为什么95%的企业AI项目失败&lt;/strong&gt;》中，我们提出了一个判断：&lt;strong&gt;企业要真正释放 AI 的生产力，最终一定会走向“数字员工军团”&lt;/strong&gt;。在我看来，数字员工并不是某一种具体形态的产品，而是&lt;strong&gt;企业 AI 落地的终极组织形态&lt;/strong&gt;。原因并不复杂，至少体现在四个方面：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;ROI 可量化&lt;/strong&gt;：数字员工可以直接用人力资源成本体系来衡量投入与产出；&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;使用门槛极低&lt;/strong&gt;：它的交互方式天然贴近“同事协作”，就像在钉钉/企业微信或其他IM中和异地团队成员一起工作；&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;具备指数级扩展能力&lt;/strong&gt;：一旦形成标准化能力，数字员工可以迅速演化为规模化的“数字员工军团”；&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;与具身智能天然兼容&lt;/strong&gt;：它是未来 AI 从“软件”走向“实体”的关键大脑。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;事实上，在ChatGPT 3横空出世不久，B端市场就已经出现了“数字员工”的概念，只是前面一直处于畅想阶段，未见落地。&lt;/p&gt;
+&lt;p&gt;直到2025年3月，因参与某银行项目，我们算是第一次近距离接触到了一家大型金融机构正在&lt;strong&gt;系统性开展数字员工工程&lt;/strong&gt;。当时，TorchV 正在全力聚焦于“成为国内领先的&lt;strong&gt;企业级 AI 知识库厂商&lt;/strong&gt;”，我们自己并没有明确的数字员工视角——原因也很简单：我们没有管理过成千上万人的组织，对“人效”提升的感知并不直观。而&lt;strong&gt;极致人效问题，恰恰是大型企业 CXO 们最迫切、也最无法回避的挑战&lt;/strong&gt;。而对于某银行来说，他们在实施数字员工的过程中发现需要有一个可以支撑&lt;strong&gt;知识治理&lt;/strong&gt;、&lt;strong&gt;权限控制&lt;/strong&gt;和&lt;strong&gt;高精度RAG&lt;/strong&gt;能力的知识库作为数字员工的支撑底座，因为数字员工所需的&lt;strong&gt;主动性、长期记忆与组织化协作&lt;/strong&gt;等特质，恰恰是TorchV KBS（可以认为是某银行专有版的TorchV AIS）这样的知识引擎最本质的能力。&lt;/p&gt;</description>
+      
+      
+      
+      
+      
+      
+      <comments>https://www.luxiangdong.com/2025/12/24/se02/#disqus_thread</comments>
+      
+    </item>
+    
+    <item>
+      <title>企业AI落地三部曲：为什么95%的企业AI项目失败</title>
+      <link>https://www.luxiangdong.com/2025/12/16/se01/</link>
+      <guid>https://www.luxiangdong.com/2025/12/16/se01/</guid>
+      <pubDate>Tue, 16 Dec 2025 02:49:18 GMT</pubDate>
+      
+      <description>&lt;blockquote&gt;
+&lt;p&gt;&lt;strong&gt;别把AI当作“工具”，而是要当作“员工”来设计。&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;这正是“数字员工”概念的来源，我们会在第二篇中展开。&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;2025年的企业技术领域的发展很有意思。一方面，全球在人工智能领域的支出预计将突破6000亿美元，基础设施和应用投资的同比增幅高达76%。然而，在这场资本狂欢的阴影下，一个残酷的统计现实正困扰着每一个渴望数字化转型的董事会和CIO：高达95%的生成式AI试点项目未能成功投产，更别说产生商业价值了。这一判断也与 MIT报告《The GenAI Divide》中提到的数据，以及Gartner 对“AI Pilot-to-Production Gap”的研究结论都高度一致。&lt;/p&gt;
+&lt;p&gt;这便是“&lt;strong&gt;生成式AI鸿沟&lt;/strong&gt;”。本文作为《企业AI落地三部曲》的首篇，旨在通过我们近两年在&lt;strong&gt;企业AI落地实践&lt;/strong&gt;中的&lt;strong&gt;教训&lt;/strong&gt;与&lt;strong&gt;经验&lt;/strong&gt;，为企业技术决策者&lt;strong&gt;提供我们的独特视角&lt;/strong&gt;。时间到了2025年底，企业AI落地的失败已经不能再归咎于模型能力的不足——GPT-5.2与Claude 4.5等模型已足够强大。企业往往陷入了“&lt;strong&gt;忽略业务目标&lt;/strong&gt;”、“&lt;strong&gt;单纯技术迷信&lt;/strong&gt;”、“&lt;strong&gt;混淆个人与企业AI差异&lt;/strong&gt;”这三大误区。&lt;/p&gt;
+&lt;p&gt;本系列目前的计划是三篇，每周一篇，分配是：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;em&gt;&lt;strong&gt;上篇&lt;/strong&gt;：通过我们在企业AI落地实践中获得的教训和经验来分析为什么95%的企业AI落地项目失败了。&lt;/em&gt;&lt;/li&gt;
+&lt;li&gt;&lt;em&gt;&lt;strong&gt;中篇&lt;/strong&gt;：数字员工是目前最好用，也必将是未来的主流趋势的企业AI Agents落地形态。&lt;/em&gt;&lt;/li&gt;
+&lt;li&gt;&lt;em&gt;&lt;strong&gt;下篇&lt;/strong&gt;：企业AI落地的基石，知识构建、知识治理与知识健康。&lt;/em&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;以下是上篇内容。&lt;/p&gt;
+&lt;hr&gt;
+&lt;h2 id=&quot;一、当AI成为目的而非手段&quot;&gt;&lt;a href=&quot;#一、当AI成为目的而非手段&quot; class=&quot;headerlink&quot; title=&quot;一、当AI成为目的而非手段&quot;&gt;&lt;/a&gt;一、当AI成为目的而非手段&lt;/h2&gt;&lt;p&gt;在所有导致企业AI项目夭折的因素中，最致命的并非技术本身，而是战略出发点的偏离。正如思维导图所强调的，“忽略业务目标”是失败的根源。太多的企业陷入了“为了做AI而做AI”的怪圈，将手段异化为目的。&lt;/p&gt;</description>
+      
+      
+      
+      
+      
+      
+      <comments>https://www.luxiangdong.com/2025/12/16/se01/#disqus_thread</comments>
+      
+    </item>
+    
+    <item>
+      <title>企业AI知识库不止是RAG，更重要的是“知识引擎三大支柱”</title>
+      <link>https://www.luxiangdong.com/2025/09/18/3points/</link>
+      <guid>https://www.luxiangdong.com/2025/09/18/3points/</guid>
+      <pubDate>Thu, 18 Sep 2025 03:00:21 GMT</pubDate>
+      
+      <description>&lt;p&gt;今年被问的最多的问题之一应该就是“你们和Dify、Ragflow有什么区别？”&lt;/p&gt;
+&lt;p&gt;其实这个问题并不好回答，每个产品都有自己的优势和特定用户群体。如果你陷入功能模块和技术参数的比较，那么就会脱离创造产品是为了实现客户价值这个初衷。所以回答这个问题最佳的方式是分析一下我们现有客户（如微众银行、浪潮信息、物产中大等）为什么选择我们的TorchV企业级AI知识库。&lt;/p&gt;
+&lt;p&gt;所以在本文中我会重点回答以下两个问题，特别是第二个问题：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;为什么需要特别重视企业级知识引擎？&lt;/li&gt;
+&lt;li&gt;企业级AI知识引擎需要有哪些重要特性？&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&quot;一、AI生产力悖论&quot;&gt;&lt;a href=&quot;#一、AI生产力悖论&quot; class=&quot;headerlink&quot; title=&quot;一、AI生产力悖论&quot;&gt;&lt;/a&gt;&lt;strong&gt;一、AI生产力悖论&lt;/strong&gt;&lt;/h3&gt;</description>
+      
+      
+      
+      
+      
+      
+      <comments>https://www.luxiangdong.com/2025/09/18/3points/#disqus_thread</comments>
+      
+    </item>
+    
+    <item>
+      <title>企业AI落地不顺，问题可能出在你没搞懂知识库</title>
+      <link>https://www.luxiangdong.com/2025/08/05/zhishiku/</link>
+      <guid>https://www.luxiangdong.com/2025/08/05/zhishiku/</guid>
+      <pubDate>Tue, 05 Aug 2025 03:36:05 GMT</pubDate>
+      
+      <description>&lt;blockquote&gt;
+&lt;p&gt;导读：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;为什么企业AI落地往往不顺？&lt;/li&gt;
+&lt;li&gt;重新认识一下知识，不是数据，也不是文档；&lt;/li&gt;
+&lt;li&gt;AI企业知识库不等于RAG；&lt;/li&gt;
+&lt;li&gt;如何将文档、数据变成知识，TorchV对SECI模型的实现介绍。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/blockquote&gt;
+&lt;h3 id=&quot;一、AI时代知识为什么很重要&quot;&gt;&lt;a href=&quot;#一、AI时代知识为什么很重要&quot; class=&quot;headerlink&quot; title=&quot;一、AI时代知识为什么很重要&quot;&gt;&lt;/a&gt;一、AI时代知识为什么很重要&lt;/h3&gt;&lt;p&gt;今年的AI应用里，让我最惊艳的应该是Gemini的Deep Research（pro版本）和Manus了，似乎AI真的走到了自己思考和执行事项的时代，相信已经用上这些产品的朋友会有同样的感叹。&lt;/p&gt;
+&lt;p&gt;但别急，我也发现了它们的一些局限。&lt;/p&gt;
+&lt;p&gt;也许用显微镜看的时候，它们的局限会很多，比如相对来说还比较高的执行失败率，或者明明规划路径是对的，最终结果却未达预期。但对我来说，最大的差距是Deep Research在规划时不能理解企业特有的业务流程，造成很多它们给的结果明明很好，但和我的业务无关，特别是企业自身的知识无法用几句话就讲清楚的时候，再聪明的AI也无法理解企业知识。&lt;/p&gt;
+&lt;p&gt;所以你猜到了，我想说的就是在真正的企业AI应用中，没有知识库是不行的。就像你请了一个国际高级咨询师，如果人家完全没有了解公司业务和知识的情况下，给你开了三天闭门会，也许你会觉得如沐春风，然并卵。&lt;/p&gt;</description>
+      
+      
+      
+      
+      
+      
+      <comments>https://www.luxiangdong.com/2025/08/05/zhishiku/#disqus_thread</comments>
+      
+    </item>
+    
+    <item>
+      <title>TorchV创业一年半复盘,我们在努力定义AI企业知识库</title>
+      <link>https://www.luxiangdong.com/2025/08/05/oneyearhalf/</link>
+      <guid>https://www.luxiangdong.com/2025/08/05/oneyearhalf/</guid>
+      <pubDate>Tue, 05 Aug 2025 03:22:38 GMT</pubDate>
+      
+      <description>&lt;blockquote&gt;
+&lt;p&gt;主要内容：&lt;/p&gt;
+&lt;p&gt;TorchV创业一年半的经历，以及对产品和市场的感想。&lt;/p&gt;
+&lt;p&gt;我们对AI企业知识库的定义。&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;昨天（2025.05.29）是TorchV创业一年半的日子，本来不想写什么的，因为最近被业务推进的速度摧残的都没有好好休息。但是突然看到红薯老师的文章里面引用了Srinivas Rao的《99% 的 AI 初创公司将在 2026 年前消亡》，让我突然有想写一篇创业感想的冲动。在这个时候看到这篇文章，应该说也算是一种警醒，至少会让我去好好总结和思考。AI有很多方向，我们到底应该聚焦在什么方向上。&lt;/p&gt;
+&lt;p&gt;Srinivas Rao的《99% 的 AI 初创公司将在 2026 年前消亡》观点带有一些悲观色彩，他分析99%AI初创公司消亡的主要原因缺乏真正的技术护城河，仅仅是依赖类似openai、anthropic等公司的大模型提供的API来进行包壳。这其实也是我们一开始创业就考虑的问题，不是因为我们多么有先见之明，而是实力不允许。所以我们一路走来，不自觉地就往更落地的方向走去了，去做AI企业知识库，而不是高举高打那些非常性感的技术和应用。就像《投名状》里面的台词：&lt;em&gt;&lt;strong&gt;有希望打赢的仗，绝对轮不到我们上，让我们上的，肯定是没希望打赢的。把没有希望打赢的仗打赢，我们才有机会，但仅仅是个机会。你说很难？但不难根本轮不到你。&lt;/strong&gt;&lt;/em&gt;当然，我们的处境还不至于如此凶险，但是低头看路是我们生存之道。&lt;/p&gt;
+&lt;p&gt;下面是我们创业的一些历程，以及一些思考。写的比较仓促，大家就当流水账看吧。&lt;/p&gt;</description>
+      
+      
+      
+      
+      
+      
+      <comments>https://www.luxiangdong.com/2025/08/05/oneyearhalf/#disqus_thread</comments>
+      
+    </item>
+    
+    <item>
+      <title>DeepSeek火爆现象背后企业可以得到什么实质提升？</title>
+      <link>https://www.luxiangdong.com/2025/02/13/deepseek/</link>
+      <guid>https://www.luxiangdong.com/2025/02/13/deepseek/</guid>
+      <pubDate>Thu, 13 Feb 2025 09:49:25 GMT</pubDate>
+      
+      <description>&lt;h1 id=&quot;DeepSeek火爆现象背后企业可以得到什么实质提升？&quot;&gt;&lt;a href=&quot;#DeepSeek火爆现象背后企业可以得到什么实质提升？&quot; class=&quot;headerlink&quot; title=&quot;DeepSeek火爆现象背后企业可以得到什么实质提升？&quot;&gt;&lt;/a&gt;DeepSeek火爆现象背后企业可以得到什么实质提升？&lt;/h1&gt;&lt;p&gt;本文的主要内容：&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;ol&gt;
+&lt;li&gt;DeepSeek火爆最值得关注的点；&lt;/li&gt;
+&lt;li&gt;企业可以在DeepSeek进化中得到哪些好处；&lt;/li&gt;
+&lt;li&gt;企业如何更近一步拥抱AI。&lt;/li&gt;
+&lt;/ol&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;DeepSeek-R1（其实还有V3）这个春节真的太火爆了，感觉比上一个春节期间的Sora带来的轰动要更加强烈，而且在最终效果上也非常落地和成功，媒体热度和DeepSeek的服务器一样，近20天了依然热得发烫。但我们也不能只看个热闹，还是想分析一下企业AI应用市场可以在火爆现象背后得到那些实质提升。&lt;/p&gt;</description>
+      
+      
+      
+      
+      
+      
+      <comments>https://www.luxiangdong.com/2025/02/13/deepseek/#disqus_thread</comments>
+      
+    </item>
+    
+    <item>
+      <title>RAG的2024—随需而变，从狂热到理性</title>
+      <link>https://www.luxiangdong.com/2024/11/14/rag2024/</link>
+      <guid>https://www.luxiangdong.com/2024/11/14/rag2024/</guid>
+      <pubDate>Thu, 14 Nov 2024 01:51:41 GMT</pubDate>
+      
+      <description>&lt;p&gt;转眼到了2024年尾，和小伙伴一起创立TorchV也接近一年。虽然这一年做了很多事情，但从技术层面上来说，RAG肯定是不得不提的，所以今天分享一下作为大模型应用创业者所感知的这一年，RAG技术和市场环境的变化。&lt;/p&gt;
+&lt;p&gt;&lt;em&gt;&lt;strong&gt;首先申明，本文更多来自于本人主观感受，且内容更多是回顾性的结论，不建议作为其他文章的引用材料。&lt;/strong&gt;&lt;/em&gt;&lt;/p&gt;
+&lt;p&gt;主要内容包括：&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;ul&gt;
+&lt;li&gt;RAG技术变化&lt;ul&gt;
+&lt;li&gt;主要架构变化&lt;/li&gt;
+&lt;li&gt;技术细节变化&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;市场需求变化&lt;ul&gt;
+&lt;li&gt;上半年：AI无所不能，大而全；&lt;/li&gt;
+&lt;li&gt;下半年：回归理性，小而难；&lt;/li&gt;
+&lt;li&gt;明年预测：应用才是王道；&lt;/li&gt;
+&lt;li&gt;从业者变化。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;其中技术部分放在上篇，市场需求变化放在下篇。&lt;/p&gt;
+&lt;h3 id=&quot;一、RAG技术变化&quot;&gt;&lt;a href=&quot;#一、RAG技术变化&quot; class=&quot;headerlink&quot; title=&quot;一、RAG技术变化&quot;&gt;&lt;/a&gt;一、RAG技术变化&lt;/h3&gt;&lt;p&gt;RAG（检索增强生成）其实是由两部分组成的，分别是检索和大模型生成。当然，既然有检索就必然会先有索引，包括chunking、embedding等动作都是为了建立更好的索引。因为我们之前从零开始创建并运营了一个千万级用户的智能问答类产品，所以在2021年左右其实就已经采用Java技术栈在使用RAG里面“RA”的大部分技术了。在2023年年中，RAG这个词突然火了起来，于是我们就立马就扑进去了，而且相信RAG在企业应用领域比纯粹使用大模型会更具实用性，至少在三年之内是这样的（随着最近传闻Scaling Law遇到瓶颈，好像这个时间还有可能被推后）。短短几个月，RAG开始的火爆程度甚至有超过LLM的趋势，在2024年1月我甚至还参加了&lt;u&gt;“共识粉碎机”的EP15讨论会&lt;/u&gt;，主要话题就是&lt;strong&gt;“2024年是否会成为RAG元年？”&lt;/strong&gt;。&lt;/p&gt;</description>
+      
+      
+      
+      
+      
+      
+      <comments>https://www.luxiangdong.com/2024/11/14/rag2024/#disqus_thread</comments>
+      
+    </item>
+    
+    <item>
+      <title>【翻译】RRF — 如何在 RAG 中对多种检索方法的结果进行评分</title>
+      <link>https://www.luxiangdong.com/2024/11/08/rrf/</link>
+      <guid>https://www.luxiangdong.com/2024/11/08/rrf/</guid>
+      <pubDate>Fri, 08 Nov 2024 02:46:42 GMT</pubDate>
+      
+      <description>&lt;p&gt;原作者：&lt;a href=&quot;https://medium.com/@devalshah1619?source=post_page---byline--002df0cc5e2a--------------------------------&quot;&gt;Deval Shah&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;原文：&lt;a href=&quot;https://medium.com/@devalshah1619/mathematical-intuition-behind-reciprocal-rank-fusion-rrf-explained-in-2-mins-002df0cc5e2a&quot;&gt;Reciprocal Rank Fusion (RRF) explained in 4 mins — How to score results form multiple retrieval methods in RAG&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;https://www.luxiangdong.com/images/rrf/rrfinrag.png&quot; alt=&quot;img&quot;&gt;&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;图：RAG 中的倒数秩融合（图片由作者提供）&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;检索增强生成 （RAG） 是自然语言处理中的一种强大技术，结合了基于检索的模型和生成模型的优势。&lt;br&gt;检索阶段可以成就或破坏您的 RAG 管道。&lt;br&gt;如果检索器未能从检索器中获取相关文档，则精度较低，幻觉的可能性会增加。&lt;/p&gt;
+&lt;p&gt;有些查询适合基于关键字的检索技术，如 BM25，而有些查询在密集检索方法中可能表现得更好，其中我们从语言模型嵌入了 embedding。有混合技术可以解决这两种检索方法的缺点。&lt;/p&gt;
+&lt;p&gt;在这篇博文中，我们将深入探讨 RRF、它的机制、数学直觉和在 RAG 系统中的应用。&lt;/p&gt;
+&lt;h2 id=&quot;什么是倒数秩融合？&quot;&gt;&lt;a href=&quot;#什么是倒数秩融合？&quot; class=&quot;headerlink&quot; title=&quot;什么是倒数秩融合？&quot;&gt;&lt;/a&gt;什么是倒数秩融合？&lt;/h2&gt;</description>
+      
+      
+      
+      
+      
+      
+      <comments>https://www.luxiangdong.com/2024/11/08/rrf/#disqus_thread</comments>
+      
+    </item>
+    
+    <item>
+      <title>聊个5分钟的企业AI应用需求变化趋势</title>
+      <link>https://www.luxiangdong.com/2024/09/09/trend/</link>
+      <guid>https://www.luxiangdong.com/2024/09/09/trend/</guid>
+      <pubDate>Mon, 09 Sep 2024 06:18:54 GMT</pubDate>
+      
+      <description>&lt;p&gt;好久没打理Blog了，今天抽时间聊聊当下的企业AI应用需求趋势。&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;https://luxiangdong.com/images/trend/1.png&quot; alt=&quot;image-20240906121737716&quot;&gt;&lt;/p&gt;
+&lt;h2 id=&quot;一、企业AI应用需求的底层逻辑&quot;&gt;&lt;a href=&quot;#一、企业AI应用需求的底层逻辑&quot; class=&quot;headerlink&quot; title=&quot;一、企业AI应用需求的底层逻辑&quot;&gt;&lt;/a&gt;&lt;strong&gt;一、企业AI应用需求的底层逻辑&lt;/strong&gt;&lt;/h2&gt;&lt;p&gt;如果从去年年底开始算，我们接触的需求也不少了，具体数量肯定在四五百个以上，各类需求都有。如果一定要做个归纳分类，那可以从客户需求的出发点切入来分类，或者说从底层逻辑来分类。&lt;/p&gt;
+&lt;h3 id=&quot;01用新技术解决老问题&quot;&gt;&lt;a href=&quot;#01用新技术解决老问题&quot; class=&quot;headerlink&quot; title=&quot;01用新技术解决老问题&quot;&gt;&lt;/a&gt;&lt;strong&gt;01用新技术解决老问题&lt;/strong&gt;&lt;/h3&gt;</description>
+      
+      
+      
+      
+      
+      
+      <comments>https://www.luxiangdong.com/2024/09/09/trend/#disqus_thread</comments>
+      
+    </item>
+    
+    <item>
+      <title>介绍TorchV AI的两款应用，做简洁却重要的事情</title>
+      <link>https://www.luxiangdong.com/2024/08/01/2p/</link>
+      <guid>https://www.luxiangdong.com/2024/08/01/2p/</guid>
+      <pubDate>Thu, 01 Aug 2024 00:50:18 GMT</pubDate>
+      
+      <description>&lt;h3 id=&quot;写在前面&quot;&gt;&lt;a href=&quot;#写在前面&quot; class=&quot;headerlink&quot; title=&quot;写在前面&quot;&gt;&lt;/a&gt;&lt;strong&gt;写在前面&lt;/strong&gt;&lt;/h3&gt;&lt;p&gt;在我的产品研发生涯中，出品的产品已经超过十个了，有 toG、toB也有toC，有复杂的，也有非常简单的。回顾这十多个产品，也发现一个有意思的想象，&lt;strong&gt;但凡现在依然还被很多客户在使用的，往往都是目的很纯粹的产品，至少从产品初衷来说，都是仅为了解决一个核心问题的&lt;/strong&gt;。而那些单个产品就带有很多功能的toG系统，现在基本上都已经被扔进垃圾桶了……&lt;/p&gt;
+&lt;p&gt;所以在我和八一菜刀自己出来创业之后，就“立志”要做简单但强大的产品。&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;简单：也就是上面说的产品的初衷非常单纯，就是去解决一个问题；&lt;/li&gt;
+&lt;li&gt;强大：这可能有多个解释，如对客户非常有效，有很高的使用价值；产品使用体验非常好，上手很快，能被广泛使用；产品性能好，性能稳定，可解释性（可控）强。&lt;/li&gt;
+&lt;/ul&gt;</description>
+      
+      
+      
+      
+      
+      
+      <comments>https://www.luxiangdong.com/2024/08/01/2p/#disqus_thread</comments>
+      
+    </item>
+    
+    <item>
+      <title>稀土掘金分享——RAG在企业应用中落地的难点与创新（文字稿）</title>
+      <link>https://www.luxiangdong.com/2024/07/04/xitu/</link>
+      <guid>https://www.luxiangdong.com/2024/07/04/xitu/</guid>
+      <pubDate>Thu, 04 Jul 2024 05:41:24 GMT</pubDate>
+      
+      <description>&lt;h1 id=&quot;0629讲稿&quot;&gt;&lt;a href=&quot;#0629讲稿&quot; class=&quot;headerlink&quot; title=&quot;0629讲稿&quot;&gt;&lt;/a&gt;0629讲稿&lt;/h1&gt;&lt;p&gt;以下是我在2024年6月29日上午在北京富力万丽酒店举行的稀土掘金开发者大会RAG专场的分享内容，包括文字稿，一并分享给大家！&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;/images/xitu/1.png&quot; alt=&quot;image-20240702093954294&quot;&gt;&lt;/p&gt;
+&lt;p&gt;朋友们，上午好！&lt;/p&gt;
+&lt;p&gt;我叫卢向东，来自杭州，今天为大家分享的是我们在大模型应用的企业落地时碰到的一些关于RAG的难点和创新。&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;/images/xitu/2.png&quot; alt=&quot;image-20240702094040067&quot;&gt;&lt;/p&gt;
+&lt;p&gt;可能很多朋友认识我是因为公众号“土猛的员外”，从去年6、7月份开始持续分享了关于RAG和大模型的一些文章和观点。现正在和几个伙伴一起创业，担任杭州萌嘉网络科技（也就是TorchV）的CEO。&lt;/p&gt;
+&lt;p&gt;今天在这里想和大家分享的主要内容，是关于我们在大模型应用的企业落地场景中遇到的一些问题，以及一些落地的产品案例。我一共会分享四个难点，三个应用案例，然后把一些个人对这一领域的思考放在最后面。希望能从不同视角给大家带来一些大模型应用在企业落地实践中的内容。&lt;/p&gt;
+&lt;p&gt;OK，那现在我们就进入第一Part，来讲讲我们在实践中遇到的问题。&lt;/p&gt;</description>
+      
+      
+      
+      
+      
+      
+      <comments>https://www.luxiangdong.com/2024/07/04/xitu/#disqus_thread</comments>
+      
+    </item>
+    
+    <item>
+      <title>TorchV AI用户手册0609</title>
+      <link>https://www.luxiangdong.com/2024/06/11/manual/</link>
+      <guid>https://www.luxiangdong.com/2024/06/11/manual/</guid>
+      <pubDate>Tue, 11 Jun 2024 01:04:46 GMT</pubDate>
+      
+      <description>&lt;hr&gt;
+&lt;p&gt;title: 用户手册-快速入门&lt;br&gt;slug: /getting-started&lt;br&gt;displayed_sidebar: mainSidebar&lt;/p&gt;
+&lt;hr&gt;
+&lt;p&gt;版本历史&lt;/p&gt;
+&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;版本&lt;/th&gt;
+&lt;th&gt;作者&lt;/th&gt;
+&lt;th&gt;日期&lt;/th&gt;
+&lt;th&gt;备注&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;&lt;tr&gt;
+&lt;td&gt;beta v1.0.0&lt;/td&gt;
+&lt;td&gt;卢向东(&lt;a href=&quot;mailto:yuanwai@mengjia.net&quot;&gt;yuanwai@mengjia.net&lt;/a&gt;)、肖玉民(&lt;a href=&quot;mailto:xiaoymin@mengjia.net&quot;&gt;xiaoymin@mengjia.net&lt;/a&gt;)&lt;/td&gt;
+&lt;td&gt;2024/02/28&lt;/td&gt;
+&lt;td&gt;初始化&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;beta v1.6.0&lt;/td&gt;
+&lt;td&gt;卢向东(&lt;a href=&quot;mailto:yuanwai@mengjia.net&quot;&gt;yuanwai@mengjia.net&lt;/a&gt;)、肖玉民(&lt;a href=&quot;mailto:xiaoymin@mengjia.net&quot;&gt;xiaoymin@mengjia.net&lt;/a&gt;)&lt;/td&gt;
+&lt;td&gt;2024/03/31&lt;/td&gt;
+&lt;td&gt;正式版本v1.0&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;beta v1.7.0&lt;/td&gt;
+&lt;td&gt;卢向东(&lt;a href=&quot;mailto:yuanwai@mengjia.net&quot;&gt;yuanwai@mengjia.net&lt;/a&gt;)、肖玉民(&lt;a href=&quot;mailto:xiaoymin@mengjia.net&quot;&gt;xiaoymin@mengjia.net&lt;/a&gt;)、厉杭波(&lt;a href=&quot;mailto:&amp;#x6c;&amp;#x69;&amp;#104;&amp;#97;&amp;#x6e;&amp;#x67;&amp;#x62;&amp;#111;&amp;#x40;&amp;#109;&amp;#x65;&amp;#110;&amp;#x67;&amp;#106;&amp;#x69;&amp;#97;&amp;#46;&amp;#110;&amp;#101;&amp;#116;&quot;&gt;&amp;#x6c;&amp;#x69;&amp;#104;&amp;#97;&amp;#x6e;&amp;#x67;&amp;#x62;&amp;#111;&amp;#x40;&amp;#109;&amp;#x65;&amp;#110;&amp;#x67;&amp;#106;&amp;#x69;&amp;#97;&amp;#46;&amp;#110;&amp;#101;&amp;#116;&lt;/a&gt;)&lt;/td&gt;
+&lt;td&gt;2024/04/11&lt;/td&gt;
+&lt;td&gt;正式版本v1.1&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;beta v1.7.3&lt;/td&gt;
+&lt;td&gt;卢向东(&lt;a href=&quot;mailto:yuanwai@mengjia.net&quot;&gt;yuanwai@mengjia.net&lt;/a&gt;)、肖玉民(&lt;a href=&quot;mailto:xiaoymin@mengjia.net&quot;&gt;xiaoymin@mengjia.net&lt;/a&gt;)、厉杭波(&lt;a href=&quot;mailto:&amp;#x6c;&amp;#x69;&amp;#104;&amp;#97;&amp;#x6e;&amp;#x67;&amp;#x62;&amp;#x6f;&amp;#64;&amp;#109;&amp;#x65;&amp;#x6e;&amp;#x67;&amp;#106;&amp;#105;&amp;#97;&amp;#x2e;&amp;#x6e;&amp;#x65;&amp;#116;&quot;&gt;&amp;#x6c;&amp;#x69;&amp;#104;&amp;#97;&amp;#x6e;&amp;#x67;&amp;#x62;&amp;#x6f;&amp;#64;&amp;#109;&amp;#x65;&amp;#x6e;&amp;#x67;&amp;#106;&amp;#105;&amp;#97;&amp;#x2e;&amp;#x6e;&amp;#x65;&amp;#116;&lt;/a&gt;)&lt;/td&gt;
+&lt;td&gt;2024/05/07&lt;/td&gt;
+&lt;td&gt;正式版本v1.2&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;beta v1.7.5&lt;/td&gt;
+&lt;td&gt;卢向东(&lt;a href=&quot;mailto:yuanwai@mengjia.net&quot;&gt;yuanwai@mengjia.net&lt;/a&gt;)、肖玉民(&lt;a href=&quot;mailto:xiaoymin@mengjia.net&quot;&gt;xiaoymin@mengjia.net&lt;/a&gt;)、厉杭波(&lt;a href=&quot;mailto:&amp;#x6c;&amp;#x69;&amp;#104;&amp;#97;&amp;#x6e;&amp;#103;&amp;#x62;&amp;#111;&amp;#64;&amp;#x6d;&amp;#x65;&amp;#110;&amp;#103;&amp;#x6a;&amp;#105;&amp;#x61;&amp;#46;&amp;#110;&amp;#101;&amp;#116;&quot;&gt;&amp;#x6c;&amp;#x69;&amp;#104;&amp;#97;&amp;#x6e;&amp;#103;&amp;#x62;&amp;#111;&amp;#64;&amp;#x6d;&amp;#x65;&amp;#110;&amp;#103;&amp;#x6a;&amp;#105;&amp;#x61;&amp;#46;&amp;#110;&amp;#101;&amp;#116;&lt;/a&gt;)&lt;/td&gt;
+&lt;td&gt;2024/06/07&lt;/td&gt;
+&lt;td&gt;正式版本v1.3&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;&lt;/table&gt;
+&lt;h1 id=&quot;1-引言&quot;&gt;&lt;a href=&quot;#1-引言&quot; class=&quot;headerlink&quot; title=&quot;1.引言&quot;&gt;&lt;/a&gt;1.引言&lt;/h1&gt;&lt;h3 id=&quot;1-1-编写目的&quot;&gt;&lt;a href=&quot;#1-1-编写目的&quot; class=&quot;headerlink&quot; title=&quot;1.1 编写目的&quot;&gt;&lt;/a&gt;1.1 编写目的&lt;/h3&gt;&lt;p&gt;本手册旨在介绍TorchV AI用户端的业务及操作流程，以便用户能更有效地进行业务处理和操作。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;主要内容&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;https://www.luxiangdong.com/images/torchv-manual/steps.svg&quot;&gt;&lt;/p&gt;
+&lt;h3 id=&quot;1-2-读者对象&quot;&gt;&lt;a href=&quot;#1-2-读者对象&quot; class=&quot;headerlink&quot; title=&quot;1.2 读者对象&quot;&gt;&lt;/a&gt;1.2 读者对象&lt;/h3&gt;&lt;p&gt;使用TorchV AI产品的运营人员及技术人员&lt;/p&gt;
+&lt;h3 id=&quot;1-3-环境要求&quot;&gt;&lt;a href=&quot;#1-3-环境要求&quot; class=&quot;headerlink&quot; title=&quot;1.3 环境要求&quot;&gt;&lt;/a&gt;1.3 环境要求&lt;/h3&gt;&lt;p&gt;浏览器：Chrome 100+/火狐(FireFox)/Microsoft Edge&lt;/p&gt;
+&lt;h3 id=&quot;1-4-产品架构说明&quot;&gt;&lt;a href=&quot;#1-4-产品架构说明&quot; class=&quot;headerlink&quot; title=&quot;1.4 产品架构说明&quot;&gt;&lt;/a&gt;1.4 产品架构说明&lt;/h3&gt;&lt;p&gt;本文不展示具体产品架构，如您需要查看TorchV产品架构，请点击&lt;a href=&quot;../products/overview&quot;&gt;TorchV产品架构&lt;/a&gt;查看。&lt;/p&gt;
+&lt;h1 id=&quot;2-快速开始&quot;&gt;&lt;a href=&quot;#2-快速开始&quot; class=&quot;headerlink&quot; title=&quot;2.快速开始&quot;&gt;&lt;/a&gt;2.快速开始&lt;/h1&gt;</description>
+      
+      
+      
+      
+      
+      
+      <comments>https://www.luxiangdong.com/2024/06/11/manual/#disqus_thread</comments>
+      
+    </item>
+    
+    <item>
+      <title>LLM企业应用落地场景中的问题一览 ｜LLM ｜RAG ｜Agent ｜TorchV</title>
+      <link>https://www.luxiangdong.com/2024/05/18/llmentprise/</link>
+      <guid>https://www.luxiangdong.com/2024/05/18/llmentprise/</guid>
+      <pubDate>Sat, 18 May 2024 04:59:07 GMT</pubDate>
+      
+      <description>&lt;p&gt;最近两个多月写文章的频率明显低了很多，不是因为懒了，而是忙着做LLM应用的客户场景落地去了。今天把客户场景落地中的一些心得总结分享一下，希望对广大期望LLM应用落地的企业有一些帮助。 &lt;/p&gt;
+&lt;h2 id=&quot;前述&quot;&gt;&lt;a href=&quot;#前述&quot; class=&quot;headerlink&quot; title=&quot;前述&quot;&gt;&lt;/a&gt;前述&lt;/h2&gt;&lt;p&gt;与很多企业客户的深度接触之后，发现绝大多数企业在LLM应用落地中存在三个显著问题，这些企业包括世界500强企业、央企、著名品牌公司，也包括和我们一样但非AI行业的创业公司，所以从样本上来说应该有一定的参考下。然后再分享一下我们在落地过程中碰到的各种难点和需要客户一起决策的点。&lt;/p&gt;
+&lt;h3 id=&quot;三个问题&quot;&gt;&lt;a href=&quot;#三个问题&quot; class=&quot;headerlink&quot; title=&quot;三个问题&quot;&gt;&lt;/a&gt;三个问题&lt;/h3&gt;&lt;ol&gt;
+&lt;li&gt;&lt;strong&gt;AI思维&lt;/strong&gt;：就像以前大家常说的“&lt;strong&gt;互联网思维&lt;/strong&gt;”一样，&lt;strong&gt;AI思维&lt;/strong&gt;接下来肯定会被越来越多提及。其实所谓的“XX思维”没这么玄乎，说到点子上，其实就是想了解更多已经在开展的案例，然后结合自身情况来做“复制”或创新；&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;快速工具&lt;/strong&gt;：企业工作人员使用LLM很简单，一个浏览器就可以。但是要把LLM的能力结合到自身的业务应用和系统中就没那么容易。需要对接LLM的API、控制幻觉、管理知识库、让RAG的准确度、相关性达到企业应用水平，还需要和自己的应用相结合等。绝大多数企业更希望将自有的研发人员（AI研发人员稀缺是普遍现象）投入到应用开发上，希望基于一个开箱即用、稳定和高质量的LLM应用开发平台来提升他们的业务水平；&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;POC验证&lt;/strong&gt;：这是大部分企业开始都没有提出来的，但却是最影响签约的环节。企业客户需要一套有说服力的POC评测方案，在评测结果上得到满意效果之后，企业内部决策（购买）才会变得更加顺畅。&lt;/li&gt;
+&lt;/ol&gt;</description>
+      
+      
+      
+      
+      
+      
+      <comments>https://www.luxiangdong.com/2024/05/18/llmentprise/#disqus_thread</comments>
+      
+    </item>
+    
+    <item>
+      <title>【翻译】AI Agents Are All You Need</title>
+      <link>https://www.luxiangdong.com/2024/04/28/agents2/</link>
+      <guid>https://www.luxiangdong.com/2024/04/28/agents2/</guid>
+      <pubDate>Sun, 28 Apr 2024 13:34:17 GMT</pubDate>
+      
+      <description>&lt;p&gt;&lt;strong&gt;大语言模型(LLM)&lt;/strong&gt; 已经存在了几年，它们正在迅速向 &lt;strong&gt;AI Agents&lt;/strong&gt;和&lt;strong&gt;Agents Workflow&lt;/strong&gt;发展。不要误解我的意思，大语言模型(LLM)是很棒的，但他们在自动化方面仍然不够有效。大语言模型与其他工具相结合是利用大语言模型(LLM)所拥有的通用智能的一种非常有效的方式，通过消耗大量的Tokens。大语言模型最大的问题是他们有迷失的倾向(幻觉和自我一致性)，我们永远不知道大语言模型(LLM)或代理(Agents)什么时候会失败。在这些失败的周围几乎没有护栏，但我们还远远没有结束利用大语言模型(LLM)通用智能的全部能力。&lt;/p&gt;
+&lt;p&gt;因此，在今天的博客中，我们将深入探讨:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;大语言模型(LLM)的未来是什么样子&lt;/strong&gt;;&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;我们如何从RAG管道转向Agents&lt;/strong&gt;;&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;以及创建一个可行的基于LLM的AI Agent(工具使用、Memory和规划)有哪些挑战?&lt;/strong&gt;;&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;最后，我们研究不同类型的Agents，以及AI Agents和RAG的未来是什么样子&lt;/strong&gt;.&lt;/li&gt;
+&lt;/ul&gt;</description>
+      
+      
+      
+      
+      
+      
+      <comments>https://www.luxiangdong.com/2024/04/28/agents2/#disqus_thread</comments>
+      
+    </item>
+    
+    <item>
+      <title>探讨实现AI Agents的三种方式，不同的方式带来不同的客群和场景 ｜LLM ｜Agent ｜RAG</title>
+      <link>https://www.luxiangdong.com/2024/04/26/agents/</link>
+      <guid>https://www.luxiangdong.com/2024/04/26/agents/</guid>
+      <pubDate>Fri, 26 Apr 2024 03:42:00 GMT</pubDate>
+      
+      <description>&lt;p&gt;昨天去参加在上海举办的NVIDIA创业者会议，感受了AI创业的热情，还听了Dify CEO张路宇的分享。加上吴恩达在红杉分享会上对AI Agents的推动，带动了国内大量自媒体对AI Agents的狂轰滥炸。所以也想从我自己的角度来分享一些思考。&lt;/p&gt;
+&lt;p&gt;先贴一下吴恩达分享的四种AI Agents设计模式：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;自我反思（Reflection）&lt;/strong&gt;：可以自我修正；&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;使用工具（Tool Use）&lt;/strong&gt;：链接其他系统去做一些事情，比如把我电脑里面的未归档文件做好归档；&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;规划（Planning）&lt;/strong&gt;：类似于思维链，分解复杂任务，找到路径；&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;协作（Multiagent Collaboration）&lt;/strong&gt;：不同类型的助理（agent），可以通过协作组成一个团队或一家公司，嗯，不过目前这一步应该还需要一些时间。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;img src=&quot;/images/agents/1.png&quot; alt=&quot;1&quot;&gt;&lt;/p&gt;
+&lt;p&gt;本质上AI Agents是一个依赖于大语言模型（LLM）的业务组件，是LLM在企业场景落地中的手段，而且不仅一种手段。我觉得目前由三种主流的AI Agents的采用方式，纯个人观点，不代表任何官方意见。&lt;/p&gt;</description>
+      
+      
+      
+      
+      
+      
+      <comments>https://www.luxiangdong.com/2024/04/26/agents/#disqus_thread</comments>
+      
+    </item>
+    
+    <item>
+      <title>【翻译】DSPY简易教程</title>
+      <link>https://www.luxiangdong.com/2024/04/19/dspy1/</link>
+      <guid>https://www.luxiangdong.com/2024/04/19/dspy1/</guid>
+      <pubDate>Fri, 19 Apr 2024 00:30:30 GMT</pubDate>
+      
+      <description>&lt;p&gt;目前，使用大型语言模型(LLMs)构建应用程序不仅复杂而且脆弱。典型的pipelines通常使用prompts来实现，这些prompts是通过反复试验手工制作的，因为&lt;a href=&quot;https://www.anthropic.com/news/claude-2-1-prompting&quot;&gt;LLMs对prompts的方式很敏感&lt;/a&gt;。因此，当您更改pipelines中的某个部分(例如LLM或数据)时，可能会削弱其性能—除非您调整prompts(或微调步骤)。&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;当您更改pipeline中的一部分时，例如LLM或数据，您可能会削弱其性能……&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;&lt;a href=&quot;https://github.com/stanfordnlp/dspy&quot;&gt;DSPy&lt;/a&gt;[1]是一个框架，旨在通过优先编程而不是prompt来解决基于语言模型(LM)的应用程序中的脆弱性问题。它允许您在更改组件时重新编译整个管道，以根据您的特定任务对其进行优化，而不是重复手动轮次的prompt工程。&lt;/p&gt;
+&lt;p&gt;虽然关于该框架的&lt;a href=&quot;https://arxiv.org/abs/2310.03714&quot;&gt;论文&lt;/a&gt;[1]早在2023年10月就已经发表了，但我是最近才知道的。在看了&lt;a href=&quot;https://medium.com/u/59216259c525?source=post_page-----4ca1c6ce3eb9--------------------------------&quot;&gt;Connor Shorten&lt;/a&gt;的一个视频&lt;a href=&quot;https://www.youtube.com/watch?v=41EfOY0Ldkc&quot;&gt;“DSPy解释!”&lt;/a&gt; 之后，我已经可以理解&lt;a href=&quot;https://www.linkedin.com/pulse/why-im-excited-dspy-stephen-byrne-smkhe/?utm_source=rss&amp;utm_campaign=articles_sitemaps&quot;&gt;为什么开发者社区对DSPy如此兴奋了&lt;/a&gt;!&lt;/p&gt;
+&lt;p&gt;本文简要介绍了DSPy框架，涵盖了以下主题:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&quot;https://towardsdatascience.com/intro-to-dspy-goodbye-prompting-hello-programming-4ca1c6ce3eb9#9c35&quot;&gt;什么是DSPy&lt;/a&gt;(包括关于&lt;a href=&quot;https://towardsdatascience.com/intro-to-dspy-goodbye-prompting-hello-programming-4ca1c6ce3eb9#b6db&quot;&gt;DSPy vs. LangChain vs. LlamaIndex&lt;/a&gt;和&lt;a href=&quot;https://towardsdatascience.com/intro-to-dspy-goodbye-prompting-hello-programming-4ca1c6ce3eb9#8450&quot;&gt;DSPy vs. PyTorch&lt;/a&gt;的讨论)&lt;/li&gt;
+&lt;li&gt;&lt;a href=&quot;https://towardsdatascience.com/intro-to-dspy-goodbye-prompting-hello-programming-4ca1c6ce3eb9#0060&quot;&gt;DSPy编程模型&lt;/a&gt;:&lt;a href=&quot;https://towardsdatascience.com/intro-to-dspy-goodbye-prompting-hello-programming-4ca1c6ce3eb9#7029&quot;&gt;签名&lt;/a&gt;，&lt;a href=&quot;https://towardsdatascience.com/intro-to-dspy-goodbye-prompting-hello-programming-4ca1c6ce3eb9#d613&quot;&gt;模块&lt;/a&gt;，和&lt;a href=&quot;https://towardsdatascience.com/intro-to-dspy-goodbye-prompting-hello-programming-4ca1c6ce3eb9#f290&quot;&gt;提词器&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&quot;https://towardsdatascience.com/intro-to-dspy-goodbye-prompting-hello-programming-4ca1c6ce3eb9#a471&quot;&gt;DSPy编译器&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&quot;https://towardsdatascience.com/intro-to-dspy-goodbye-prompting-hello-programming-4ca1c6ce3eb9#47da&quot;&gt;DSPy示例:Naive RAG Pipeline&lt;/a&gt;</description>
+      
+      
+      
+      
+      
+      
+      <comments>https://www.luxiangdong.com/2024/04/19/dspy1/#disqus_thread</comments>
+      
+    </item>
+    
+    <item>
+      <title>【翻译】LLM的Function-Call简易教程</title>
+      <link>https://www.luxiangdong.com/2024/04/13/func-call/</link>
+      <guid>https://www.luxiangdong.com/2024/04/13/func-call/</guid>
+      <pubDate>Sat, 13 Apr 2024 09:30:14 GMT</pubDate>
+      
+      <description>&lt;p&gt;Function Call（函数调用）并不是什么新鲜事。2023 年 7 月，OpenAI 为其 GPT 模型引入了函数调用，该功能现在已被竞争对手采用。Google 的 Gemini API 最近支持它，Anthropic 正在将其集成到 Claude 中。函数调用对于大型语言模型 （LLMs ）来说变得至关重要，从而增强了它们的功能。&lt;/p&gt;
+&lt;p&gt;考虑到这一点，我的目标是编写一个全面的教程，涵盖基本介绍之外的函数调用（已经有很多教程了）。重点将放在实际实施上，构建一个完全自主的人工智能代理，并将其与 Streamlit 集成，以获得类似 ChatGPT 的界面。虽然 OpenAI 用于演示，但本教程可以很容易地适用于其他LLMs支持函数调用，例如 Gemini。&lt;/p&gt;
+&lt;h1 id=&quot;Function-Calling是干什么用的？&quot;&gt;&lt;a href=&quot;#Function-Calling是干什么用的？&quot; class=&quot;headerlink&quot; title=&quot;Function Calling是干什么用的？&quot;&gt;&lt;/a&gt;&lt;strong&gt;Function Calling是干什么用的？&lt;/strong&gt;&lt;/h1&gt;&lt;p&gt;Function Calling（函数调用）使开发人员能够描述函数（也称为工具，您可以将其视为模型要执行的操作，例如执行计算或下订单），并让模型智能地选择输出包含参数的 JSON 对象来调用这些函数。简单来说，它允许：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;Autonomous decision making（自主决策）&lt;/strong&gt;:模型可以智能地选择工具来回答问题。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Reliable parsing（可靠的解析）&lt;/strong&gt;: 响应采用 JSON 格式，而不是更典型的类似对话的响应。乍一看似乎并不多，但这就是允许LLM连接到外部系统的原因，例如通过具有结构化输入的 API。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;它开辟了许多可能性：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;Autonomous AI assistants（自主人工智能助手）&lt;/strong&gt;: 机器人可以与内部系统交互，完成客户订单和退货等任务，而不仅仅是提供查询的答案&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Personal research assistants（个人研究助理）&lt;/strong&gt;: 假设您正在计划旅行，助理可以在 Excel 中搜索 Web、抓取内容、比较选项和汇总结果。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;IoT voice commands（IoT 语音命令）&lt;/strong&gt;: 模型可以控制设备或根据检测到的意图建议操作，例如调整交流温度。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h1 id=&quot;Function-Calling的结构&quot;&gt;&lt;a href=&quot;#Function-Calling的结构&quot; class=&quot;headerlink&quot; title=&quot;Function Calling的结构&quot;&gt;&lt;/a&gt;Function Calling的结构&lt;/h1&gt;</description>
+      
+      
+      
+      
+      
+      
+      <comments>https://www.luxiangdong.com/2024/04/13/func-call/#disqus_thread</comments>
+      
+    </item>
+    
+    <item>
+      <title>【翻译】神经网络背后的数学原理</title>
+      <link>https://www.luxiangdong.com/2024/04/10/math/</link>
+      <guid>https://www.luxiangdong.com/2024/04/10/math/</guid>
+      <pubDate>Wed, 10 Apr 2024 12:00:32 GMT</pubDate>
+      
+      <description>&lt;p&gt;神经网络是人工智能 （AI） 的核心，为从发现照片中的物体到翻译语言的各种应用提供动力。在本文中，我们将深入探讨神经网络是什么，它们是如何工作的，以及为什么它们在当今技术驱动的世界中很重要。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Index 指数&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;·1：&lt;strong&gt;了解基础知识&lt;/strong&gt;&lt;br&gt;∘ 1.1： 什么是神经网络？&lt;br&gt;∘ 1.2： 神经网络的类型&lt;br&gt;·2：&lt;strong&gt;神经网络的架构&lt;/strong&gt;&lt;br&gt;∘ 2.1： 神经元的结构&lt;br&gt;∘ 2.2： 图层&lt;br&gt;∘ 2.3： 层在学习中的作用&lt;br&gt;·3：&lt;strong&gt;神经网络的数学&lt;/strong&gt;&lt;br&gt;∘ 3.1： 加权总和&lt;br&gt;∘ 3.2： 激活函数&lt;br&gt;∘ 3.3： 反向传播：神经学习的核心&lt;br&gt;∘ 3.4： 分步示例&lt;br&gt;∘ 3.5： 改进&lt;br&gt;·4：&lt;strong&gt;实现神经网络&lt;/strong&gt;&lt;br&gt;∘ 4.1： 用 Python 构建简单的神经网络&lt;br&gt;∘ 4.2： 利用库实现神经网络 （TensorFlow）&lt;br&gt;·5：&lt;strong&gt;挑战&lt;/strong&gt;&lt;br&gt;∘ 5.1： 克服过拟合&lt;br&gt;·6：&lt;strong&gt;结论&lt;/strong&gt;&lt;/p&gt;
+&lt;h1 id=&quot;1：了解基础知识&quot;&gt;&lt;a href=&quot;#1：了解基础知识&quot; class=&quot;headerlink&quot; title=&quot;1：了解基础知识&quot;&gt;&lt;/a&gt;1：了解基础知识&lt;/h1&gt;&lt;h2 id=&quot;1-1：-什么是神经网络？&quot;&gt;&lt;a href=&quot;#1-1：-什么是神经网络？&quot; class=&quot;headerlink&quot; title=&quot;1.1： 什么是神经网络？&quot;&gt;&lt;/a&gt;1.1： 什么是神经网络？&lt;/h2&gt;&lt;p&gt;神经网络是生物学和计算机科学的酷炫融合，灵感来自我们大脑处理复杂计算任务的设置。从本质上讲，它们是旨在发现模式和理解感官数据的算法，这使它们可以做很多事情，例如识别人脸、理解口语、做出预测和理解自然语言。&lt;/p&gt;</description>
+      
+      
+      
+      
+      
+      
+      <comments>https://www.luxiangdong.com/2024/04/10/math/#disqus_thread</comments>
+      
+    </item>
+    
+  </channel>
+</rss>

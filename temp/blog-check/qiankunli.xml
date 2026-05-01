@@ -1,0 +1,1936 @@
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="4.4.1">Jekyll</generator><link href="https://qiankunli.github.io/feed.xml" rel="self" type="application/atom+xml" /><link href="https://qiankunli.github.io/" rel="alternate" type="text/html" /><updated>2026-04-06T19:08:33+08:00</updated><id>https://qiankunli.github.io/feed.xml</id><title type="html">李乾坤的博客</title><subtitle>记录 AI、工程架构、系统设计与个人思考。</subtitle><author><name>李乾坤</name></author><entry><title type="html">从长期回报、Credit Assignment 到 PPO</title><link href="https://qiankunli.github.io/2026/04/06/rl-mainline.html" rel="alternate" type="text/html" title="从长期回报、Credit Assignment 到 PPO" /><published>2026-04-06T00:00:00+08:00</published><updated>2026-04-06T00:00:00+08:00</updated><id>https://qiankunli.github.io/2026/04/06/rl-mainline</id><content type="html" xml:base="https://qiankunli.github.io/2026/04/06/rl-mainline.html"><![CDATA[<script>
+  MathJax = {
+    tex: {
+      inlineMath: [['$', '$'],['$$', '$$']],
+      displayMath: [['$$', '$$']],
+    },
+    svg: {
+      fontCache: 'global'
+    }
+  };
+</script>
+
+<script async="" src="/public/js/mathjax/es5/tex-mml-chtml.js"></script>
+
+<h2 id="简介">简介</h2>
+
+<ul id="markdown-toc">
+  <li><a href="#简介" id="markdown-toc-简介">简介</a></li>
+  <li><a href="#什么是强化学习" id="markdown-toc-什么是强化学习">什么是强化学习</a></li>
+  <li><a href="#一张-rl-家谱图" id="markdown-toc-一张-rl-家谱图">一张 RL 家谱图</a>    <ul>
+      <li><a href="#value-based" id="markdown-toc-value-based">Value-based</a></li>
+      <li><a href="#policy-gradient" id="markdown-toc-policy-gradient">Policy Gradient</a></li>
+      <li><a href="#再补一个视角model-based-和-model-free" id="markdown-toc-再补一个视角model-based-和-model-free">再补一个视角：Model-based 和 Model-free</a></li>
+    </ul>
+  </li>
+  <li><a href="#第一问怎么定义长期回报而不是只看眼前这一步" id="markdown-toc-第一问怎么定义长期回报而不是只看眼前这一步">第一问：怎么定义长期回报，而不是只看眼前这一步</a>    <ul>
+      <li><a href="#monte-carlo" id="markdown-toc-monte-carlo">Monte Carlo</a></li>
+      <li><a href="#temporal-difference" id="markdown-toc-temporal-difference">Temporal Difference</a></li>
+    </ul>
+  </li>
+  <li><a href="#第二问怎么把整段轨迹最后才知道好不好这件事分摊到中间每一个-action-上" id="markdown-toc-第二问怎么把整段轨迹最后才知道好不好这件事分摊到中间每一个-action-上">第二问：怎么把“整段轨迹最后才知道好不好”这件事，分摊到中间每一个 action 上</a>    <ul>
+      <li><a href="#policy-gradient-1" id="markdown-toc-policy-gradient-1">Policy Gradient</a></li>
+    </ul>
+  </li>
+  <li><a href="#第三问怎么让训练既朝高回报方向更新又不至于一下子把策略训歪" id="markdown-toc-第三问怎么让训练既朝高回报方向更新又不至于一下子把策略训歪">第三问：怎么让训练既朝高回报方向更新，又不至于一下子把策略训歪</a>    <ul>
+      <li><a href="#用三层框架收一下" id="markdown-toc-用三层框架收一下">用三层框架收一下</a></li>
+      <li><a href="#最后一句话总结" id="markdown-toc-最后一句话总结">最后一句话总结</a></li>
+    </ul>
+  </li>
+</ul>
+
+<p>这篇文章不追求把强化学习的所有公式一口气讲完，而是先回答一个更重要的问题：</p>
+
+<p><strong>强化学习这棵树是怎么长出来的？</strong></p>
+
+<p>很多人第一次学 RL，会觉得内容特别碎：</p>
+
+<ul>
+  <li>一会儿是 MDP、Bellman 方程</li>
+  <li>一会儿是 MC、TD</li>
+  <li>一会儿又跳到 Q-learning、Policy Gradient</li>
+  <li>再往后又是 Actor-Critic、GAE、PPO</li>
+</ul>
+
+<p>看起来像是一堆并列算法，但其实它们不是“平铺罗列”的关系，而是一条很明确的演化主线：</p>
+
+\[\text{Bellman} \rightarrow \text{MC / TD} \rightarrow \text{Q-learning / Policy Gradient} \rightarrow \text{Actor-Critic} \rightarrow \text{GAE} \rightarrow \text{PPO}\]
+
+<p>如果先把这条主线串起来，后面的细节会好懂很多。</p>
+
+<p>这篇主线梳理也参考了<a href="https://zhuanlan.zhihu.com/p/2024180278927574418">强化学习从入门到掌握的学习笔记（四）</a>里对 RL 主干结构的总结。</p>
+
+<p>如果把这条演化主线再压缩一下，也可以理解成 RL 在逐步解决三个连续问题：</p>
+
+<ol>
+  <li>怎么定义“长期回报”，而不是只看眼前这一步。</li>
+  <li>怎么把“整段轨迹最后才知道好不好”这件事，分摊到中间每一个 action 上。</li>
+  <li>怎么让训练既朝高回报方向更新，又不至于一下子把策略训歪。</li>
+</ol>
+
+<p>放到 LLM 语境里，这三个问题分别对应：怎么看整段回答值不值得鼓励、怎么给中间 token 分配 credit、以及怎么避免模型在 post-train 时偏离原有分布太远。</p>
+
+<h2 id="什么是强化学习">什么是强化学习</h2>
+
+<p>从系统视角看，强化学习至少包含下面几个基本元素：</p>
+
+<ol>
+  <li>智能体（Agent）：负责学习和决策，也就是“谁在做动作”</li>
+  <li>环境（Environment）：智能体之外一切与其交互的对象，也就是“动作作用在谁身上”</li>
+  <li>状态（State）：环境在某一时刻的快照</li>
+  <li>动作（Action）：智能体在当前状态下可以采取的操作</li>
+  <li>奖励（Reward）：环境对动作的反馈</li>
+</ol>
+
+<p>强化学习最核心的不是单个元素，而是它们之间形成了一个闭环：</p>
+
+\[\text{状态} \rightarrow \text{动作} \rightarrow \text{反馈} \rightarrow \text{更新策略}\]
+
+<p>也正因为这是一个闭环，强化学习和普通监督学习相比，训练数据不是静态给定的，而是会随着策略变化而变化。当前策略选什么动作，会直接影响之后能看到什么状态、拿到什么奖励。</p>
+
+<p>这也是 RL 和监督学习的本质区别之一。</p>
+
+<p>监督学习更像是在学：</p>
+
+\[x \rightarrow y\]
+
+<p>而强化学习更像是在学：</p>
+
+\[state \rightarrow action\]
+
+<p>但 RL 里没有一个现成标签直接告诉你“这个动作对不对”，只有环境在一段时间后给你反馈。所以 RL 关注的不是单步是否正确，而是这一连串动作最终能不能带来更高的长期收益。放到 LLM 上，对应的是：我们不该只看某个 token 当下像不像好词，而要看“这个 token 接下去会不会把整段回答带向更好的结果”。</p>
+
+<p>如果用一个更直观的比喻，微调有点像是对一只已经会基本动作的机器狗做定向训练。比如它已经会走路、会听简单指令，现在你希望它在公园里专门学会捡某一种球，这时你可以用一组更具体的数据继续调它的行为。强化学习则更像是让这只机器狗在环境里自己试错学新技能：你不给它标准答案，只给它目标和激励，比如“尽可能快地找到并捡起球”。它每次尝试后拿到奖励，再逐渐调整自己的行为。比如它发现跑直线更快找到球，之后就会更倾向于这样做。</p>
+
+<p>这也导致 RL 有三个天然难点：</p>
+
+<ol>
+  <li>奖励经常是延迟的</li>
+  <li>奖励通常比较稀疏</li>
+  <li>当前动作会改变未来拿到的数据分布</li>
+</ol>
+
+<p>从思想史上看，强化学习本身就是一种 trial-and-error learning。更早的时候，“reinforcement” 这个词最初被用来描述巴甫洛夫实验里行为被增强的现象；到了 20 世纪 80 年代，强化学习才在 MDP 框架下逐步拥有了比较严谨的数学基础。</p>
+
+<p>从更直觉的角度讲，强化学习的魅力也在于它不是试图把每一项任务都手把手教给系统，而是通过激励机制让系统自己去学会解决问题。在这个意义上，强化学习更像“教会它什么值得追求”，而不是“直接告诉它每一步怎么做”。</p>
+
+<p>我很喜欢一个相关表述：<a href="https://mp.weixin.qq.com/s/oE5m4vCrvbpW_51MRcy7XA">o1核心作者MIT演讲：激励AI自我学习，比试图教会AI每一项任务更重要</a>。里面有句话是：“Teach him the taste of fish and make him hungry.” 可以翻成“先让它尝到鱼的味道，再让它饿起来”。意思不是一步步手把手教它钓鱼，而是给它目标和驱动力，让它自己在过程中学会更多通用技能，比如耐心、观察环境、推理规律。对人类来说，直接教往往更快；但对机器来说，只要给足计算，它是有机会通过这种激励式学习长出更通用能力的。</p>
+
+<h2 id="一张-rl-家谱图">一张 RL 家谱图</h2>
+
+<p>先放结论图：</p>
+
+<div class="language-text highlighter-rouge"><div class="highlight"><pre class="highlight"><code>长期回报最大化
+   |
+   v
+Bellman 递推
+   |
+   +-- 动态规划 / 价值迭代
+   |      前提：环境已知
+   |
+   +-- 采样近似（环境未知）
+          |
+          +-- MC
+          +-- TD
+          |
+          +-- Value-based
+          |      |
+          |      +-- Q-learning
+          |      +-- DQN
+          |
+          +-- Policy-based
+          |      |
+          |      +-- REINFORCE / PG
+          |
+          +-- Actor-Critic
+                 |
+                 +-- A2C / A3C
+                 +-- GAE
+                 +-- TRPO
+                 +-- PPO
+</code></pre></div></div>
+
+<p>这张图最重要的不是记住所有算法名，而是记住每一代方法都在解决什么问题：</p>
+
+<ol>
+  <li>Bellman：长期目标怎么递推</li>
+  <li>MC / TD：环境未知时，怎么估 value</li>
+  <li>Q-learning：怎么通过 value 直接做 control</li>
+  <li>Policy Gradient：连续动作或高维空间里，怎么直接学 policy</li>
+  <li>Actor-Critic：怎么降低 PG 的方差</li>
+  <li>GAE：怎么更稳地估 Advantage</li>
+  <li>PPO：怎么限制 policy update 的幅度</li>
+</ol>
+
+<p>学会价值之后，还要进一步解决一个更实际的问题：</p>
+
+<p><strong>在状态 $s$ 下，到底怎么选动作？</strong></p>
+
+<p>于是 RL 开始分成两条经典路线。</p>
+
+<p><img src="/public/upload/machine/rl_path.png" alt="" /></p>
+
+<h3 id="value-based">Value-based</h3>
+
+<p>Value-based 的想法是：</p>
+
+<p><strong>先把动作价值学出来，再通过贪心选择动作。</strong></p>
+
+<p>更准确地说，这一路方法通常不需要一个显式策略，而是让状态价值函数 $V_{\pi}(s)$ 和动作价值函数 $Q_{\pi}(s,a)$ 隐式承担起制定策略的角色。只要找到了一个足够好的价值函数，最优策略也就跟着出来了。</p>
+
+<p>最典型的方法是 Q-learning：</p>
+
+\[Q(s,a) \leftarrow Q(s,a) + \alpha \left[ r + \gamma \max_{a'} Q(s',a') - Q(s,a) \right]\]
+
+<p>如果我们已经学到了 $Q^*(s,a)$，那策略可以直接写成：</p>
+
+\[\pi(s) = \arg\max_a Q^*(s,a)\]
+
+<p>这条路线的优点是：</p>
+
+<ol>
+  <li>离散动作很自然</li>
+  <li>逻辑直接</li>
+  <li>往往收敛更快，训练通常也更稳定</li>
+</ol>
+
+<p>但它的问题也很明显：</p>
+
+<ol>
+  <li>连续动作空间里很难做 $\arg\max$</li>
+  <li>状态空间和动作空间一大，Q-table 就不现实了</li>
+  <li>高维复杂任务上不够灵活</li>
+</ol>
+
+<p>这也是为什么在 LLM 场景里，value-based 方法通常不是主流：token 级 action space 太大，直接做基于动作值的显式选择并不自然。不过 value 的思想本身依然重要，很多时候它仍然会以 Critic、baseline，甚至训练数据筛选信号的形式出现。</p>
+
+<h3 id="policy-gradient">Policy Gradient</h3>
+
+<p>另一条对称的主线是 Policy-based。</p>
+
+<p>它的想法不是先把 value 学出来，再由 value 推出动作；而是直接学习策略本身：</p>
+
+\[\pi_{\theta}(a \mid s)\]
+
+<p>这条路线的特点是：</p>
+
+<ol>
+  <li>直接优化策略，更适合连续动作空间</li>
+  <li>更容易表示随机策略</li>
+  <li>在高维复杂问题里通常更灵活</li>
+</ol>
+
+<p>它的代表方法就是 Policy Gradient，后面进一步长出了 Actor-Critic、GAE、PPO 这一支。也就是说，如果说 Value-based 更像是“先学怎么评分，再按分数选动作”，那么 Policy-based 更像是“直接学习在什么状态下该怎么行动”。</p>
+
+<h3 id="再补一个视角model-based-和-model-free">再补一个视角：Model-based 和 Model-free</h3>
+
+<p>除了按 value-based / policy-based 来看，还可以按“我们对环境知道多少”再切一刀：</p>
+
+<ol>
+  <li>Model-based：环境更像白盒，状态转移和奖励结构已知或可建模，可以直接做规划</li>
+  <li>Model-free：环境更像黑盒，只能靠和环境交互获得反馈来学习</li>
+</ol>
+
+<p>Model-based 一族通常包括 Value Iteration、Policy Iteration 这类方法；而日常最常见的 Q-learning、Policy Gradient、Actor-Critic、PPO，则基本都属于 Model-free。</p>
+
+<p>如果把这两个视角叠在一起看，就会更清楚：</p>
+
+<ol>
+  <li>Bellman 是总源头</li>
+  <li>MC / TD 是在未知环境下逼近 Bellman 的基础工具</li>
+  <li>Value-based 和 Policy-based 是 control 层面的两条主要路线</li>
+  <li>Actor-Critic 则是这两条路线的一次创造性融合</li>
+</ol>
+
+<h2 id="第一问怎么定义长期回报而不是只看眼前这一步">第一问：怎么定义长期回报，而不是只看眼前这一步</h2>
+
+<p>RL 先做的第一件事，不是想办法直接学动作，而是先把“什么叫好”定义清楚。RL 的目标其实很简单：<strong>最大化长期回报，而不是最大化某一步的即时奖励。</strong></p>
+
+<p>也正因为如此，RL 先引入了 <code class="language-plaintext highlighter-rouge">return</code> 这个概念。直觉上说，return 就是“从当前这一步开始，往后能拿到的总收益”，而不是只看眼前这一小步的奖励。只有先把优化目标从“即时奖励”切换到“长期回报”，后面的 Bellman 递推、value function、policy optimization 才有意义。</p>
+
+<p>长期回报通常写成：</p>
+
+\[G_t = r_{t+1} + \gamma r_{t+2} + \gamma^2 r_{t+3} + \dots\]
+
+<p>也可以写成递推形式：</p>
+
+\[G_t = r_{t+1} + \gamma G_{t+1}\]
+
+<p>这里：</p>
+
+<ul>
+  <li>$r_{t+1}$ 是下一步的即时奖励</li>
+  <li>$\gamma$ 是折扣因子</li>
+  <li>$G_t$ 表示从时刻 $t$ 开始往后的累积折扣奖励</li>
+</ul>
+
+<p>如果从最简单的问题出发，强化学习通常先从 bandit 讲起。</p>
+
+<p>想象你面前有 3 台老虎机：A / B / C 的平均奖励分别不同，但你一开始不知道。你的目标是：用尽量少的试错，找到长期最赚钱的那台机器。这就是 k-armed bandit。</p>
+
+<p>bandit 已经体现了 RL 的核心矛盾：</p>
+
+<ol>
+  <li>探索（exploration）：多试几个选择，了解哪个更好</li>
+  <li>利用（exploitation）：多用当前看起来最好的选择</li>
+</ol>
+
+<p>但 bandit 还不是真正完整的 RL，因为它没有状态。现实问题更复杂：动作不仅会带来即时奖励，还会改变后续局面。这也是为什么需要 MDP。</p>
+
+<p>一个强化学习问题通常建模成马尔可夫决策过程（Markov Decision Process, MDP）。它的关键假设是：<strong>未来只依赖当前状态，而不依赖更久远的历史。</strong></p>
+
+<p>这句话不是说历史不重要，而是说：当前状态已经把历史中对决策有用的信息压缩进来了。例如围棋棋盘的当前局面，就已经是过去所有落子的压缩结果。</p>
+
+<p>如果再往前追一层，MDP 是从马尔可夫随机过程长出来的。随机过程研究的是“随时间演变的随机现象”，也就是概率论里偏动力学的一部分。某个时刻 $t$ 的状态记作 $S_t$，如果已知完整历史 $(S_1,S_2,\dots,S_t)$ 时，下一时刻状态 $S_{t+1}$ 的概率写作：</p>
+
+\[P(S_{t+1} \mid S_1,S_2,\dots,S_t)\]
+
+<p>而当一个随机过程满足：</p>
+
+\[P(S_{t+1} \mid S_t)=P(S_{t+1} \mid S_1,S_2,\dots,S_t)\]
+
+<p>就说它具有马尔可夫性质。也就是说，当前状态已经是未来的充分统计量，知道当前状态以后，更早的历史不再额外提供决策所必需的信息。强化学习再往前走一步，把动作也放进来，就得到：</p>
+
+\[P(S_{t+1} \mid S_t, A_t)\]
+
+<p>这就是 MDP 里“动作会影响未来状态演化”的来源。</p>
+
+<p>MDP 通常写成五元组 $(S, A, P, R, \gamma)$：</p>
+
+<ol>
+  <li>$S$：状态空间</li>
+  <li>$A$：动作空间</li>
+  <li>$P(s’ \mid s,a)$：状态转移概率</li>
+  <li>$R$：奖励函数</li>
+  <li>$\gamma$：折扣因子</li>
+</ol>
+
+<p>折扣因子 $\gamma$ 的作用很重要：</p>
+
+<ol>
+  <li>从数学上，它让无限长轨迹的累积奖励保持有界</li>
+  <li>从决策上，它刻画了智能体有多“看重未来”</li>
+</ol>
+
+<p>正是在 MDP 框架下，RL 才把“状态如何演化”“动作如何影响未来”“长期奖励如何计算”这些问题放到了一起，这也就是 Bellman 方程得以出现的背景。</p>
+
+<p>为了把长期回报和当前决策连接起来，RL 引入了价值函数。</p>
+
+<p>针对策略 $\pi$：</p>
+
+<p>状态价值函数定义为：</p>
+
+\[V_{\pi}(s) = \mathbb{E}_{\pi}[G_t \mid s_t = s]\]
+
+<p>动作价值函数定义为：</p>
+
+\[Q_{\pi}(s,a) = \mathbb{E}_{\pi}[G_t \mid s_t = s, a_t = a]\]
+
+<p>它们分别回答两个问题：</p>
+
+<ol>
+  <li>这个状态总体值多少钱</li>
+  <li>在这个状态下，这个动作值多少钱</li>
+</ol>
+
+<p>Bellman 方程之所以是 RL 的源头，是因为它把“长期回报”拆成了“当前一步 + 未来价值”。</p>
+
+<p>由</p>
+
+\[G_t = r_{t+1} + \gamma G_{t+1}\]
+
+<p>再结合</p>
+
+\[V_{\pi}(s) = \mathbb{E}_{\pi}[G_t \mid s_t = s]\]
+
+<p>可以得到：</p>
+
+\[V_{\pi}(s) = \mathbb{E}_{\pi}\left[ r_{t+1} + \gamma V_{\pi}(s_{t+1}) \mid s_t = s \right]\]
+
+<p>这句话非常关键，因为它给了 RL 一个递推结构：</p>
+
+<p><strong>当前状态值多少钱 = 当前一步奖励 + 折扣后的下一状态价值。</strong></p>
+
+<p>也就是说，Bellman 方程真正提供的不是一个孤立公式，而是一种“把未来折回现在”的方法。正因为有了这个递推结构，学习才可以从“整条轨迹算一次总账”，变成“边交互边更新”。</p>
+
+<p>如果继续往“最优”方向走，就有：</p>
+
+\[V^*(s) = \max_{\pi} V_{\pi}(s)\]
+
+<p>以及：</p>
+
+\[Q^*(s,a) = \max_{\pi} Q_{\pi}(s,a)\]
+
+<p>常见的 Bellman 最优方程写法是：</p>
+
+\[Q^*(s,a) = r(s,a) + \gamma \sum_{s'} P(s' \mid s,a) V^*(s')\]
+
+<p>到了这一步，问题变成了：</p>
+
+<p><strong>既然 Bellman 递推很重要，那现实里怎么学它？</strong></p>
+
+<p>如果环境已知，可以直接做动态规划、价值迭代、策略迭代。但现实里大多数问题都不是白盒，所以真正常见的是：<strong>环境未知，只能靠采样近似。</strong></p>
+
+<p>这时最基础的两条路线就是 MC 和 TD。</p>
+
+<h3 id="monte-carlo">Monte Carlo</h3>
+
+<p>MC 的核心思想是：等整条轨迹结束，再用真实回报更新。</p>
+
+<p>更新形式可以写成：</p>
+
+\[V(s) \leftarrow V(s) + \alpha (G_t - V(s))\]
+
+<p>它的特点是：</p>
+
+<ol>
+  <li>用真实回报 $G_t$</li>
+  <li>不 bootstrap</li>
+  <li>无偏</li>
+  <li>但方差大，而且必须等 episode 结束</li>
+</ol>
+
+<h3 id="temporal-difference">Temporal Difference</h3>
+
+<p>TD 的核心思想是：不等未来全部发生，而是用当前估计去近似未来，也就是所谓的 bootstrapping。</p>
+
+<p>最简单的一步 TD 更新是：</p>
+
+\[V(s) \leftarrow V(s) + \alpha \left( r + \gamma V(s') - V(s) \right)\]
+
+<p>对应的 TD error 是：</p>
+
+\[\delta_t = r_t + \gamma V(s_{t+1}) - V(s_t)\]
+
+<p>TD 的特点是：</p>
+
+<ol>
+  <li>可以在线更新</li>
+  <li>方差更小</li>
+  <li>样本效率更高</li>
+  <li>但因为用了估计值，所以会有偏差</li>
+</ol>
+
+<p>一句话记忆：</p>
+
+<ul>
+  <li>MC：等账单出来再记账</li>
+  <li>TD：先按预估入账，再不断修正</li>
+</ul>
+
+<h2 id="第二问怎么把整段轨迹最后才知道好不好这件事分摊到中间每一个-action-上">第二问：怎么把“整段轨迹最后才知道好不好”这件事，分摊到中间每一个 action 上</h2>
+
+<p>这一步是 RL 真正难的地方，也就是 credit assignment。如果最后只给一个总分，那中间每一步到底谁该记功、谁该背锅？放到 LLM 上sequence-level reward 只告诉你“整段回答总体好不好”，但训练时必须把这个总体评价，变成每个 token 的更新权重，否则模型没法知道，究竟是哪个步骤、哪种说法、哪个推理分支更值得强化。</p>
+
+<h3 id="policy-gradient-1">Policy Gradient</h3>
+
+<p>在第二问里，我们先看 Policy-based 这条路线中最基础的方法：Policy Gradient。</p>
+
+<p>Policy Gradient 则反过来想：</p>
+
+<p><strong>我不先学 value 再推出动作，而是直接学策略本身。</strong></p>
+
+<p>策略写作：</p>
+
+\[\pi_{\theta}(a \mid s)\]
+
+<p>目标是直接最大化期望回报：</p>
+
+\[J(\theta) = \mathbb{E}_{\pi_{\theta}}[G_t]\]
+
+<p>策略梯度的核心形式可以写成：</p>
+
+\[\nabla_{\theta} J(\theta) =
+\mathbb{E}_{\pi_{\theta}}
+\left[
+\nabla_{\theta} \log \pi_{\theta}(a_t \mid s_t) G_t
+\right]\]
+
+<p>最原始的策略梯度方法比较粗糙：“既然这整条轨迹最后得分高，那轨迹里的动作都一起鼓励；得分低，就都一起压制。”这能跑，但很粗糙，不知道中间到底是哪一步真正起了关键作用。后面 Actor-Critic、Advantage、GAE 这些方法，本质上都是在继续改进这件事。</p>
+
+<p>Policy Gradient 非常重要，因为它解决了 value-based 的几个关键限制：</p>
+
+<ol>
+  <li>连续动作空间更自然</li>
+  <li>可以直接优化策略</li>
+  <li>可以自然表示随机策略，更适合高维问题和复杂分布</li>
+</ol>
+
+<p>但它也带来了一个大问题：</p>
+
+<p><strong>方差太大，训练不稳定。</strong></p>
+
+<p>如果想系统看策略梯度一系的发展脉络，可以直接读综述 <a href="https://arxiv.org/pdf/2401.13662">The Definitive Guide to Policy Gradients in Deep Reinforcement Learning: Theory, Algorithms and Implementations</a>。</p>
+
+<p>Actor-Critic 可以看成是 value-based 和 policy-based 的融合。</p>
+
+<p>它把职责拆成两部分：</p>
+
+<ol>
+  <li>Actor：负责输出策略 $\pi(a \mid s)$</li>
+  <li>Critic：负责估计价值，给 Actor 提供更稳定的学习信号</li>
+</ol>
+
+<p>它的核心思想，是把原来直接用的 $G_t$，换成更稳定的 Advantage：</p>
+
+\[A(s,a) = Q(s,a) - V(s)\]
+
+<p>Advantage 表示的是：</p>
+
+<p><strong>这个动作比当前状态下的平均水平好多少。</strong></p>
+
+<p>于是策略更新就不再是问“这个动作最后得了多少分”，而是问“这个动作相对平均水平是不是更好”。这样做的好处是，很多和状态整体难度相关的公共波动会被减掉，训练信号更稳定。</p>
+
+<p>对应的策略梯度可以写成：</p>
+
+\[\nabla_{\theta} J(\theta) =
+\mathbb{E}_{\pi_{\theta}}
+\left[
+\nabla_{\theta} \log \pi_{\theta}(a_t \mid s_t) A(s_t,a_t)
+\right]\]
+
+<p>Critic 一般通过 TD 目标去学价值函数，例如：</p>
+
+\[V(s_t) \leftarrow V(s_t) + \alpha \left( r_t + \gamma V(s_{t+1}) - V(s_t) \right)\]
+
+<p>从家谱上看，Actor-Critic 的意义就在于：</p>
+
+<p><strong>它让 RL 从“只靠原始 return 更新 policy”，进化成“用 value estimation 给 policy 提供低噪声信号”。</strong></p>
+
+<p>有了 Actor-Critic 之后，问题又进一步变成：</p>
+
+<p><strong>Advantage 该怎么估，才既不太抖，又不太偏？</strong></p>
+
+<p>如果完全用 Monte Carlo 风格的 return，方差很大；如果只用一步 TD，又可能太粗糙。于是就有了 GAE（Generalized Advantage Estimation）。</p>
+
+<p>GAE 的核心可以理解成：</p>
+
+<ul>
+  <li>TD：偏差大但方差小</li>
+  <li>MC：偏差小但方差大</li>
+  <li>GAE：把多步 TD 残差按权重叠起来，在 bias / variance 之间做折中</li>
+</ul>
+
+<p>所以 GAE 不是一个完全独立的新范式，它在家谱里的位置更像是：</p>
+
+<p><strong>Actor-Critic 上进一步优化 Advantage 估计的方法。</strong></p>
+
+<p>尤其在 LLM 这种“末尾才拿到整体 reward”的场景里，GAE 的作用很大，因为它可以更稳定地把最终奖励分摊到中间 token 上。</p>
+
+<h2 id="第三问怎么让训练既朝高回报方向更新又不至于一下子把策略训歪">第三问：怎么让训练既朝高回报方向更新，又不至于一下子把策略训歪</h2>
+
+<p>到了 Actor-Critic + GAE，其实已经“能学”了。但工程上还有一个特别现实的问题：<strong>policy 更新太猛，模型很容易一下改崩。</strong>如果你某一轮采样恰好采到几条高分轨迹，就猛地把这些动作概率抬得很高，模型很容易跑偏。</p>
+
+<p>前两问主要解决的是：长期目标怎么定义、最终结果怎么分摊给中间动作。到了第三问，重点就变成了：即使已经知道该往哪个方向优化，更新的时候也不能一步跨太大，否则模型很容易训练崩掉。PPO 之所以重要，主要就是因为它在这件事上给出了一个工程上非常好用的解法。</p>
+
+<ol>
+  <li>TRPO / PPO：限制每次 policy update 幅度</li>
+  <li>KL penalty：别离参考模型太远</li>
+</ol>
+
+<p>PPO 的核心就是：<strong>限制更新幅度。</strong></p>
+
+<p>定义新旧策略比值：</p>
+
+\[ratio = \frac{\pi_{new}(a \mid s)}{\pi_{old}(a \mid s)}\]
+
+<p>它表示：新策略相对旧策略，把这个动作的概率放大了多少。</p>
+
+<p>如果旧策略给某动作的概率是 0.01，新策略一下拉到 0.5，那么：</p>
+
+\[ratio = 50\]
+
+<p>这种更新就太激进了，很容易训练崩掉。</p>
+
+<p>所以 PPO 使用 clip：</p>
+
+\[\mathrm{clip}(r, 1 - \varepsilon, 1 + \varepsilon)\]
+
+<p>对应的 PPO loss 写成：</p>
+
+\[L = \min\left( rA,\ \mathrm{clip}(r, 1-\varepsilon, 1+\varepsilon)A \right)\]
+
+<p>直觉上可以理解成：</p>
+
+<ul>
+  <li>你可以改</li>
+  <li>但不能改太多</li>
+  <li>一旦超出安全区间，就不再继续鼓励这个方向的更新</li>
+</ul>
+
+<p>所以 PPO 在家谱里的定位，不是“又一个全新 RL 目标”，而是：</p>
+
+<p><strong>给 Actor-Critic 风格的策略更新加了一个工程上非常好用的限速器。</strong></p>
+
+<p>如果想专门看 PPO 的目标函数、importance sampling 和 clip 的推导，可以继续看 <a href="https://zhuanlan.zhihu.com/p/13467768873">PPO理论推导+代码实战</a>。</p>
+
+<h3 id="用三层框架收一下">用三层框架收一下</h3>
+
+<p>如果把 RL 再压缩，我会把它看成三层：</p>
+
+<ol>
+  <li>目标层：长期回报最大化
+    <ul>
+      <li>数学上是最大化 $J(\pi)=\mathbb{E}[G_t]$</li>
+    </ul>
+  </li>
+  <li>评估层：当前状态或动作到底好不好
+    <ul>
+      <li>对应 $V(s)$、$Q(s,a)$、$A(s,a)$</li>
+    </ul>
+  </li>
+  <li>更新层：如何用采样数据修正参数
+    <ul>
+      <li>对应 MC、TD、GAE、Policy Gradient、PPO clip</li>
+    </ul>
+  </li>
+</ol>
+
+<p>这个三层框架有一个好处：以后你看到任何 RL 算法，都可以先问它三件事：</p>
+
+<ol>
+  <li>它优化的目标是什么</li>
+  <li>它怎么估 value / advantage</li>
+  <li>它怎么更新 policy</li>
+</ol>
+
+<h3 id="最后一句话总结">最后一句话总结</h3>
+
+<p>所以我现在理解强化学习，不会再把它看成一堆并列算法，而是看成一条很清楚的演化主线：</p>
+
+<ol>
+  <li>先用 Bellman 方程把长期目标拆成递推结构</li>
+  <li>再用 MC / TD 解决“环境未知时怎么估 value”</li>
+  <li>再分成 value-based 和 policy-based 两条路线</li>
+  <li>再用 Actor-Critic 把价值估计和策略优化结合起来</li>
+  <li>再用 GAE 改善 Advantage 的估计</li>
+  <li>最后用 PPO 把策略更新控制在一个稳定范围内</li>
+</ol>
+
+<p>强化学习最终的核心不是 reward，不是 PPO，甚至也不只是 policy，而是一个闭环：</p>
+
+\[\text{行动} \rightarrow \text{反馈} \rightarrow \text{价值评估} \rightarrow \text{策略更新}\]
+
+<p>也就是：<strong>在与环境的交互中，通过反馈不断修正对未来的判断，逐渐逼近长期最优决策。</strong></p>]]></content><author><name>李乾坤</name></author><category term="架构" /><category term="MachineLearning" /><summary type="html"><![CDATA[]]></summary></entry><entry><title type="html">Code Agent</title><link href="https://qiankunli.github.io/2026/04/04/code_agent.html" rel="alternate" type="text/html" title="Code Agent" /><published>2026-04-04T00:00:00+08:00</published><updated>2026-04-04T00:00:00+08:00</updated><id>https://qiankunli.github.io/2026/04/04/code_agent</id><content type="html" xml:base="https://qiankunli.github.io/2026/04/04/code_agent.html"><![CDATA[<h2 id="简介未完成">简介（未完成）</h2>
+
+<p>姚顺雨：十个前沿大模型在「从上下文中学习新知识并正确应用」这件事上，平均解决率只有 17.2%。本质上是因为信息的单向传递：我们把知识塞进上下文，模型处理，输出结果，结束 —— 整个过程没有任何校验。模型哪怕完全忽略了我们给的信息，也不会有人告诉它。Coding 场景不同。代码写完可以跑，跑完有结果，结果对不对有明确判据：编译报错、测试失败、运行崩溃。这不是谁设计的，是软件工程自带的基础设施。用控制工程的话说，这叫闭环控制（Closed-loop Control）：系统不只产生输出，还能感知输出与目标的偏差，并用偏差驱动修正。</p>
+
+<h2 id="ai-coding">AI Coding</h2>
+
+<p>用AI生成代码，本质上和生成其他非结构化的序列，是一样的。但代码实在是太特殊了，它是数字世界的源头。理论上说，只要我们能可控地生成代码，就能可控地执行任意流程，意味着可以在数字世界做任何事情。所以现在很多人在说，Coding Agent就是通用智能体，这有相当的道理。这一论断在现实中碰到的阻碍，目前看只有两个：</p>
+<ol>
+  <li>可控地生成代码，仍然是一件专业的事情，而非普通大众能够完成。</li>
+  <li>并非所有软件都有编程接口，可以使用代码来进行控制。当然，第二个障碍是相对的。只要进入到某个系统层面上，拿到相应的系统权限，也没有什么软件是无法用代码控制的。难易程度的区别。</li>
+</ol>
+
+<p>有什么</p>
+<ol>
+  <li>agent loop</li>
+  <li>prompt context = Base instructions + Tools Defintion + Input(developr + user config + history + query)</li>
+  <li>有的一层loop，有的两层loop。一般内层loop 是已知的：llm call + tool call</li>
+  <li>tools. agent 能做什么完全由工具集决定</li>
+  <li>compact，何时触发，compact prompt.</li>
+  <li>plan mode. 会给模型注入一份专门的instructions（plan.md)</li>
+</ol>
+
+<h2 id="codex">codex</h2>
+
+<p>codex Plan mode只在提示词里要求不要用update_plan, 积极使用request_user_input提问。</p>
+
+<h2 id="claude-code">claude code</h2>
+
+<h3 id="消息类型系统">消息类型系统</h3>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>// src/types/message.ts — 消息类型层次
+type Message =
+  | UserMessage           // 人类输入（或工具结果）
+  | AssistantMessage      // 模型响应（文本 + 工具调用）
+  | AttachmentMessage     // 记忆/资源附件
+  | SystemMessage         // 系统消息
+  | SystemLocalCommandMessage  // 本地工具结果（bash, read 等）
+  | ToolUseSummaryMessage // 压缩后的工具历史
+  | TombstoneMessage      // 已删除消息标记
+  | ProgressMessage       // 流式进度更新
+</code></pre></div></div>
+
+<h3 id="并行">并行</h3>
+
+<p><strong>Claude Code 提供三种并行工作的方式，从轻到重：Subagent ==&gt; Background ==&gt;  Agent Team</strong></p>
+<ol>
+  <li>Subagent 在你的主会话内部生成一个独立的 Claude 实例。它有自己的上下文窗口，干完活后把结果返回给你的主会话。使用方式</li>
+  <li>临时口头调用（Ad-hoc），直接用自然语言告诉 Claude “派一个子 Agent 去做什么”。</li>
+  <li>预定义自定义 Agent（Custom Agent），在项目中创建一个 Markdown 文件(<code class="language-plaintext highlighter-rouge">.claude/agents/xxx.md   </code>)，定义好 Agent 的名字、角色、工具权限。之后 Claude 会根据任务自动匹配调用，或者你也可以手动指名调用。</li>
+  <li>Background。你让 Claude 做一件耗时的事（跑测试、编译、分析），但不想干等着。后台任务让它在后台执行，你继续和 Claude 聊别的。使用方式</li>
+  <li>用 &amp; 前缀（类似 Unix shell） <code class="language-plaintext highlighter-rouge">&amp; npm run test:all</code></li>
+  <li>自然语言 <code class="language-plaintext highlighter-rouge">&gt; 在后台跑一下完整的测试套件</code></li>
+  <li>Agent Team. 它不是「一个 Claude 带几个子进程」，而是多个完全独立的 Claude 实例，各自有自己的终端面板（如果你用 tmux），可以互相通信、互相发现对方的工作成果、互相挑战观点。有一个 Lead Agent（团队领导）负责协调，其他 Teammate 并行工作。使用方式： 自然语言
+    <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>  &gt; 创建一个 Agent Team 来审查我们的认证系统。
+  &gt; 启动三个 Teammate：
+  &gt; - 安全审查员：审计漏洞，检查 token 处理方式
+  &gt; - 性能分析师：分析响应时间，找出瓶颈
+  &gt; - 测试覆盖检查员：验证边界条件，找出未覆盖的路径
+  &gt; 让他们共享发现并通过任务清单协调。
+</code></pre></div>    </div>
+  </li>
+</ol>
+
+<p>启动subagent方式和调用一个普通tool一样，只不过调用的是Agent这个tool。main-agent的每次调用都附带着 3-5个词的简短描述；并且提供足够清晰详细的prompt，说明 sub-agent 要做什么，因为在一般情况下（只要不指定CAN_FORK_CONTEXT=True），sub-agent就不会继承主agent的上下文，因此它对整个问题的背景是完全不了解的，它能看到的只是主agent给它委派的prompt。Subagent 完成后，它的最后一条 assistant message 会作为字符串返回给主 agent，这个消息对于用户是不可见的。主agent需要自己把这个结果整理一下，然后用文字告诉用户。同时返回的还有 agent ID，可供后续 resume 使用（sub-agent的resume和主agent一样，可以恢复上一次调用时候完整的上下文继续工作）。</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>{
+    "role": "assistant",
+    "content": [
+      {
+        "name": "Agent",  
+        "type": "tool_use",
+        "input": {
+          "prompt": "探索xxxx 代码库的整体结构。请找出：\n1. 项目根目录下的所有文件和目录\n2. 主要的配置文件（package.json, composer.json, readme.txt, README.md 等）\n3. 主要入口文件\n4. 项目使用的主要编程语言\n\n请读取 readme.txt 或 README.md、package.json、composer.json（如果存在）的内容，并详细报告。",
+          "description": "探索项目整体结构和配置",
+          "subagent_type": "Explore",
+          "run_in_background": true
+        }
+      }
+    ]
+}
+</code></pre></div></div>
+
+<h2 id="agent-team">agent team</h2>
+
+<p>“多 Agent + 软件工程团队角色”是不是研发的全能解？我的判断是：它是全能解，但不是最优解。说它是”全能解”，因为它确实能 cover 软件工程的完整生命周期。需求分析、方案设计、代码实现、测试验证、文档维护——每个环节都可以由对应角色的 Agent 来执行，而且已经有人在这么做了。说它”不是最优解”，因为不是所有项目都需要完整的软件工程团队角色支持。每个项目有自己的特性——从个人开发者的 side project 到小团队的快速迭代，很多优秀的软件从来不需要 PM 写 PRD、Architect 画架构图、SM 管 Sprint。即使对于确实需要多角色协作的大型项目，角色化本身也引入了具体的成本：</p>
+<ol>
+  <li>角色切换的上下文损耗。每次角色切换都有一次完整的上下文重建。而一个人 + 单 Agent 走完全流程，上下文是连续积累的，没有切换损耗。</li>
+  <li>文档交接的信息衰减。 角色之间通过文档传递信息——PM 写 PRD 给 Architect，Architect 写架构给 DEV。每一次从”理解”到”文档”再到”理解”的转换都有信息损失。真实团队中这个损耗靠会议和即时沟通来弥补，Agent 团队靠什么？反观个人开发者，需求、设计、实现都在一个人的脑子里，信息衰减天然最小——Agent 只需要辅助执行，不需要跨角色”翻译”。</li>
+  <li>过程正确不等于结果正确。 有了完整的工作流（头脑风暴→PRD→架构→Story→开发→Review），流程上无懈可击。流程完备不能弥补单步质量的不足——每一步的输出质量取决于模型能力，而不是流程设计。 与其在流程上做到完美，不如把精力投入到每一步的上下文质量上——这才是决定 Agent 输出质量的关键变量。</li>
+</ol>
+
+<p>大多数项目，单 Agent + 结构化上下文就够了。关键环节按需引入角色化——需求分析、代码审查这些确实需要不同视角的环节，再引入专门的 Agent。并行用在执行层，不是决策层——代码审查 6 个 Checker 并行、批量测试并行，这些执行性工作的并行收益最直接。但方案设计、架构决策这些需要深度思考的环节，并行反而带来冲突。</p>
+
+<h2 id="其它">其它</h2>
+
+<p>赋予智能体计算机访问权限（文件系统+Shell环境）是能力跃迁的关键——文件系统提供持久化上下文存储，Shell使其调用工具链、CLI或自主生成代码。</p>]]></content><author><name>李乾坤</name></author><category term="技术" /><category term="MachineLearning" /><summary type="html"><![CDATA[简介（未完成）]]></summary></entry><entry><title type="html">Long-horizon Agent</title><link href="https://qiankunli.github.io/2026/02/16/long_horizon.html" rel="alternate" type="text/html" title="Long-horizon Agent" /><published>2026-02-16T00:00:00+08:00</published><updated>2026-04-06T19:07:21+08:00</updated><id>https://qiankunli.github.io/2026/02/16/long_horizon</id><content type="html" xml:base="https://qiankunli.github.io/2026/02/16/long_horizon.html"><![CDATA[<h2 id="简介未完成">简介（未完成）</h2>
+
+<p>2026年，模型的推理能力、tool calling 能力、长上下文处理能力都已经达到了一个临界点。Long-horizon Agent 不再是”酷炫的 demo”，而是真正能够产出价值的工具。</p>
+
+<ol>
+  <li>不变的：在正确的时机，以正确的格式，向 LLM 提供正确的信息。</li>
+  <li>变化的：构建 Long-horizon Agent 涉及很多微妙的工程细节（compaction 策略、subagent 通信、error handling 等）</li>
+  <li>上下文管理
+    - Compaction 策略：当上下文窗口不够时如何压缩
+    - Memory 管理：如何在跨会话中保持关键信息。像“经验库”，增强稳定性、抗遗忘与长期一致性。
+    - Subagent 通信：如何让主 Agent 和子 Agent 高效协作
+    <ul>
+      <li>Tool 选择：什么时候使用什么工具。pi的agent loop 只提供了4个工具：read/write/edit/bash。有bash 就可以安装世界上所有软件，有read/write/edit就有了读写、做事儿、记忆的能力。<strong>我们可以去掉一些工具，更多依赖 Skill</strong>。PS：文件系统权限</li>
+    </ul>
+  </li>
+</ol>
+
+<p>本质：怎么让AI可靠地完成超出单次上下文窗口的复杂工程任务。</p>
+
+<h2 id="场景">场景</h2>
+
+<p>Long Horizon Task（LHT）</p>
+<ol>
+  <li>Coding。编程在大多数用例中现在已经解决了。</li>
+  <li>AI SRE，能够进行深度日志分析和故障排查</li>
+  <li>Deepresearch</li>
+  <li>assistant agnet, openclaw</li>
+</ol>
+
+<h2 id="特点">特点</h2>
+
+<ol>
+  <li>运行时间更长，中间状态很多，需要记忆与上下文管理。</li>
+  <li>自主决策能力，需要长期规划，而不是局部贪心。</li>
+  <li>中途接受外部的信息、纠正指令等</li>
+</ol>
+
+<p>这使得模型的上下文规模呈指数级膨胀。文件内容、构建日志、多轮工具输出、任务中间状态、先前讨论……这些都逐步挤进了 Prompt，使得原本相对可控的短对话场景，变成了复杂的多源异构大上下文输入。结果非常直接：</p>
+<ol>
+  <li>模型需要处理更长的 Token → 推理时延增加，成本上升；</li>
+  <li>有效信息被噪声淹没或被截断 → 输出质量下降；</li>
+  <li>Agent 在长流程中“忘记”关键上下文 → 任务失败率上升；</li>
+</ol>
+
+<p>模型缺点</p>
+<ol>
+  <li>一口吃成胖子。你给AI一句”做个Web应用”，它会尝试一次性把所有功能都怼出来。写到一半context用完了，下一轮的AI继续接手——但它对前任的工作一无所知。代码烂尾在那，而AI头也不回。</li>
+  <li>过早宣布胜利。 搞了几个功能之后，AI审视了一下当前状态，得出结论：”看起来差不多了”，然后收工。打开一看，核心逻辑却根本就是空壳。</li>
+</ol>
+
+<p>之前的解法比较朴素：一个初始化Agent负责拆任务，一个编码Agent每次只做一个功能，做完写进度文件、提交git。相当于给AI发了一本固定化手册，但天花板很快到了。
+现在的解法：</p>
+<ol>
+  <li>Generator之外给一个Evaluator，批评别人比自我批评容易，在AI身上也一样。</li>
+  <li>Agent之间怎么沟通？写文件一个Agent把内容写到一个文件里，另一个Agent打开那个文件来读。</li>
+  <li>Sonnet 4.5在上下文窗口接近极限时，会表现出一种类似”焦虑”的行为模式——开始草草收尾、匆忙总结、过早宣布完成。Anthropic试过上下文压缩，比如把前面的对话总结缩短，让同一个Agent继续干，但发现不够。压缩之后Agent虽然context宽裕了，但这种”快到极限了”的行为惯性并没有消失。最后的解法相当暴力——直接重置。 起一个全新的Agent，什么都不记得，交接靠的是结构化文件——上一个Agent留下进度报告和状态文件。到了Opus 4.6，这个”上下文焦虑”的问题基本没了。于是重置机制被砍掉，换成了SDK内置的自动压缩来处理context增长。<strong>一个在4.5上不得不存在的核心机制，在4.6上就成了冗余组件</strong>。</li>
+  <li>文章作者自己写到了自己走了弯路——他一开始想大刀阔斧地简化框架，一次性砍掉了好几个组件，结果性能直接崩了。后来改成一个一个地拆，每拆一个就跑一遍完整测试，看这个组件到底是真正承重还是历史遗留。其实这个方法论适用任何复杂系统的简化都该这么做：别猜，一个一个拆，让结果说话。<strong>每一个被砍掉的组件，本质上都是对”模型做不到X”这个假设的一次推翻</strong>。你今天写的所有AI相关的”最佳实践”，本质上都是”当前模型的补丁集”。 新模型一出，有些补丁该删，有些新的需要打。</li>
+  <li>今天你需要评估Agent来兜底，明年模型可能自己就能做好自评了。但明年你可能在让AI做更复杂十倍的任务，又会冒出新的失败模式，需要新的框架组件来应对。</li>
+</ol>
+
+<h2 id="其它">其它</h2>
+
+<p>赋予智能体计算机访问权限（文件系统+Shell环境）是能力跃迁的关键——文件系统提供持久化上下文存储，Shell使其调用工具链、CLI或自主生成代码。</p>]]></content><author><name>李乾坤</name></author><category term="技术" /><category term="MachineLearning" /><summary type="html"><![CDATA[简介（未完成）]]></summary></entry><entry><title type="html">next prompt工程——skill</title><link href="https://qiankunli.github.io/2026/02/07/skill.html" rel="alternate" type="text/html" title="next prompt工程——skill" /><published>2026-02-07T00:00:00+08:00</published><updated>2026-03-28T17:10:28+08:00</updated><id>https://qiankunli.github.io/2026/02/07/skill</id><content type="html" xml:base="https://qiankunli.github.io/2026/02/07/skill.html"><![CDATA[<h2 id="简介">简介</h2>
+
+<p>2025年12月18日，Anthropic 正式推出了 Agent Skills 的开放标准：https://docs.anthropic.com/agent-skills</p>
+
+<p>智能体拥有智能和能力，但不一定具备有效处理实际工作的专业知识（通用知识很强，专项操作能力很弱）。这促使Claude创建了Agent Skills（Procedural Knowledge）。Skills是有组织文件的集合，将领域专业知识——工作流程、最佳实践、脚本——打包成智能体可以访问和应用的格式（以文件夹为最小分发单元）。</p>
+
+<p>阻碍人们使用 AI 的主要障碍，并非模型的能力不足，也非 Agent 的智能水平不够，由于处理任务时往往涉及大量杂乱的上下文，要让 AI 高效工作，就不可避免地需要向它提供这些信息。与其一点点地指导 AI，许多人觉得不如自己动手来得快。假设业界的 AI 能力有 80 分，而你的任务实际上只需要 20 分的能力就足够了。但因为你懒，或者使用姿势不对，最后反而逼得 AI 不得不去猜测、去凭经验、去漫无目的地查询海量信息。结果，你需要一个 120 分的 AI 才能满足需求。</p>
+<ol>
+  <li>消费端。Skill 本质上就是一份打包好的“工具说明书”。它的优势主要在于，你不用每次都显式地重复说明，而且通过“渐进式加载”还能节省一些 Token。</li>
+  <li>
+    <p>生产端。支持 Skill 的 Agent 都内置了一个最重要的元 Skill：skill-creator，它能帮你自动生成 Skill。只要你有一点点耐心，能够完整地带着 AI 完成一次全过程——哪怕就一次，就一次！——那么在结束时，你就可以让 AI 为这个场景生成一个 Skill。从此以后，你就解放了。</p>
+  </li>
+  <li>提示词演进脉络：普通提示词 ==&gt; 结构化提示词 ==&gt; Skill</li>
+  <li>agent架构演进： single-agent(四五种行为范式)==&gt; multi-agent(四种拓扑模式) ==&gt; Skill（SAS/一个agent加载不同skill，在宏观上保持统一的记忆和状态，局部专业化）</li>
+</ol>
+
+<h2 id="从哲学中的意向性开始">从哲学中的“意向性”开始</h2>
+
+<p><a href="https://mp.weixin.qq.com/s/uypgfS53B_2fzhvQqMcfhA">Skill 不是 Prompt——从意向性到工程注入的范式转移</a></p>
+
+<p>赛尔（John Searle）将意向性区分为两类：</p>
+
+<ol>
+  <li>原初意向性（Original Intentionality）：指一种内在的、与生俱来的指向性或“关于性”（aboutness）。它是生物心智自然产生的功能，不需要依赖外部观察者的解释就能获得意义。</li>
+  <li>衍生意向性（Derived Intentionality）：指一种被赋予的、借来的指向性。物体本身没有任何意义，它的意义完全来自于拥有“原初意向性”的心智（也就是人）对其进行的解释或定义。
+人类拥有的是前者。我们的信念、欲望、恐惧、目标，根植于生物体、进化压力和生存需求，是不可外包的。AI 拥有的，只可能是后者。而衍生意向性的本质，不是“涌现”，而是注入。这不是修辞，也不是隐喻，而是一个工程事实。AI 的信念、目标、偏好、工作方式，并不是它“自己想出来的”，而是人类通过：</li>
+  <li>训练语料</li>
+  <li>对话上下文</li>
+  <li>文档</li>
+  <li>代码</li>
+  <li>工具调用约定
+一点点灌进去的。停止注入，意向就消失。模型不会感到无聊，不会密谋反叛，也不会“暗中计划”。它只会停止计算，退化为一堆静态参数。</li>
+</ol>
+
+<p>Prompt Engineering 曾短暂成为一项“技能”，对于理解语言、理解人性、理解模型行为的人来说，通过套话、诱导、结构化表达，可以在一定程度上“控制”模型输出。本质上，这是用人类的高阶意向性理解能力，去操纵一个尚不具备欺骗能力的统计系统。问题在于：
+这种方式门槛极高，并且每次都要从零开始。<strong>单次注入不难，难的是持续注入</strong>：换一个对话窗口，AI 就失忆； 换一个任务场景，偏好全部作废；每次都要重新解释“不要这样”“请那样”。谁能让注入一次、反复生效，谁就掌握了真正的杠杆。注入门槛 × 持续性 = 产品与生态的分水岭。</p>
+
+<p>上下文窗口是意向容器，工具链是意向注入脚手架。Skill 的本质：意向模式的固化。Prompt 是单次意图表达。<strong>A Skill is a markdown file that teaches Claude how to do something specific</strong>. 当你每次抱怨”别给我TODO、别自作聪明优化”，其背后都是一个潜在的Skill。Skill是操作性知识的固化，为了消除重复，是对操作者行为习惯的持续萃取。PS：之前总是对比agent/mcp</p>
+
+<p>一个完整的 Skill，至少包含四类信息：</p>
+<ol>
+  <li>信念：什么是“好”的结果</li>
+  <li>标准：如何判断对错</li>
+  <li>流程：你通常如何一步步完成</li>
+  <li>偏好：格式、风格、禁忌
+这些合在一起，不是答案，而是工作方式本身。Prompt 是一句话，Skill 是一部分你自己。Skill不能单独看，要和Prompt、MCP、Command、Hook一起看。编码中的快捷操作，多了、稳定了，就变成工作流；工作流固化下来，就是Skill；Skill足够复杂、能自动处理一连串任务时，就变成Agent。Skill足够复杂、能自动处理一连串任务时，就变成Agent。</li>
+</ol>
+
+<p>从目前来看，skill已经初步具备了，稳定可验证，复用可迁移的特性，作为作者：你把自己的工作方式注入给 AI，作为使用者：你调用别人已经注入过的方式。AI 的边界，不再由模型决定，而由人类愿意注入什么、又是否愿意承担后果来决定。PS：skill 一定是V1/V2/V3持续演化的。</p>
+
+<h2 id="与已有组件对比">与已有组件对比</h2>
+
+<p>skill的诞生是Anthropic 对于claude code在演进的过程中，淘汰了All-in-one的加载所有tools，采用了定义skills来渐进式加载提示词以减少上下文压力和幻觉现象的手段。</p>
+<ol>
+  <li>与agent对比，当我们一般说agent时，一般会提到loop（当然，workflow agent不是个loop），agent一般对目标负责（虽然很多时候能力不够导致效果不佳），部分场景是long-running/Long-horizon的，有时要维护状态（比如反问），业界最近在提Ralph Loop。从这个视角看，skill粒度是小于agent的，不大可能long-running 和有状态。此外，skill 只是一个静态的规范，与agent相同点是运行时仍需要llm驱动。</li>
+  <li>与mcp对比，在Claude Code中，Skills是提供Knowledge的（用 Markdown 教 AI 做事），而不是用于提供工具的。如果你想在Claude Code的system tools之外，额外给它配置一些其他的工具，那么似乎还是只能依赖MCP。实际上，Skills能做的事更多，你可以在里面配置流程、编码规范、业务知识、代码示例、各种规则等等，以及对于现有工具的调用指导，你都可以在Skills中描述。但是，引入新的工具还是得通过MCP。</li>
+  <li>MCP解决了工具集成的问题后，又出现了另一个问题。<strong>很多任务需要特定的执行顺序、规则和约束，但把这些步骤全部写成代码又不太现实</strong>。如何在尽可能的准确的前提下，能让用户能用文字（而非代码）指导模型按照特定的流程和规则执行任务？<strong>这就是Skills产生的原因</strong>，提供一个方式，让用户可以用文字定义指令、脚本和资源，形成可复用的任务流程。<strong>Agent将决策权完全下放给了 Agent 和 Prompt</strong>，能够解决原有写程序不能解决的问题——比如处理不确定性、动态调整策略、理解自然语言意图等。</li>
+  <li>MCP解决与既有系统的接驳问题，还有curl、bash等其它接驳方式，skill 使用命令行脚本或curl远程调用，在这个基础上，Skills还能支持更复杂的流程定义——通过SKILL.md文档告知LLM如何组合多个接口调用，所以长流程任务的成功率会更高。从这个视角mcp 与skill 是竞争关系。PS: skill是工具与提示词结合的典范。</li>
+  <li>工具和 Skill 的区别在于工具是框架提供的，而 Skill 仅是文本，前者框架完成就已经固定（需要严格的、机器可读的Schema Definition），后者 AI 可以自己理解（LLM In-Context Learning能力已经很强）、创建、修改。甚至有观点认为<strong>Skill最大的价值是Agent可以自己生成Skill</strong></li>
+</ol>
+
+<h2 id="claude-skills">Claude Skills</h2>
+
+<h3 id="是什么">是什么</h3>
+
+<p><strong>利用文件和文件夹构建专业智能体的新方式</strong>：Skill就是一个标准化的文件夹，用来打包Agent完成特定任务所需的知识、工作流和工具。可以把它理解成给模型的说明书或标准作业程序（SOP，或者之前比较火的概念：SPEC的增强版）。</p>
+
+<ol>
+  <li>SKILL.md, 核心文件，必须存在。告诉Claude在什么情况下、以及如何使用这个Skill。</li>
+  <li>YAML Frontmatter (元数据区)：里面用YAML写元数据（name和description）</li>
+  <li>Markdown Body (指令区)：用Markdown 详细说明了执行该任务的工作流程 (Workflow)、最佳实践、注意事项，以及如何调用 scripts 和 references 目录下的资源。
+  <img src="/public/upload/machine/skill_md.png" alt="" /></li>
+  <li><code class="language-plaintext highlighter-rouge">scripts/</code>：存放可执行的Python、Shell脚本。</li>
+  <li><code class="language-plaintext highlighter-rouge">references/</code>：存放参考文档。比如API文档、数据库Schema、公司政策等，这些是给Claude看的知识库。</li>
+  <li><code class="language-plaintext highlighter-rouge">assets/</code>：存放资源文件。比如PPT模板、公司Logo、React项目脚手架等，这些是Claude在执行任务时直接使用的文件，而不是阅读的。</li>
+</ol>
+
+<p>它把完成一个特定任务所需的一切都打包好了，本质上就是一种代码和资源的组织方式，一种约定优于配置的理念。当你的Agent能力越来越多时，怎么管理？一个几千行的System Prompt？一个包含几十个工具函数的大杂烩文件？这些都很难维护。而Skills提供了一种解耦的、模块化的方案（可组合性、可扩展性和可移植性）。你团队里的Agent不再是依赖一个巨大的、难以维护的system_prompt.txt，而是一个由几十个标准化的Skill文件夹组成的能力库，每个Skill都可以独立版本控制、测试和迭代。</p>
+
+<p>“Agent Skills” 更是一种架构思想和工程实践，其核心思路在所有主流 LLM 平台上都是通用的：</p>
+<ol>
+  <li>发现（Discovery）：Agent 如何知道“技能”的存在</li>
+  <li>加载（Loading）：Agent 如何在需要时获取技能的详细信息（即“渐进式披露”）</li>
+  <li>执行（Execution）：Agent 如何运行代码或调用 API</li>
+</ol>
+
+<h3 id="发现与加载">发现与加载</h3>
+
+<p>渐进式披露(Progressive Disclosure)，让Agent可以访问大量技能，但不会一次性“灌输式”教学，而是“按需加载”。“渐进式”的方式。</p>
+<ol>
+  <li>技能发现。会话开始时从SKILL.md文件的元数据区域加载名称与描述，用于发现技能。具体来说就是把name和description注入系统Prompt。</li>
+  <li>技能理解。当LLM识别需要使用某个Skill时，会加载该技能的完整SKILL.md，以了解真正的技能指南。</li>
+  <li>资源按需加载。在使用技能时，如果发现有额外的动态资源需要读取（文档、模板、脚本等），则按需加载对应资源。</li>
+</ol>
+
+<p>渐进式披露三层结构： 先元数据，再正文，再资源。</p>
+
+<h3 id="一些实践">一些实践</h3>
+
+<p>工程落地-定义技能元工具 (skill meta tools)：list_skill/get_skill/run_skill，在 system prompt 里强调这 3 个 tools</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>- 你具备很多与外部世界互动的能力，但需要通过 list_skill 来了解自己的能力；然后通过 get_skill 了解某项特定能力；最后可以通过 run_skill 来实施具体的能力；
+- 通过 list_skill、get_skill 了解到的能力，如果要执行，一定要走 run_skill 方法来执行
+</code></pre></div></div>
+
+<p>skill 很多怎么办 ?</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>人脑认知</th>
+      <th> </th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>希克定律与决策复杂性：大概意思是人类作出一个决策的反应时间与备选方案数量呈对数级增长；<br />认知负荷理论：人的工作记忆容量有限，当认知负荷超过工作记忆容量，学习和决策能力的表现会急剧下降——呈现阈值效应，而非渐进式衰退；</td>
+      <td>非线形渐变：随skills规模增大，任务选择的准确率非线形下降，而是呈现阈值效应，skill库达到某个阈值，准确率会急剧下降；</td>
+    </tr>
+    <tr>
+      <td>基于相似性的决策干扰：当多个线索、选型、信息太相似时，容易混淆，决策能力呈指数衰减；</td>
+      <td>任务选择准确率的退化，主要受skill间语义相似性驱动，而非单纯的skill技能库规模扩大所影响；添加语义相似性skill比添加等量普通skill，更严重降低准确率；</td>
+    </tr>
+    <tr>
+      <td>分层处理与分块理论：通过分层组织处理复杂性，按照记忆容量设置层级结构，逐步缩小选择范围，使庞大的选择集更易于管理；</td>
+      <td>通过分层实现缓解：当扁平化选择在skill规模超过阈值后失效，分层组织skills可以将复杂难处理的单一决策，转化为一系列可处理的子决策；</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>skill 太复杂怎么办？<a href="https://mp.weixin.qq.com/s/nClVag8tyw7wuG-V1rhmfQ">Skill 编排、Workflow 设计与 Spec Coding 的深度实践</a>阿里提出了 Workflow 概念，每一个 Workflow 是包含若干个单一职责的 Skill 的编排，通过 Workflow 将一个复杂的任务拆解成若干个步骤，每一步需要非常明确的告诉 AI 使用哪一个具体的 Skill。PS： 另一种形式的skill 分层，不过给上层skill 一个专属概念。</p>
+
+<h2 id="驱动skill的agent">驱动skill的agent</h2>
+
+<p>skill 不只是静态文件，涉及到agent 范式的调整：multi-agent  ==&gt; 单agent+skills（SAS），从始至终，与用户交互的只有一个 Agent。这意味着从需求讨论到最终生成实现计划，所有的对话、决策和中间产物都保留在同一个会话的上下文中。这需要一些配套措施</p>
+<ol>
+  <li>sub-agent 长耗时任务外包</li>
+  <li>渐进披露，规避Context爆炸。</li>
+  <li>压缩</li>
+</ol>
+
+<p>SAS 与single-agent的不同：SAS System Prompt是恒定的，核心的系统指令，比如人设身份、基础要求保持不变，确保模型认知的统一。而User Prompt是动态注入，Skills的内容是以“用户输入”或“工具返回结果”的形式，通过User Prompt渐进式地披露给模型。</p>
+
+<p>为了在长对话中兼顾连续性与效率，需在流程的关键节点引入了”微压缩”机制。压缩策略：</p>
+<ol>
+  <li>工具调用日志，折叠为调用类型+文件路径+关键发现。</li>
+  <li>大段文件内容，提取摘要，文件名+核心内容。</li>
+  <li>用户对话，完整保留所有原始内容。</li>
+  <li>agent决策，完整保留所有推理过程和结论。</li>
+  <li>产出文档，折叠为文档路径。 
+PS： 反问的实现也相对更简单。如果一个问题，都是预期10个工具可以解决，那单agent+skills 就走的通。</li>
+</ol>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code># 调用模型 ==&gt; 执行工具 → 捕获结果 → 附加到上下文 → 再次调用模型
+while not finisehd:
+    response = call_llm(context)
+    if response.tool_calls()
+        tool_result = act(response.tool_calls)
+        context.add(tool_result)
+</code></pre></div></div>
+<p>加上上下文预算和记忆分层</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code># 输入接入 -&gt; 上下文构建 -&gt; 预算治理 -&gt; 模型决策 -&gt; 工具执行 -&gt; 状态持久化 -&gt; 压缩/记忆更新 -&gt; 下一轮
+while not finished:
+    # 0. 接收外部输入 / follow-up / interrupt
+    ingest_new_messages()
+
+    # 1. 组装本轮上下文
+    context = build_context(
+        system_prompt,
+        recent_messages,          # 短期窗口
+        retrieved_memories,       # 长期记忆检索
+        tool_state,               # 工具结果摘要 / 状态快照
+        execution_state,          # 当前计划、阶段、pending action
+    )
+
+    # 2. 预算检查：太长就压缩
+    if over_context_budget(context):
+        recent_messages = compress_recent_messages(recent_messages)
+        tool_state = summarize_tool_results(tool_state)
+        context = rebuild_context(...)
+
+    # 3. 调模型
+    response = call_model(context)
+
+    # 4. 处理输出
+    if response.has_tool_calls():
+        tool_results = execute_tools(response.tool_calls)
+
+        # 5. 原始结果先落盘 / 落存储
+        persist_raw_tool_results(tool_results)
+
+        # 6. 只把“必要结果”附加回短上下文
+        recent_messages.append(minify_tool_results(tool_results))
+
+        # 7. 必要时写入长期记忆 / 更新状态
+        update_memory_and_state(tool_results, response)
+
+        continue
+
+    else:
+        output_to_user(response)
+        update_memory_and_state(None, response)
+        break
+</code></pre></div></div>]]></content><author><name>李乾坤</name></author><category term="技术" /><category term="MachineLearning" /><summary type="html"><![CDATA[简介]]></summary></entry><entry><title type="html">从chatbot到clawbot</title><link href="https://qiankunli.github.io/2026/02/02/openclaw.html" rel="alternate" type="text/html" title="从chatbot到clawbot" /><published>2026-02-02T00:00:00+08:00</published><updated>2026-04-06T19:07:21+08:00</updated><id>https://qiankunli.github.io/2026/02/02/openclaw</id><content type="html" xml:base="https://qiankunli.github.io/2026/02/02/openclaw.html"><![CDATA[<h2 id="简介">简介</h2>
+
+<p>AI的发展正在经历从“信息检索”到“任务执行”的范式转移。由Manus启蒙、OpenClaw破圈，AI以智能体的方式，开始能够自主规划执行路径、自主调用工具，代替人类完成自动化任务。OpenClaw是一个 Local-First (本地优先， vs manus 这种Cloud-native产品) 的 AI Agent 运行时环境，旨在将大模型（LLM）的能力与用户的本地系统、工具链和通讯软件深度结合。最擅长处理那些跨平台、需要系统级权限且带有自动化性质的任务。</p>
+<ol>
+  <li>IM 入口带来的体验质变</li>
+  <li>拟人，主动。会主动问你今天怎么样，会在完成任务后开个小玩笑，会记得你上次抱怨过什么。</li>
+  <li>Memory做的好。Memory 会是 ChatBot 产品的最大壁垒。</li>
+</ol>
+
+<p>OpenClaw第一次把”个人 AI 助理”这件事完整地具象化了。</p>
+<h2 id="架构">架构</h2>
+
+<p><img src="/public/upload/machine/openclaw.png" alt="" /></p>
+
+<p>编排流程</p>
+
+<ol>
+  <li>感知 (Observe)：接收用户消息 + 读取最近的 MEMORY 上下文 + 系统状态。</li>
+  <li>规划 (Plan/Reasoning)：LLM 进行思考（Chain-of-Thought），决定是否需要调用工具。</li>
+  <li>行动 (Act)：LLM 输出结构化 JSON (Tool Call)。Runtime 拦截并执行对应的 JavaScript 函数（如 read, exec）。</li>
+  <li>关键点：如果任务复杂，Agent 会自行决定生成并运行一段代码，或者 Spawn 一个 Sub-Agent（子智能体）。</li>
+  <li>反馈 (Reflect)：工具的输出（stdout/stderr/file）回传给 LLM，LLM 判断任务是否完成，未完成则继续循环。</li>
+</ol>
+
+<p>多智能体 (Sub-Agents)：通过 sessions_spawn 工具，主 Agent 可以分裂出子 Session 处理耗时任务（如：“帮我爬取这10个网站并总结”）。子 Agent 在独立上下文中运行，完成后回调主 Agent。</p>
+
+<p>OpenClaw 的核心是什么？在于 3 个文件。</p>
+<ol>
+  <li>SOUL.md（Agent如何思考与交流），SOUL.md 承担的工作比系统中任何其他组件都重，代理在每次对话开始时都会读取它，并将其作为沟通的基础，包括语气、回复的优先级、行为边界等。如果你的代理回复让你感觉哪里不对劲，但又说不出个所以然，答案通常就在这个文件里。</li>
+  <li>USER.md（代理在为谁工作）要提供足够的背景信息，让 OpenClaw 感觉它已经认识你几十年了。</li>
+  <li>MEMORY.md（代理长期记忆的内容）</li>
+</ol>
+
+<h2 id="关键设计">关键设计</h2>
+
+<h3 id="记忆的分层结构和记忆的按需加载file-system-式的">记忆的分层结构和记忆的按需加载（file system 式的）</h3>
+
+<p>Steinberger 提到OpenClaw 的哲学是：记忆属于用户。所有的交互历史和上下文都以 Markdown 文件形式存储在本地（把记忆当成工作区里的普通文件/ file‑first），这种透明且可迁移的“本地优先”模式，是保护个人隐私的最终防线（Local-First：数据不出门）。分层的、可搜索的、持久化的知识管理架构。</p>
+
+<p>OpenClaw 把记忆分成“文件层”和“索引层”两部分</p>
+<ol>
+  <li>文件层用 Markdown 组织知识与经验</li>
+  <li>索引层用 SQLite + FTS5 + 向量扩展做检索</li>
+</ol>
+
+<p><a href="https://mp.weixin.qq.com/s/xfqcMeEEZ1kXth-cyREoow">本地架构、记忆管理、Agent 编排与上下文组装原理</a> self-evolving, 没有 memory，Agent 基本上就没有进化的能力。比如反馈都做成 memory，写记忆就是写文件，记忆就是agent workspace 里的md文件。</p>
+<ol>
+  <li>Session Context(会话上下文， <code class="language-plaintext highlighter-rouge">sessions/*.jsonl </code>)， 仅存在于系统内部的会话状态流。用户无法直接访问或编辑， 完全由系统自动管理，包含 Compaction 逻辑。会话会持久化存储在一个基础的 .jsonl 文件中，每一行都是一个包含用户消息、工具调用、执行结果及模型响应的 JSON 对象。</li>
+  <li>Daily Logs(每日日志/流水， <code class="language-plaintext highlighter-rouge">memory/YYYY-MM-DD.md</code>)，当用户执行 /new 命令重置会话时，系统会触发 session-memory Hook，自动将上一个会话的关键内容转换为 Markdown 文件。
+    <ol>
+      <li>混合模式 (Hybrid): 既包含原始交互日志，也包含 Memory Flush 产生的自动摘要(在context 溢出时，会对历史会话进行压缩，压缩前会调用一次memoryFlush，从而提取重要事件)。</li>
+      <li>Append-only(只追加)。用户可读可写，系统自动加载“今天+昨天”。</li>
+    </ol>
+  </li>
+  <li>Curated Memory(精选记忆)，MEMORY.md。长期维护的、经过提炼的事实、偏好和决策。仅在主会话 (Main Session) 中加载，用户可手动编辑优化。</li>
+</ol>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>~/openclaw
+    /{agentId}/sessions
+    ├── main.jsonl              # 主会话
+    ├── telegram-123456.jsonl   # telegram群组会话
+    /workspace/
+    ├── MEMORY.md              - 第二层：经整理的长期知识库（跨越时间），会更新、删除、合并
+    └── memory/
+        ├── 2026-01-26-{slug}.md      - 第一层：日志记忆（按日期）
+        ├── 2026-01-25-{slug}.md      
+        ├── 2026-01-24-{slug}.md      
+        └── ...
+</code></pre></div></div>
+
+<p>AGENTS.md存着智能体的指令和记忆使用规则，示例如下：</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>每次会话的必做步骤
+开始任何操作前，需完成以下步骤：
+1. 读取SOUL.md文件——定义智能体的自身定位
+2. 读取USER.md文件——明确服务的用户信息
+3. 读取memory目录下今日和昨日的日志文件——获取近期上下文
+4. 若为「主会话」（与用户的直接聊天），额外读取MEMORY.md——获取长期记忆
+无需向用户申请权限，直接执行即可。
+</code></pre></div></div>
+<p>具体到记忆部分</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>## Memory Recall
+Before answering anything about prior work, decisions, dates, people, preferences, or todos: run memory_search on MEMORY.md + memory/*.md; then use memory_get to pull only the needed lines. If low confidence after search, say you checked.
+</code></pre></div></div>
+
+<p>Recall (召回)， Agent 则是通过两个接口实现与整个记忆系统的交互（写入则是标准的文件io）： memory_search/memory_get</p>
+<ol>
+  <li>memory_search， 给定自然语言查询，在 MEMORY.md、<code class="language-plaintext highlighter-rouge">memory/*.md</code>（以及可选的 sessions）里检索相关片段，并把结果作为一个结构化对象返回。system prompt会明确告诉模型：凡是涉及历史决策、长期偏好或之前提到过的信息，回答前应先调用这个工具。</li>
+  <li>memory_get：按路径和行号精确读取某段 Markdown 内容，帮模型做“按需展开”，避免一次性把整篇长文塞进上下文。</li>
+  <li>Compaction ：当会话上下文接近模型的 context 上限时，会静默触发一个内部 turn，请模型把当下对话中真正重要、值得长期保留的事实写入当天的 memory/YYYY-MM-DD.md，以降低后续上下文被裁剪时的信息损失（Memory Flush）。</li>
+</ol>
+
+<p>OpenClaw为记忆后端预留了插件 Slot，支持把记忆完全外置。</p>
+
+<h3 id="越用越懂你">越用越懂你</h3>
+
+<p>有一层对用户的理解，有人设 (SOUL.md)，对用户的理解（USER.md）。</p>
+
+<p>没有设计专属的 memory_write 工具，而是直接用智能体自带的、用于文件操作的标准write和edit工具完成记忆写入。agent的写入行为由 AGENTS.md 中的提示词规则驱动，不同的记忆内容会被写入不同的文件，形成了清晰的写入规则，不同触发场景对应不同的写入文件：</p>
+<ol>
+  <li>日常笔记、临时需要记录的内容，会写入memory/YYYY-MM-DD.md按日归档；</li>
+  <li>长期有效的事实、个人偏好、关键决策，会写入MEMORY.md作为核心知识库；</li>
+  <li>经验总结、工具的实操技巧，会写入AGENTS.md或TOOLS.md，让记忆和智能体的能力配置结合更紧密。</li>
+  <li>系统还会在两个关键节点自动执行记忆写入：
+    <ol>
+      <li>一是对话历史压缩前的记忆刷写阶段，</li>
+      <li>二是会话正式结束时，这两个节点的自动写入，能有效避免关键信息因对话结束或压缩而丢失。</li>
+    </ol>
+  </li>
+</ol>
+
+<p>Clawdbot 设计了自动索引构建功能，只要你保存了任意一个记忆文件（不管是智能体自动写入还是手动编辑），系统都会在后台自动触发索引构建流程，确保新内容能被快速检索。系统会用Chokidar工具监控文件变化，为了避免频繁写入触发重复操作，还设置了1.5秒的防抖延迟；然后，系统会把文件内容分成约400个token的文本块，相邻文本块会保留80个token的重叠区域，这样既能保证语义连贯，又能提高检索精度；接着每个文本块会被传入embedding模型，转换成1536维的embedding数据，最后存储在数据库里。过程中，会结合语义检索（向量检索）和关键词检索（BM25）两种方式，按 7:3 的权重计算最终检索得分，公式如下<code class="language-plaintext highlighter-rouge">最终得分 = 0.7 × 向量检索得分 + 0.3 × 关键词检索得分</code></p>
+
+<p>OpenClaw 的所有数据，包括对话历史、会话状态、工作文件、记忆钩子，全部持久化在本地文件系统中。每一次交互都在积累上下文，Agent 越用越懂你。这不是”聊天记录存档”那么简单，而是一个持续生长的<strong>个人数据中心</strong>。</p>
+
+<h3 id="更主动heartbeat心跳与-cron定时系统">更主动——Heartbeat（心跳）与 Cron（定时）系统</h3>
+
+<p>这些系统让它从一个被动工具变成了一个后台协作伙伴。</p>
+
+<ol>
+  <li>
+    <p>心跳是一个预设的间隔时间，代理会自主醒来，检查你要求它监控的任务列表，并决定发现的内容是否值得通过消息平台联系你。</p>
+
+    <p><img src="/public/upload/machine/openclaw_heartbeat.jpg" alt="" /></p>
+  </li>
+  <li>
+    <p>Cron 系统处理需要精确时间的任务，而不是周期性扫描。这就像让 ChatGPT 定时推送新闻一样。心跳和 Cron 的区别在于：一个是特定时间点（日/周），另一个是主动的意识检查。不要在应该用心跳的时候用 Cron，反之亦然。</p>
+
+    <p><img src="/public/upload/machine/openclaw_cron_job_1.jpg" alt="" /></p>
+
+    <p><img src="/public/upload/machine/openclaw_cron_job_2.jpg" alt="" /></p>
+  </li>
+</ol>
+
+<p>大多数人的 OpenClaw 配置不尽如人意，并不是因为缺少某个文件，而是文件之间不匹配。如果你的代理有详细的 SOUL.md 但记忆是空的，你可能会得到回复语气很漂亮但完全不记得昨天聊了什么的代理。同理，一个有激进心跳监控但 USER.md 极其单薄的代理，发出的通知虽然技术上准确，但完全不符合你的关注点。这两种情况都要避免。与其只花一小时试用一下就决定它是否值得，我建议额外花几个小时按你的期望设置好所有系统。记住：Soul 文件中的性格定义应与 User 文件中的背景对齐，两者应与 Memory 中的信息对齐，最后与 Heartbeat 中的监控优先级对齐。</p>
+
+<h3 id="插件和skills系统设计">插件和Skills系统设计</h3>
+
+<p>Agent实践的一个关键瓶颈：大多数智能体的“能力”仍嵌在提示词或硬编码逻辑中——难以复用、适配与系统化推理。PS：经验的标准化与售卖。</p>
+
+<p>OpenClaw核心系统只做最基础的事情——消息路由、模型调用、上下文管理、安全沙箱，其他所有功能都通过插件和Skills（自然语言定义的软体接口）来实现，这种”核心精简、外围开放”的架构模式，才是做平台型产品的正确姿势。而且它的Skills系统设计得特别工程化。每个Skill就是一个标准格式的配置文件加一个执行脚本，有manifest描述元信息，有input/output schema定义接口，有sandbox配置指定权限边界。</p>
+
+<p>skill分为三个层级，优先级从高到低：</p>
+<ol>
+  <li>Bundled Skills：项目自带的内置技能。OpenClaw 官方提供，覆盖了编码、写作、研究等常见任务。</li>
+  <li>Managed Skills：位于 <code class="language-plaintext highlighter-rouge">~/.openclaw/skills/</code>，对该用户的所有项目生效。用户可以通过简单的命令从 ClawHub（OpenClaw 官方维护的一个skill registry） 安装和更新这些技能，就像使用一个应用商店一样。Agent 甚至可被授权自行搜索并安装新技能，以完成超出其当前能力范围的任务。</li>
+  <li>Workspace Skills：位于当前项目目录 <code class="language-plaintext highlighter-rouge">~/.openclaw/workspace/skills/</code>，仅对该项目生效。每个 skill 一个子目录</li>
+</ol>
+
+<p>将“做什么”（自然语言描述）和“怎么做”（代码实现）分离，极大地降低了扩展难度。非程序员甚至可在 AI 协助下，通过修改 <code class="language-plaintext highlighter-rouge">.md</code> 文件微调 Agent 的行为。</p>
+
+<h3 id="工具系统安全沙箱机制扩展-or限制-ai-的能力边界">工具系统/安全沙箱机制/扩展 or限制 AI 的能力边界</h3>
+
+<p>OpenClaw 的几大核心工具：</p>
+
+<ol>
+  <li>文件系统工具：支持读取、写入和编辑。</li>
+  <li>进程管理 (Process tool)：用于处理后台长期运行的命令、终止进程等。</li>
+  <li>浏览器工具：基于 Playwright 开发，并使用“语义快照”（vs 截图/cdp）。这是一种基于文本的页面可访问性树（Accessibility Tree / ARIA） 的表示形式（浏览网页的行为本质上并不一定是一项视觉任务，一张截图的大小可能有 5 MB，而语义快照通常不到 50 KB）。智能体（Agent）看到的页面结构如下：
+ ```
+    <ul>
+      <li>button “Sign In” [ref=1]</li>
+      <li>textbox “Email” [ref=2]</li>
+      <li>textbox “Password” [ref=3]</li>
+      <li>link “Forgot password?” [ref=4]</li>
+      <li>heading “Welcome back”</li>
+      <li>list</li>
+      <li>listitem “Dashboard”</li>
+      <li>listitem “Settings”
+ ```</li>
+    </ul>
+  </li>
+  <li>Canvas。Agent 可以通过 canvas 工具，在一个可视化的界面上动态地创建、更新和展示内容。它基于一个名为 A2UI 的框架，允许 AI 以一种超越文本的方式来呈现信息和与用户交互，例如实时绘制图表、展示流程图、标注图片等。</li>
+  <li>节点 (Nodes)节点工具是 OpenClaw 连接物理设备能力的体现。通过在 macOS、iOS 或 Android 设备上运行的节点应用，OpenClaw 的主服务（Gateway）可以远程调用这些设备的原生功能，例如：
+    <ol>
+      <li>camera.snap: 控制手机摄像头拍照。</li>
+      <li>screen.record: 录制设备屏幕。</li>
+      <li>location.get: 获取设备的地理位置。</li>
+      <li>system.notify: 在设备上发送系统通知。</li>
+    </ol>
+  </li>
+  <li>Cron 工具为 OpenClaw 带来了“记忆”和“计划”的能力。</li>
+  <li>Webhooks。Webhooks 允许 OpenClaw 接收来自其他第三方应用或服务的主动推送。这意味着 OpenClaw 可以被动地响应外部事件，例如，当 GitHub 仓库有新的代码提交时，自动触发一次代码审查流程。</li>
+</ol>
+
+<p>强大的能力也伴随着安全风险。OpenClaw 对此有周全的考虑。工具的执行受到严格的权限控制。在沙箱（Sandbox）模式下，可以限制某些会话（例如，来自群聊的请求）只能使用安全的、经过授权的工具，从而防止潜在的恶意操作。</p>
+
+<p>AI Agent和普通chatbot最大的区别是什么？是它能执行真实操作——跑命令、改文件、发请求、调API。这个能力是双刃剑，问题是怎么降低风险、怎么控制爆炸半径。</p>
+<ol>
+  <li>默认情况下Agent执行任何敏感操作都需要用户确认，文件操作只能在指定目录里搞，网络请求有白名单限制，系统命令要过审批。</li>
+  <li>Docker部署的话更狠——非root用户运行、文件系统可以设成只读、capabilities全部drop掉。</li>
+  <li>还有个openclaw security audit –deep命令，能扫描当前配置有没有安全隐患，扫完给你出报告告诉你哪里有风险、怎么修。
+OpenClaw的安全策略明确写了”prompt injection attacks are out of scope”——就是说它不试图防prompt注入，因为以现在的技术这玩意防不住。它的思路是：既然prompt注入防不住，那就假设Agent会被”骗”，然后在执行层面做限制，让Agent就算被骗了也干不了太出格的事。</li>
+</ol>
+
+<h3 id="用户交互">用户交互</h3>
+
+<p>在传统软件工程中，构建一个全功能应用通常需要前端（React/Vue）、后端（Node/Python/Rust）和数据库的紧密配合，形成复杂的 MVC 或 MVVM 架构。而 OpenClaw 采取了激进的“无界面”（Headless）设计策略，将即时通讯软件（IM）提升为唯一的交互界面（UI）。</p>
+
+<p>IM 即任务入口</p>
+<ol>
+  <li>基本上你能想到的平台OpenClaw都支持。每个平台的消息格式不一样、富文本能力不一样、附件限制不一样、webhook机制不一样、rate limit不一样。Clawdbot的做法是搞了一个WebSocket Gateway作为中心枢纽，所有平台的消息都先转成统一的内部格式进Gateway，处理完再转成各平台的格式出去，中间的AI Agent只处理标准格式的输入输出。每个平台对应一个Channel Adapter，Adapter只负责格式转换这一件事，业务逻辑一行都没有。</li>
+  <li>CLI系统。OpenClaw有100多个CLI子命令，能干的事情包括但不限于：管理Skills、配置插件、调试Agent、查看日志、管理记忆、做安全审计、导入导出数据。为什么这很重要？因为CLI是最被低估的用户体验。</li>
+</ol>
+
+<p>默认情况下，系统采用配对模式（Pairing Mode）。当一个陌生的用户首次向您的 AI 助手发送消息时，系统并不会处理该消息，而是会自动回复一个一次性的“配对码”。只有您（作为管理员）在 OpenClaw 的命令行中执行 <code class="language-plaintext highlighter-rouge">openclaw pairing approve &lt;配对码&gt;</code> 命令，确认授权该用户访问后，这位用户才能正式与您的 AI 助手进行对话。这就像是为您的数字家庭设置了一个可靠的门禁系统。</p>
+
+<h2 id="源码">源码</h2>
+
+<p>从技术上讲 是一个 TypeScript CLI 应用程序，一个 Node.js 应用。核心配置文件位于 <code class="language-plaintext highlighter-rouge">~/.clawdbot/clawdbot.json</code>，在此调整模型参数、渠道设置、安全策略等。</p>
+<ol>
+  <li>运行在你机器上的进程，并暴露一个 网关服务器（Gateway Server） 来处理所有频道连接（Telegram, WhatsApp, Slack 等）。</li>
+  <li>调用 LLM API（Anthropic, OpenAI, 本地模型等）。</li>
+  <li>在本地执行工具。</li>
+  <li>根据你的指令操控电脑。</li>
+</ol>
+
+<p>Channel Adapter ==&gt; Gateway Server ==&gt; Agent Runner ( loop[build context ==&gt; llm call] ==&gt; save response ) ==&gt;  Gateway Server ==&gt; Channel (outbound)Adapter。</p>
+
+<p>Agent Runner 内模型在处理每个请求时到底看到了什么：</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>[0] 系统提示词 (System Prompt) (静态+条件指令) 
+[1] 项目上下文 (引导文件: AGENTS.md, SOUL.md 等) 
+[2] 对话历史 (消息, 工具调用, 压缩摘要) 
+[3] 当前消息
+</code></pre></div></div>
+
+<h3 id="内核-pi">内核 Pi</h3>
+
+<p>OpenClaw把 Pi 以 SDK 方式嵌入到 Gateway 架构里，Gateway 是整个服务端运行时和唯一控制平面。消息渠道的生命周期管理、Agent 事件分发、定时任务调度、插件加载、浏览器自动化、设备节点注册、会话和状态存储——全部都绑在这个长期运行的 <strong>WebSocket 进程上</strong>(<code class="language-plaintext highlighter-rouge">127.0.0.1:18789</code>)。其架构可以概括为一个以Gateway(网关)为核心的控制平面的分布式系统。</p>
+<ol>
+  <li>Pi 提供的是“通用引擎”——模型抽象、流式推理、agent loop、工具执行这些底层机制；
+    <ol>
+      <li>Pi 整套系统提示词加工具定义加起来不到 1000 tokens。核心只有 read、write、edit、bash 四个工具。</li>
+      <li>在 Pi 的设计中，也明确了几个主动选择「不做」的功能：
+        <ol>
+          <li>不支持 MCP。 给出的替代方案是，写 CLI 工具配 README 文件。agent 需要某个工具时才读对应的 README，按需付出 token 成本，然后用 bash 调用。</li>
+          <li>不内置 plan mode。直接告诉 agent “我们先一起想清楚这个问题，不要改文件也不要执行命令”就够了。</li>
+          <li>不内置 to-do 系统。Mario 的经验是，to-do 列表通常让模型更困惑而不是更高效，增加了模型需要追踪和更新的状态，会引入更多出错的机会。</li>
+          <li>不做后台 bash。后台进程管理会引入大量复杂性，进程追踪、输出缓冲、退出清理、向运行中的进程发送输入。</li>
+          <li>不内置 SubAgent。在这一点上，Mario 的态度最坚决。Claude Code 执行复杂任务时经常在背后生成 SubAgent，完全看不到子 agent 的对话过程，属于「黑箱里的黑箱」。</li>
+        </ol>
+      </li>
+    </ol>
+  </li>
+  <li>OpenClaw 则负责“车身和交通规则”——会话怎么建、怎么存、怎么分支，实例怎么发现，怎么连到 WhatsApp / Telegram / Discord 这类 IM 通道，以及怎么接沙盒与各种外部系统。</li>
+</ol>
+
+<p>代码里导入 Pi 的包，通过 createAgentSession() 实例化 AgentSession，让 Pi 在进程内承担推理与工具循环。</p>
+
+<p>主循环架构 (runEmbeddedPiAgent in run.ts)</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>runEmbeddedPiAgent()
+  └── while (true) {  // 行538 - 主重试循环
+        ├── 检查重试次数限制 (MAX_RUN_LOOP_ITERATIONS)
+        ├── 调用 runEmbeddedAttempt()  // 单次推理尝试
+        ├── 处理 context overflow → 自动压缩
+        ├── 处理 auth failure → profile轮换
+        ├── 处理 timeout → 重试或报错
+        └── 成功则返回 payloads
+      }
+</code></pre></div></div>
+<p>单次推理尝试 (runEmbeddedAttempt in run/attempt.ts)</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>runEmbeddedAttempt()
+  ├── 1. 准备阶段
+  │     ├── 创建 workspace 和 session
+  │     ├── 解析 tools (createOpenClawCodingTools)
+  │     ├── 构建 system prompt
+  │     └── 创建 session manager
+  │
+  ├── 2. 会话初始化
+  │     ├── createAgentSession()  // 行688
+  │     ├── 设置 streamFn (LLM调用函数)
+  │     └── 安装事件订阅器 subscribeEmbeddedPiSession()  // 行921
+  │
+  ├── 3. 执行推理
+  │     ├── await activeSession.prompt(effectivePrompt)  // 行1180-1182
+  │     │   └── 调用 LLM API(streamSimple/streamFn)
+  │     │
+  │     └── 事件流处理:
+  │           ├── message_start/message_update/message_end  → handleMessageStart/Update/End
+  │           ├── tool_execution_start/update/end          → handleToolExecutionStart/Update/End
+  │           └── agent_start/agent_end                   → handleAgentStart/End
+  │
+  └── 4. 返回结果
+        ├── assistantTexts(生成的文本)
+        ├── toolMetas(工具调用元数据)
+        └── usage(token使用统计)
+</code></pre></div></div>
+<p>Context（上下文） = OpenClaw 在一次运行中发送给模型的所有内容</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Context 窗口
+    系统提示词（OpenClaw 构建）
+        工具列表 + 描述
+        Skills 列表（仅元数据）
+        工作区位置 + 时间 + 运行时元数据
+        注入的工作区文件（AGENTS.md, SOUL.md, TOOLS.md...）
+    对话历史（用户消息 + 助手消息）
+    工具调用 / 结果 + 附件（图片 / 音频 / 文件）
+    Compaction 摘要 + Pruning 产物
+</code></pre></div></div>
+<p>当会话接近或超过上下文窗口时，OpenClaw 自动触发压缩：<code class="language-plaintext highlighter-rouge">旧消息 ──→ LLM 总结 ──→ 紧凑摘要条目 ──→ 持久化到 JSONL</code></p>
+
+<p><img src="/public/upload/machine/context_compression_1.jpg" alt="" /></p>
+
+<p><img src="/public/upload/machine/context_compression_2.jpg" alt="" /></p>
+
+<h3 id="长期运行">长期运行</h3>
+
+<p>很多 agent 失败，不是因为不会做，而是因为做着做着就忘：上下文一压缩，关键背景就被挤出去，最后变成反复重讲、反复试错。OpenClaw 的解法：能分支、能回放、能压缩。</p>
+<ol>
+  <li>两层持久化：
+    <ol>
+      <li><code class="language-plaintext highlighter-rouge">sessions.json</code>：小而可变的 session store，像索引表，记录元信息（当前 session、上次活动、计数器、toggle、压缩周期状态等）。</li>
+      <li><code class="language-plaintext highlighter-rouge">*.jsonl</code> transcript：追加写的事件日志，才是真正的“会话历史”。它不只是聊天记录，还会包含工具调用、压缩摘要、分支摘要等条目。</li>
+    </ol>
+  </li>
+  <li>树状 transcript：
+    <ol>
+      <li>transcript 的条目用 id/parentId 形成树结构，于是你可以开“支线”（基于 forkSessionFromParent()）处理脏活（比如修一个坏掉的工具、尝试两套方案），做完再回到主线；支线发生的事可以被总结成 branch_summary 带回主线。这极大降低了长期任务最常见的成本：“修工具把主对话上下文污染掉”。</li>
+    </ol>
+  </li>
+  <li>压缩前落盘（最硬的一步）：
+    <ol>
+      <li>在自动 compaction 触发前，OpenClaw 会先跑一轮静默的 memory flush：当上下文使用接近阈值时，先强制 agent 把关键持久状态写进工作区文件（例如当天的记忆/状态文件），并用 NO_REPLY 让用户无感。</li>
+      <li>你可以把它理解成：先把命根子写进硬盘记忆，再允许短期上下文被压缩。长任务因此不靠“模型记性好”，而靠“系统先把该留的留住”。</li>
+    </ol>
+  </li>
+</ol>
+
+<p>为了让“长期运行”更可控，OpenClaw 还会加载自定义扩展做护栏：</p>
+<ol>
+  <li>Compaction Safeguard：给压缩加保护（例如更稳的 token 预算、工具失败/文件操作的必要摘要），避免压缩把执行语义压坏。</li>
+  <li>Context Pruning：更可控的上下文修剪策略（比如基于缓存 TTL），防止上下文无限膨胀，同时避免粗暴裁剪剪断关键线索。</li>
+</ol>
+
+<h3 id="sub-agent">sub-agent</h3>
+
+<p>表面上看，SubAgent 解决的是「并行执行」问题——多个任务同时推进，提升效率。。然而事实上，拆分 Agent 不只是为了”分工”，更是为了”上下文压缩”或者说”上下文隔离”。</p>
+<ol>
+  <li>System Prompt 完全不同。Subagent 的提示是”聚焦式”的，强调专注任务、不发起对话；</li>
+  <li>工具集（ToolRegistry）完全不同且受限</li>
+  <li>消息历史完全隔离，Subagent 没有对话历史，每次都是”全新”的开始；</li>
+  <li>最大迭代次数不同，Subagent 执行的任务应该是相对独立的和快速的，避免子代理运行过久占用资源。</li>
+  <li>结果处理方式不同，Subagent 的结果通过 MessageBus 通知 Main Agent，Main Agent 再转发给用户</li>
+</ol>
+
+<h2 id="可观测性">可观测性</h2>
+
+<p><a href="https://mp.weixin.qq.com/s/W1n69rhyOUVU5eKUAqGPnA">你的 OpenClaw 真的在受控运行吗？</a> 未读</p>
+
+<h2 id="畅想汇总">畅想汇总</h2>
+<ol>
+  <li>每个人有一个bot，bot 与bot 可以交流</li>
+  <li>我们可以预见，未来的个人计算设备，可能不再是一个个独立的 App 图标的集合，而是一个由类似 Clawd 这样的 AI Agent 作为核心交互界面的“个人 AI 操作系统”。用户通过自然语言下达任务，AI Agent 则负责调度设备上的所有硬件、软件和服务资源来完成它。</li>
+</ol>
+
+<p>几个变化</p>
+<ol>
+  <li>从“提示词工程”转向“系统级适配”。OpenClaw核心设计理念在于<strong>将智能体定义为磁盘上的文件集合</strong>，而非单纯的代码或需反复注入的提示词。记忆以 Markdown 文件的形式持久化存在于工作区中。这一转变使智能体从一次性脚本升维为可版本控制的基础设施，进而倒逼模型厂商在构建 LLM 时，必须确保模型具备处理模块化、动态组装指令堆栈的能力。模型不仅需理解单一 Prompt，更要在包含 session 历史、技能定义及内存检索结果的复杂系统提示词中，保持推理的稳定性，避免因结构复杂化而“迷失”。</li>
+  <li>内化“上下文管理”能力以应对长程任务。传统的 Agent 通常将上下文管理看作是一个外部的动作：由开发者预设死规则，硬性截断，或或调用另一个更便宜的模型把旧对话总结成一段话，再喂给主模型。随着交互轮次增加，模型看到的是一个被开发者阉割过的上下文，这会导致模型产生幻觉或逻辑不连贯。而将“上下文管理”从外部逻辑转化为 Agent 的内在行为，已经成为当前的集中实践。例如 Letta/MemGPT 能通过一套分页 (Paging) 算法，让 Agent 通过函数调用，<strong>自主地将旧记忆从上下文移动到外部存储</strong>，或者根据当前需求从外部提取特定历史。Mem0 则用 LLM 提取出结构化的事实并与现有记忆进行冲突检测，并将其转化为结构化的记忆条目存入向量数据库。</li>
+  <li>自进化。目前的智能体往往依赖人工写好的专用工具和固定流程：在熟悉任务里表现不错，但一旦进入开放世界，遇到信息噪声、目标变化、环境随机性或工具缺失，就很容易“卡住”。我们认为，通往 AGI 的关键不只是“能在很多领域用”，更重要的是在面对从未见过的新环境、新规则、新任务时，仍能自主进化学习——边做边吸收经验、沉淀通用能力，并在与环境的交互中持续提升，而不是靠人工补齐工具、改流程或额外训练来“续命”。在新环境里真正决定“能不能动起来”的往往是 tools——没有合适工具，再强的规划与记忆也会被功能边界锁死。基于此，我们首先<strong>以“工具自进化”为核心路径</strong>（Context、Tools、Workflow各自如何进化），让智能体在任务中自动生成、优化并复用新工具，并将有效能力沉淀为可迁移的通用工具库。</li>
+</ol>]]></content><author><name>李乾坤</name></author><category term="技术" /><category term="MachineLearning" /><summary type="html"><![CDATA[简介]]></summary></entry><entry><title type="html">typescript学习</title><link href="https://qiankunli.github.io/2026/01/25/typescript.html" rel="alternate" type="text/html" title="typescript学习" /><published>2026-01-25T00:00:00+08:00</published><updated>2026-03-05T21:12:44+08:00</updated><id>https://qiankunli.github.io/2026/01/25/typescript</id><content type="html" xml:base="https://qiankunli.github.io/2026/01/25/typescript.html"><![CDATA[<h2 id="简介">简介</h2>
+
+<p>JavaScript 作为一门拥有悠久历史的脚本语言，几乎无处不在，而 TypeScript 作为其超集，它们之间最核心的区别在于 静态类型系统（意味着变量的类型在程序中的任何时候都不能改变）。 TypeScript 代码需要先编译成 JavaScript 才能在浏览器中运行。</p>
+
+<h2 id="基础知识">基础知识</h2>
+
+<p>TypeScript 的设计哲学可以总结为一句话：在不改变 JavaScript 运行行为的前提下，为其提供强大的静态分析能力。很大程度上是为了让编辑器（VS Code）更智能而存在的。</p>
+<ol>
+  <li>类型擦除 (Type Erasure)。TS 的类型系统是完全独立于运行时的（不是给运行引擎看的指令），类型仅在编译时存在。一旦编译完成，所有的接口、类型声明都会像雾气一样消散，剩下的只有纯净的 JavaScript。虽然 Python 的 Type Hints 运行也不强制约束，但 Python 至少在运行时可以通过 <code class="language-plaintext highlighter-rouge">__annotations__</code> 查到类型信息。</li>
+  <li>结构化类型 (Structural Typing)。TS 奉行“鸭子类型”。</li>
+  <li>非侵入性 (Non-invasive)。TS 尽量不引入新的运行时语法（除了少数如 enum 和 namespace 的历史遗留）。如果你把一个 TS 文件的所有类型标注删掉，它应该是一个合法的 JS 文件。</li>
+</ol>
+
+<h3 id="变量">变量</h3>
+
+<ol>
+  <li>声明变量有三种方式： const 、 let 和 var 。其中 var 是旧的声明方式，存在变量提升等问题，不推荐使用。常用的是const vs let
+    <ol>
+      <li>const声明一个常量，一旦赋值就不能再修改引用，对于对象和数组，虽然引用不能修改，但对象的属性或数组的元素可以修改，必须在声明时初始化</li>
+      <li>let 声明一个变量，值可以被修改，可以在声明时初始化，也可以稍后初始化。</li>
+    </ol>
+  </li>
+  <li>export 关键字在 TypeScript（以及 ES 模块系统）中用于控制模块成员的 可见性 ，决定哪些成员可以被其他模块访问。</li>
+</ol>
+
+<h3 id="类型">类型</h3>
+
+<p>Object 是 JavaScript 的基础构造单位，几乎一切都是 Object（一个增强版的 dict，本质 hash 表 + prototype，动态语言的极致表达自由）。所以看起来，在js 里 创建个变量 <strong>形式上都是 {}+ kv</strong> （<code class="language-plaintext highlighter-rouge">const user = { name: "Tom", age: 18 }</code>）。TS 运行时仍然是 JS object，在编译期给 object 增加“形状约束”（并没有引入真正的 struct，考虑到ts 要100% 兼容js，TS 不能改变 JS 的运行模型）。</p>
+
+<div class="language-ts highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">type</span> <span class="nx">User</span> <span class="o">=</span> <span class="p">{</span>
+  <span class="na">name</span><span class="p">:</span> <span class="kr">string</span>
+  <span class="na">age</span><span class="p">:</span> <span class="kr">number</span>
+<span class="p">}</span>
+
+<span class="kd">const</span> <span class="nx">x</span> <span class="o">=</span> <span class="p">{</span>
+  <span class="na">name</span><span class="p">:</span> <span class="dl">"</span><span class="s2">Tom</span><span class="dl">"</span><span class="p">,</span>
+  <span class="na">age</span><span class="p">:</span> <span class="mi">18</span><span class="p">,</span>
+  <span class="na">extra</span><span class="p">:</span> <span class="kc">true</span>
+<span class="p">}</span>
+
+<span class="kd">const</span> <span class="nx">u</span><span class="p">:</span> <span class="nx">User</span> <span class="o">=</span> <span class="nx">x</span> <span class="c1">// 可以</span>
+</code></pre></div></div>
+
+<p>python（动态类型语言 + nominal typing/名义类型系统，类型由“名字”决定）如果你定义了 class User，那么只有 User() 实例才被认作 User。即使一个 dict 的 KV 结构和 User 一模一样，它也不是 User。TS( structural typing/结构类型系统，类型由“形状”决定) 的类型定义（Interface/Type）是一份“数据契约”(<strong>形式上也是 {}+ kv</strong>)，只要你的 {}（Dict）里有KV 与user 结构兼容就可以视为user。</p>
+
+<ol>
+  <li>在 TypeScript 中，any 类型被称为 top type。所谓的 top type 可以理解为通用父类型，也就是能够包含所有值的类型。any 类型本质上是类型系统的一个逃生舱口，TypeScript 允许我们对 any 类型的值执行任何操作，而无需事先执行任何形式的检查。如果代码里使用了大量的 any，那 TypeScript 也就失去了意义，所以我们应该尽量避免使用 any 。</li>
+  <li>为了解决 any 类型存在的安全隐患，在 TypeScript 3.0 时，引入一个新的 top type —— unknown 类型。同 any 一样，你也可以把任何值赋给 unknown 类型的变量。两者有啥区别呢？「any 类型：我不在乎它的类型，unknown 类型：我不知道它的类型。」你可以把它理解成类型安全的 any 类型。相比 any 类型，TypeScript 会对 unknown 类型的变量执行类型检查</li>
+  <li>interface只存在于编译阶段。当你把 TS 编译成 JS 后，interface 会被彻底抹除。它不占用任何运行时的内存。类似python中的TypedDict。
+    <ol>
+      <li>Declaration Merging. 同名的 interface自动合并。</li>
+    </ol>
+  </li>
+  <li>class是 JavaScript 的原生特性。编译后，class 依然存在于 JS 文件中。它既是类型，也是一个可以用来 new 的实体。
+    <ol>
+      <li>如果你不只是想描述数据，还想给数据绑定复杂的逻辑代码（如处理函数）。</li>
+      <li>如果你需要用到 instanceof（因为 interface 运行阶段不存在，没法 instanceof）。</li>
+    </ol>
+  </li>
+</ol>
+
+<h3 id="包">包</h3>
+
+<p>在早期的 npm 中，包名是全局唯一的（先到先得）。比如你注册了 utils 这个名字，别人就不能用了。随着开发者越来越多，好名字都被占光了，而且还容易出现“冒充”或“命名冲突”。为了解决这个问题，npm 引入了 Scope（作用域），@ 符号表示这是一个 Scoped Package（作用域包），格式为 <code class="language-plaintext highlighter-rouge">@scope/package-name</code>。</p>
+
+<h2 id="运行">运行</h2>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>/my-app
+├── package.json      # 项目管理配置, 运行方 npm / pnpm
+├── tsconfig.json     # 规定 TS 语法检查的严格程度、转换成哪个版本的 JS, 运行方tsc(TypeScript 编译器)
+├── node_modules/     # 存放：下载回来的代码（由 package.json 决定）
+└── src/
+    └── index.ts      
+</code></pre></div></div>
+
+<table>
+  <thead>
+    <tr>
+      <th>python</th>
+      <th>nodejs</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>pyproject.toml</td>
+      <td>package.json</td>
+    </tr>
+    <tr>
+      <td>uv.lock</td>
+      <td>package-lock.json</td>
+    </tr>
+    <tr>
+      <td>Makefile</td>
+      <td>package.json 的 scripts</td>
+    </tr>
+    <tr>
+      <td>venv/lib/python3.x/site-packages</td>
+      <td>node_modules，每个项目一个，如使用npm则会跨项目重复下载依赖包，pnpm则会通过硬链接机制来优化这个问题</td>
+    </tr>
+    <tr>
+      <td>npm / pnpm, <code class="language-plaintext highlighter-rouge">npm run</code></td>
+      <td>uv,<code class="language-plaintext highlighter-rouge">uv run</code></td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">python main.py</code> 启动入口文件main.py</td>
+      <td><code class="language-plaintext highlighter-rouge">node index.js</code>启动入口文件index.ts，在 index.ts 里定义一个 bootstrap() 或 main() 函数，并在文件底部调用它。</td>
+    </tr>
+    <tr>
+      <td>Python 会去 site-packages 找包</td>
+      <td>Node.js 会先看当前目录的 node_modules，找不到再往上一层找。</td>
+    </tr>
+    <tr>
+      <td>源码直接放根目录</td>
+      <td>源码必须放src文件夹里</td>
+    </tr>
+    <tr>
+      <td>Pydantic</td>
+      <td><code class="language-plaintext highlighter-rouge">@sinclair/typebox</code></td>
+    </tr>
+  </tbody>
+</table>
+
+<p>在你的 package.json 里，通常会看到这样的配置：</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>"scripts": {
+  "dev": "tsx src/index.ts",        // 开发时直接运行
+  "build": "tsc",                   // 打包成 JS
+  "start": "node dist/index.js"     // 生产环境运行编译后的代码
+}
+</code></pre></div></div>
+<p>初次接触一个项目，一般从 package.json 开始， 了解项目的整体依赖和核心脚本命令。</p>]]></content><author><name>李乾坤</name></author><category term="技术" /><category term="WEB" /><summary type="html"><![CDATA[简介]]></summary></entry><entry><title type="html">Agent前端</title><link href="https://qiankunli.github.io/2026/01/24/agent_frontend.html" rel="alternate" type="text/html" title="Agent前端" /><published>2026-01-24T00:00:00+08:00</published><updated>2026-03-01T14:58:22+08:00</updated><id>https://qiankunli.github.io/2026/01/24/agent_frontend</id><content type="html" xml:base="https://qiankunli.github.io/2026/01/24/agent_frontend.html"><![CDATA[<h2 id="简介未完成">简介（未完成）</h2>
+
+<h2 id="a2ui">A2UI</h2>
+
+<p><a href="https://mp.weixin.qq.com/s/-KZ_LmQ_s29HeEZAi24yAw">从Agent视角看A2UI：智能体终于学会了用界面”说话”</a></p>
+
+<p>A2UI（Agent-to-User Interface，智能体到用户界面）是一个开放协议，旨在让 AI 智能体能够以安全、原生且高性能的方式驱动用户界面。简而言之：让远程AI智能体在不向客户端发送危险的可执行代码的情况下，生成复杂的交互式界面。它的工作流程如下：</p>
+<ol>
+  <li>用户与AI智能体应用交流</li>
+  <li>智能体生成A2UI Message（描述了UI）</li>
+  <li>流式Message响应到客户端（JsonLine）</li>
+  <li>客户端通过预定义本地组件渲染（Angular, Flutter, React, etc.）</li>
+  <li>用户与UI交互，发送操作给Agent</li>
+  <li>AI智能体生成下一个A2UI Message（循环）
+它的核心作用是作为智能体循环（Agent Loop）中的 “输出层” —— 将智能体的决策转化为用户可以交互的界面。</li>
+</ol>
+
+<p>一个有效的 A2UI 消息包含以下几个核心部分：</p>
+
+<ol>
+  <li>version: A2UI 协议版本。</li>
+  <li>component: 要渲染的组件名称（例如 Button, Container, LineChart）。</li>
+  <li>props: 传递给组件的参数（如 label, color, value）。</li>
+  <li>children (可选): 嵌套在其中的其他组件数组。</li>
+  <li>action (可选): 定义当用户与组件交互时（如点击按钮）应触发的操作。</li>
+</ol>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>
+{
+  "a2ui": "0.9",
+  "type": "updateComponents",
+  "payload": {
+    "components": [
+      {
+        "id": "btn_1",
+        "name": "Button",
+        "props": {
+          "label": "确认预订",
+          "variant": "primary"
+        }
+      }
+    ]
+  }
+}
+</code></pre></div></div>
+<p>A2UI使用邻接表来定义组件关系，而不是用嵌套的Tree。这样能够更好进行流式渲染（生成JsonLine）。这意味着组件是作为扁平列表发送的，通过 children 属性中的 ID 相互引用。为什么使用这种结构？</p>
+<ol>
+  <li>流式友好： 智能体可以先发送父组件，随后再发送子组件，而无需重新发送整个树。</li>
+  <li>局部更新： 如果一个深层嵌套的按钮需要改变颜色，智能体只需发送该按钮的 ID 和新属性，而不需要发送整个页面布局。</li>
+  <li>大语言模型 (LLM) 效率： 对于 LLM 来说，生成扁平的 JSON 结构比生成深度嵌套的结构更不容易出错。
+A2UI 不仅仅是一个 JSON 格式，它是一个通信协议。虽然 A2UI 提供了一套标准的跨平台组件（如容器、文本、按钮等），但该协议真正的强大之处在于其可扩展性。你可以定义特定于你业务领域的自定义组件，并让智能体（Agent）像使用标准组件一样驱动它们。</li>
+</ol>
+
+<p>如何才能集成A2UI到你的Agent应用中？主要有两种模式：工具调用 (Tool Calling) 和 结构化输出 (Structured Output)。</p>
+<ol>
+  <li>工具调用，你为智能体提供一个名为 render_ui 的工具。提示词示例：”你可以使用 render_ui 工具来显示交互式组件。当你需要展示数据分析、复杂的列表或需要用户确认的操作时，请使用此工具。”</li>
+  <li>结构化输出。强制模型始终（或在特定条件下）根据 JSON Schema 输出 A2UI 格式的数据。在系统提示词（System Prompt）中加入以下内容：
+    <ol>
+      <li>提供组件库清单： 告诉模型客户端支持哪些组件（如：DataTable, SummaryStat, Calendar）。</li>
+      <li>强调简洁性： 提醒模型只发送必要的数据，不要生成冗余的样式代码，因为样式由客户端处理。</li>
+      <li>上下文关联： 鼓励模型在 UI 旁边提供简短的文本解释。</li>
+    </ol>
+  </li>
+</ol>]]></content><author><name>李乾坤</name></author><category term="技术" /><category term="MachineLearning" /><summary type="html"><![CDATA[简介（未完成）]]></summary></entry><entry><title type="html">Agent调优</title><link href="https://qiankunli.github.io/2025/11/27/agent_rft.html" rel="alternate" type="text/html" title="Agent调优" /><published>2025-11-27T00:00:00+08:00</published><updated>2026-03-28T17:10:28+08:00</updated><id>https://qiankunli.github.io/2025/11/27/agent_rft</id><content type="html" xml:base="https://qiankunli.github.io/2025/11/27/agent_rft.html"><![CDATA[<h2 id="简介未整理">简介（未整理）</h2>
+
+<p>模型从自然语言的分布中学习到了生成非结构化文本序列的能力；接下来神奇的是，模型从语言中也学到了推理和规划的能力。或者一部分是出于偶然，人类的自然语言中本就存在着如何拆解任务、执行任务的模式；又或者是模型训练者刻意构造数据，刻意强化了模型在这方面的能力。总之，模型一旦具备了规划、执行的能力，可以想象，只要配置合适的工具，模型下一步很快也会对物理世界产生影响。但不管是驱动数字世界还是驱动物理世界，都需要「精确」的流程，而非模糊的序列。精确执行，这似乎与模型的概率学本质相悖。在这里，随机性实际上表现为某种自主性：针对同一个任务目标，模型可以自主地找到可行的执行路径，甚至在一条路径碰到障碍时自动尝试新的路径。当然，它并不能保证总是成功，稳定性的隐患总是存在。AI的自主执行对于数字世界（甚至物理世界）是有实际影响的，因此执行的安全性就有非常迫切的要求，对于产品形式的设计也会有较大的影响。</p>
+
+<p>BFCL 评测评估模型 Agent 能力。PS：llm 作为agent 使用时，选择工具的能力（结构化输出json）；制定计划；识别问题是否充分回答；对特定工具的使用（网络检索、代码解释器等）是否得心应手。</p>
+
+<h2 id="模型agenttuning">模型AgentTuning</h2>
+
+<p>当前基于强化学习的智能体（LLM Agents）仍面临两大核心瓶颈：</p>
+<ol>
+  <li>单任务与单轮限制 —— 现有 RLHF 或 RLVR 方法多停留在单步决策层面，无法应对多轮环境交互与复杂任务调度；</li>
+  <li>缺乏统一的多任务基础设施 —— 不同任务环境接口异构，导致模型无法在多任务场景下稳定训练或高效迁移。</li>
+</ol>
+
+<p><a href="https://mp.weixin.qq.com/s/CMyY39qbbMNPww610dWlkA">AgentLM：能打的 Agent 模型来了！</a>开源模型并非没有完成智能体任务的能力，可能只是在智能体任务上缺乏对齐。对于 Agent 能力提升的策略，现有许多工作多使用 Prompt / 微调方法优化模型，在单项智能体任务上取得了卓越的表现，但智能体任务之间的促进及泛化效果有待进一步探索。智谱AI&amp;清华KEG提出了一种对齐 Agent 能力的微调方法 AgentTuning，该方法使用少量数据微调已有模型，显著激发了模型的 Agent能力，同时可以保持模型原有的通用能力。AgentTuning 主要包括 2 个阶段。首先，我们收集并过滤得到一个多任务指令微调数据集 AgentInstrcut；然后，我们将 AgentInstruct 数据集与通用数据对模型进行混合微调。评估结果表明，AgentTuning 能让 LLM 的 Agent 能力在未见过的 Agent 任务中展现出强大的泛化，同时保持良好的通用语言能力。AgentInstruct 是一个经过筛选的智能体任务数据集。其包含 6 项智能体任务，从 Shell 交互到数据库操作，平均回合数从 5 到 35 不等，<strong>每条轨迹都有 ReAct 形式的 CoT 标注，帮助模型深入理解决策过程</strong>。PS： 大家发现Agent/react 有用，就微调LLM强化这方面的能力。</p>
+
+<p><a href="https://mp.weixin.qq.com/s/tRkeTwaNNEXl7tgq2qyEjw">大模型Agent RL训练多轮planning技术</a>DeepSeek R1带火基于GRPO的强化学习技术后，agentic tool use learning也开始用上了GRPO，Reinforce++， PPO, policy gradient等各种算法了（以前是SFT+DPO，需要大量的标注数据来cover bad case，当时标注高质量数据都把我标哭了），想<strong>让大模型学会使用code interpreter， web search等工具</strong>来增强现有模型的数学和推理能力， 单轮就是调用一次tool，多轮就是调用多次tools， 多轮tool use更难一点，主要是数据难以获取和建模方式（MDP这种只考虑当前状态的训练模式，还是使用full history，考虑所有的状态的模式）不清晰，<strong>tool-use rl</strong>也算是一个新的研究方向了，潜力还有待挖掘。最近的工作还是集中设计这个multi turn tool-use的prompt template，以及训练的时候需要设计rule based reward(correctness reward, format reward, tool execcution rewad等)， 训练的tool output的mask操作，sampling的时候加入异步并行，融入megatron的pipeline parallel，加入多模态信息等等，训练的范式基本是先收集一波expert trajectory做sft，然后使用rl训练（例如ReTool），或者直接应用RL（例如TORL，ToolRL，OTC等），目前还没有出现一个真正为agent rl设计的方法，都是复用现有的基建（比如verl， open-rlhf, trl, ms-swift），做了一些拓展。最近在tool-use的基础上还出现了一个<strong>tool integrated reasoning</strong>, 跟cot的区别就是在推理的过程中会使用工具，这样推理过程动态的添加了search，code，各种定制化的API的输入，推理能力得到了进一步的增强。</p>
+
+<h2 id="工程调优">工程调优</h2>
+
+<p>使用langchain中自带的react框架进行text2api的构造，发现几个问题：</p>
+<ol>
+  <li>langchain完全依赖底座模型，在chatgpt4上表现很好。但在一些中文模型上无法很好识别api的输入参数，经常出现幻觉导致乱编参数的现象。</li>
+  <li>langchain调用链路很长，导致我们在改写较复杂问题text2api的时候会有大量的工作。并且react框架因为没有penalty机制，如果出现调用错误的情况，只能人工检查然后通过增强prompt的方式进行修正。
+后来我们尝试引进了Reflexion框架，相较于传统的Reactor，Reflexion提供了自我反思机制，然后在memory模块中保存之前的短期记忆和长期记忆，从而在之后的决策中，基于储存的记忆诱导大模型生成更好的答案。</li>
+</ol>
+
+<h2 id="agent模型">Agent模型</h2>
+
+<p><a href="https://mp.weixin.qq.com/s/dwNqfedlMARvCn8fhARr5A">DeepResearch模型是如何被训练出来的？</a></p>
+
+<p>Agent的增强训练究竟需要增强什么？</p>
+<ol>
+  <li>对研究人员和一般开发者的一个问题是，目前的开源推理模型的工具使用能力、特别是多轮工具使用能力普遍较弱。PS：后续就是，推理+多模态，推理+functioncall（plan 相对内置）等等，从工程上可能喜欢plan单独输出，进而可以人工矫正（进而持续训练），保证输出质量。</li>
+  <li>规划</li>
+</ol>
+
+<p>Agent 模型是在推理模型基础上通过端到端的面向任务的工具增强训练得到的。它能够自动生成耦合的CoT思维链和CoA行动链序列。其中每个动作调用工具与外部环境交互，交互得到的反馈指导后续的推理和动作，直至任务完成。Agent 模型增强了使用工具的能力，这要求模型不局限于自身内部的推理行为，而能与外部环境进行交互。Chatbot和Reasoner仅关注人与模型之间的二元交互。而Agent 模型要求能够同时进行思考与行动，形成了由人、模型和环境构成的三元结构：使用工具与环境进行交互以获得反馈，经过多轮的思考、行动和observation后，最终生成回复。PS：其实也说明，调用工具场景能用functioncall 模型就用functioncall模型，常规llm也不是不行，但不专业。</p>
+
+<p>这里有个问题：如果模型在预训练阶段已经具备了工具使用能力，并继承到了推理模型中，还需要进行专门的CoA学习么？即CoT+A是否可以自然地获得CoA的能力？当预训练基座模型的工具使用能力和推理模型的推理能力较强时，这是有可能的。讨论更一般的情况：预训练阶段的工具使用更多的关注的还是单步行动能力，适合处理孤立的任务，有点像对特定技能的学习；而CoA学习面向任务执行端到端训练，学会执行一连串相互依赖的动作，形成逻辑性强、目标导向的行动序列，更像是对技能的综合应用。以OpenAI的Deep Research为例：其核心能力是通过网络搜索完成复杂研究任务，就需要解决上面两个问题：</p>
+<ol>
+  <li>知识边界的判断：模型需要自主判断“什么时候该查资料”——既不能过度依赖搜索，也不能盲目自信；需要清楚自己的短板，并在合适的时候采取行动</li>
+  <li>动态环境的适配：调用搜索引擎要花时间和资源，成本高、效率低，而且网络环境一直在变，如何在有外部环境交互的情况下进行高效RL训练？</li>
+</ol>
+
+<p><a href="https://mp.weixin.qq.com/s/_p6eKHTWhzvPZu-p5dEVig">真正的LLM Agent</a>Alexander：未来智能体会自主掌控任务执行的全过程，包括动态规划搜索策略、主动调整工具使用等，而不再依靠外部提示/prompt或工作流驱动（
+<strong>真正的智能体，是不靠「提示词」工作的</strong>）。这种转变意味着<strong>智能体设计的核心复杂性将转移到模型训练阶段，从根本上提升模型的自主推理能力</strong>，最终彻底颠覆目前的应用层生态。AI 模型本身，就是未来的产品。为什么这么说？</p>
+<ol>
+  <li>通用型模型的扩展，遇到了瓶颈。GPT-4.5 发布时传递的最大信息就是：模型的能力提升只能呈线性增长，但所需算力却在指数式地飙升。尽管过去两年 OpenAI 在训练和基础设施方面进行了大量优化，但仍然无法以可接受的成本推出这种超级巨型模型。</li>
+  <li>定向训练（Opinionated training）的效果，远超预期。强化学习与推理能力的结合，正在让模型迅速掌握具体任务。这种能力，既不同于传统的机器学习，也不是基础大模型，而是某种神奇的第三形态。比如一些极小规模的模型突然在数学能力上变得惊人强大；编程模型不再只是简单地产生代码，甚至能够自主管理整个代码库；又比如 Claude 在几乎没有专门训练、仅靠非常贫乏的信息环境下，竟然也能玩宝可梦。</li>
+  <li>推理（Inference）的成本，正在极速下降。DeepSeek 最新的优化成果显示，<strong>目前全球所有可用的 GPU 资源，甚至足以支撑地球上每个人每天调用一万个顶尖模型的 token</strong>。而实际上，目前市场根本不存在这么大的需求。简单卖 token 赚钱的模式已经不再成立，模型提供商必须向价值链更高层发展。
+未来 2-3 年内，所有闭源 AI 大模型提供商都会停止向外界提供 API 服务，而将转为直接提供模型本身作为产品。简单来说，API 经济即将走向终结。模型提供商与应用层（Wrapper）之间原本的蜜月期，已彻底结束了。未来很多最赚钱的 AI 应用场景（如大量仍被规则系统主导的传统产业）尚未得到充分开发。谁能训练出真正针对这些领域的专用模型，谁就能获得显著优势。</li>
+</ol>
+
+<h2 id="与agent-融合agent-rftmulti-agent-planroute">与agent 融合/agent rft/multi-agent plan/route</h2>
+
+<p>Agent RFT根据你指定的学习信号改变模型权重，教会模型什么是好的行为、什么是不够好的行为。在训练过程中，Agent会探索调用工具的各种方式，学习如何随着训练不断改进。基础RFT（很多事single step rl）不适合fine-tune Agent，Agent RFT（multi-step rl, external reward signal，对模型使用的工具/token数量施加了轻微的惩罚）允许Agent在rollout过程中调用工具，从使用工具的所有可能方式中学习。</p>
+<ol>
+  <li>训练模型更好地对工具输出进行推理</li>
+  <li>训练模型更好地使用工具。</li>
+  <li>通过调用工具endpoints，以及通过endpoint形式指定grader（调用它来获取你的自定义reward signal），允许模型在训练过程中与外部世界交互。当输出最终答案并调用grader时，通过唯一标识符将Agent的所有上下文附加到最终答案上，然后将所有这些信息传入grader，获得非常全面的评分上下文。PS： 也就是你有机会在客户现场跑一次rft</li>
+</ol>
+
+<p><a href="https://mp.weixin.qq.com/s/0c8hTMdIALjYdGZkmwLFDg">Multi-Agent 的灵活编排之路</a> 案例，multiagent 背景下，训练plannning 模块生成plan（每一个step 是一个选中agent及其要解决的问题）</p>
+
+<p><a href="https://zhuanlan.zhihu.com/p/49397670697">无干预，短思考，多行动：新的Multi-step LLM+RL范式</a>在R1提出后我一直在想，这种在post-train阶段reasoning trace一直变长的现象是否是个好事。由于single-step RL任务往往是完全信息的bandit问题，模型的reasoning trace越来越长我觉得是很好理解的，因为更长的reasoning可以反复重构问题中的信息达到与pretrain阶段最匹配的token分布。但是世界上的大部分现实问题都是multi-step的，也就是说需要很多步decision的sequential impact才会拿到最后的reward，这明显用multi-step MDP去model更加合理。我坚信<strong>真正的智能必须能够解决multi-step的问题</strong>。做出一个decision后agent其实获得了新的信息，而这些新的信息对于最后的成败至关重要。在获得能够决定最后成败的新的信息前，agent不应该给出答案。而找这些信息往往并不需要过多的reasoning，都是非常简单的事情。这就是我们近期工作的核心思想。通过一种新的post-train算法，我们希望得到的model具有三个我们所期待的性质：无干预，短思考，多行动。</p>
+
+<p><a href="https://mp.weixin.qq.com/s/c1LQFS4v79pF_kWfuDCthA">从「会说」迈向「会做」，LLM下半场：Agentic强化学习范式综述</a>早期 RL 研究多基于 PBRFT 范式（输入提示、输出文本、获得一个偏好分数），可被视为退化的单步 MDP（单 prompt、一次性文本输出、立即终止），而 Agentic RL 则将 LLM 置于部分可观测马尔可夫决策过程（POMDP）下进行多步交互，其中关键变化在于动作空间从单一文本扩展为「文本 + 操作」（A_text =&gt; A_text + A_action）；同时奖励从「单步评分」扩展为「时序反馈」，优化整条决策轨迹，把 LLM 从「文本生成器」推进为<strong>可交互的决策体</strong>。要让 LLM 真正成为智能体，仅有动作空间还不够，它必须发展出一套完整的能力体系。</p>
+<ol>
+  <li>规划（Planning）：为复杂任务设定子目标与多步行动序列。通过外部引导（外部打分生成奖励）或内部驱动（自主规划并修正）实现。</li>
+  <li>工具使用（Tool Use）：调用外部工具完成任务。从 ReAct 等静态提示模仿演进到 Tool-integrated RL (TIR)，让智能体学会自主选择组合工具。</li>
+  <li>记忆（Memory）：保持上下文连贯并积累知识，包括基于外部数据库检索记忆、Token 级别记忆和结构化记忆。中，值得关注的工作包括来自字节跳动的 MemAgent 和麻省理工大学的 MEM1，他们都通过强化学习让 LLM Agent 拥有自行管理记忆窗口的能力。</li>
+  <li>自我改进（Self-Improvement）同样是目前 Agent 最热门的发展方向。</li>
+  <li>推理（Reasoning）：解决复杂问题的推导能力，分为快速直觉推理（凭经验直觉迅速答题）和慢速缜密推理（多步演绎得出严谨结论）。</li>
+  <li>感知（Perception）：理解多模态输入的信息获取能力。
+借助强化学习，这些能力由人工启发式转变为可学习的策略，规划不再依赖硬编码流程、工具使用也可由模型自主决定、端到端训练。</li>
+</ol>
+
+<h2 id="从回答问题到完成任务agentic-rl">从”回答问题”到”完成任务”/agentic RL</h2>
+
+<p>Agentic RL post train是简单RLVR（与 RLHF 使用学习得到的 Reward Model 不同，RLVR 使用 基于规则的确定性验证器 来提供奖励信号）  post train的一个自然的延伸，RLVR post-train和 RFT在本质上很接近，最主要差异是规模不同。</p>
+
+<p><strong>模型训练与Harness设计的耦合</strong>：LLM 逐渐从“单次问答器”转变为能够在推理（Reasoning）与外部工具调用（Tool-use）之间反复交互（multi-turn）的智能体系统。从 Search-R1 到 ToolRL、SkyRL，一条清晰的技术路线正在形成：模型不仅要会“想”，还要会“查”“算”“调 API”，并在多步轨迹中通过 RL 不断自我改进。从2025年下半年gpt-5，opus-4系列开始，agentic 能力成为了模型发布时重点突出的一等公民。我们可以发现，agentic 能力的高分，几乎没有一个是基座模型裸跑出来的。 厂商发布的agent强性能指标，标注里都带着具体的 harness 条件，例如web search、code execution、context compaction等。harness 可以理解为包裹在模型外部的运行编排层，负责工具调用、上下文压缩、状态持久化、安全约束与结果评测。模型的推理能力决定 agent 的上限，但只有在合适的 harness 中，这种能力才能被稳定地转化为可执行、可验证、可交付的任务完成能力。相应地，提升 agent 能力也不只是优化基座模型，还需要在训练中构建带工具、带环境反馈、带 verifier 的训练 harness，agent能力主要涉及基础模型的RL后训练，要提升模型的agent能力，需要构建后训练环境支持模型调用工具，完成特定任务交付结果，并根据结果的正确性来获得系统奖励，以此训练模型的自主化agent能力。</p>
+
+<p>Reasoning thinking 通常以最终答案之前的内部推敲质量来衡量：模型能否解出定理、写出证明、产生正确的代码、通过基准测试。Agentic thinking 关注的是模型能否在与环境交互的同时持续取得进展。Agentic thinking 必须处理纯推理模型基本可以回避的几件事：</p>
+<ol>
+  <li>决定何时停止思考并采取行动</li>
+  <li>选择调用哪个工具以及以什么顺序</li>
+  <li>整合来自环境的嘈杂或部分观测</li>
+  <li>在失败后修正计划</li>
+  <li>在多轮对话和多次工具调用之间保持连贯性
+<strong>Agentic thinking就是一个通过行动来推理的模型</strong>，从思考得更长到为了行动而思考。这也改变了竞争优势的来源。在推理时代，优势来自更好的RL算法、更强的反馈信号和更可扩展的训练流水线。在智能体时代，优势将来自更好的环境、更紧密的训练-服务集成、更强的套件工程（harness engineering），以及在模型的决策与这些决策产生的后果之间闭合回路的能力。</li>
+</ol>
+
+<p>对于不同的 agent 任务，agent 需要做的事情也不一样：专注 math 的 agent 可能需要 sandbox 做 Python 计算；专注 GUI 的 agent 可能需要电脑桌面动态交互；专注搜索的 agent 可能需要调用谷歌接口去搜东西。</p>
+
+<p><a href="https://zhuanlan.zhihu.com/p/1979913424113771020">LLM Agent RL的一些实践感悟</a>相比于Reasoning RL，agentic RL 更有传统RL味道。如果把RL分为 交互环境, reward, 算法 三个部分，每一部分的重要性程度，reasoning RL是 : 算法 &gt; reward &gt; 环境，但是在实际agent场景下，则反过来：环境 &gt; reward &gt; 算法。</p>
+<ol>
+  <li>没有稳定的进行工具调用的RL训练环境，则会带来极大的实验成本，也影响最终性能上限。经过迭代，我们的RL训练总是会监控各种工具调用失败的比例。在进行新场景的RL训练前，会优先解决工具调用的问题，确保环境能够支持大规模工具调用并发下的RL训练。</li>
+  <li>在部分agent场景下，由于没有math/code 等可验证reward，使用llm-as-judge进行rewarding，非常容易出现意想不到reward hacking。曾经在一个月内，出现三次测试集大幅上涨，但是最终发现都是reward hacking。曾经在一个月内，出现三次测试集大幅上涨，但是最终发现都是reward hacking。</li>
+  <li>减少人手工reward的设计，如果有必要，也要进行不断迭代，因为非常容易出现reward hacking。</li>
+  <li>工具层面的探索非常重要。RL训练中如果环境给了agent多个必要的工具或文件，那么需要监控工具和文件的调用情况。少 或者不调用 某个工具或文件，可能会影响模型能力训练上限。</li>
+  <li>更大模型的上的RL训练泛化会更快。在小模型上各种trick折腾RL，可能最后换来的都是一些对更大模型训练无用的小招。</li>
+</ol>]]></content><author><name>李乾坤</name></author><category term="技术" /><category term="MachineLearning" /><summary type="html"><![CDATA[简介（未整理）]]></summary></entry><entry><title type="html">Agent评估</title><link href="https://qiankunli.github.io/2025/11/04/agent_evaluate.html" rel="alternate" type="text/html" title="Agent评估" /><published>2025-11-04T00:00:00+08:00</published><updated>2026-02-10T20:59:35+08:00</updated><id>https://qiankunli.github.io/2025/11/04/agent_evaluate</id><content type="html" xml:base="https://qiankunli.github.io/2025/11/04/agent_evaluate.html"><![CDATA[<script>
+  MathJax = {
+    tex: {
+      inlineMath: [['$', '$']], // 支持 $和$$ 作为行内公式分隔符
+      displayMath: [['$$', '$$']], // 块级公式分隔符
+    },
+    svg: {
+      fontCache: 'global'
+    }
+  };
+</script>
+
+<script async="" src="/public/js/mathjax/es5/tex-mml-chtml.js"></script>
+
+<ul id="markdown-toc">
+  <li><a href="#简介未完成" id="markdown-toc-简介未完成">简介(未完成)</a></li>
+  <li><a href="#评估什么" id="markdown-toc-评估什么">评估什么</a>    <ul>
+      <li><a href="#核心能力评估第一层" id="markdown-toc-核心能力评估第一层">核心能力评估（第一层）</a></li>
+    </ul>
+  </li>
+  <li><a href="#应用效果评估第二层" id="markdown-toc-应用效果评估第二层">应用效果评估（第二层）</a></li>
+  <li><a href="#如何评估" id="markdown-toc-如何评估">如何评估</a></li>
+  <li><a href="#其它" id="markdown-toc-其它">其它</a></li>
+</ul>
+
+<h2 id="简介未完成">简介(未完成)</h2>
+
+<p>Agent评估采用三层金字塔模型，按重要性和实施优先级划分：</p>
+<ol>
+  <li>第一层：核心能力，规划、工具使用、推理、记忆</li>
+  <li>第二层：应用效果 ，任务完成、输出质量、用户满意度</li>
+  <li>第三层：生产就绪度，成本、延迟、安全、稳定性</li>
+</ol>
+
+<h2 id="评估什么">评估什么</h2>
+
+<h3 id="核心能力评估第一层">核心能力评估（第一层）</h3>
+
+<p>规划与推理能力，Agent能否将复杂任务分解并逐步执行</p>
+<ol>
+  <li>任务完成进度 = 已完成步骤/理想步骤数</li>
+  <li>正确选择工具比例 = 正确调用/总调用</li>
+  <li>遇错误后调整能力 = 成功恢复次数/错误次数</li>
+</ol>
+
+<p>工具使用能力，Agent能否正确调用和组合各种工具：L1: 单工具调用 → L2: 顺序调用 → L3: 并行调用 → L4: 动态发现</p>
+<ol>
+  <li>工具名称+参数正确性</li>
+  <li>优先使用API而非浏览器</li>
+  <li>工具组合效率：最少调用达成目标</li>
+</ol>
+
+<p>记忆管理能力，Agent能否维护和利用长期记忆</p>
+<ol>
+  <li>准确检索，从历史中提取正确信息</li>
+  <li>在线学习，对话中新增学习</li>
+  <li>长程理解，跨多轮维持一致性</li>
+  <li>选择遗忘，过滤无关信息</li>
+</ol>
+
+<p>自我反思与改进能力，Agent能否从反馈中学习并改进</p>
+<ol>
+  <li>初次尝试 → Agent执行任务（可能失败）</li>
+  <li>提供反馈 → 给出错误原因或改进建议</li>
+  <li>二次尝试 → Agent根据反馈重新执行</li>
+  <li>评估改进 → 计算Reflection Score</li>
+</ol>
+
+<h2 id="应用效果评估第二层">应用效果评估（第二层）</h2>
+
+<p>Agent是否达成业务目标</p>
+<ol>
+  <li>完全成功</li>
+  <li>部分成功</li>
+  <li>功能完成</li>
+  <li>完全失败</li>
+</ol>
+
+<p>Agent输出内容的质量</p>
+<ol>
+  <li>准确性</li>
+  <li>相关性</li>
+  <li>完整性，是否覆盖所有要点，关键点检查清单</li>
+  <li>可用性，用户能否直接使用</li>
+</ol>
+
+<h2 id="如何评估">如何评估</h2>
+
+<p>评测的最主要价值是：把产品负责人（以及产品团队）的目标和用户的实际需求进行量化，而量化的手段就是构建评测数据集。目前的AI应用面对的场景如此之复杂，以至于很难写出一个reward的规则方式进行评价。特别是需要考虑的输入数据分布很难通过其他方式描述，最终都只能转化为一个数据集来进行量化表示。</p>
+<ol>
+  <li>机评与人评。在实际应用中，能完全量化为单个选项或者数值的任务并不多，不少任务都是给出一种非结构化的文本输出。这种情况下，就很难机械地对其进行自动化评估。一般我们会使用构建一个评估workflow（或单个prompt），来进行评估。</li>
+  <li>难点：首先评估的维度经常需要显式的列出并进行定义，但要把产品负责人的产品sense、或者是对用户群对于产品效果的期望精确地转换为评估维度的描述实际上非常难，大多数时候只能把能描述清楚的部分描述清楚，放弃剩下的部分。</li>
+  <li>评测方案是会过时的</li>
+</ol>
+
+<p>单轮评估很简单：一个提示、一个响应和评分逻辑。PS: query + Response + 打分逻辑</p>
+<ol>
+  <li>任务（也称为问题或测试用例）是具有定义输入和成功标准的单个测试。</li>
+  <li>每个任务的尝试是一个试验。由于模型输出在运行之间会有所不同，我们运行多个试验以产生更一致的结果。</li>
+  <li>评分器是对智能体某些方面表现进行评分的逻辑。一个任务可以有多个评分器（评估体系从“对错二分”转向“多维度量”），每个评分器包含多个断言（有时称为检查）。对于每个任务，评分可以是加权的（组合评分器分数必须达到阈值）、二进制的（所有评分器必须通过）或混合的。</li>
+  <li>基于代码的评分器</li>
+  <li>基于模型的评分器</li>
+  <li>人类评分器</li>
+  <li>记录（也称为跟踪或轨迹）是试验的完整记录，包括输出、工具调用、推理、中间结果和任何其他交互。</li>
+  <li>结果是试验结束时环境的最终状态。预订航班的智能体可能在记录结束时说”您的航班已预订”，但结果是在环境的SQL数据库中是否存在预订。
+评估框架是端到端运行评估的基础设施。它提供指令和工具，并发运行任务，记录所有步骤，对输出进行评分，并汇总结果。</li>
+</ol>
+
+<p>每个任务都有自己的成功率——一个任务可能是90%，另一个任务可能是50%——而在一次评估运行中通过的任务可能在下次失败。有时，我们想要测量的是智能体多频繁（试验成功的比例）成功完成一个任务。两个指标有助于捕捉这种细微差别：</p>
+<ol>
+  <li>pass@k衡量智能体在k次尝试中至少获得一个正确解决方案的可能性。</li>
+  <li>pass^k衡量所有k次试验成功的概率。如果您的智能体每次试验成功率为75%，并且您运行3次试验，通过所有三次的概率是(0.75)³ ≈ 42%。这个指标对于用户期望可靠行为的面向客户智能体尤其重要。
+随着试验次数的增加，pass@k和pass^k出现分歧。在k=1时，它们是相同的（都等于每次试验的成功率）。到k=10时，它们讲述了相反的故事：pass@k接近100%，而pass^k下降到0%。两个指标都很有用，使用哪个取决于产品要求：对于工具一次成功重要的用pass@k，对于一致性至关重要的智能体用pass^k。</li>
+</ol>
+
+<h2 id="其它">其它</h2>
+
+<p>多轮对话评估</p>
+<ol>
+  <li>为了评估模型在<strong>第二轮（Turn 2）</strong>的表现，你发送给 LLM 的 messages 列表必须包含完整的“对话历史”（多轮同理）。
+    <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>  User (Q1)
+  Assistant (A1) &lt;-- 模型之前的真实输出
+  User (Q2) &lt;-- 新的刁难/追问
+</code></pre></div>    </div>
+  </li>
+  <li>那么问题来了：</li>
+  <li>错误传播。如果 A1 输出的质量较差，导致 Q2 与 A1 可以说毫无关系，这样的情况下评估 A2 还有意义吗？对于任务完成度来说，通常没有意义；但对于考察模型的“鲁棒性”和“挽救能力”有一定意义。</li>
+  <li>评测模式 (Teacher Forcing vs. Free Generation)。 将 A1 替换为 Ground Truth (标准答案) 再测 Q2，是标准做法之一吗，有什么价值？如果你是在做通用的 Leaderboard 评测（评估真实对话能力），请严格使用模型自己的输出作为历史；如果你是在Debug 模型的某项特定技能（如长文本精炼），请使用 Ground Truth 以隔离。</li>
+</ol>]]></content><author><name>李乾坤</name></author><category term="技术" /><category term="MachineLearning" /><summary type="html"><![CDATA[简介(未完成) 评估什么 核心能力评估（第一层） 应用效果评估（第二层） 如何评估 其它 简介(未完成) Agent评估采用三层金字塔模型，按重要性和实施优先级划分： 第一层：核心能力，规划、工具使用、推理、记忆 第二层：应用效果 ，任务完成、输出质量、用户满意度 第三层：生产就绪度，成本、延迟、安全、稳定性 评估什么 核心能力评估（第一层） 规划与推理能力，Agent能否将复杂任务分解并逐步执行 任务完成进度 = 已完成步骤/理想步骤数 正确选择工具比例 = 正确调用/总调用 遇错误后调整能力 = 成功恢复次数/错误次数 工具使用能力，Agent能否正确调用和组合各种工具：L1: 单工具调用 → L2: 顺序调用 → L3: 并行调用 → L4: 动态发现 工具名称+参数正确性 优先使用API而非浏览器 工具组合效率：最少调用达成目标 记忆管理能力，Agent能否维护和利用长期记忆 准确检索，从历史中提取正确信息 在线学习，对话中新增学习 长程理解，跨多轮维持一致性 选择遗忘，过滤无关信息 自我反思与改进能力，Agent能否从反馈中学习并改进 初次尝试 → Agent执行任务（可能失败） 提供反馈 → 给出错误原因或改进建议 二次尝试 → Agent根据反馈重新执行 评估改进 → 计算Reflection Score 应用效果评估（第二层） Agent是否达成业务目标 完全成功 部分成功 功能完成 完全失败 Agent输出内容的质量 准确性 相关性 完整性，是否覆盖所有要点，关键点检查清单 可用性，用户能否直接使用 如何评估 评测的最主要价值是：把产品负责人（以及产品团队）的目标和用户的实际需求进行量化，而量化的手段就是构建评测数据集。目前的AI应用面对的场景如此之复杂，以至于很难写出一个reward的规则方式进行评价。特别是需要考虑的输入数据分布很难通过其他方式描述，最终都只能转化为一个数据集来进行量化表示。 机评与人评。在实际应用中，能完全量化为单个选项或者数值的任务并不多，不少任务都是给出一种非结构化的文本输出。这种情况下，就很难机械地对其进行自动化评估。一般我们会使用构建一个评估workflow（或单个prompt），来进行评估。 难点：首先评估的维度经常需要显式的列出并进行定义，但要把产品负责人的产品sense、或者是对用户群对于产品效果的期望精确地转换为评估维度的描述实际上非常难，大多数时候只能把能描述清楚的部分描述清楚，放弃剩下的部分。 评测方案是会过时的 单轮评估很简单：一个提示、一个响应和评分逻辑。PS: query + Response + 打分逻辑 任务（也称为问题或测试用例）是具有定义输入和成功标准的单个测试。 每个任务的尝试是一个试验。由于模型输出在运行之间会有所不同，我们运行多个试验以产生更一致的结果。 评分器是对智能体某些方面表现进行评分的逻辑。一个任务可以有多个评分器（评估体系从“对错二分”转向“多维度量”），每个评分器包含多个断言（有时称为检查）。对于每个任务，评分可以是加权的（组合评分器分数必须达到阈值）、二进制的（所有评分器必须通过）或混合的。 基于代码的评分器 基于模型的评分器 人类评分器 记录（也称为跟踪或轨迹）是试验的完整记录，包括输出、工具调用、推理、中间结果和任何其他交互。 结果是试验结束时环境的最终状态。预订航班的智能体可能在记录结束时说”您的航班已预订”，但结果是在环境的SQL数据库中是否存在预订。 评估框架是端到端运行评估的基础设施。它提供指令和工具，并发运行任务，记录所有步骤，对输出进行评分，并汇总结果。 每个任务都有自己的成功率——一个任务可能是90%，另一个任务可能是50%——而在一次评估运行中通过的任务可能在下次失败。有时，我们想要测量的是智能体多频繁（试验成功的比例）成功完成一个任务。两个指标有助于捕捉这种细微差别： pass@k衡量智能体在k次尝试中至少获得一个正确解决方案的可能性。 pass^k衡量所有k次试验成功的概率。如果您的智能体每次试验成功率为75%，并且您运行3次试验，通过所有三次的概率是(0.75)³ ≈ 42%。这个指标对于用户期望可靠行为的面向客户智能体尤其重要。 随着试验次数的增加，pass@k和pass^k出现分歧。在k=1时，它们是相同的（都等于每次试验的成功率）。到k=10时，它们讲述了相反的故事：pass@k接近100%，而pass^k下降到0%。两个指标都很有用，使用哪个取决于产品要求：对于工具一次成功重要的用pass@k，对于一致性至关重要的智能体用pass^k。 其它 多轮对话评估 为了评估模型在第二轮（Turn 2）的表现，你发送给 LLM 的 messages 列表必须包含完整的“对话历史”（多轮同理）。 User (Q1) Assistant (A1) &lt;-- 模型之前的真实输出 User (Q2) &lt;-- 新的刁难/追问 那么问题来了： 错误传播。如果 A1 输出的质量较差，导致 Q2 与 A1 可以说毫无关系，这样的情况下评估 A2 还有意义吗？对于任务完成度来说，通常没有意义；但对于考察模型的“鲁棒性”和“挽救能力”有一定意义。 评测模式 (Teacher Forcing vs. Free Generation)。 将 A1 替换为 Ground Truth (标准答案) 再测 Q2，是标准做法之一吗，有什么价值？如果你是在做通用的 Leaderboard 评测（评估真实对话能力），请严格使用模型自己的输出作为历史；如果你是在Debug 模型的某项特定技能（如长文本精炼），请使用 Ground Truth 以隔离。]]></summary></entry><entry><title type="html">OS Agent</title><link href="https://qiankunli.github.io/2025/10/01/os_agent.html" rel="alternate" type="text/html" title="OS Agent" /><published>2025-10-01T00:00:00+08:00</published><updated>2026-03-21T11:27:35+08:00</updated><id>https://qiankunli.github.io/2025/10/01/os_agent</id><content type="html" xml:base="https://qiankunli.github.io/2025/10/01/os_agent.html"><![CDATA[<script>
+  MathJax = {
+    tex: {
+      inlineMath: [['$', '$']], // 支持 $和$$ 作为行内公式分隔符
+      displayMath: [['$$', '$$']], // 块级公式分隔符
+    },
+    svg: {
+      fontCache: 'global'
+    }
+  };
+</script>
+
+<script async="" src="/public/js/mathjax/es5/tex-mml-chtml.js"></script>
+
+<ul id="markdown-toc">
+  <li><a href="#简介未完成" id="markdown-toc-简介未完成">简介(未完成)</a></li>
+  <li><a href="#browser-use" id="markdown-toc-browser-use">Browser Use</a>    <ul>
+      <li><a href="#cdp" id="markdown-toc-cdp">CDP</a></li>
+    </ul>
+  </li>
+  <li><a href="#computer-use" id="markdown-toc-computer-use">computer use</a>    <ul>
+      <li><a href="#gui-agent" id="markdown-toc-gui-agent">GUI Agent</a></li>
+    </ul>
+  </li>
+  <li><a href="#code-sandbox" id="markdown-toc-code-sandbox">code sandbox</a>    <ul>
+      <li><a href="#agent与sandbox" id="markdown-toc-agent与sandbox">agent与sandbox</a></li>
+    </ul>
+  </li>
+  <li><a href="#其它" id="markdown-toc-其它">其它</a></li>
+</ul>
+
+<h2 id="简介未完成">简介(未完成)</h2>
+
+<p>xx-use 可以将一些老旧软件“api”化。</p>
+
+<p>agent infra。</p>
+
+<h2 id="browser-use">Browser Use</h2>
+
+<p>https://github.com/browser-use/browser-use</p>
+
+<p><a href="https://mp.weixin.qq.com/s/KLk-m_E2zx_q-v4ZLobetw">如何让AI“看懂”网页？拆解 Browser-Use 的三大核心技术模块</a> Browser Use 是什么</p>
+<ol>
+  <li>Browser Use 是一种基于 AI 模型的<strong>浏览器自动化工具</strong>，基于 Playwright（浏览器自动化框架）</li>
+  <li>Browser Use 是是一个开源的Python库，基于 LangChain 生态构建</li>
+</ol>
+
+<p>Playwright 是一个底层浏览器自动化驱动层，负责：</p>
+<ol>
+  <li>启动、控制浏览器进程；</li>
+  <li>执行 DOM 操作、点击、输入、截图；</li>
+  <li>模拟网络请求、地理位置、时间；</li>
+  <li>拦截 / 注入脚本；</li>
+  <li>提供 API 接口给上层应用调用。
+它相当于“浏览器的远程控制器”，用来跑测试、爬取数据、或者做自动化交互。</li>
+</ol>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1"># 初始化AI模型
+</span><span class="n">llm</span> <span class="o">=</span> <span class="nc">ChatOpenAI</span><span class="p">(</span><span class="n">model</span><span class="o">=</span><span class="sh">"</span><span class="s">gpt-4o</span><span class="sh">"</span><span class="p">)</span>
+<span class="c1"># 定义任务
+</span><span class="n">task</span> <span class="o">=</span> <span class="sh">"</span><span class="s">打开google，搜索</span><span class="sh">'</span><span class="s">AI编程助手</span><span class="sh">'</span><span class="s">，告诉我第一条结果的标题</span><span class="sh">"</span>
+<span class="c1"># 创建AI代理
+</span><span class="n">agent</span> <span class="o">=</span> <span class="nc">Agent</span><span class="p">(</span><span class="n">task</span><span class="o">=</span><span class="n">task</span><span class="p">,</span> <span class="n">llm</span><span class="o">=</span><span class="n">llm</span><span class="p">)</span>
+<span class="c1"># 运行任务
+</span><span class="k">await</span> <span class="n">agent</span><span class="p">.</span><span class="nf">run</span><span class="p">()</span>
+</code></pre></div></div>
+
+<p><a href="https://mp.weixin.qq.com/s/rfdYPW2GRFybVd9DEbYOZg">现代Python项目最佳实践：以 agentic tool browser-use为例</a></p>
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">class</span> <span class="nc">Agent</span><span class="p">(</span><span class="n">Generic</span><span class="p">[</span><span class="n">Context</span><span class="p">,</span> <span class="n">AgentStructuredOutput</span><span class="p">]):</span>
+  <span class="k">async</span> <span class="k">def</span> <span class="nf">run</span><span class="p">(</span><span class="n">self</span><span class="p">,</span> <span class="n">max_steps</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">100</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">AgentHistoryList</span><span class="p">:</span>
+    <span class="k">for</span> <span class="n">step</span> <span class="ow">in</span> <span class="nf">range</span><span class="p">(</span><span class="n">max_steps</span><span class="p">):</span>
+      <span class="k">await</span> <span class="n">self</span><span class="p">.</span><span class="nf">step</span><span class="p">(</span><span class="n">step_info</span><span class="p">)</span>
+  <span class="k">async</span> <span class="k">def</span> <span class="nf">step</span><span class="p">(</span><span class="n">self</span><span class="p">,</span> <span class="n">step_info</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">AgentStepInfo</span><span class="p">]</span> <span class="o">=</span> <span class="bp">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="bp">None</span><span class="p">:</span>
+    <span class="k">try</span><span class="p">:</span>
+			<span class="c1"># Phase 1: Prepare context and timing
+</span>			<span class="n">browser_state_summary</span> <span class="o">=</span> <span class="k">await</span> <span class="n">self</span><span class="p">.</span><span class="nf">_prepare_context</span><span class="p">(</span><span class="n">step_info</span><span class="p">)</span>
+			<span class="c1"># Phase 2: Get model output and execute actions
+</span>			<span class="k">await</span> <span class="n">self</span><span class="p">.</span><span class="nf">_get_next_action</span><span class="p">(</span><span class="n">browser_state_summary</span><span class="p">)</span>
+			<span class="k">await</span> <span class="n">self</span><span class="p">.</span><span class="nf">_execute_actions</span><span class="p">()</span>
+			<span class="c1"># Phase 3: Post-processing
+</span>			<span class="k">await</span> <span class="n">self</span><span class="p">.</span><span class="nf">_post_process</span><span class="p">()</span>
+		<span class="k">except</span> <span class="nb">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+			<span class="c1"># Handle ALL exceptions in one place
+</span>			<span class="k">await</span> <span class="n">self</span><span class="p">.</span><span class="nf">_handle_step_error</span><span class="p">(</span><span class="n">e</span><span class="p">)</span>
+		<span class="k">finally</span><span class="p">:</span>
+			<span class="k">await</span> <span class="n">self</span><span class="p">.</span><span class="nf">_finalize</span><span class="p">(</span><span class="n">browser_state_summary</span><span class="p">)</span>
+</code></pre></div></div>
+
+<h3 id="cdp">CDP</h3>
+
+<p>Chrome DevTools Protocol(CDP)是 Chromium 浏览器调试工具的核心通信协议：它基于 JSON 格式，可以通过 WebSocket 实现客户端与浏览器内核之间的双向实时交互。基于 CDP 的开源产品有许多，其中最有名的应该是 Chrome Devtools Frontend，Puppeteer 和 Playwright 了。</p>
+
+<p>首先 CDP 协议是一个典型的 CS 架构，这里我们拿 Chrome Devtools 为例：</p>
+<ol>
+  <li>Chrome Devtools：就是 Client，用来做调试数据的 UI 展示，方便用户阅读</li>
+  <li>CDP：就是连接 Client-Server 的 Protocol，定义 API 的各种格式和细节</li>
+  <li>Chromium/Chrome：就是 Server，用来产生各种数据</li>
+</ol>
+
+<p>CDP 协议的格式基于 JSON-RPC 2.0做了一些轻量的定制。首先是去掉了 JSON 结构体中的 “jsonrpc”: “2.0” 这种每次都要发送的冗余信息。CDP 其实可以分为两大类，然后下面有不同的 Domain 分类：</p>
+<ol>
+  <li>Browser Protocol：浏览器相关的协议，之下的 Domain 都是平台相关的，比如说 Page，DOM，CSS，Network，都是和浏览器功能相关</li>
+  <li>JavaScript Protocol：JS 引擎相关的协议，主要围绕 JS 引擎功能本身，比如说 Runtime，Debugger，HeapProfiler 等，都是比较纯粹的 JS 语言调试功能</li>
+</ol>
+
+<h2 id="computer-use">computer use</h2>
+
+<p>https://github.com/e2b-dev/open-computer-use</p>
+
+<h3 id="gui-agent">GUI Agent</h3>
+
+<p>GUI Agent类模型的训练关键是否应该算在RL post-train里是个模糊的问题</p>
+<ol>
+  <li>GUI Agent的数据收集困难，多样性的仿真环境构建困难。</li>
+  <li>虽然主流应用数量不多，手机端App是频繁在更新的。</li>
+  <li>用户在GUI上进行的任务也相对匮乏，，除了少数很复杂的网站和PC专业应用之外，大部分用户在大部分软件上只是在完成少数任务。虽然输入的信息是个性化的，但任务流程很固定，也并不多样。当然在国内各种臃肿的App上，我们可以探索它们的各种功能，产出很多task，但这些task对于用户主要场景上的成功率和泛化性很难说有多大提升。</li>
+  <li>GUI Agent模型的跨应用泛化能力较差，海外的模型对于国内应用来说几乎不可用，因为这些模型没有针对于国内的网站和应用进行训练。国内的网站和应用的交互范式也与海外有差异。</li>
+</ol>
+
+<h2 id="code-sandbox">code sandbox</h2>
+
+<p>起初OpenAI Code Interpreter 的出现， 需要一个安全的 Sandbox 来执行它生成的 Python 代码，仅仅为了弥补数学计算和逻辑执行的短板。随后， 随着 Context Engineering 的深入，Manus 和 Anthropic 的实践告诉我们，Sandbox 里的 File System 不再只是存临时文件的地方，它是 Agent 的memory，<strong>于是Sandbox 变成了 Agent Skills 和Memory 的载体</strong>。</p>
+
+<p>根据业界领先的context Engineering的经验：</p>
+<ol>
+  <li>Cursor 的 “File-based Tools”： Cursor 采取了一种文档化方案，将工具的“说明书”全部文件化。当 Agent 需要使用某个能力时，它会先通过Retrieval找到对应的文档，阅读后生成代码</li>
+  <li>Manus 的 “Context Offloading”： 在 Manus 的设计中，采用了层级化的工具架构。为了应对复杂的长流程任务，Agent 不再试图把所有中间状态都记在 Context Window 里，而是利用文件系统进行 Context Offloading（上下文卸载）。文件系统成为了 Agent 的外挂memory（不同于compact的有损压缩，Offloading是无损的）</li>
+  <li>Anthropic 的 “Programming tool-using” 和skills：由agent自身编写代码实现tool-call相比于直接的tool-call能够节约大量context；同时agent skills本质上也是利用了file-system，对宝贵的context 进行节约的设计
+显而易见，代码执行环境 (Code Execution) 和 可读写的文件系统 (File System) 已经超越了辅助工具的范畴，成为 Agent 组件中必要且不可或缺的部分。赋予 Agent “写代码”和“改文件”的能力，等同于赋予了它巨大的破坏力。因此，通过为 Agent 划定严格的 安全边界（Sandbox）——如网络隔离、文件系统隔离、进程隔离，便显得尤为重要。</li>
+</ol>
+
+<p>https://github.com/vndee/llm-sandbox</p>
+
+<p>https://mp.weixin.qq.com/s/JiRAuWAQ0RqNKlgtShaOvw</p>
+
+<p>从技术实现角度，现阶段的Sandbox有以下几种实现方式</p>
+<ol>
+  <li>Local Sandbox-runtime。其原理利用 Linux 的 namespaces 和 cgroups 或 macOS 的 sandbox-exec 等操作系统原语直接限制进程权限， 如限制对配置路径的读/写访问，通过内置代理路由网络流量。如 Claude Code 中 执行 /sandbox 可在  中配置对应的权限：
+    <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>  {
+  "sandbox": {
+ "enabled": true,
+ "autoAllowBashIfSandboxed": true,
+ "excludedCommands": ["git", "docker"],
+ "network": {
+   "allowUnixSockets": ["/var/run/docker.sock"],
+   "allowLocalBinding": true
+ }
+  }
+</code></pre></div>    </div>
+    <p>本质上，Claude Code 的 sandbox runtime 是一个 OS 级别的“受限 Bash 运行环境”。</p>
+  </li>
+  <li>Docker。默认的 Docker 是不安全的，在标准 Docker 中，容器只是宿主机上的一个进程。存在容器逃逸的问题： Linux 内核由数千万行代码组成，不可避免地存在 Bug（漏洞）。如果 Agent 发送了一个精心构造的“恶意系统调用”触发了内核漏洞（Kernel Panic 或 提权漏洞），它就能瞬间逃出容器，直接控制整台宿主机。因此必须进行安全加固。关键配置包括移除 Linux capabilities、只读文件系统、禁用网络接口等。</li>
+  <li>MicroVM。AWS 在 2018 年开源了 Firecracker，专为 Serverless 和多租户容器设计: 砍掉了传统虚拟机（如 QEMU）中 90% 对 Agent 无用的功能，只保留了 CPU、内存、网络和最基础的块设备， 因而带来了惊人的性能，约 125 毫秒的冷启动时间，内存开销不到 5 MiB。</li>
+</ol>
+
+<p>从工程落地角度</p>
+<ol>
+  <li>自托管 (Self-hosting) vs 云服务 (Managed Provider)</li>
+  <li>Long running vs High-frequency (Lifecycle， persistence)。现阶段的sandbox的最主要用途，还是 code Interpreter，如执行agent生成的代码、数据分析等。对于大多数情况下，用完即焚，每次请求启动一个全新环境，任务结束立即销毁。同时通过预装环境的sandbox（常用数据分析库）也可节约响应时间。在如Agent skills所需要file-system的场景下，持久化则显得很重要。</li>
+</ol>
+
+<h3 id="agent与sandbox">agent与sandbox</h3>
+
+<p>越来越多的 Agent（智能体）需要一个工作空间：即一台可以运行代码、安装包和访问文件的计算机。沙箱提供了这一功能。将 Agent 与沙箱集成主要有两种架构模式：</p>
+<ol>
+  <li>Agent 在沙箱内部运行，你通过网络与其通信。优点：镜像本地开发体验，Agent 与环境紧密耦合。</li>
+  <li>更新需要重新构建容器镜像并重新部署</li>
+  <li>安全风险。假设你想要一个拥有 bash 工具和一个可以进行网页搜索或网页抓取工具的 Agent，那么所有 LLM 生成的代码都可以进行无限制的网页抓取（这是一个巨大的安全风险）。</li>
+  <li>沙箱作为工具。Agent 在本地/你的服务器上运行，远程调用沙箱进行执行。优点：易于更新 Agent 逻辑，API 密钥保留在沙箱之外，关注点分离更清晰。</li>
+  <li>网络延迟是主要的缺点。每次执行调用都要跨越网络边界。对于包含许多小型执行操作的工作负载，这可能会累积起来。</li>
+</ol>
+
+<p>exec 输出太多怎么办？ https://github.com/mksglu/claude-context-mode</p>
+
+<h2 id="其它">其它</h2>
+
+<p><a href="https://mp.weixin.qq.com/s/fVpWW1P80JBQAzTjWAnR8Q">一句指令帮你操作手机，最新多模态手机助手Mobile-Agent来了！</a>为了便于将文本描述的操作转化为屏幕上的操作，Mobile-Agent生成的操作必须在一个定义好的操作空间内。这个空间共有8个操作，分别是：打开App（App名字）；点击文本（文本内容）；点击图标（图标描述）；打字（文本内容）；上翻、下翻；返回上一页；退出App；停止。点击文本和点击图标设计了输入参数。</p>
+<ol>
+  <li>在迭代开始之前，用户需要输入一个指令。我们根据指令生成整个流程的系统提示。在每次迭代开始时，Mobile-Agent会获取手机屏幕的截图，通过观察系统提示、操作历史和当前屏幕截图，输出下一步操作。如果Mobile-Agent输出的是结束，则停止迭代；否则，继续新的迭代。Mobile-Agent利用操作历史记录了解当前任务的进度，并根据系统提示对当前屏幕截图进行操作，从而实现迭代式自我规划流程。</li>
+  <li>在迭代过程中，Mobile-Agent可能会遇到错误，导致无法完成指令。为了提高指令的成功率，我们引入了一种自我反思方法。这种方法将在两种情况下生效。第一种情况是生成了错误或无效的操作，导致进程卡住。当Mobile-Agent注意到某个操作后截图没有变化，或者截图显示了错误的页面时，它会尝试其他操作或修改当前操作的参数。第二种情况是忽略某些复杂指令的要求。当通过自我规划完成所有操作后，Mobile-Agent会分析操作、历史记录、当前截图和用户指令，以确定指令是否已完成。如果没有，它需要继续通过自我规划生成操作。</li>
+</ol>]]></content><author><name>李乾坤</name></author><category term="技术" /><category term="MachineLearning" /><summary type="html"><![CDATA[简介(未完成) Browser Use CDP computer use GUI Agent code sandbox agent与sandbox 其它 简介(未完成) xx-use 可以将一些老旧软件“api”化。 agent infra。 Browser Use https://github.com/browser-use/browser-use 如何让AI“看懂”网页？拆解 Browser-Use 的三大核心技术模块 Browser Use 是什么 Browser Use 是一种基于 AI 模型的浏览器自动化工具，基于 Playwright（浏览器自动化框架） Browser Use 是是一个开源的Python库，基于 LangChain 生态构建 Playwright 是一个底层浏览器自动化驱动层，负责： 启动、控制浏览器进程； 执行 DOM 操作、点击、输入、截图； 模拟网络请求、地理位置、时间； 拦截 / 注入脚本； 提供 API 接口给上层应用调用。 它相当于“浏览器的远程控制器”，用来跑测试、爬取数据、或者做自动化交互。 # 初始化AI模型 llm = ChatOpenAI(model="gpt-4o") # 定义任务 task = "打开google，搜索'AI编程助手'，告诉我第一条结果的标题" # 创建AI代理 agent = Agent(task=task, llm=llm) # 运行任务 await agent.run() 现代Python项目最佳实践：以 agentic tool browser-use为例 class Agent(Generic[Context, AgentStructuredOutput]): async def run(self, max_steps: int = 100) -&gt; AgentHistoryList: for step in range(max_steps): await self.step(step_info) async def step(self, step_info: Optional[AgentStepInfo] = None) -&gt; None: try: # Phase 1: Prepare context and timing browser_state_summary = await self._prepare_context(step_info) # Phase 2: Get model output and execute actions await self._get_next_action(browser_state_summary) await self._execute_actions() # Phase 3: Post-processing await self._post_process() except Exception as e: # Handle ALL exceptions in one place await self._handle_step_error(e) finally: await self._finalize(browser_state_summary) CDP Chrome DevTools Protocol(CDP)是 Chromium 浏览器调试工具的核心通信协议：它基于 JSON 格式，可以通过 WebSocket 实现客户端与浏览器内核之间的双向实时交互。基于 CDP 的开源产品有许多，其中最有名的应该是 Chrome Devtools Frontend，Puppeteer 和 Playwright 了。 首先 CDP 协议是一个典型的 CS 架构，这里我们拿 Chrome Devtools 为例： Chrome Devtools：就是 Client，用来做调试数据的 UI 展示，方便用户阅读 CDP：就是连接 Client-Server 的 Protocol，定义 API 的各种格式和细节 Chromium/Chrome：就是 Server，用来产生各种数据 CDP 协议的格式基于 JSON-RPC 2.0做了一些轻量的定制。首先是去掉了 JSON 结构体中的 “jsonrpc”: “2.0” 这种每次都要发送的冗余信息。CDP 其实可以分为两大类，然后下面有不同的 Domain 分类： Browser Protocol：浏览器相关的协议，之下的 Domain 都是平台相关的，比如说 Page，DOM，CSS，Network，都是和浏览器功能相关 JavaScript Protocol：JS 引擎相关的协议，主要围绕 JS 引擎功能本身，比如说 Runtime，Debugger，HeapProfiler 等，都是比较纯粹的 JS 语言调试功能 computer use https://github.com/e2b-dev/open-computer-use GUI Agent GUI Agent类模型的训练关键是否应该算在RL post-train里是个模糊的问题 GUI Agent的数据收集困难，多样性的仿真环境构建困难。 虽然主流应用数量不多，手机端App是频繁在更新的。 用户在GUI上进行的任务也相对匮乏，，除了少数很复杂的网站和PC专业应用之外，大部分用户在大部分软件上只是在完成少数任务。虽然输入的信息是个性化的，但任务流程很固定，也并不多样。当然在国内各种臃肿的App上，我们可以探索它们的各种功能，产出很多task，但这些task对于用户主要场景上的成功率和泛化性很难说有多大提升。 GUI Agent模型的跨应用泛化能力较差，海外的模型对于国内应用来说几乎不可用，因为这些模型没有针对于国内的网站和应用进行训练。国内的网站和应用的交互范式也与海外有差异。 code sandbox 起初OpenAI Code Interpreter 的出现， 需要一个安全的 Sandbox 来执行它生成的 Python 代码，仅仅为了弥补数学计算和逻辑执行的短板。随后， 随着 Context Engineering 的深入，Manus 和 Anthropic 的实践告诉我们，Sandbox 里的 File System 不再只是存临时文件的地方，它是 Agent 的memory，于是Sandbox 变成了 Agent Skills 和Memory 的载体。 根据业界领先的context Engineering的经验： Cursor 的 “File-based Tools”： Cursor 采取了一种文档化方案，将工具的“说明书”全部文件化。当 Agent 需要使用某个能力时，它会先通过Retrieval找到对应的文档，阅读后生成代码 Manus 的 “Context Offloading”： 在 Manus 的设计中，采用了层级化的工具架构。为了应对复杂的长流程任务，Agent 不再试图把所有中间状态都记在 Context Window 里，而是利用文件系统进行 Context Offloading（上下文卸载）。文件系统成为了 Agent 的外挂memory（不同于compact的有损压缩，Offloading是无损的） Anthropic 的 “Programming tool-using” 和skills：由agent自身编写代码实现tool-call相比于直接的tool-call能够节约大量context；同时agent skills本质上也是利用了file-system，对宝贵的context 进行节约的设计 显而易见，代码执行环境 (Code Execution) 和 可读写的文件系统 (File System) 已经超越了辅助工具的范畴，成为 Agent 组件中必要且不可或缺的部分。赋予 Agent “写代码”和“改文件”的能力，等同于赋予了它巨大的破坏力。因此，通过为 Agent 划定严格的 安全边界（Sandbox）——如网络隔离、文件系统隔离、进程隔离，便显得尤为重要。 https://github.com/vndee/llm-sandbox https://mp.weixin.qq.com/s/JiRAuWAQ0RqNKlgtShaOvw 从技术实现角度，现阶段的Sandbox有以下几种实现方式 Local Sandbox-runtime。其原理利用 Linux 的 namespaces 和 cgroups 或 macOS 的 sandbox-exec 等操作系统原语直接限制进程权限， 如限制对配置路径的读/写访问，通过内置代理路由网络流量。如 Claude Code 中 执行 /sandbox 可在 中配置对应的权限： { "sandbox": { "enabled": true, "autoAllowBashIfSandboxed": true, "excludedCommands": ["git", "docker"], "network": { "allowUnixSockets": ["/var/run/docker.sock"], "allowLocalBinding": true } } 本质上，Claude Code 的 sandbox runtime 是一个 OS 级别的“受限 Bash 运行环境”。 Docker。默认的 Docker 是不安全的，在标准 Docker 中，容器只是宿主机上的一个进程。存在容器逃逸的问题： Linux 内核由数千万行代码组成，不可避免地存在 Bug（漏洞）。如果 Agent 发送了一个精心构造的“恶意系统调用”触发了内核漏洞（Kernel Panic 或 提权漏洞），它就能瞬间逃出容器，直接控制整台宿主机。因此必须进行安全加固。关键配置包括移除 Linux capabilities、只读文件系统、禁用网络接口等。 MicroVM。AWS 在 2018 年开源了 Firecracker，专为 Serverless 和多租户容器设计: 砍掉了传统虚拟机（如 QEMU）中 90% 对 Agent 无用的功能，只保留了 CPU、内存、网络和最基础的块设备， 因而带来了惊人的性能，约 125 毫秒的冷启动时间，内存开销不到 5 MiB。 从工程落地角度 自托管 (Self-hosting) vs 云服务 (Managed Provider) Long running vs High-frequency (Lifecycle， persistence)。现阶段的sandbox的最主要用途，还是 code Interpreter，如执行agent生成的代码、数据分析等。对于大多数情况下，用完即焚，每次请求启动一个全新环境，任务结束立即销毁。同时通过预装环境的sandbox（常用数据分析库）也可节约响应时间。在如Agent skills所需要file-system的场景下，持久化则显得很重要。 agent与sandbox 越来越多的 Agent（智能体）需要一个工作空间：即一台可以运行代码、安装包和访问文件的计算机。沙箱提供了这一功能。将 Agent 与沙箱集成主要有两种架构模式： Agent 在沙箱内部运行，你通过网络与其通信。优点：镜像本地开发体验，Agent 与环境紧密耦合。 更新需要重新构建容器镜像并重新部署 安全风险。假设你想要一个拥有 bash 工具和一个可以进行网页搜索或网页抓取工具的 Agent，那么所有 LLM 生成的代码都可以进行无限制的网页抓取（这是一个巨大的安全风险）。 沙箱作为工具。Agent 在本地/你的服务器上运行，远程调用沙箱进行执行。优点：易于更新 Agent 逻辑，API 密钥保留在沙箱之外，关注点分离更清晰。 网络延迟是主要的缺点。每次执行调用都要跨越网络边界。对于包含许多小型执行操作的工作负载，这可能会累积起来。 exec 输出太多怎么办？ https://github.com/mksglu/claude-context-mode 其它 一句指令帮你操作手机，最新多模态手机助手Mobile-Agent来了！为了便于将文本描述的操作转化为屏幕上的操作，Mobile-Agent生成的操作必须在一个定义好的操作空间内。这个空间共有8个操作，分别是：打开App（App名字）；点击文本（文本内容）；点击图标（图标描述）；打字（文本内容）；上翻、下翻；返回上一页；退出App；停止。点击文本和点击图标设计了输入参数。 在迭代开始之前，用户需要输入一个指令。我们根据指令生成整个流程的系统提示。在每次迭代开始时，Mobile-Agent会获取手机屏幕的截图，通过观察系统提示、操作历史和当前屏幕截图，输出下一步操作。如果Mobile-Agent输出的是结束，则停止迭代；否则，继续新的迭代。Mobile-Agent利用操作历史记录了解当前任务的进度，并根据系统提示对当前屏幕截图进行操作，从而实现迭代式自我规划流程。 在迭代过程中，Mobile-Agent可能会遇到错误，导致无法完成指令。为了提高指令的成功率，我们引入了一种自我反思方法。这种方法将在两种情况下生效。第一种情况是生成了错误或无效的操作，导致进程卡住。当Mobile-Agent注意到某个操作后截图没有变化，或者截图显示了错误的页面时，它会尝试其他操作或修改当前操作的参数。第二种情况是忽略某些复杂指令的要求。当通过自我规划完成所有操作后，Mobile-Agent会分析操作、历史记录、当前截图和用户指令，以确定指令是否已完成。如果没有，它需要继续通过自我规划生成操作。]]></summary></entry></feed>
