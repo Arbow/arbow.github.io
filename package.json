@@ -1,5 +1,6 @@
 {
   "dependencies": {
-    "fast-xml-parser": "^5.7.1"
+    "fast-xml-parser": "^5.7.2",
+    "jsdom": "^29.1.1"
   }
 }
