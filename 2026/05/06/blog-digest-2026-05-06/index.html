@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=0">
+
+  <meta name="description" content="个人知识库与技术笔记">
+
+
+<link rel="alternate" href="/atom.xml" title="Api Intelligence Daily Life" type="application/atom+xml">
+<meta name="theme-color" content="#a1d0f6">
+<title>博客推荐 - 2026-05-06 - Api Intelligence Daily Life</title>
+<!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+<link rel="shortcut icon" href="/favicon.png">
+
+<link rel="stylesheet" href="/css/style.css">
+
+<nav class="main-nav">
+	
+	    <a href="/">← 主页</a>
+	
+	
+	    <a href="/about/">About</a>
+	
+	    <a href="/archives/">Archives</a>
+	
+	<a class="cta" href="/atom.xml" data-no-instant>订阅</a>
+</nav>
+
+<section id="wrapper">
+    <article class="post">
+    <header>
+        
+            <h1>博客推荐 - 2026-05-06</h1>
+        
+        <h2 class="headline">May 06 2026
+        
+        </h2>
+    </header>
+</article>
+<section id="post-body"><h2 id="博客推荐汇总"><a href="#博客推荐汇总" class="headerlink" title="博客推荐汇总"></a>博客推荐汇总</h2><h3 id="1-Boris-Cherny：Claude-Code-之后，写代码正在变成”管理-Agent”"><a href="#1-Boris-Cherny：Claude-Code-之后，写代码正在变成”管理-Agent”" class="headerlink" title="1. Boris Cherny：Claude Code 之后，写代码正在变成”管理 Agent”"></a>1. Boris Cherny：Claude Code 之后，写代码正在变成”管理 Agent”</h3><p><strong>来源</strong>: <a target="_blank" rel="noopener" href="https://baoyu.io/blog">宝玉的分享</a><br><strong>原文链接</strong>: <a target="_blank" rel="noopener" href="https://baoyu.io/blog/anthropics-boris-cherny-why-coding-is-solved-and-what-comes-next">Boris Cherny：Claude Code 之后，写代码正在变成”管理 Agent”</a><br><strong>推荐指数</strong>: ⭐⭐⭐⭐⭐ (5&#x2F;5) - 必读，这是 Claude Code 创造者的第一手访谈，揭示了编程工具革命的核心趋势</p>
+<p><strong>核心概要</strong>:<br>这篇文章是 Anthropic 工程师 Boris Cherny 在 Sequoia 2026 年 AI Ascent 大会上的访谈实录，Boris 是 Claude Code 的创建者。访谈的核心观点是：编程正在从”写代码”转向”管理 AI Agent”。Claude Code 从一个三人小团队的孵化项目，发展成为 2026 年初年化营收超过十亿美元的产品，成为 Anthropic 史上从预览到十亿美元产品最快的一次成功案例。</p>
+<p>文章深入探讨了几个关键命题：Boris 个人在 2026 年完全停止了手写代码，每天合并几十个 PR；Claude Code 早期半年没有产品市场匹配（PMF），直到 Opus 4 发布后才迎来指数增长；他现在通过手机运行 5-10 个常驻 session，每个 session 管理几百个 Agent，晚上还有几千个 Agent 在后台运行深度任务。Boris 提出历史类比：软件构建会像识字一样普及，最合适写会计软件的是会计师而不是工程师，因为编程是简单部分，懂业务才是难的部分。</p>
+<p>文章还讨论了 SaaS 行业的护城河变化：AI 会抹平切换成本和流程效力这两种护城河，但网络效应、规模经济、独占资源仍然有效。Boris 认为 Anthropic 的真正领先不在技术模型，而在组织流程——整个公司已经没有手写代码，所有 SQL 和产品代码都由模型生成，员工的 Claude 之间通过 Slack 互相沟通。</p>
+<p><strong>关键洞察</strong>:</p>
+<ol>
+<li><p><strong>产品悬置（Product Overhang）策略</strong>：Anthropic 提前为下一代模型做产品开发，即使早期产品不具备 PMF 也持续推进。Claude Code 前半年几乎没人用，Boris 自己也只用它写 10% 的代码，但他们赌的是模型能力会涨到一个点。这种”为未来模型做开发”的策略与典型的”先验证需求再做产品”的 SaaS 逻辑完全相反。</p>
+</li>
+<li><p><strong>从手写代码到管理 Agent 的核心工作流变化</strong>：Boris 的工作模式是 Loop 调度——让 Claude 通过 cron 起定时任务循环，自动盯着 PR、修 CI、rebase、保持测试健康、从 Twitter 拉反馈并聚类整理。他几十个 Loop 一直在跑，自己只在 Slack 上接收报告。这是未来工作流的核心范式。</p>
+</li>
+<li><p><strong>通才崛起与角色边界模糊</strong>：当写代码的边际成本接近于零时，原本被排除在工程之外的角色（财务、设计、产品经理、数据科学家）都有了直接出工程产物的能力。Claude Code 团队里，工程经理、产品经理、设计师、数据科学家、财务、用户研究员，每一个人都在写代码。</p>
+</li>
+<li><p><strong>SaaS 护城河的结构性变化</strong>：AI 能帮用户从一个工具迁到另一个工具，一夜之间迁移完原本复杂的工作流配置（切换成本消失）；Claude 4.7 能 hill-climb 任何流程，自己迭代优化直到达成目标（流程效力消失）。但网络效应、规模经济、独占资源依然成立。</p>
+</li>
+<li><p><strong>组织流程改造比技术领先更重要</strong>：模型层基本没差距（内部用的 Mythos 和 Opus 4.7 未来也会对外开放），但产品层有更大差距，原因来自流程。要把整个公司从手写代码切到模型生成代码，要让员工的 Claude 之间通过 Slack 互相问问题，这是组织行为的改造，比技术本身慢得多。</p>
+</li>
+</ol>
+<p><strong>评价</strong>:</p>
+<ul>
+<li><p><strong>优点</strong>:</p>
+<ul>
+<li>第一手资料价值极高：这是 Claude Code 创造者的直接访谈，不是二手分析，信息密度和可信度都很高</li>
+<li>结构清晰，要点明确：文章整理了 12 个核心议题和速览问答，便于读者快速抓住重点</li>
+<li>洞察具有前瞻性：对编程工具、SaaS 行业、组织形态的预判有明确的判断和时间线</li>
+<li>承认局限性：文章中加了多处”注”，指出 Boris 观点的样本偏差、数据偏差、适用范围局限，体现了批判性思维</li>
+<li>具体案例丰富：Boris 的工作流、团队协作方式、具体产品功能都有详细描述，不是空泛概念</li>
+</ul>
+</li>
+<li><p><strong>不足</strong>:</p>
+<ul>
+<li>样本偏差明显：Boris 用的是 TypeScript+React 这种最受模型偏爱的栈，他的结论”编程已被解决”对 SAP、C++ 老系统、嵌入式系统、高合规场景是否成立存疑</li>
+<li>历史类比数据有偏差：Boris 说 15 世纪欧洲识字率约 10%、今天约 70%，实际学界估计是 30% 和 90%，虽然不影响核心论点，但数据准确性有问题</li>
+<li>对大企业迁移难度估计不足：文章对 5000 人银行 IT 部门的合规、风控、变更管理、审计追踪等约束讨论不够，这些不是”我会写代码”就能跨过去的</li>
+<li>对安全风险讨论不足：印刷术类比只说了正面影响，但没展开印刷术催生的几百年审查制度、版权战争、宗教改革动荡。”软件人人都能写”对应的不只是创造力释放，也包括恶意软件、深伪诈骗、AI 生成漏洞利用的同步爆发</li>
+</ul>
+</li>
+<li><p><strong>适用场景</strong>:</p>
+<ul>
+<li><strong>强烈推荐给</strong>：AI 工具开发者、技术团队管理者、SaaS 从业者、关注 AI 对生产力影响的投资者</li>
+<li><strong>参考价值</strong>：普通开发者（理解未来工作流变化）、产品经理（学习产品悬置策略）</li>
+<li><strong>谨慎参考</strong>：传统企业 IT 负责人（Boris 的经验很难直接迁移到高度合规的环境）、安全研究者（文章对风险讨论不足）</li>
+</ul>
+</li>
+</ul>
+</section>
+    
+
+    <footer id="post-meta" class="clearfix">
+        <a href="/about/">
+        <img class="avatar" src="/images/avatar.png">
+        <div>
+            <span class="dark">Api Intelligence Daily Life</span>
+            <span>知识库 &amp; 博客</span>
+        </div>
+        </a>
+        <section id="sharing">
+            <a title="Share to Twitter" class="twitter" target="_blank" rel="noopener" href="https://twitter.com/intent/tweet?text=https://arbow.github.io/2026/05/06/blog-digest-2026-05-06/ - 博客推荐 - 2026-05-06 @"><span class="icon-twitter">tweet</span></a>
+            <a title="Share to Facebook" class="facebook" href="#" onclick="
+                window.open(
+                  'https://www.facebook.com/sharer/sharer.php?u='+encodeURIComponent(location.href),
+                  'facebook-share-dialog',
+                  'width=626,height=436');
+                return false;"><span class="icon-facebook-sign">Share</span>
+            </a>
+        </section>
+    </footer>
+
+
+  <section id="comment">
+    <button class="btn" id="loadcmts" onclick="cmts.load();">加载评论</button>
+    <div id="gitment"></div>
+    <script src='/js/gitment.browser.js'></script>
+    <link rel="stylesheet" href=''>
+    <script>
+      var cmts={
+        load:function cmts(){
+          var gitment = new Gitment({
+          
+            id: "博客推荐 - 2026-05-06",
+          
+            owner: "",
+            repo: "",
+            oauth: {
+              client_id: "",
+              client_secret: "",
+            },
+          })
+          gitment.render('gitment');
+          var loadcmt = document.getElementById("loadcmts");
+          var imyourfather = loadcmt.parentNode;
+          imyourfather.removeChild(loadcmts)
+        }
+      }
+    </script>
+  </section>
+
+
+	<footer id="footer">
+	<div id="social">
+		<p class="small">©  Arbow| Powered by Hexo & 
+			<a target="_blank" rel="noopener" href="https://github.com/F0r3at/Lights"> Lights</a>
+		</p>
+	</div>
+</footer>
+
+</section>
+
+	<script src="//cdnjs.loli.net/ajax/libs/instantclick/3.0.1/instantclick.min.js" data-no-instant></script>
+	<script data-no-instant>
+		
+		InstantClick.init('mousedown');
+	</script>
+
+
+
