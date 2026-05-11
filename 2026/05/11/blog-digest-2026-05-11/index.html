@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=0">
+
+  <meta name="description" content="个人知识库与技术笔记">
+
+
+<link rel="alternate" href="/atom.xml" title="Api Intelligence Daily Life" type="application/atom+xml">
+<meta name="theme-color" content="#a1d0f6">
+<title>博客推荐 2026-05-11 - Api Intelligence Daily Life</title>
+<!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+<link rel="shortcut icon" href="/favicon.png">
+
+<link rel="stylesheet" href="/css/style.css">
+
+<nav class="main-nav">
+	
+	    <a href="/">← 主页</a>
+	
+	
+	    <a href="/about/">About</a>
+	
+	    <a href="/archives/">Archives</a>
+	
+	<a class="cta" href="/atom.xml" data-no-instant>订阅</a>
+</nav>
+
+<section id="wrapper">
+    <article class="post">
+    <header>
+        
+            <h1>博客推荐 2026-05-11</h1>
+        
+        <h2 class="headline">May 11 2026
+        
+            
+            <a href="/categories/博客推荐/#博客推荐">博客推荐</a>
+        
+        </h2>
+    </header>
+</article>
+<section id="post-body"><h1 id="博客推荐-2026-05-11"><a href="#博客推荐-2026-05-11" class="headerlink" title="博客推荐 2026-05-11"></a>博客推荐 2026-05-11</h1><blockquote>
+<p>每日精选技术博客，探索 AI、编程与技术的深度内容</p>
+</blockquote>
+<hr>
+<h2 id="今日推荐文章"><a href="#今日推荐文章" class="headerlink" title="今日推荐文章"></a>今日推荐文章</h2><h3 id="1-深度拆解：AI-Agent-Harness-的构造"><a href="#1-深度拆解：AI-Agent-Harness-的构造" class="headerlink" title="1. 深度拆解：AI Agent Harness 的构造"></a>1. 深度拆解：AI Agent Harness 的构造</h3><p><strong>来源</strong>: 宝玉的博客<br><strong>日期</strong>: 2026-05-10<br><strong>链接</strong>: <a target="_blank" rel="noopener" href="https://baoyu.io/posts/ai-agent-harness-anatomy">https://baoyu.io/posts/ai-agent-harness-anatomy</a><br><strong>评分</strong>: ⭐⭐⭐⭐⭐ (5&#x2F;5)</p>
+<p><strong>文章简介</strong>: 这是一篇关于 AI Agent Harness（智能体架构）的深度技术文章，详细拆解了生产级 Agent 系统的 12 个核心组件，包括编排循环、工具、记忆、上下文管理、错误处理等。</p>
+<p><strong>核心观点</strong>:</p>
+<ul>
+<li>Agent Harness 是包裹在大语言模型之外的完整软件架构，包括编排循环、工具、记忆、上下文管理等</li>
+<li>生产级 Harness 包含 12 个核心组件：编排循环、工具、记忆、上下文管理、提示词构建、输出解析、状态管理、错误处理、护栏与安全、验证循环、子 Agent 编排</li>
+<li>上下文管理是关键挑战，需要处理”迷失在中间”现象，采用压缩、观察掩码、即时检索等策略</li>
+<li>随着模型能力提升，Harness 的复杂度应该逐渐降低（协同进化原则）</li>
+</ul>
+<p><strong>优点</strong>:</p>
+<ul>
+<li>系统性极强，将分散的 Agent 工程实践整合为完整框架</li>
+<li>对比了 Anthropic、OpenAI、LangChain、CrewAI、AutoGen 等主流框架的实现差异</li>
+<li>提供了具体的设计决策指导，如单 Agent vs 多 Agent、ReAct vs 先规划后执行等</li>
+</ul>
+<p><strong>缺点</strong>:</p>
+<ul>
+<li>内容较为抽象，缺少具体的代码示例</li>
+<li>部分概念（如观察掩码）解释不够深入</li>
+</ul>
+<hr>
+<h3 id="2-我对《缺氧》的游戏理解"><a href="#2-我对《缺氧》的游戏理解" class="headerlink" title="2. 我对《缺氧》的游戏理解"></a>2. 我对《缺氧》的游戏理解</h3><p><strong>来源</strong>: 云风的 BLOG<br><strong>日期</strong>: 2026-04-28<br><strong>链接</strong>: <a target="_blank" rel="noopener" href="https://blog.codingnow.com/2026/04/oxygen_not_included.html">https://blog.codingnow.com/2026/04/oxygen_not_included.html</a><br><strong>评分</strong>: ⭐⭐⭐⭐ (4&#x2F;5)</p>
+<p><strong>文章简介</strong>: 游戏《缺氧》(Oxygen Not Included) 资深玩家云风分享了他 485 小时游戏时长后的深度理解，从 Factorio 玩家的视角对比分析了这款基地建造游戏的核心机制。</p>
+<p><strong>核心观点</strong>:</p>
+<ul>
+<li>ONI 与 Factorio 有本质区别：Factorio 是确定性规则的物流系统，ONI 是基于物理模拟的气体扩散和液体流动</li>
+<li>游戏的核心挑战是”热治理”——所有生产活动都产生热量，而减少热量的手段极其有限</li>
+<li>小团队策略（3-4 人）是高效推进游戏的关键，与主流攻略的大团队思路相反</li>
+<li>游戏本质是”治理混乱”，即减少地图的熵，将无序的砖块转换为有序的基地</li>
+</ul>
+<p><strong>优点</strong>:</p>
+<ul>
+<li>从资深玩家视角提供了独特的游戏理解，不同于主流攻略</li>
+<li>逻辑严密，用系统思维分析游戏机制</li>
+<li>小团队策略的提出具有启发性，体现了对游戏机制的深层理解</li>
+</ul>
+<p><strong>缺点</strong>:</p>
+<ul>
+<li>对未玩过游戏的读者门槛较高</li>
+<li>文章较长，部分段落略显重复</li>
+</ul>
+<hr>
+<h3 id="3-玩-OpenClaw-龙虾初次安装的几个-Skills"><a href="#3-玩-OpenClaw-龙虾初次安装的几个-Skills" class="headerlink" title="3. 玩 OpenClaw 龙虾初次安装的几个 Skills"></a>3. 玩 OpenClaw 龙虾初次安装的几个 Skills</h3><p><strong>来源</strong>: liruifengv<br><strong>日期</strong>: 2026-03-09<br><strong>链接</strong>: <a target="_blank" rel="noopener" href="https://liruifengv.com/posts/openclaw-skills/">https://liruifengv.com/posts/openclaw-skills/</a><br><strong>评分</strong>: ⭐⭐⭐⭐ (4&#x2F;5)</p>
+<p><strong>文章简介</strong>: 作者分享了初次安装 OpenClaw（一个 AI Agent 框架）时推荐的几个 Skills（技能插件），包括 find-skills、exa-web-search-free、agent-reach 和 agent-browser。</p>
+<p><strong>核心观点</strong>:</p>
+<ul>
+<li>find-skills：解决如何找到最合适 Skill 的问题</li>
+<li>exa-web-search-free：使用 exa 的免费 MCP 额度提供搜索能力</li>
+<li>agent-reach：让 Agent 能从多个社交平台获取信息</li>
+<li>agent-browser：Vercel 出品的自动化浏览器操作工具</li>
+</ul>
+<p><strong>优点</strong>:</p>
+<ul>
+<li>实用性强，为 OpenClaw 新手提供了清晰的入门指引</li>
+<li>推荐的 Skills 覆盖搜索、信息获取、浏览器自动化等核心需求</li>
+<li>附带微信群等社区资源，便于读者进一步交流</li>
+</ul>
+<p><strong>缺点</strong>:</p>
+<ul>
+<li>内容较为简单，主要是资源罗列</li>
+<li>缺少对 Skills 实际使用效果的深入评测</li>
+</ul>
+<hr>
+<h3 id="4-拆解-OpenClaw-的系统提示词，设计的太妙了"><a href="#4-拆解-OpenClaw-的系统提示词，设计的太妙了" class="headerlink" title="4. 拆解 OpenClaw 的系统提示词，设计的太妙了"></a>4. 拆解 OpenClaw 的系统提示词，设计的太妙了</h3><p><strong>来源</strong>: liruifengv<br><strong>日期</strong>: 2026-03-09<br><strong>链接</strong>: <a target="_blank" rel="noopener" href="https://liruifengv.com/posts/openclaw-prompts/">https://liruifengv.com/posts/openclaw-prompts/</a><br><strong>评分</strong>: ⭐⭐⭐⭐⭐ (5&#x2F;5)</p>
+<p><strong>文章简介</strong>: 深度拆解 OpenClaw 的系统提示词设计，分析了 AGENTS.md、SOUL.md、USER.md、MEMORY.md 等核心文件的设计理念。</p>
+<p><strong>核心观点</strong>:</p>
+<ul>
+<li>OpenClaw 使用文件系统 + Markdown 格式存储所有配置和记忆</li>
+<li>AGENTS.md 是指导 Agent 如何工作的核心文件，定义了首次运行、每次会话的行为规范</li>
+<li>MEMORY.md 作为长期记忆，只在主会话中加载以确保安全</li>
+<li>设计强调”Text &gt; Brain”——记忆是有限的，重要信息必须写入文件</li>
+</ul>
+<p><strong>优点</strong>:</p>
+<ul>
+<li>揭示了 OpenClaw 拟人化设计的底层机制</li>
+<li>双语对照的呈现方式便于理解</li>
+<li>对 Agent 记忆管理的设计思路具有普遍参考价值</li>
+</ul>
+<p><strong>缺点</strong>:</p>
+<ul>
+<li>内容被截断，部分文件（如 SOUL.md、USER.md）的解读不完整</li>
+</ul>
+<hr>
+<h2 id="评分汇总"><a href="#评分汇总" class="headerlink" title="评分汇总"></a>评分汇总</h2><table>
+<thead>
+<tr>
+<th>文章</th>
+<th>评分</th>
+<th>核心主题</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>深度拆解：AI Agent Harness 的构造</td>
+<td>⭐⭐⭐⭐⭐</td>
+<td>AI Agent 架构设计</td>
+</tr>
+<tr>
+<td>我对《缺氧》的游戏理解</td>
+<td>⭐⭐⭐⭐</td>
+<td>游戏机制分析</td>
+</tr>
+<tr>
+<td>玩 OpenClaw 龙虾初次安装的几个 Skills</td>
+<td>⭐⭐⭐⭐</td>
+<td>OpenClaw 入门指南</td>
+</tr>
+<tr>
+<td>拆解 OpenClaw 的系统提示词，设计的太妙了</td>
+<td>⭐⭐⭐⭐⭐</td>
+<td>Agent 提示词工程</td>
+</tr>
+</tbody></table>
+<hr>
+<h2 id="主题趋势"><a href="#主题趋势" class="headerlink" title="主题趋势"></a>主题趋势</h2><p>本周文章主要围绕 <strong>AI Agent 工程实践</strong> 展开：</p>
+<ul>
+<li>宝玉的文章从宏观架构层面解析 Agent 系统</li>
+<li>liruifengv 的两篇文章从实践角度介绍 OpenClaw 的使用和原理</li>
+<li>云风的文章虽然是游戏主题，但其系统思维方法对软件设计同样有启发</li>
+</ul>
+<hr>
+<p><em>本推荐由自动化系统生成于 2026-05-11</em></p>
+</section>
+    
+
+    <footer id="post-meta" class="clearfix">
+        <a href="/about/">
+        <img class="avatar" src="/images/avatar.png">
+        <div>
+            <span class="dark">Api Intelligence Daily Life</span>
+            <span>知识库 &amp; 博客</span>
+        </div>
+        </a>
+        <section id="sharing">
+            <a title="Share to Twitter" class="twitter" target="_blank" rel="noopener" href="https://twitter.com/intent/tweet?text=https://arbow.github.io/2026/05/11/blog-digest-2026-05-11/ - 博客推荐 2026-05-11 @"><span class="icon-twitter">tweet</span></a>
+            <a title="Share to Facebook" class="facebook" href="#" onclick="
+                window.open(
+                  'https://www.facebook.com/sharer/sharer.php?u='+encodeURIComponent(location.href),
+                  'facebook-share-dialog',
+                  'width=626,height=436');
+                return false;"><span class="icon-facebook-sign">Share</span>
+            </a>
+        </section>
+    </footer>
+
+
+  <section id="comment">
+    <button class="btn" id="loadcmts" onclick="cmts.load();">加载评论</button>
+    <div id="gitment"></div>
+    <script src='/js/gitment.browser.js'></script>
+    <link rel="stylesheet" href=''>
+    <script>
+      var cmts={
+        load:function cmts(){
+          var gitment = new Gitment({
+          
+            id: "博客推荐 2026-05-11",
+          
+            owner: "",
+            repo: "",
+            oauth: {
+              client_id: "",
+              client_secret: "",
+            },
+          })
+          gitment.render('gitment');
+          var loadcmt = document.getElementById("loadcmts");
+          var imyourfather = loadcmt.parentNode;
+          imyourfather.removeChild(loadcmts)
+        }
+      }
+    </script>
+  </section>
+
+
+	<footer id="footer">
+	<div id="social">
+		<p class="small">©  Arbow| Powered by Hexo & 
+			<a target="_blank" rel="noopener" href="https://github.com/F0r3at/Lights"> Lights</a>
+		</p>
+	</div>
+</footer>
+
+</section>
+
+	<script src="//cdnjs.loli.net/ajax/libs/instantclick/3.0.1/instantclick.min.js" data-no-instant></script>
+	<script data-no-instant>
+		
+		InstantClick.init('mousedown');
+	</script>
+
+
+
