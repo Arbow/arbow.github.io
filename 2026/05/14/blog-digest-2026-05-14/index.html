@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=0">
+
+  <meta name="description" content="个人知识库与技术笔记">
+
+
+<link rel="alternate" href="/atom.xml" title="Api Intelligence Daily Life" type="application/atom+xml">
+<meta name="theme-color" content="#a1d0f6">
+<title>博客推荐 - 2026-05-14 - Api Intelligence Daily Life</title>
+<!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+<link rel="shortcut icon" href="/favicon.png">
+
+<link rel="stylesheet" href="/css/style.css">
+
+<nav class="main-nav">
+	
+	    <a href="/">← 主页</a>
+	
+	
+	    <a href="/about/">About</a>
+	
+	    <a href="/archives/">Archives</a>
+	
+	<a class="cta" href="/atom.xml" data-no-instant>订阅</a>
+</nav>
+
+<section id="wrapper">
+    <article class="post">
+    <header>
+        
+            <h1>博客推荐 - 2026-05-14</h1>
+        
+        <h2 class="headline">May 14 2026
+        
+            
+            <a href="/categories/blog-digest/#blog-digest">blog-digest</a>
+        
+        </h2>
+    </header>
+</article>
+<section id="post-body"><h2 id="每日博客推荐"><a href="#每日博客推荐" class="headerlink" title="每日博客推荐"></a>每日博客推荐</h2><h3 id="1-Building-a-safe-effective-sandbox-to-enable-Codex-on-Windows"><a href="#1-Building-a-safe-effective-sandbox-to-enable-Codex-on-Windows" class="headerlink" title="1. Building a safe, effective sandbox to enable Codex on Windows"></a>1. Building a safe, effective sandbox to enable Codex on Windows</h3><p><strong>来源</strong>: <a target="_blank" rel="noopener" href="https://openai.com/news/engineering/">OpenAI Engineering</a><br><strong>原文链接</strong>: <a target="_blank" rel="noopener" href="https://openai.com/index/building-codex-windows-sandbox/">Building a safe, effective sandbox to enable Codex on Windows</a><br><strong>推荐指数</strong>: ⭐⭐⭐⭐ (4&#x2F;5) - 技术深度高，详细展示了Windows沙盒的工程实现</p>
+<p><strong>核心概要</strong>:<br>这篇文章讲述了OpenAI如何为Codex在Windows上实现一个安全的沙盒环境。作者David Wiesen解释了当他在2025年9月加入Codex工程团队时，Windows版本的Codex没有沙盒实现，这意味着Windows用户在使用OpenAI的编码代理时只能在两个糟糕的选择中做决定：要么批准几乎每个命令（包括读取），这既低效又烦人；要么启用完全访问模式，让Codex在没有批准或限制的情况下运行所有命令，这虽然消除了摩擦但牺牲了监督。</p>
+<p>文章详细解释了沙盒的概念——一个受限的执行环境，当开发者使用Codex时，计算机的操作系统会以降低的权限启动命令，这些约束会传播到进程树。Codex需要由计算机操作系统强制的隔离功能来实现有效的沙盒。macOS和Linux系统提供了有效的沙盒机制（如Seatbelt、seccomp、bubblewrap），但Windows平台缺乏原生支持，所以团队需要实现自己的沙盒。</p>
+<p>作者深入探讨了几个潜在的解决方案：AppContainer（原生Windows沙盒，但为 narrowly scoped apps 设计，不适合开放式的开发者工作流）、Windows Sandbox（一次性轻量级VM，但需要独立的桌面环境且在Windows Home上不可用）、Mandatory Integrity Control（MIC）完整性标签（优雅但会改变整个工作区的信任模型，风险太大）。由于所有现有方案都不合适，团队开始设计自己的解决方案。</p>
+<p>第一个原型”无权限沙盒”使用了SID（安全标识符）和写入受限令牌来限制文件写入，并尝试通过环境变量来限制网络访问。这个方案在文件控制上效果很好，但网络保护薄弱，只是”建议性”的，恶意代码可以轻易绕过。由于网络抑制太重要，团队重新设计，引入了Windows防火墙，这需要创建专用的本地用户（CodexSandboxOffline和CodexSandboxOnline）并使用提升的权限进行设置。</p>
+<p>当前实现的”提升权限沙盒”在设置时需要管理员权限，但运行时用户不需要提升。它创建了专用的Windows用户来运行沙盒化的命令，应用防火墙规则来阻止网络访问（Offline用户），并使用写入受限令牌来控制文件写入。虽然设置更复杂，但提供了真正的网络保护。文章最后提到了未来可能的改进，包括减少设置开销和优化ACL应用性能。</p>
+<p><strong>关键洞察</strong>:</p>
+<ol>
+<li>Windows缺乏macOS和Linux那样的内置沙盒机制，需要自定义实现，这展示了在平台约束下创新的必要性</li>
+<li>AppContainer、Windows Sandbox和MIC标签都无法满足Codex的需求，各有严重局限，说明现有工具并不总是适用</li>
+<li>第一个”无权限”原型使用SID和写入受限令牌控制文件写入，但网络保护薄弱，说明了”建议性”安全措施的局限</li>
+<li>当前”提升权限”设计通过创建专用本地用户和防火墙规则实现了更强的网络隔离，展示了权衡和迭代的工程实践</li>
+<li>Windows沙盒的成功展示了如何在操作系统约束下创新性地实现安全机制，为其他平台特定挑战提供了解决思路</li>
+</ol>
+<p><strong>评价</strong>:</p>
+<ul>
+<li><strong>优点</strong>: 技术深度高，详细解释了多种Windows安全机制的权衡，清晰展示了从失败到成功的工程迭代过程；为Windows安全开发者提供了宝贵的参考</li>
+<li><strong>不足</strong>: 文章偏向技术细节，对非安全专家可能较难理解；没有讨论性能影响的具体数据和用户体验细节</li>
+<li><strong>适用场景</strong>: 安全工程师、系统程序员、Windows平台开发者、对操作系统沙盒机制感兴趣的技术人员</li>
+</ul>
+<hr>
+<h3 id="2-AI-时代到底该怎么管一个工程团队"><a href="#2-AI-时代到底该怎么管一个工程团队" class="headerlink" title="2. AI 时代到底该怎么管一个工程团队"></a>2. AI 时代到底该怎么管一个工程团队</h3><p><strong>来源</strong>: <a target="_blank" rel="noopener" href="https://baoyu.io/blog">宝玉</a><br><strong>原文链接</strong>: <a target="_blank" rel="noopener" href="https://baoyu.io/blog/2026-05-12/running-an-ai-native-engineering-org">AI 时代到底该怎么管一个工程团队</a><br><strong>推荐指数</strong>: ⭐⭐⭐⭐⭐ (5&#x2F;5) - 必读，极具价值的实践经验和真实踩坑记录</p>
+<p><strong>核心概要</strong>:<br>Fiona Fung在Anthropic大会上分享了AI时代工程团队管理的实践经验。作为Claude Code和Cowork产品线的工程与产品负责人，她回顾了自己在微软和Meta的丰富经验，并深入探讨了AI对软件工程领域的深刻变革。她指出，过去二十年中行业经历了两次重大重塑：第一次是从CD发行转向在线分发，第二次则是AI时代”写代码”这件事本身的变化。</p>
+<p>Fiona强调，软件工程的瓶颈已经从”写代码慢”转移到了验证、评审、跨职能协作和安全性上。过去基于”写代码很贵”这个假设设计的各种流程现在必须全部重构，因为”写代码几乎免费”。流程极少会自然消亡，组织只会一层层地往上叠加SLA、规章制度和评审。用AI改造工程团队的第一步，其实就是明确允许大家砍掉陈旧流程。</p>
+<p>Claude Code团队现在减少了很多传统流程：六个月的产品路线图被JIT planning（即时规划）取代，设计文档大幅减少，产品评审会开得少，因为与其评审mock不如直接推给用户测试。她列举了”正在悄然失效”的旧流程清单：长达半年的产品路线图、繁琐的排期会议、对代码的所有权划分、马拉松式的代码评审会议、按部就班的传统团队结构、知识库分享、以及漫长的新人入职培训。</p>
+<p>团队在验证上加倍投入，推行”shift left”（左移），把质量保障从靠近交付端的人工测试，往靠近源头的自动化推。角色边界正在模糊，设计师也在提交代码，每个人都不希望因为自己的提交把服务搞挂。在高吞吐量环境下，传统的人工QA根本接不住这么高的代码产出率。</p>
+<p>技术辩论的方式也变了：过去是把人拉到白板房里画架构图，现在是让Claude同时搓出三个PR，连着对API的实际影响范围一起对着代码讨论。当写代码变得轻而易举，无休止的争论就显得极其昂贵。代码评审也有了明确分工：Claude负责风格检查、lint去重、回应代码评审意见、抓常规bug、补全单元测试；人负责法律和合规层面的审核、安全敏感代码的边界确认、产品体验的sense和品味。</p>
+<p>在Claude Code团队，几乎所有的PR都有Claude参与。”这段代码到底是谁写的？”这个问题正在变得荒诞甚至没有意义。更重要的是问：是谁的修改引爆了bug？谁有足够的背景上下文去跟客户解释技术细节？谁对这块代码模块的来龙去脉更清楚？</p>
+<p>组织形态上，Fiona坚持尽量扁平，所有小组共享一个团队目标，理由是目标一变，层级越多越容易产生对齐损耗，扁平等于灵活。她还坚持所有经理都要先从IC（个人贡献者）做起，这是她对团队的期望，”不接受就早点分开”。她自己重新写起代码，现在连git命令都不记得了，全靠Claude帮忙。</p>
+<p>团队把代码视作最终的”唯一事实来源”（source of truth），而不是设计文档。如果非要保留spec，就把spec提交进代码库，让Claude去校验代码与文档是否一致。衡量效果看三个指标：新人上手时间、PR的生命周期、Claude辅助提交的比例。但她警告，别死盯着”有多少代码是AI写的”，那只是虚荣指标，关键要看产品质量和可靠性。</p>
+<p>Fiona承认有三个问题她还没答案：工程师能跨平台流转之后，传统的”iOS团队+Android团队”分队还有没有意义；自动化评审要推到多远，”信任但验证”的边界在哪儿；角色模糊之后，怎样让所有人感觉同样有产出感。她的最后建议很朴素：挑出极其折腾人、尤为啰嗦的那条工作流，重新审视一下它到底还在为谁干活。</p>
+<p><strong>关键洞察</strong>:</p>
+<ol>
+<li>软件工程瓶颈已从”写代码”转移到验证、评审、协作和安全，基于”写代码很贵”假设设计的流程必须全部重构</li>
+<li>Claude Code团队减少六个月路线图和设计文档，采用即时规划和代码即事实来源，因为原型成本已趋零</li>
+<li>技术辩论从白板对比转向让Claude生成三个PR进行代码级比较，当写代码变得便宜，争论就变得昂贵</li>
+<li>代码评审分工明确：Claude负责风格、lint、常规bug；人负责法律合规、安全边界、产品sense，各有所长</li>
+<li>所有PR都有Claude参与，”代码到底是谁写的”问题失去意义，重点转向”谁引爆了bug”和”谁有上下文”</li>
+</ol>
+<p><strong>评价</strong>:</p>
+<ul>
+<li><strong>优点</strong>: 非常实践导向，全是真实经验和踩坑记录，不是抽象理论；提供了具体可执行的变革建议，如”明确允许砍掉旧流程”；直接来自一线工程负责人的实战经验，参考价值极高</li>
+<li><strong>不足</strong>: 观点主要来自Anthropic的实践，对其他规模&#x2F;类型的团队适用性需要调整；有些细节（如Routines功能）可能已经过时或仍在演进</li>
+<li><strong>适用场景</strong>: 技术团队管理者、工程负责人、在考虑引入AI工具的团队领导者、任何对AI时代工程文化感兴趣的人</li>
+</ul>
+<hr>
+<h3 id="3-Codex-的野心，MCP-和-Skill-的下一步"><a href="#3-Codex-的野心，MCP-和-Skill-的下一步" class="headerlink" title="3. Codex 的野心，MCP 和 Skill 的下一步"></a>3. Codex 的野心，MCP 和 Skill 的下一步</h3><p><strong>来源</strong>: <a target="_blank" rel="noopener" href="https://baoyu.io/blog">宝玉</a><br><strong>原文链接</strong>: <a target="_blank" rel="noopener" href="https://baoyu.io/blog/2026-05-11/skill-next-codex">Codex 的野心，MCP 和 Skill 的下一步</a><br><strong>推荐指数</strong>: ⭐⭐⭐ (3&#x2F;5) - 有价值的观察和分析，但基于推测和未实现的功能</p>
+<p><strong>核心概要</strong>:<br>作者观察到Agent应用界面的有趣演变。去年大家争的是谁家模型更强，今年争的好像变成了谁家窗口右侧更好用。Codex、Claude桌面版、Cursor 3.0、TRAE SOLO，这几家最顶尖的Agent，在完全没有协商的情况下，几乎同时收敛到了同一个界面布局：左侧是项目和会话列表，中间是和Agent的对话，右侧是工作区，放着文件浏览、网页预览、文件变更审查这些功能。肯定不是相互之间的抄袭，更像是当前Agent交互的最优解。</p>
+<p>为什么是三栏？传统Chatbot只需要两栏，左边会话历史，右边对话窗口，你问它答，用完走人。到了Agent时代，Agent能自己写代码、改文件、调工具了。它做完之后，你得看看有没有做对——右侧工作区就是为这件事出现的。但这只是第一阶段。随着用户越来越多时间是在指挥Agent，打开VSCode等专业工具的时间自然越来越少，用户的自然期待是：能不能直接在Agent里改？目前Codex App呼声最高的功能之一就是能在应用内编辑生成的内容。</p>
+<p>Codex在4月16日的大版本更新里，右侧工作区的改动幅度是所有功能里最大的。交互细节上各家略有差异：Codex和Cursor用Tab切换，Claude用浮动面板。作者认为Codex最顺手，Claude的浮动面板方案设计感有余、实用性不足，迟早要改。</p>
+<p>Codex的真正野心不止于界面进化。4月大版本发布时的口号是”Codex for (almost) everything”——几乎任何任务都能做。要兑现这句话，Codex不能只是个擅长写代码的Agent，它必须能处理各种文件格式，支持各领域的专业工作流，还要让用户能在它里面完成全程闭环，包括最后的人工微调。目前Codex还做不到最后一步：生成之后无法编辑，代码、Markdown、PPTX都不行。</p>
+<p>要理解Codex在等什么，得先想清楚Agent能力拼图里现在差哪一块。MCP解决了”连接”问题：Agent通过统一规范接入各种工具，数据库、日历、代码仓库，都能打通。Agent Skills解决了”怎么做”的问题：Agent学会了它没训练过的领域知识和最佳实践。但有一块缺口始终没补上：用户的二次编辑。</p>
+<p>你让AI写完一篇文章，最后还是要自己打开编辑器改几处，毕竟很多时候最后那5%的精准度，只有自己动手才能到位。就算将来AI再聪明，它也做不到百分百的懂你，还是少不了要手动去做修改。于是最近Markdown编辑器又火了，各种Vibe Coding出来的Markdown产品满天飞。但Codex不会自己做一个Markdown编辑器，因为每个人的偏好都不一样，做出来永远有人不满意；更何况它也不可能把每个垂直领域的专业编辑器都集成进来。</p>
+<p>最合理的路是插件机制。把Agent做成平台，让社区来贡献插件，就像VSCode和Chrome那样。Codex只需要聚焦在Agent调度这一层，把文件预览、二次编辑、垂直领域的专业能力都交给插件来扩展。用户按需安装，做设计的装设计插件，写作者装写作插件。</p>
+<p>插件机制还能顺手解决一个长期没有答案的问题：Skill没办法商业化。作者自己的baoyu-skills快2万Star了，但从中赚到的钱是$0。Skill这东西几乎是透明的，对Agent透明，对人也透明，复刻成本极低，不管你写得再好，护城河都很浅。插件不一样。App Store和Chrome插件市场已经跑通了一套收费和版权保护机制，把它移植到Agent插件市场完全可行。好插件可以收费，开发者才有持续打磨的动力，生态才真正能转起来。</p>
+<p>Codex现在已经有了一个非常原始的插件市场。从这里到成熟的收费插件生态，还有很长的路，但方向是对的。想做这件事的不止Codex一家，Cursor也能看到类似的影子。唯独Claude Code和Cowork，目前没看到这个方向的产品迹象——也许他们不屑于做，也许只是还没走到这一步。</p>
+<p>如果Codex真的跑通了插件生态，对中小团队意味着什么？除了自己做一个垂直Agent，还有另一条路：在Codex这样的平台上做插件。不用自己搭Agent调度层，不用解决Token接入，用户分发也靠平台。你只需要专注在那个”最后一公里”——帮用户把Agent生成的结果处理好、编辑好、用得顺手。这个窗口不会开太久，先进去的能拿到冷启动红利，晚进去的只剩存量竞争。时间点不会太远，也许就在这几个月。</p>
+<p><strong>关键洞察</strong>:</p>
+<ol>
+<li>顶尖Agent应用（Codex、Claude、Cursor、TRAE）同时收敛到三栏布局，左侧会话、中间对话、右侧工作区，这是Agent交互的最优解</li>
+<li>用户期待从Agent”指挥”模式转向”一站式完成”模式，生成后能直接在应用内微调，而不是切换到其他专业工具</li>
+<li>MCP解决”连接”问题，Skill解决”怎么做”的问题，但都缺少”用户二次编辑”这个关键拼图，这是当前Agent体验的最后一公里</li>
+<li>插件机制可能是解决之道：Codex聚焦Agent调度，文件预览、编辑、专业能力交给插件生态，用户按需安装</li>
+<li>插件生态能解决Skill商业化难题，通过App Store式的收费和版权保护机制，让开发者有持续打磨的动力</li>
+</ol>
+<p><strong>评价</strong>:</p>
+<ul>
+<li><strong>优点</strong>: 敏锐观察到Agent应用的界面收敛现象，提出了合理的解释；对Agent能力拼图（MCP、Skill、二次编辑）的分析清晰；插件生态的商业化分析有见地</li>
+<li><strong>不足</strong>: 很多推测基于未实现的功能和假设，如”Codex会推出插件市场”并未确认；对Claude Code和Cowork的评价可能不公平，也许他们有不同策略；时间预测（”也许就在这几个月”）可能过于乐观</li>
+<li><strong>适用场景</strong>: 产品经理、Agent应用开发者、关注AI产品生态的人、考虑在Agent平台做插件的开发者</li>
+</ul>
+<hr>
+</section>
+    
+
+    <footer id="post-meta" class="clearfix">
+        <a href="/about/">
+        <img class="avatar" src="/images/avatar.png">
+        <div>
+            <span class="dark">Api Intelligence Daily Life</span>
+            <span>知识库 &amp; 博客</span>
+        </div>
+        </a>
+        <section id="sharing">
+            <a title="Share to Twitter" class="twitter" target="_blank" rel="noopener" href="https://twitter.com/intent/tweet?text=https://arbow.github.io/2026/05/14/blog-digest-2026-05-14/ - 博客推荐 - 2026-05-14 @"><span class="icon-twitter">tweet</span></a>
+            <a title="Share to Facebook" class="facebook" href="#" onclick="
+                window.open(
+                  'https://www.facebook.com/sharer/sharer.php?u='+encodeURIComponent(location.href),
+                  'facebook-share-dialog',
+                  'width=626,height=436');
+                return false;"><span class="icon-facebook-sign">Share</span>
+            </a>
+        </section>
+    </footer>
+
+
+  <section id="comment">
+    <button class="btn" id="loadcmts" onclick="cmts.load();">加载评论</button>
+    <div id="gitment"></div>
+    <script src='/js/gitment.browser.js'></script>
+    <link rel="stylesheet" href=''>
+    <script>
+      var cmts={
+        load:function cmts(){
+          var gitment = new Gitment({
+          
+            id: "博客推荐 - 2026-05-14",
+          
+            owner: "",
+            repo: "",
+            oauth: {
+              client_id: "",
+              client_secret: "",
+            },
+          })
+          gitment.render('gitment');
+          var loadcmt = document.getElementById("loadcmts");
+          var imyourfather = loadcmt.parentNode;
+          imyourfather.removeChild(loadcmts)
+        }
+      }
+    </script>
+  </section>
+
+
+	<footer id="footer">
+	<div id="social">
+		<p class="small">©  Arbow| Powered by Hexo & 
+			<a target="_blank" rel="noopener" href="https://github.com/F0r3at/Lights"> Lights</a>
+		</p>
+	</div>
+</footer>
+
+</section>
+
+	<script src="//cdnjs.loli.net/ajax/libs/instantclick/3.0.1/instantclick.min.js" data-no-instant></script>
+	<script data-no-instant>
+		
+		InstantClick.init('mousedown');
+	</script>
+
+
+
