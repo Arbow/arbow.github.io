@@ -1,17 +1,35 @@
 {
-  "last_check_time": "2026-05-13T00:00:00.000Z",
-  "last_post_date": "2026-05-10T00:00:00.000Z",
+  "last_check_time": "2026-05-14T00:06:22.780170+00:00",
+  "last_post_date": "2026-05-13T11:00:00+00:00",
   "sources_checked": 10,
-  "sources_failed": 7,
-  "new_articles_found": 0,
+  "sources_failed": 6,
+  "new_articles_found": 3,
   "failed_sources_list": [
     "云风的博客",
     "Chip Huyen",
     "Lilian Weng",
-    "OpenAI Engineering (RSSHub)",
-    "Anthropic Engineering (RSSHub)",
-    "liruifengv (RSSHub)",
-    "宝玉 (RSSHub)"
+    "李乾坤",
+    "卢向东",
+    "Armin Ronacher"
   ],
-  "new_articles": []
+  "new_articles": [
+    {
+      "title": "Building a safe, effective sandbox to enable Codex on Windows",
+      "link": "https://openai.com/index/building-codex-windows-sandbox/",
+      "source": "OpenAI Engineering",
+      "pub_date": "2026-05-13T11:00:00+00:00"
+    },
+    {
+      "title": "AI 时代到底该怎么管一个工程团队",
+      "link": "https://baoyu.io/blog/2026-05-12/running-an-ai-native-engineering-org",
+      "source": "宝玉",
+      "pub_date": "2026-05-12T00:00:00+00:00"
+    },
+    {
+      "title": "Codex 的野心，MCP 和 Skill 的下一步",
+      "link": "https://baoyu.io/blog/2026-05-11/skill-next-codex",
+      "source": "宝玉",
+      "pub_date": "2026-05-11T00:00:00+00:00"
+    }
+  ]
 }
