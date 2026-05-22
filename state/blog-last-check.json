@@ -1,35 +1,40 @@
 {
-  "last_check_time": "2026-05-14T00:06:22.780170+00:00",
-  "last_post_date": "2026-05-13T11:00:00+00:00",
+  "last_check_time": "2026-05-22T00:00:00.000Z",
+  "last_post_date": "2026-05-21T00:00:00.000000+00:00",
   "sources_checked": 10,
-  "sources_failed": 6,
-  "new_articles_found": 3,
-  "failed_sources_list": [
-    "云风的博客",
-    "Chip Huyen",
-    "Lilian Weng",
-    "李乾坤",
-    "卢向东",
-    "Armin Ronacher"
-  ],
+  "sources_failed": 1,
+  "new_articles_found": 5,
+  "failed_sources_list": ["李乾坤"],
   "new_articles": [
     {
-      "title": "Building a safe, effective sandbox to enable Codex on Windows",
-      "link": "https://openai.com/index/building-codex-windows-sandbox/",
-      "source": "OpenAI Engineering",
-      "pub_date": "2026-05-13T11:00:00+00:00"
+      "title": "Forward Deployed Engineer：AI 时代的新宠岗位，到底干什么？",
+      "link": "https://baoyu.io/blog/2026-05-15/forward-deployed-engineer",
+      "source": "宝玉",
+      "pub_date": "2026-05-15T00:00:00+00:00"
     },
     {
-      "title": "AI 时代到底该怎么管一个工程团队",
-      "link": "https://baoyu.io/blog/2026-05-12/running-an-ai-native-engineering-org",
+      "title": "The Founder's Playbook: Building an AI-Native Startup",
+      "link": "https://baoyu.io/blog/2026-05-16/the-founders-playbook-building-an-ai-native-startup",
       "source": "宝玉",
-      "pub_date": "2026-05-12T00:00:00+00:00"
+      "pub_date": "2026-05-16T00:00:00+00:00"
     },
     {
-      "title": "Codex 的野心，MCP 和 Skill 的下一步",
-      "link": "https://baoyu.io/blog/2026-05-11/skill-next-codex",
+      "title": "Y Combinator Live Demo Day S26 W26 Replay - 2026",
+      "link": "https://baoyu.io/blog/2026-05-21/ycombinator-live-demo-day-s26-w26-replay-2026",
       "source": "宝玉",
-      "pub_date": "2026-05-11T00:00:00+00:00"
+      "pub_date": "2026-05-21T00:00:00+00:00"
+    },
+    {
+      "title": "Y Combinator Live Demo Day S26 W25 Replay - 2026",
+      "link": "https://baoyu.io/blog/2026-05-19/ycombinator-live-demo-day-s26-w25-replay-2026",
+      "source": "宝玉",
+      "pub_date": "2026-05-19T00:00:00+00:00"
+    },
+    {
+      "title": "使用旧版 Unity 进行游戏开发",
+      "link": "https://blog.codingnow.com/2026/05/gaming_old_unity_version.html",
+      "source": "云风的博客",
+      "pub_date": "2026-05-21T00:00:00+00:00"
     }
   ]
 }
