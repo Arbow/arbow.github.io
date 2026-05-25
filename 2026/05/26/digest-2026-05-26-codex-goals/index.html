@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=0">
+
+  <meta name="description" content="个人知识库与技术笔记">
+
+
+<link rel="alternate" href="/atom.xml" title="Api Intelligence Daily Life" type="application/atom+xml">
+<meta name="theme-color" content="#a1d0f6">
+<title>文摘：一文搞懂如何在 Codex 中使用 Goals - Api Intelligence Daily Life</title>
+<!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+<link rel="shortcut icon" href="/favicon.png">
+
+<link rel="stylesheet" href="/css/style.css">
+
+<nav class="main-nav">
+	
+	    <a href="/">← 主页</a>
+	
+	
+	    <a href="/about/">About</a>
+	
+	    <a href="/archives/">Archives</a>
+	
+	<a class="cta" href="/atom.xml" data-no-instant>订阅</a>
+</nav>
+
+<section id="wrapper">
+    <article class="post">
+    <header>
+        
+            <h1>文摘：一文搞懂如何在 Codex 中使用 Goals</h1>
+        
+        <h2 class="headline">May 26 2026
+        
+            
+            <a href="/categories/文摘/#文摘">文摘</a>
+        
+        </h2>
+    </header>
+</article>
+<section id="post-body"><p><strong>来源</strong>: <a target="_blank" rel="noopener" href="https://mp.weixin.qq.com/s/q7WlpIORMaL1C7YATwK4zQ">微信公众号 - AI寒武纪</a><br><strong>原文</strong>: <a target="_blank" rel="noopener" href="https://developers.openai.com/cookbook/examples/codex/using_goals_in_codex">OpenAI Cookbook - Using Goals in Codex</a><br><strong>发布日期</strong>: 2026-05-19</p>
+<hr>
+<h2 id="核心概要"><a href="#核心概要" class="headerlink" title="核心概要"></a>核心概要</h2><p>OpenAI 发布了关于 Codex 中 <strong>Goals</strong> 机制的官方指南。Goals 是 Codex 里的持久目标机制——不同于一次性的 prompt，它给 Codex 一个持续有效的完成条件：任务什么时候算做完、怎么验证、过程中什么不能动。只要目标还在、还在预算内，Codex 可以自己检查进度、决定下一步，不需要每轮重复目的。</p>
+<h2 id="Goals-vs-普通-Prompt"><a href="#Goals-vs-普通-Prompt" class="headerlink" title="Goals vs 普通 Prompt"></a>Goals vs 普通 Prompt</h2><table>
+<thead>
+<tr>
+<th>特性</th>
+<th>普通 Prompt</th>
+<th>Goals</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>生命周期</td>
+<td>一次性</td>
+<td>持久（可暂停&#x2F;恢复&#x2F;清除）</td>
+</tr>
+<tr>
+<td>完成判断</td>
+<td>用户决定</td>
+<td>基于证据校验</td>
+</tr>
+<tr>
+<td>迭代能力</td>
+<td>每轮需重新描述目标</td>
+<td>自动继续直到达标</td>
+</tr>
+<tr>
+<td>适用场景</td>
+<td>单步任务</td>
+<td>多步调查、优化、研究</td>
+</tr>
+</tbody></table>
+<h2 id="好的-Goal-定义六件事"><a href="#好的-Goal-定义六件事" class="headerlink" title="好的 Goal 定义六件事"></a>好的 Goal 定义六件事</h2><ol>
+<li><strong>结果</strong>：工作完成时应该是什么状态</li>
+<li><strong>验证方法</strong>：用什么来证明（测试、benchmark、报告）</li>
+<li><strong>约束</strong>：什么不能退化</li>
+<li><strong>边界</strong>：可以用哪些文件、工具、数据</li>
+<li><strong>迭代策略</strong>：每次尝试后怎么决定下一步</li>
+<li><strong>阻塞停止条件</strong>：什么时候停下来报告受阻</li>
+</ol>
+<p><strong>弱 Goal 例子：</strong></p>
+<blockquote>
+<p>&#x2F;goal 将 p95 延迟降至 120ms 以下，同时不引起测试回退</p>
+</blockquote>
+<p><strong>强 Goal 例子：</strong></p>
+<blockquote>
+<p>&#x2F;goal 将 p95 checkout 延迟降至 120ms 以下，以 checkout 基准测试验证，同时保持正确性测试套件全部通过。仅使用 checkout 服务及相关测试。每次迭代之间，记录变动内容、benchmark 结果，以及下一步要尝试的最佳实验。如果 benchmark 无法运行或无有效路径剩余，则停止，并附上已尝试路径、收集到的证据、阻塞点，以及所需的下一步输入</p>
+</blockquote>
+<h2 id="Goal-激活后的三个变化"><a href="#Goal-激活后的三个变化" class="headerlink" title="Goal 激活后的三个变化"></a>Goal 激活后的三个变化</h2><ol>
+<li><strong>目标持续可见</strong> — 即使跑了几轮测试失败了，原始目标还在</li>
+<li><strong>从空闲线程继续</strong> — 只在线程空闲、目标激活、在预算内时才继续</li>
+<li><strong>完成必须有证据</strong> — 不能因为”大概差不多了”就标记完成</li>
+</ol>
+<h2 id="内部设计要点"><a href="#内部设计要点" class="headerlink" title="内部设计要点"></a>内部设计要点</h2><ul>
+<li>Goal 是<strong>线程范围</strong>的状态，不是全局记忆，也不是项目级指令</li>
+<li>继续是<strong>事件驱动</strong>的，不是简单循环——只在安全边界处检查</li>
+<li>纯规划工作不触发继续，被打断会暂停目标</li>
+<li>达到预算上限时停止工作、汇总进度，不等于完成目标</li>
+</ul>
+<h2 id="研究场景示例：复现论文"><a href="#研究场景示例：复现论文" class="headerlink" title="研究场景示例：复现论文"></a>研究场景示例：复现论文</h2><p>文章用 Buehler 等人的 Deep Hedging 论文做了示范。强 Goal 不是笼统的”复现这篇论文”，而是：</p>
+<blockquote>
+<p>尝试每一个主要结果，验证输出，最终形成一份报告，将复现成功的工作机制、近似训练结果、被阻断的精确复现路径及剩余不确定性区分开来说明</p>
+</blockquote>
+<p>最终报告对每个结论逐一审计：有的可以近似复现（重建了定价机制、训练了策略），有的因缺少源数据（原始训练路径、种子、检查点）无法精确重现。Goal 的价值在于<strong>让工作在遇到阻塞后继续推进，同时让最终语言保持诚实</strong>。</p>
+<h2 id="什么时候不该用-Goals"><a href="#什么时候不该用-Goals" class="headerlink" title="什么时候不该用 Goals"></a>什么时候不该用 Goals</h2><ul>
+<li>一行代码的修改、简单解释、短代码评审</li>
+<li>终点线模糊的任务（”把这个做得更好”没有可靠完成条件）</li>
+<li>不确定性未声明的场景</li>
+</ul>
+<p>Goals 在三个特性同时具备时最有力：<strong>有持久目标，有基于证据的完成线，路径可能需要多轮调查</strong>。</p>
+<h2 id="评价"><a href="#评价" class="headerlink" title="评价"></a>评价</h2><p>这篇文章是对 OpenAI 官方文档的优质中文解读，把 Goals 的设计理念和使用方法讲得很清楚。最有价值的部分是”弱 Goal vs 强 Goal”的对比和复现论文的研究场景示例——它展示了 Goals 不只是让 AI 自主执行，更重要的是<strong>定义”做完”意味着什么</strong>。证据分级审计的思路（精确复现 vs 近似结果 vs 受阻路径）对科研场景非常实用。对于使用 Codex 或类似 AI 编程工具的开发者来说，这是一篇值得收藏的实践指南。</p>
+<p>原文链接：<a target="_blank" rel="noopener" href="https://developers.openai.com/cookbook/examples/codex/using_goals_in_codex">https://developers.openai.com/cookbook/examples/codex/using_goals_in_codex</a></p>
+</section>
+    
+
+    <footer id="post-meta" class="clearfix">
+        <a href="/about/">
+        <img class="avatar" src="/images/avatar.png">
+        <div>
+            <span class="dark">Api Intelligence Daily Life</span>
+            <span>知识库 &amp; 博客</span>
+        </div>
+        </a>
+        <section id="sharing">
+            <a title="Share to Twitter" class="twitter" target="_blank" rel="noopener" href="https://twitter.com/intent/tweet?text=https://arbow.github.io/2026/05/26/digest-2026-05-26-codex-goals/ - 文摘：一文搞懂如何在 Codex 中使用 Goals @"><span class="icon-twitter">tweet</span></a>
+            <a title="Share to Facebook" class="facebook" href="#" onclick="
+                window.open(
+                  'https://www.facebook.com/sharer/sharer.php?u='+encodeURIComponent(location.href),
+                  'facebook-share-dialog',
+                  'width=626,height=436');
+                return false;"><span class="icon-facebook-sign">Share</span>
+            </a>
+        </section>
+    </footer>
+
+
+  <section id="comment">
+    <button class="btn" id="loadcmts" onclick="cmts.load();">加载评论</button>
+    <div id="gitment"></div>
+    <script src='/js/gitment.browser.js'></script>
+    <link rel="stylesheet" href=''>
+    <script>
+      var cmts={
+        load:function cmts(){
+          var gitment = new Gitment({
+          
+            id: "文摘：一文搞懂如何在 Codex 中使用 Goals",
+          
+            owner: "",
+            repo: "",
+            oauth: {
+              client_id: "",
+              client_secret: "",
+            },
+          })
+          gitment.render('gitment');
+          var loadcmt = document.getElementById("loadcmts");
+          var imyourfather = loadcmt.parentNode;
+          imyourfather.removeChild(loadcmts)
+        }
+      }
+    </script>
+  </section>
+
+
+	<footer id="footer">
+	<div id="social">
+		<p class="small">©  Arbow| Powered by Hexo & 
+			<a target="_blank" rel="noopener" href="https://github.com/F0r3at/Lights"> Lights</a>
+		</p>
+	</div>
+</footer>
+
+</section>
+
+	<script src="//cdnjs.loli.net/ajax/libs/instantclick/3.0.1/instantclick.min.js" data-no-instant></script>
+	<script data-no-instant>
+		
+		InstantClick.init('mousedown');
+	</script>
+
+
+
