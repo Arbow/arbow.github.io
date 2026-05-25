@@ -1,0 +1,366 @@
+<!DOCTYPE html>
+
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=0">
+
+  <meta name="description" content="个人知识库与技术笔记">
+
+
+<link rel="alternate" href="/atom.xml" title="Api Intelligence Daily Life" type="application/atom+xml">
+<meta name="theme-color" content="#a1d0f6">
+<title>博客推荐 - 2026-05-24 - Api Intelligence Daily Life</title>
+<!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+<link rel="shortcut icon" href="/favicon.png">
+
+<link rel="stylesheet" href="/css/style.css">
+
+<nav class="main-nav">
+	
+	    <a href="/">← 主页</a>
+	
+	
+	    <a href="/about/">About</a>
+	
+	    <a href="/archives/">Archives</a>
+	
+	<a class="cta" href="/atom.xml" data-no-instant>订阅</a>
+</nav>
+
+<section id="wrapper">
+    <article class="post">
+    <header>
+        
+            <h1>博客推荐 - 2026-05-24</h1>
+        
+        <h2 class="headline">May 24 2026
+        
+        </h2>
+    </header>
+</article>
+<section id="post-body"><h3 id="1-Pushing-Local-Models-With-Focus-And-Polish"><a href="#1-Pushing-Local-Models-With-Focus-And-Polish" class="headerlink" title="1. Pushing Local Models With Focus And Polish"></a>1. Pushing Local Models With Focus And Polish</h3><p><strong>来源</strong>: <a target="_blank" rel="noopener" href="https://lucumr.pocoo.org/">Armin Ronacher</a><br><strong>原文链接</strong>: <a target="_blank" rel="noopener" href="https://lucumr.pocoo.org/2026/5/8/local-models/">Pushing Local Models With Focus And Polish</a><br><strong>推荐指数</strong>: ⭐⭐⭐⭐⭐ (5&#x2F;5) - 对本地模型工程化的深度审视，尤其「聚焦而非堆砌」的观点对整个生态极具启示</p>
+<p><strong>核心概要</strong>:<br>文章指出本地推理并不缺基础组件，而缺「从可跑到好用」的工程打磨。作者强调「Runnable is not Finished」，以 tool 参数流式为例说明体验细节的重要性；同时指出当前本地栈过于碎片化，链路上的每个小选择都会影响最终表现。与其追逐每周的新模型，不如选定一个配置（如 ds4.c + DeepSeek V4 Flash）做极致优化。文章呼吁「聚焦并学习」，把复杂度收敛到一处持续改进，而非分散到无数碎片项目。</p>
+<p><strong>关键洞察</strong>:  </p>
+<ul>
+<li>体验打磨比单纯可运行更重要：tool 参数流式、超时感知、连接状态提示等细节决定实用价值。  </li>
+<li>碎片化是信任杀手：模板、上下文大小、推理 token 处理、KV 缓存等环节的默认行为不一致，导致难以公平评估。  </li>
+<li>聚焦策略：选一条「模型 + 硬件 + 引擎 + harness」的组合，像产品一样调优，而非到处撒网。</li>
+</ul>
+<p><strong>评价</strong>:  </p>
+<ul>
+<li><strong>优点</strong>: 实例具体，论点鲜明，提出 ds4.c &#x2F; pi-ds4 的聚焦实验路线，可落地。  </li>
+<li><strong>不足</strong>: 强烈依赖特定硬件（Mac 128GB+），普适路径未展开。  </li>
+<li><strong>适用场景</strong>: 想严肃做本地代码 agent 体验的人，以及工具链开发者。</li>
+</ul>
+<hr>
+<h3 id="2-Content-for-Content’s-Sake"><a href="#2-Content-for-Content’s-Sake" class="headerlink" title="2. Content for Content’s Sake"></a>2. Content for Content’s Sake</h3><p><strong>来源</strong>: <a target="_blank" rel="noopener" href="https://lucumr.pocoo.org/">Armin Ronacher</a><br><strong>原文链接</strong>: <a target="_blank" rel="noopener" href="https://lucumr.pocoo.org/2026/5/4/content-for-contents-sake/">Content for Content’s Sake</a><br><strong>推荐指数</strong>: ⭐⭐⭐⭐ (4&#x2F;5) - 对 LLM 生成文本对社会语言的侵蚀与信任危机的敏锐观察</p>
+<p><strong>核心概要</strong>:<br>作者通过对本地编码会话的词频分析，结合 Google Trends，观察到某些词在 LLM 输出中被过度使用，并在全网搜索中同步上升，呈现「语言污染」迹象。文章进一步指出 LLM 生成文本（slop）正在影响人类表达习惯，甚至制造信任侵蚀与煤气灯效应。同时，社交媒体为追求流量而无节制「耕耘」，加剧了噪音。作者呼吁增加摩擦与限速，并提倡透明与更有意识的互动。</p>
+<p><strong>关键洞察</strong>:  </p>
+<ul>
+<li>词频膨胀不是幻觉：编码会话中的中频词与搜索趋势同步上升，说明 LLM 输出已反馈到人类行为。  </li>
+<li>信任被侵蚀：当真实与生成的界限模糊，每一次互动都要判断「是人还是模型」，社会成本上升。  </li>
+<li>增加摩擦是必要的：完全低成本的文本生产会压垮平台与信息质量，需要「背压」机制。</li>
+</ul>
+<p><strong>评价</strong>:  </p>
+<ul>
+<li><strong>优点</strong>: 视角系统，结合数据与个人观察，问题意识很强。  </li>
+<li><strong>不足</strong>: 解决方案偏向呼吁，技术干预路径未展开。  </li>
+<li><strong>适用场景</strong>: 关注信息质量与平台生态的从业者，以及对 AI 社会影响感兴趣的人。</li>
+</ul>
+<hr>
+<h3 id="3-Before-GitHub"><a href="#3-Before-GitHub" class="headerlink" title="3. Before GitHub"></a>3. Before GitHub</h3><p><strong>来源</strong>: <a target="_blank" rel="noopener" href="https://lucumr.pocoo.org/">Armin Ronacher</a><br><strong>原文链接</strong>: <a target="_blank" rel="noopener" href="https://lucumr.pocoo.org/2026/4/28/before-github/">Before GitHub</a><br><strong>推荐指数</strong>: ⭐⭐⭐⭐ (4&#x2F;5) - 对 GitHub 衰退与开源记忆危机的历史视角与前瞻</p>
+<p><strong>核心概要</strong>:<br>作者回顾了在 GitHub 之前的开源「小世界」：项目自建基础设施、声誉与寿命强相关、依赖选择更慎重。GitHub 带来了「发布即存在」的便利，但也创造了微依赖爆炸、生态过热、中心化记忆的风险。如今 GitHub 产品动荡与噪音增加，使其社会基础设施价值受损。作者主张去中心化不应等同于「去记忆」，需要独立的、公共资助的归档机制来保存源码与上下文，避免下一个平台时代的重复流失。</p>
+<p><strong>关键洞察</strong>:  </p>
+<ul>
+<li>GitHub 意外成了「图书馆」：它归档了大量项目上下文，但其商业属性可能导致记忆不可靠。  </li>
+<li>分散化的代价：回自托管将增加丢失风险，Issues &#x2F; 讨论 &#x2F; Release 文件都是易碎品。  </li>
+<li>归档应由公益资金支持：将记忆与商业平台解耦，用「基础设施数字图书馆」的心态维护长期价值。</li>
+</ul>
+<p><strong>评价</strong>:  </p>
+<ul>
+<li><strong>优点</strong>: 历史脉络清晰，对「归档即基础设施」的呼吁具有建设性。  </li>
+<li><strong>不足</strong>: 缺少具体落地路径，归档的治理模型未展开。  </li>
+<li><strong>适用场景</strong>: 开源维护者、平台设计者、对数字长期保存感兴趣的人。</li>
+</ul>
+<hr>
+<h3 id="4-Equity-for-Europeans"><a href="#4-Equity-for-Europeans" class="headerlink" title="4. Equity for Europeans"></a>4. Equity for Europeans</h3><p><strong>来源</strong>: <a target="_blank" rel="noopener" href="https://lucumr.pocoo.org/">Armin Ronacher</a><br><strong>原文链接</strong>: <a target="_blank" rel="noopener" href="https://lucumr.pocoo.org/2026/4/23/equity-for-europeans/">Equity for Europeans</a><br><strong>推荐指数</strong>: ⭐⭐⭐⭐ (4&#x2F;5) - 从语言与法律视角解释欧洲人对「股权」的文化隔阂，切中要害</p>
+<p><strong>核心概要</strong>:<br>英文单词 equity 在美国语境下同时承载法律公正、金融会计与财富代理三层含义，形成共享心智。而在德语等欧洲语言中，这些层面被分裂成 Eigenkapital、Beteiligung、Anteil、Vermögen 等多个技术词，难以形成一个日常正面的思维包。作者指出这种语言差异影响了欧洲人对所有权、风险与代理权的理解，呼吁欧洲人建立对「股权」的常态化认知，以促进创业、退休、住房与财富建设。</p>
+<p><strong>关键洞察</strong>:  </p>
+<ul>
+<li>语言塑造思维：一个短词在多语境复用，能降低心智门槛；分散术语会让直觉割裂。  </li>
+<li>债务的道德包袱：德语中 Schuld 同时指债务与内疚，使负债感更负面，而英语环境中股权是与债务对冲的正向概念。  </li>
+<li>文化不易移植：简单的词对词翻译无法携带美国语境中「期权、控制、增值」的连结，需要实践与教育。</li>
+</ul>
+<p><strong>评价</strong>:  </p>
+<ul>
+<li><strong>优点</strong>: 跨文化比较精辟，为欧洲创业生态提供语言学解释。  </li>
+<li><strong>不足</strong>: 对「如何在中国语境中调和」无涉及，翻译仍需本地化路径。  </li>
+<li><strong>适用场景</strong>: 欧洲创业者、跨文化融资从业者、对术语学与社会心理感兴趣的人。</li>
+</ul>
+<hr>
+<h3 id="5-The-Center-Has-a-Bias"><a href="#5-The-Center-Has-a-Bias" class="headerlink" title="5. The Center Has a Bias"></a>5. The Center Has a Bias</h3><p><strong>来源</strong>: <a target="_blank" rel="noopener" href="https://lucumr.pocoo.org/">Armin Ronacher</a><br><strong>原文链接</strong>: <a target="_blank" rel="noopener" href="https://lucumr.pocoo.org/2026/4/11/the-center-has-a-bias/">The Center Has a Bias</a><br><strong>推荐指数</strong>: ⭐⭐⭐⭐⭐ (5&#x2F;5) - 对技术讨论极化与「中心派偏误」的深刻拆解，极具说服力</p>
+<p><strong>核心概要</strong>:<br>作者认为技术讨论中的「中间派」并非等距两端，而是倾向于「接触」的那一边——他们愿意花费时间试用新工具，批评因而更具体、更可执行。相反，拒绝者常常基于二手信息形成抽象批评。真正的中心是「好奇地探索并据此评价」，而这一过程在行为上看起来更像采纳者，容易被误判为倒戈。文章提醒：严肃批评需要跨过「接触阈值」，而接触不等于承诺。</p>
+<p><strong>关键洞察</strong>:  </p>
+<ul>
+<li>接触产生偏见：愿意尝试的人对缺陷的理解更细，但外界可能将其视为「已经投降」。  </li>
+<li>批评的成本：早期 15 分钟试玩后的拒绝并不算严肃批评，真正有洞察的批评往往来自长期使用者。  </li>
+<li>区分采纳与评价：持续使用不代表无条件支持，反而是为了做出更准确的判断。</li>
+</ul>
+<p><strong>评价</strong>:  </p>
+<ul>
+<li><strong>优点</strong>: 论证严密，把「中间派偏误」说透了，为技术讨论者提供方法论提醒。  </li>
+<li><strong>不足</strong>: 对如何让拒绝者降低接触门槛的建议不足。  </li>
+<li><strong>适用场景</strong>: 常参与技术争论的人、产品经理、决策者。</li>
+</ul>
+<hr>
+<h3 id="6-Mario-and-Earendil"><a href="#6-Mario-and-Earendil" class="headerlink" title="6. Mario and Earendil"></a>6. Mario and Earendil</h3><p><strong>来源</strong>: <a target="_blank" rel="noopener" href="https://lucumr.pocoo.org/">Armin Ronacher</a><br><strong>原文链接</strong>: <a target="_blank" rel="noopener" href="https://lucumr.pocoo.org/2026/4/8/mario-and-earendil/">Mario and Earendil</a><br><strong>推荐指数</strong>: ⭐⭐⭐ (3&#x2F;5) - 一则公司公告，含个人价值取向，对外部读者价值有限</p>
+<p><strong>核心概要</strong>:<br>作者宣布 Mario Zechner 加入 Earendil，并高度评价其 Pi 项目的设计哲学：质量、可扩展性、品味。作者提到去年两人从不同起点（Lefos 与 Pi）走向相似的愿景——让工具帮助人们更周到、更愉悦地沟通，而非仅仅追求产出。文章承诺将继续维护 Pi 的开放与可扩展性，并透露将在 Earendil 的框架下讨论其未来与 license。</p>
+<p><strong>关键洞察</strong>:  </p>
+<ul>
+<li>共同愿景：质量与设计 taste 是对抗噪声的基础，不应为速度牺牲。  </li>
+<li>代理的道德边界：不追求「一切更快」，而是创造更好的关系与体验。  </li>
+<li>许可与开源：作者暗示将讨论 Pi 的 license，对开源生态有潜在影响。</li>
+</ul>
+<p><strong>评价</strong>:  </p>
+<ul>
+<li><strong>优点</strong>: 传递了团队价值观，对关注 Pi &#x2F; Lefos 的人有意义。  </li>
+<li><strong>不足</strong>: 外部读者难以直接受益，缺少技术细节或产品 roadmap。  </li>
+<li><strong>适用场景</strong>: Pi 用户、关注 Earendil 公司动态的人。</li>
+</ul>
+<hr>
+<h3 id="7-Absurd-In-Production"><a href="#7-Absurd-In-Production" class="headerlink" title="7. Absurd In Production"></a>7. Absurd In Production</h3><p><strong>来源</strong>: <a target="_blank" rel="noopener" href="https://lucumr.pocoo.org/">Armin Ronacher</a><br><strong>原文链接</strong>: <a target="_blank" rel="noopener" href="https://lucumr.pocoo.org/2026/4/4/absurd-in-production/">Absurd In Production</a><br><strong>推荐指数</strong>: ⭐⭐⭐⭐⭐ (5&#x2F;5) - 对「仅用 SQL 就做 durable workflow」的实践复盘，简洁而有力</p>
+<p><strong>核心概要</strong>:<br>作者分享了 Absurd（基于 Postgres 的 durable 执行系统）在生产环境中的经验。核心设计未变：任务分解为 checkpoint 步骤，状态全在 Postgres，workers 拉取式调度。新增了 beginStep&#x2F;completeStep、任务结果查询、CLI 工具 absurdctl、可视化 dashboard Habitat、与 agent 的集成等。作者提到 SDK 极简（TS 1.4K 行），对比 Temporal 等重型系统更易理解与调试，同时指出「可持久化 Promise」是更强大但更复杂的方向。</p>
+<p><strong>关键洞察</strong>:  </p>
+<ul>
+<li>把复杂度留在 SQL：SDK 很薄，状态机与调度逻辑在数据库存储过程中。  </li>
+<li>Pull 比 Push 好：无需 coordinator 或 HTTP 回调，天然自托管友好。  </li>
+<li>缺失点：内置调度器、push 模式、分区生命周期管理（需外部维护 loop）。</li>
+</ul>
+<p><strong>评价</strong>:  </p>
+<ul>
+<li><strong>优点</strong>: 实战细节丰富，优缺点坦诚，对类似系统设计者有直接参考价值。  </li>
+<li><strong>不足</strong>: 分区部分的解决方案未给出，生产运维经验较浅。  </li>
+<li><strong>适用场景</strong>: 想用数据库做 workflow 的人、agent 基础设施开发者。</li>
+</ul>
+<hr>
+<h3 id="8-Some-Things-Just-Take-Time"><a href="#8-Some-Things-Just-Take-Time" class="headerlink" title="8. Some Things Just Take Time"></a>8. Some Things Just Take Time</h3><p><strong>来源</strong>: <a target="_blank" rel="noopener" href="https://lucumr.pocoo.org/">Armin Ronacher</a><br><strong>原文链接</strong>: <a target="_blank" rel="noopener" href="https://lucumr.pocoo.org/2026/3/20/some-things-just-take-time/">Some Things Just Take Time</a><br><strong>推荐指数</strong>: ⭐⭐⭐⭐ (4&#x2F;5) - 在 AI 速度崇拜的背景下，提醒「时间」是质量与关系的必要成本</p>
+<p><strong>核心概要</strong>:<br>作者以树木生长与手表价值为例，说明「时间不可压缩」的本质。当前创业与开源圈子过于追求速度，甚至要消除所有摩擦（如合规、审核），却忽略了摩擦常是审慎与承诺的体现。AI 写码越快，PR 堆积越严重，人类成为瓶颈。作者质疑「节省时间」的幻觉——时间被竞争立即捕获，反而更忙。真正有价值的项目需要数年维护，不可被「周末原型」替代。</p>
+<p><strong>关键洞察</strong>:  </p>
+<ul>
+<li>摩擦是有意义的：审核、等待、冷却期是责任与信任的机制，不能随意移除。  </li>
+<li>AI 不会消除瓶颈：审查、理解、问责仍是人类的终局职责。  </li>
+<li>时间作为承诺：维护一个开源项目或客户关系需要持续出现，而非一蹴而就。</li>
+</ul>
+<p><strong>评价</strong>:  </p>
+<ul>
+<li><strong>优点</strong>: 价值观鲜明，用个人经验支撑论点，读来有共鸣。  </li>
+<li><strong>不足</strong>: 缺少对「如何在不牺牲时间的前提下提高质量」的具体建议。  </li>
+<li><strong>适用场景</strong>: 创业者、开源维护者、对长期主义感兴趣的人。</li>
+</ul>
+<hr>
+<h3 id="9-AI-And-The-Ship-of-Theseus"><a href="#9-AI-And-The-Ship-of-Theseus" class="headerlink" title="9. AI And The Ship of Theseus"></a>9. AI And The Ship of Theseus</h3><p><strong>来源</strong>: <a target="_blank" rel="noopener" href="https://lucumr.pocoo.org/">Armin Ronacher</a><br><strong>原文链接</strong>: <a target="_blank" rel="noopener" href="https://lucumr.pocoo.org/2026/3/5/theseus/">AI And The Ship of Theseus</a><br><strong>推荐指数</strong>: ⭐⭐⭐⭐ (4&#x2F;5) - 对 AI 重写代码与版权、许可之间关系的敏锐前瞻</p>
+<p><strong>核心概要</strong>:<br>作者以 chardet 从 LGPL 重写为 MIT 为例，讨论 AI 通过仅依据测试与 API 重写代码是否构成衍生作品。如果所有代码都被丢弃并从头实现，按「忒修斯之船」类比，它可能是新作品。版权可能面临挑战，因为人类输入不足。作者提到 Vercel 用 agent 重写 bash 却对 Next.js 被重写感到不安，展现双重标准。结论是：随着代码成本骤降，重写会更常见，版权战可能爆发，但也可能没人愿立判例。</p>
+<p><strong>关键洞察</strong>:  </p>
+<ul>
+<li>Copyleft 依赖摩擦：AI 让「重写」成本极低，传统许可机制变得脆弱。  </li>
+<li>版权的不确定性：法院可能将 AI 生成的代码判为公有领域，因为缺乏足够人类贡献。  </li>
+<li>道德与法律分离：即使法律允许，作者身份与社区信任仍是更复杂的议题。</li>
+</ul>
+<p><strong>评价</strong>:  </p>
+<ul>
+<li><strong>优点</strong>: 捕捉到了 AI 时代开源许可的核心冲突，案例贴切。  </li>
+<li><strong>不足</strong>: 对解决方案讨论不足，商标与社区治理未展开。  </li>
+<li><strong>适用场景</strong>: 开源项目维护者、法务与知识产权从业者。</li>
+</ul>
+<hr>
+<h3 id="10-The-Final-Bottleneck"><a href="#10-The-Final-Bottleneck" class="headerlink" title="10. The Final Bottleneck"></a>10. The Final Bottleneck</h3><p><strong>来源</strong>: <a target="_blank" rel="noopener" href="https://lucumr.pocoo.org/">Armin Ronacher</a><br><strong>原文链接</strong>: <a target="_blank" rel="noopener" href="https://lucumr.pocoo.org/2026/2/13/the-final-bottleneck/">The Final Bottleneck</a><br><strong>推荐指数</strong>: ⭐⭐⭐⭐ (4&#x2F;5) - 指出「审查与责任」成为 AI 写码时代的终极瓶颈，论述有力</p>
+<p><strong>核心概要</strong>:<br>历史上代码编写慢于审查，现在 AI 反转了这一局面，导致 PR 堆积与审查崩溃。类比纺织工业，瓶颈会随技术进步向下游迁移。作者认为人类仍然是最终责任承担者，机器不能被问责。他质疑「AI 审查 AI」的模式，认为我们需要新的设计范式，以保持人类对产出物的理解力与责任归属。</p>
+<p><strong>关键洞察</strong>:  </p>
+<ul>
+<li>PR 爆炸是结构性问题：输入速度远超吞吐，需限流与背压。  </li>
+<li>责任不可外包：机器可以写代码，但不能承担法律责任或道德责任。  </li>
+<li>新范式未明：如何在 AI 加速的同时，保持人类对系统的理解，尚无共识。</li>
+</ul>
+<p><strong>评价</strong>:  </p>
+<ul>
+<li><strong>优点</strong>: 瓶颈迁移论清晰，用历史类比增强说服力。  </li>
+<li><strong>不足</strong>: 未提出可操作的流程设计建议。  </li>
+<li><strong>适用场景</strong>: 工程团队管理者、AI 代码工具使用者。</li>
+</ul>
+<hr>
+<h3 id="11-大多数公司没有为AI做好准备，7个问题自测一下"><a href="#11-大多数公司没有为AI做好准备，7个问题自测一下" class="headerlink" title="11. 大多数公司没有为AI做好准备，7个问题自测一下"></a>11. 大多数公司没有为AI做好准备，7个问题自测一下</h3><p><strong>来源</strong>: <a target="_blank" rel="noopener" href="https://www.luxiangdong.com/">我的学习笔记（卢向东）</a><br><strong>原文链接</strong>: <a target="_blank" rel="noopener" href="https://www.luxiangdong.com/2026/05/07/w1-ai-ready/">大多数公司没有为AI做好准备，7个问题自测一下</a><br><strong>推荐指数</strong>: ⭐⭐⭐ (3&#x2F;5) - 对 Daniel Miessler 观点的延伸解读，企业自测有实用价值</p>
+<p><strong>核心概要</strong>:<br>作者翻译并延伸了 Daniel Miessler 的观点，指出企业 AI 落地失败常因「目标不清、知识混乱」。他给出 7 类自测问题，帮助企业判断是否已做好准备，包括：是否清楚业务目标、知识是否结构化、工作流是否可重现、是否有人力去执行等。作者强调「想好再干」比「先干再说」更重要，并建议企业从知识治理与流程梳理入手。</p>
+<p><strong>关键洞察</strong>:  </p>
+<ul>
+<li>目标缺失是致命伤：AI 是手段，不是目的，业务目标必须先行。  </li>
+<li>知识是基础设施：知识库不是文档堆，需要「干净、新鲜、有治理」。  </li>
+<li>人仍是关键：没有专人落地与持续改进，AI 很难真正产生价值。</li>
+</ul>
+<p><strong>评价</strong>:  </p>
+<ul>
+<li><strong>优点</strong>: 自测问题清单直接，适合企业自检。  </li>
+<li><strong>不足</strong>: 观点多依赖原文，新意有限。  </li>
+<li><strong>适用场景</strong>: 企业数字化转型负责人、IT 管理者。</li>
+</ul>
+<hr>
+<h3 id="12-从长期回报、Credit-Assignment-到-PPO"><a href="#12-从长期回报、Credit-Assignment-到-PPO" class="headerlink" title="12. 从长期回报、Credit Assignment 到 PPO"></a>12. 从长期回报、Credit Assignment 到 PPO</h3><p><strong>来源</strong>: <a target="_blank" rel="noopener" href="https://qiankunli.github.io/">李乾坤的博客</a><br><strong>原文链接</strong>: <a target="_blank" rel="noopener" href="https://qiankunli.github.io/2026/04/06/rl-mainline.html">从长期回报、Credit Assignment 到 PPO</a><br><strong>推荐指数</strong>: ⭐⭐⭐⭐⭐ (5&#x2F;5) - 对 RL 演化主线与三大核心问题的精炼梳理，极具教学价值</p>
+<p><strong>核心概要</strong>:<br>文章不追求罗列公式，而是回答「强化学习这棵树是怎么长出来的」。作者将 RL 演化归纳为一条清晰主线：Bellman → MC&#x2F;TD → Q-learning&#x2F;PG → Actor-Critic → GAE → PPO。进一步压缩为三个连续问题：如何定义长期回报、如何把整段轨迹的「好不好」分摊到每个 action（credit assignment）、如何让训练既朝高回报更新又不至于训歪。文章用类比（如「给狗尝鱼的味道并让它饿起来」）解释激励式学习的本质。</p>
+<p><strong>关键洞察</strong>:  </p>
+<ul>
+<li>家谱观很重要：RL 算法不是平铺罗列，而是针对三个核心问题的逐代解决方案。  </li>
+<li>Bellman 是源头：它把「长期」拆成「当前 + 折现未来」，为后续所有方法奠基。  </li>
+<li>PPO 是刹车：它不是新目标，而是给 Actor-Critic 的策略更新加了限速器。</li>
+</ul>
+<p><strong>评价</strong>:  </p>
+<ul>
+<li><strong>优点</strong>: 结构清晰，用三层框架（目标层、评估层、更新层）帮助理解。  </li>
+<li><strong>不足</strong>: 对数学推导的严格证明略去，偏向直观解释。  </li>
+<li><strong>适用场景</strong>: 想系统学习 RL 的人、大模型 post-train 从业者。</li>
+</ul>
+<hr>
+<h3 id="13-Code-Agent"><a href="#13-Code-Agent" class="headerlink" title="13. Code Agent"></a>13. Code Agent</h3><p><strong>来源</strong>: <a target="_blank" rel="noopener" href="https://qiankunli.github.io/">李乾坤的博客</a><br><strong>原文链接</strong>: <a target="_blank" rel="noopener" href="https://qiankunli.github.io/2026/04/04/code_agent.html">Code Agent</a><br><strong>推荐指数</strong>: ⭐⭐⭐⭐⭐ (5&#x2F;5) - 对 Coding Agent 架构与设计的深度综述，含大量细节与案例</p>
+<p><strong>核心概要</strong>:<br>文章从姚顺雨的 17.2% 正确率引入「闭环控制」的重要性，认为 AI 是发散引擎，人是收敛引擎。作者系统梳理了 Code Agent 的架构决策：agent loop、prompt assembly、工具治理（冲突处理、延迟加载、工具执行链）、上下文管理（compaction、memory）、安全（权限与沙箱）、并行（Sub-agent、Background、Team）。并以 Claude Code 为例，详细说明其三层 prompt、skill 渐进披露、专家分工与 harness 工程实践。</p>
+<p><strong>关键洞察</strong>:  </p>
+<ul>
+<li>闭环是关键：代码写完能跑、能测、能看结果，这是 Coding Agent 优于文本生成的地方。  </li>
+<li>工具行为由输入决定：并发安全、只读、不可逆都应以参数为依据，而非工具类型。  </li>
+<li>Harness 工程是把「判断对错」显式化：每个组件都是对「模型做不到 X」的假设验证。</li>
+</ul>
+<p><strong>评价</strong>:  </p>
+<ul>
+<li><strong>优点</strong>: 细节丰富，结合实践案例，有很强的工程指导意义。  </li>
+<li><strong>不足</strong>: 文章较长且未完成，需要读者有一定基础。  </li>
+<li><strong>适用场景</strong>: Coding Agent 开发者、AI 编码工具使用者。</li>
+</ul>
+<hr>
+<h3 id="14-Long-horizon-Agent"><a href="#14-Long-horizon-Agent" class="headerlink" title="14. Long-horizon Agent"></a>14. Long-horizon Agent</h3><p><strong>来源</strong>: <a target="_blank" rel="noopener" href="https://qiankunli.github.io/">李乾坤的博客</a><br><strong>原文链接</strong>: <a target="_blank" rel="noopener" href="https://qiankunli.github.io/2026/02/16/long_horizon.html">Long-horizon Agent</a><br><strong>推荐指数</strong>: ⭐⭐⭐⭐ (4&#x2F;5) - 对长时间任务 Agent 的工程挑战与 Harness 思想的深度阐释</p>
+<p><strong>核心概要</strong>:<br>文章指出 2026 年的模型能力让 Long-horizon Agent 不再是 demo，但挑战在于上下文爆炸、记忆与状态持久化、过早宣布胜利等问题。作者区分了 prompt engineering、context engineering 与 harness engineering，强调后者是把「正确性、效率、稳定性、安全」外置化。他给出 harness 的三个核心问题：失败定义、停止条件、状态持久化，并讨论了 sub-agent 并行的两种模式（单线程 fork vs 多线程并行）。</p>
+<p><strong>关键洞察</strong>:  </p>
+<ul>
+<li>Harness 不是补丁，是分工：有些事模型不该做，比如判断停止、长期记忆、独立验证。  </li>
+<li>上下文管理是内在行为：通过函数调用把旧记忆迁移到外部存储，是 agent 应具备的能力。  </li>
+<li>子 agent 并行的用途：并行执行、后台任务与团队协作，各有适用场景。</li>
+</ul>
+<p><strong>评价</strong>:  </p>
+<ul>
+<li><strong>优点</strong>: 概念分层清晰，对 harness 工程的定义有启发性。  </li>
+<li><strong>不足</strong>: 对具体实现的路径较少展开。  </li>
+<li><strong>适用场景</strong>: Agent 基础设施开发者、长时间任务的设计者。</li>
+</ul>
+<hr>
+<h3 id="15-next-prompt工程——skill"><a href="#15-next-prompt工程——skill" class="headerlink" title="15. next prompt工程——skill"></a>15. next prompt工程——skill</h3><p><strong>来源</strong>: <a target="_blank" rel="noopener" href="https://qiankunli.github.io/">李乾坤的博客</a><br><strong>原文链接</strong>: <a target="_blank" rel="noopener" href="https://qiankunli.github.io/2026/02/07/skill.html">next prompt工程——skill</a><br><strong>推荐指数</strong>: ⭐⭐⭐⭐⭐ (5&#x2F;5) - 对 Agent Skills 标准与渐进披露机制的深度解读，含前瞻与实战</p>
+<p><strong>核心概要</strong>:<br>文章将 Skills 定义为「意向模式的固化」，是对行为习惯的持续萃取。作者梳理了从 prompt → structured prompt → skill 的演进，并对比 skill 与 agent、MCP 的关系。他详细介绍 Claude Skills 的三层结构（SKILL.md、scripts&#x2F;、references&#x2F;）、渐进披露机制（先元数据，再正文，再资源）以及技能分层的必要性（相似性干扰）。文章进一步讨论了从 multi-agent 到单 agent + skills（SAS）的转变，以及 Hermes-Agent 的自驱动技能沉淀实践。</p>
+<p><strong>关键洞察</strong>:  </p>
+<ul>
+<li>Skill 是说明书，不是工具：它提供知识与流程，而非能力本身。  </li>
+<li>渐进披露是降低上下文负担的关键：不是把所有信息塞进 prompt，而是按需加载。  </li>
+<li>SAS 范式：一个 agent + 动态技能库，比多 agent 协作更连续、成本更低。</li>
+</ul>
+<p><strong>评价</strong>:  </p>
+<ul>
+<li><strong>优点</strong>: 对技能化的本质与工程细节阐述透彻，有前瞻与案例。  </li>
+<li><strong>不足</strong>: 文章较长，需要读者对 Agent 有一定基础。  </li>
+<li><strong>适用场景</strong>: Agent 平台开发者、希望构建技能库的人。</li>
+</ul>
+<hr>
+<h3 id="16-从chatbot到clawbot"><a href="#16-从chatbot到clawbot" class="headerlink" title="16. 从chatbot到clawbot"></a>16. 从chatbot到clawbot</h3><p><strong>来源</strong>: <a target="_blank" rel="noopener" href="https://qiankunli.github.io/">李乾坤的博客</a><br><strong>原文链接</strong>: <a target="_blank" rel="noopener" href="https://qiankunli.github.io/2026/02/02/openclaw.html">从chatbot到clawbot</a><br><strong>推荐指数</strong>: ⭐⭐⭐⭐ (4&#x2F;5) - 对 OpenClaw 架构与关键设计的深度剖析，适合了解本地优先 Agent</p>
+<p><strong>核心概要</strong>:<br>文章介绍了 OpenClaw（一个 Local-First 的 AI Agent 运行时），强调其三大核心文件（SOUL.md、USER.md、MEMORY.md）与分层记忆结构（Session Context、Daily Logs、Curated Memory）。作者详细说明记忆的文件优先级、heartbeat 与 cron 的区别、技能系统（Bundled、Managed、Workspace）、安全沙箱机制与子 agent 的隔离设计。文章还介绍了 Pi 内核在 OpenClaw 中的嵌入方式与主循环架构。</p>
+<p><strong>关键洞察</strong>:  </p>
+<ul>
+<li>文件即记忆：所有交互都以 Markdown 形式持久化，透明且可迁移。  </li>
+<li>心跳与 cron 的分工：心跳用于周期性扫描，cron 用于精确时间点任务。  </li>
+<li>子 agent 是上下文隔离：系统提示、工具集、消息历史完全不同，无法继续派生。</li>
+</ul>
+<p><strong>评价</strong>:  </p>
+<ul>
+<li><strong>优点</strong>: 架构细节丰富，对文件系统式记忆的设计有启发性。  </li>
+<li><strong>不足</strong>: 文章过长，需要读者有一定技术背景。  </li>
+<li><strong>适用场景</strong>: 想自建本地 Agent 的人、OpenClaw 用户。</li>
+</ul>
+<hr>
+<h3 id="17-typescript学习"><a href="#17-typescript学习" class="headerlink" title="17. typescript学习"></a>17. typescript学习</h3><p><strong>来源</strong>: <a target="_blank" rel="noopener" href="https://qiankunli.github.io/">李乾坤的博客</a><br><strong>原文链接</strong>: <a target="_blank" rel="noopener" href="https://qiankunli.github.io/2026/01/25/typescript.html">typescript学习</a><br><strong>推荐指数</strong>: ⭐⭐⭐ (3&#x2F;5) - TypeScript 入门笔记，适合新手快速上手</p>
+<p><strong>核心概要</strong>:<br>文章从 JavaScript 与 TypeScript 的核心区别（静态类型系统）开始，解释类型擦除、结构化类型、非侵入性等特点。作者用对比表格展示 TS 与 Python 在项目结构、包管理、运行方式上的异同，并介绍 package.json 的 scripts 用途。文章还覆盖了变量声明、export 可见性、类型定义（interface vs class）等基础概念。</p>
+<p><strong>关键洞察</strong>:  </p>
+<ul>
+<li>TS 类型只在编译时存在：运行时与 JS 一样，不占用内存。  </li>
+<li>结构化类型是「鸭子类型」：只要形状兼容即可，不需显式继承。  </li>
+<li>Scope 包解决命名冲突：@scope&#x2F;package-name 是避免名字被占用的方案。</li>
+</ul>
+<p><strong>评价</strong>:  </p>
+<ul>
+<li><strong>优点</strong>: 适合 Python 开发者快速理解 TS，对比清晰。  </li>
+<li><strong>不足</strong>: 内容较基础，高级主题未涉及。  </li>
+<li><strong>适用场景</strong>: Python 开发者、TS 入门者。</li>
+</ul>
+<hr>
+</section>
+    
+
+    <footer id="post-meta" class="clearfix">
+        <a href="/about/">
+        <img class="avatar" src="/images/avatar.png">
+        <div>
+            <span class="dark">Api Intelligence Daily Life</span>
+            <span>知识库 &amp; 博客</span>
+        </div>
+        </a>
+        <section id="sharing">
+            <a title="Share to Twitter" class="twitter" target="_blank" rel="noopener" href="https://twitter.com/intent/tweet?text=https://arbow.github.io/2026/05/24/blog-digest-2026-05-24/ - 博客推荐 - 2026-05-24 @"><span class="icon-twitter">tweet</span></a>
+            <a title="Share to Facebook" class="facebook" href="#" onclick="
+                window.open(
+                  'https://www.facebook.com/sharer/sharer.php?u='+encodeURIComponent(location.href),
+                  'facebook-share-dialog',
+                  'width=626,height=436');
+                return false;"><span class="icon-facebook-sign">Share</span>
+            </a>
+        </section>
+    </footer>
+
+
+  <section id="comment">
+    <button class="btn" id="loadcmts" onclick="cmts.load();">加载评论</button>
+    <div id="gitment"></div>
+    <script src='/js/gitment.browser.js'></script>
+    <link rel="stylesheet" href=''>
+    <script>
+      var cmts={
+        load:function cmts(){
+          var gitment = new Gitment({
+          
+            id: "博客推荐 - 2026-05-24",
+          
+            owner: "",
+            repo: "",
+            oauth: {
+              client_id: "",
+              client_secret: "",
+            },
+          })
+          gitment.render('gitment');
+          var loadcmt = document.getElementById("loadcmts");
+          var imyourfather = loadcmt.parentNode;
+          imyourfather.removeChild(loadcmts)
+        }
+      }
+    </script>
+  </section>
+
+
+	<footer id="footer">
+	<div id="social">
+		<p class="small">©  Arbow| Powered by Hexo & 
+			<a target="_blank" rel="noopener" href="https://github.com/F0r3at/Lights"> Lights</a>
+		</p>
+	</div>
+</footer>
+
+</section>
+
+	<script src="//cdnjs.loli.net/ajax/libs/instantclick/3.0.1/instantclick.min.js" data-no-instant></script>
+	<script data-no-instant>
+		
+		InstantClick.init('mousedown');
+	</script>
+
+
+
