@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=0">
+
+  <meta name="description" content="个人知识库与技术笔记">
+
+
+<link rel="alternate" href="/atom.xml" title="Api Intelligence Daily Life" type="application/atom+xml">
+<meta name="theme-color" content="#a1d0f6">
+<title>文摘：分析完 Claude Code 51 万行源码后，我用 950 行 Python 重现了它的核心功能设计 - Api Intelligence Daily Life</title>
+<!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+<link rel="shortcut icon" href="/favicon.png">
+
+<link rel="stylesheet" href="/css/style.css">
+
+<nav class="main-nav">
+	
+	    <a href="/">← 主页</a>
+	
+	
+	    <a href="/about/">About</a>
+	
+	    <a href="/archives/">Archives</a>
+	
+	<a class="cta" href="/atom.xml" data-no-instant>订阅</a>
+</nav>
+
+<section id="wrapper">
+    <article class="post">
+    <header>
+        
+            <h1>文摘：分析完 Claude Code 51 万行源码后，我用 950 行 Python 重现了它的核心功能设计</h1>
+        
+        <h2 class="headline">May 26 2026
+        
+            
+            <a href="/categories/文摘/#文摘">文摘</a>
+        
+        </h2>
+    </header>
+</article>
+<section id="post-body"><p><strong>来源</strong>: <a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/2023060686217965634">知乎专栏</a><br><strong>作者</strong>: 何宇峰<br><strong>发布日期</strong>: 2026-04-18</p>
+<hr>
+<h2 id="核心概要"><a href="#核心概要" class="headerlink" title="核心概要"></a>核心概要</h2><p>前些天 Claude Code 源码泄露引发广泛关注后，作者在第一篇分析文章（17 万阅读、6000 收藏）的基础上更进一步，将 51 万行 Claude Code 源码中真正”承重”的核心功能设计提炼为 <strong>950 行 Python 代码</strong>，开源项目名为 <a target="_blank" rel="noopener" href="https://github.com/he-yufeng/CoreCoder">CoreCoder</a>（原 NanoCoder）。</p>
+<p>作者明确定位 CoreCoder <strong>不是又一个 Claude Code 克隆</strong>——市面上已有 Claw-Code（12 万+ star 的 Python&#x2F;Rust 重写）、Aider、Cline 等成熟工具。CoreCoder 的定位是 <strong>nanoGPT 之于 Transformer 训练</strong>：用最精简的代码把生产级 AI 编程 Agent 的核心设计讲清楚，让开发者在一下午读完、理解、fork 并二次开发。</p>
+<h2 id="Claude-Code-的-7-个核心设计模式"><a href="#Claude-Code-的-7-个核心设计模式" class="headerlink" title="Claude Code 的 7 个核心设计模式"></a>Claude Code 的 7 个核心设计模式</h2><p>作者认为 Claude Code 51 万行代码中真正”承重”的设计模式只有 7 个，其余大量代码是 UI 渲染（React + Ink）、MCP 协议适配、OAuth 认证、Skill 插件系统等。</p>
+<h3 id="1-搜索替换式编辑"><a href="#1-搜索替换式编辑" class="headerlink" title="1. 搜索替换式编辑"></a>1. 搜索替换式编辑</h3><p>这可能是 Claude Code 对 AI 编程工具领域最大的单点贡献。让 LLM 编辑代码，行业试过很多方案：行号补丁（LLM 记不住行号）、整文件重写（token 费用爆炸且容易丢行）、unified diff（行号经常算错）。Claude Code 的做法是让 LLM 给出一段精确的 old_string 和 new_string，约束只有一条——old_string 必须在文件中恰好出现一次。一个约束干掉了一整类编辑 bug。</p>
+<h3 id="2-Agent-工具循环-并行执行"><a href="#2-Agent-工具循环-并行执行" class="headerlink" title="2. Agent 工具循环 + 并行执行"></a>2. Agent 工具循环 + 并行执行</h3><p>核心循环本身很简单，但 Claude Code 的 StreamingToolExecutor（530 行）有个精妙优化：在模型还没说完时就开始执行前面的工具调用。模型流式吐出第一个工具调用的参数，那个工具立刻开始跑。多个只读工具并行执行，有副作用的独占。这就是 Claude Code “想完之后开始干活特别快”的原因之一。</p>
+<h3 id="3-三层上下文压缩"><a href="#3-三层上下文压缩" class="headerlink" title="3. 三层上下文压缩"></a>3. 三层上下文压缩</h3><p>128K token 看起来很多，十几轮工具调用就快满了。Claude Code 不是简单截断旧消息，而是用四层渐进策略：裁噪声（grep 返回 500 行但只用了 3 行，保留头尾删中间）→ LLM 摘要（调模型压缩旧对话）→ 硬压缩（只留最近几轮 + 总结）→ 后台自动触发。</p>
+<h3 id="4-子代理生成"><a href="#4-子代理生成" class="headerlink" title="4. 子代理生成"></a>4. 子代理生成</h3><p>复杂任务拆给独立 Agent，各有自己的上下文窗口。有意思的设计决策：子 Agent 不能再创建子 Agent，防递归爆炸。Claude Code 的 AgentTool 有 1397 行，CoreCoder 用 50 行实现了核心逻辑。</p>
+<h3 id="5-危险命令拦截"><a href="#5-危险命令拦截" class="headerlink" title="5. 危险命令拦截"></a>5. 危险命令拦截</h3><p><code>rm -rf /</code>、fork bomb、<code>curl | bash</code> 这些在执行前就被拦下来。</p>
+<h3 id="6-会话持久化"><a href="#6-会话持久化" class="headerlink" title="6. 会话持久化"></a>6. 会话持久化</h3><p><code>/save</code> 存盘，<code>corecoder -r session_id</code> 恢复。长任务可以随时中断、改天继续。</p>
+<h3 id="7-系统提示词动态组装"><a href="#7-系统提示词动态组装" class="headerlink" title="7. 系统提示词动态组装"></a>7. 系统提示词动态组装</h3><p>不是写死的字符串，根据工作目录、OS、可用工具列表实时拼接。在不同项目里 Agent 的行为是不一样的。</p>
+<h2 id="使用方式"><a href="#使用方式" class="headerlink" title="使用方式"></a>使用方式</h2><p>一行安装：<code>pip install corecoder</code></p>
+<p>支持任何 OpenAI 兼容 API：Kimi K2.5、Claude Opus 4.6（通过 OpenRouter）、DeepSeek V3、GPT-5、Qwen 3.5、Ollama 本地模型等。也可以当 Python 库用，加自定义工具只需继承 Tool 基类约 20 行代码。</p>
+<h2 id="评价"><a href="#评价" class="headerlink" title="评价"></a>评价</h2><p>这篇文章是一个少见的”从源码提炼到极致简化的工程示范”。作者没有止步于分析泄露源码写了篇读后感，而是真正动手把核心逻辑剥离出来做成了可运行的开源项目。7 个设计模式的提炼精准且有洞见——搜索替换编辑、流式工具并行执行、分级上下文压缩这些都是 Claude Code 真正区别于其他编程 Agent 的核心设计。对于想深入理解 AI 编程 Agent 原理的开发者，1300 行比 51 万行友好太多了。</p>
+<p>原文链接：<a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/2023060686217965634">https://zhuanlan.zhihu.com/p/2023060686217965634</a></p>
+</section>
+    
+
+    <footer id="post-meta" class="clearfix">
+        <a href="/about/">
+        <img class="avatar" src="/images/avatar.png">
+        <div>
+            <span class="dark">Api Intelligence Daily Life</span>
+            <span>知识库 &amp; 博客</span>
+        </div>
+        </a>
+        <section id="sharing">
+            <a title="Share to Twitter" class="twitter" target="_blank" rel="noopener" href="https://twitter.com/intent/tweet?text=https://arbow.github.io/2026/05/26/digest-2026-05-26-corecoder-claude-code/ - 文摘：分析完 Claude Code 51 万行源码后，我用 950 行 Python 重现了它的核心功能设计 @"><span class="icon-twitter">tweet</span></a>
+            <a title="Share to Facebook" class="facebook" href="#" onclick="
+                window.open(
+                  'https://www.facebook.com/sharer/sharer.php?u='+encodeURIComponent(location.href),
+                  'facebook-share-dialog',
+                  'width=626,height=436');
+                return false;"><span class="icon-facebook-sign">Share</span>
+            </a>
+        </section>
+    </footer>
+
+
+  <section id="comment">
+    <button class="btn" id="loadcmts" onclick="cmts.load();">加载评论</button>
+    <div id="gitment"></div>
+    <script src='/js/gitment.browser.js'></script>
+    <link rel="stylesheet" href=''>
+    <script>
+      var cmts={
+        load:function cmts(){
+          var gitment = new Gitment({
+          
+            id: "文摘：分析完 Claude Code 51 万行源码后，我用 950 行 Python 重现了它的核心功能设计",
+          
+            owner: "",
+            repo: "",
+            oauth: {
+              client_id: "",
+              client_secret: "",
+            },
+          })
+          gitment.render('gitment');
+          var loadcmt = document.getElementById("loadcmts");
+          var imyourfather = loadcmt.parentNode;
+          imyourfather.removeChild(loadcmts)
+        }
+      }
+    </script>
+  </section>
+
+
+	<footer id="footer">
+	<div id="social">
+		<p class="small">©  Arbow| Powered by Hexo & 
+			<a target="_blank" rel="noopener" href="https://github.com/F0r3at/Lights"> Lights</a>
+		</p>
+	</div>
+</footer>
+
+</section>
+
+	<script src="//cdnjs.loli.net/ajax/libs/instantclick/3.0.1/instantclick.min.js" data-no-instant></script>
+	<script data-no-instant>
+		
+		InstantClick.init('mousedown');
+	</script>
+
+
+
