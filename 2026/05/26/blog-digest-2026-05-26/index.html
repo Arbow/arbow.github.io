@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=0">
+
+  <meta name="description" content="个人知识库与技术笔记">
+
+
+<link rel="alternate" href="/atom.xml" title="Api Intelligence Daily Life" type="application/atom+xml">
+<meta name="theme-color" content="#a1d0f6">
+<title>文摘：博客推荐 - 2026-05-26 - Api Intelligence Daily Life</title>
+<!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+<link rel="shortcut icon" href="/favicon.png">
+
+<link rel="stylesheet" href="/css/style.css">
+
+<nav class="main-nav">
+	
+	    <a href="/">← 主页</a>
+	
+	
+	    <a href="/about/">About</a>
+	
+	    <a href="/archives/">Archives</a>
+	
+	<a class="cta" href="/atom.xml" data-no-instant>订阅</a>
+</nav>
+
+<section id="wrapper">
+    <article class="post">
+    <header>
+        
+            <h1>文摘：博客推荐 - 2026-05-26</h1>
+        
+        <h2 class="headline">May 26 2026
+        
+            
+            <a href="/categories/博客推荐/#博客推荐">博客推荐</a>
+        
+        </h2>
+    </header>
+</article>
+<section id="post-body"><h2 id="补录：OpenAI-Engineering-漏收文章"><a href="#补录：OpenAI-Engineering-漏收文章" class="headerlink" title="补录：OpenAI Engineering 漏收文章"></a>补录：OpenAI Engineering 漏收文章</h2><blockquote>
+<p>由于 RSSHub 的 OpenAI Engineering 路由长期停更（停在 2026-01-29），导致多篇优质文章未被自动收录。现切换至 OpenAI 原生 RSS 源，并手动补录此前遗漏的文章。</p>
+</blockquote>
+<hr>
+<h3 id="1-Supercomputer-networking-to-accelerate-large-scale-AI-training"><a href="#1-Supercomputer-networking-to-accelerate-large-scale-AI-training" class="headerlink" title="1. Supercomputer networking to accelerate large scale AI training"></a>1. Supercomputer networking to accelerate large scale AI training</h3><p><strong>来源</strong>: <a target="_blank" rel="noopener" href="https://openai.com/news/engineering/">OpenAI Engineering</a><br><strong>原文链接</strong>: <a target="_blank" rel="noopener" href="https://openai.com/index/mrc-supercomputer-networking">Supercomputer networking to accelerate large scale AI training</a><br><strong>发布日期</strong>: 2026&#x2F;5&#x2F;5<br><strong>推荐指数</strong>: ⭐⭐⭐⭐ (4&#x2F;5) - AI 基础设施必读</p>
+<p><strong>核心概要</strong></p>
+<p>OpenAI 联合 AMD、Broadcom、Intel、Microsoft 和 NVIDIA 历时两年开发了 <a target="_blank" rel="noopener" href="https://openai.com/index/mrc-supercomputer-networking">MRC（多路径可靠连接）</a>协议，并通过开放计算项目（OCP）开源。MRC 是构建在 800Gb&#x2F;s 网络接口上的新型网络协议，旨在解决超大规模 AI 训练集群中网络拥塞和故障导致 GPU 闲置的核心瓶颈。该协议已部署在 OpenAI 所有最大的 NVIDIA GB200 超级计算机上（包括 <a target="_blank" rel="noopener" href="https://openai.com/index/mrc-supercomputer-networking">Stargate</a> 站点和 Microsoft 的 Fairwater 超级计算机），并已用于训练多个前沿模型。</p>
+<p>MRC 的核心设计包含三大支柱：<strong>多平面网络拓扑</strong>（将一个 800Gb&#x2F;s 接口拆分为 8 个 100Gb&#x2F;s 链路连接不同交换机，仅需两层交换机即可连接超过 13 万个 GPU）、<strong>自适应数据包喷射</strong>（将单次传输的数据包分散到数百条路径，消除核心网络拥塞）、以及 <strong>SRv6 源路由</strong>（用静态路由替代 BGP 等动态路由协议，发送方直接指定路径，消除整类路由故障）。</p>
+<p><strong>关键洞察</strong></p>
+<ul>
+<li><strong>多平面拓扑简化了网络架构</strong>：传统 800Gb&#x2F;s 网络需要 3-4 层交换机，MRC 仅需 2 层即可连接 13 万+ GPU，大幅降低功耗和成本</li>
+<li><strong>故障恢复从”秒级”到”微秒级”</strong>：生产环境中每分钟多次链路抖动对同步预训练几乎无影响，甚至 Tier-1 交换机重启也无需协调</li>
+<li><strong>SRv6 源路由彻底简化控制平面</strong>：交换机不再运行动态路由协议，使用静态配置表，消除了动态路由的一大类故障模式</li>
+<li><strong>“包截断”（Packet Trimming）减少误判</strong>：交换机因目的端拥塞需丢包时仅转发包头触发重传，避免错误归因</li>
+</ul>
+<p><strong>评价</strong></p>
+<ul>
+<li><strong>优点</strong>：解决了大规模同步训练中”故障放大器”的核心痛点；开源策略有利于行业标准化；多维度创新（拓扑+传输+路由）而非单点修补；已在生产环境中实战验证</li>
+<li><strong>不足</strong>：缺少量化性能对比数据（如训练吞吐量提升百分比）；依赖 800Gb&#x2F;s 最新硬件，升级门槛高；未与 <a target="_blank" rel="noopener" href="https://www.nvidia.com/en-us/infiniband-networking/">InfiniBand</a> 等传统方案直接对标</li>
+<li><strong>适用场景</strong>：超大规模（10万+ GPU）同步预训练集群；对网络可靠性和延迟可预测性要求极高的 AI 工作负载</li>
+</ul>
+<hr>
+<p><em>本文摘整理于 2026-05-26，补录 OpenAI Engineering 漏收文章。</em></p>
+</section>
+    
+
+    <footer id="post-meta" class="clearfix">
+        <a href="/about/">
+        <img class="avatar" src="/images/avatar.png">
+        <div>
+            <span class="dark">Api Intelligence Daily Life</span>
+            <span>知识库 &amp; 博客</span>
+        </div>
+        </a>
+        <section id="sharing">
+            <a title="Share to Twitter" class="twitter" target="_blank" rel="noopener" href="https://twitter.com/intent/tweet?text=https://arbow.github.io/2026/05/26/blog-digest-2026-05-26/ - 文摘：博客推荐 - 2026-05-26 @"><span class="icon-twitter">tweet</span></a>
+            <a title="Share to Facebook" class="facebook" href="#" onclick="
+                window.open(
+                  'https://www.facebook.com/sharer/sharer.php?u='+encodeURIComponent(location.href),
+                  'facebook-share-dialog',
+                  'width=626,height=436');
+                return false;"><span class="icon-facebook-sign">Share</span>
+            </a>
+        </section>
+    </footer>
+
+
+  <section id="comment">
+    <button class="btn" id="loadcmts" onclick="cmts.load();">加载评论</button>
+    <div id="gitment"></div>
+    <script src='/js/gitment.browser.js'></script>
+    <link rel="stylesheet" href=''>
+    <script>
+      var cmts={
+        load:function cmts(){
+          var gitment = new Gitment({
+          
+            id: "文摘：博客推荐 - 2026-05-26",
+          
+            owner: "",
+            repo: "",
+            oauth: {
+              client_id: "",
+              client_secret: "",
+            },
+          })
+          gitment.render('gitment');
+          var loadcmt = document.getElementById("loadcmts");
+          var imyourfather = loadcmt.parentNode;
+          imyourfather.removeChild(loadcmts)
+        }
+      }
+    </script>
+  </section>
+
+
+	<footer id="footer">
+	<div id="social">
+		<p class="small">©  Arbow| Powered by Hexo & 
+			<a target="_blank" rel="noopener" href="https://github.com/F0r3at/Lights"> Lights</a>
+		</p>
+	</div>
+</footer>
+
+</section>
+
+	<script src="//cdnjs.loli.net/ajax/libs/instantclick/3.0.1/instantclick.min.js" data-no-instant></script>
+	<script data-no-instant>
+		
+		InstantClick.init('mousedown');
+	</script>
+
+
+
