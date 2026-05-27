@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=0">
+
+  <meta name="description" content="个人知识库与技术笔记">
+
+
+<link rel="alternate" href="/atom.xml" title="Api Intelligence Daily Life" type="application/atom+xml">
+<meta name="theme-color" content="#a1d0f6">
+<title>文摘：需要自进化的不是 Agent，而是 Harness - Api Intelligence Daily Life</title>
+<!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+<link rel="shortcut icon" href="/favicon.png">
+
+<link rel="stylesheet" href="/css/style.css">
+
+<nav class="main-nav">
+	
+	    <a href="/">← 主页</a>
+	
+	
+	    <a href="/about/">About</a>
+	
+	    <a href="/archives/">Archives</a>
+	
+	<a class="cta" href="/atom.xml" data-no-instant>订阅</a>
+</nav>
+
+<section id="wrapper">
+    <article class="post">
+    <header>
+        
+            <h1>文摘：需要自进化的不是 Agent，而是 Harness</h1>
+        
+        <h2 class="headline">May 27 2026
+        
+            
+            <a href="/categories/文摘/#文摘">文摘</a>
+        
+        </h2>
+    </header>
+</article>
+<section id="post-body"><p><strong>空谷 Arvin Xu</strong>（@arvin17x）在这篇长文中提出了一个核心观点：单独的模型已经不再是产品，模型 + Harness 才是产品。而 Harness 不应是静态的执行环境，它必须能自我进化。</p>
+<p>这篇文章来自 <a target="_blank" rel="noopener" href="https://github.com/lobehub/lobehub">LobeHub</a> 的工程实践，作者分享了他们在接入 70+ 模型 Provider 的过程中，如何设计一个「Self-Evolving Harness」——一个能随着使用自动变好的运行时。</p>
+<hr>
+<h2 id="一个正在发生的范式转移"><a href="#一个正在发生的范式转移" class="headerlink" title="一个正在发生的范式转移"></a>一个正在发生的范式转移</h2><p>2026 年上半年，AI 行业正在经历范式转移：模型能力的边际效应递减，产品竞争从「模型能力」转向「对环境的感知和控制」。</p>
+<p>Phil Schmid（最早提出 <a target="_blank" rel="noopener" href="https://www.philschmid.de/agent-harness-2026">Harness 概念</a>的人）所说的「持久性（Durability）」——模型在执行数百次工具调用后，还能多好地遵循指令？一个模型在 benchmark 上领先 1%，并不能说明它在第 50 步不会误删文件、忘记约束，或者在工具失败后开始编造结果。</p>
+<p>悖论：模型越来越强，产品体验却未必同步提升。因为<strong>缺失了一环</strong>：产品本身能否随模型迭代、用户使用而自动进化。</p>
+<h2 id="什么是-Harness？"><a href="#什么是-Harness？" class="headerlink" title="什么是 Harness？"></a>什么是 Harness？</h2><p>如果把模型看作 CPU，上下文窗口像 RAM，<strong>Agent Harness 就接近操作系统</strong>。它管理启动过程、上下文、工具、错误和生命周期。Agent 则是跑在这套运行时之上的应用逻辑。</p>
+<p>在 LobeHub，Harness 围绕几层系统构建：</p>
+<ul>
+<li><strong>Model Runtime</strong>：适配不同模型供应商</li>
+<li><strong>Agent Runtime</strong>：实现云原生的步级 Agent 循环</li>
+<li><strong>Context Engine</strong>：管理上下文策略</li>
+<li><strong>Environment</strong>：提供 Page、Task、Group、IM 等不同使用环境</li>
+</ul>
+<p>但 Harness 本身也会过时——模型接口会变，工具 schema 会变，错误模式也会变。所以问题变成：<strong>Harness 能不能自己进化？</strong></p>
+<h2 id="Tracing-是自进化的核心构件"><a href="#Tracing-是自进化的核心构件" class="headerlink" title="Tracing 是自进化的核心构件"></a>Tracing 是自进化的核心构件</h2><p>Harness 需要在四个核心维度上持续优化：<strong>上下文策略、工具编排、错误认知、模型适配</strong>。</p>
+<p>实现前提是一个最基础的能力：<strong>可追溯</strong>。每一次 Agent 执行——调用了什么模型、每个 LLM 调用花了多少钱、哪一步出错了——都需要被完整记录。</p>
+<h3 id="行业困境：为什么-Tracing-这么难？"><a href="#行业困境：为什么-Tracing-这么难？" class="headerlink" title="行业困境：为什么 Tracing 这么难？"></a>行业困境：为什么 Tracing 这么难？</h3><p>作者分析了 LangChain、CrewAI、OpenAI Agents SDK、AG2 等主流框架的源码，发现共同模式：<strong>tracing 都是在执行模型之上「后加」的</strong>。</p>
+<ul>
+<li><strong>LangChain</strong>：callback 是可选的，忘了注册就丢 trace</li>
+<li><strong>CrewAI</strong>：事件监听器挂在事件总线上，事件丢失 &#x3D; trace 断裂</li>
+<li><strong>OpenAI Agents</strong>：需要显式创建 trace，不自动传播</li>
+<li><strong>AG2</strong>：middleware 是可选安装的，不装就零 tracing</li>
+</ul>
+<p>不是因为大家不会用 OTel，是因为<strong>所有 runtime 架构都没把 observability 当作一等公民</strong>。</p>
+<p>LobeHub 的 agent runtime 采用状态机模型，按「单步执行」原则做了细粒度拆分，每个 step 天然就是一个 trace event。<strong>Tracing 是执行的副产品，不是后装功能。</strong></p>
+<h3 id="Execution-Snapshot"><a href="#Execution-Snapshot" class="headerlink" title="Execution Snapshot"></a>Execution Snapshot</h3><p>为每次 Agent 执行生成完整的执行快照：调用了哪个模型、每个 LLM 请求花了多少 Token、每一步类型和耗时、在哪一步出错、错误是什么。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">Agent Operation  op_123456  claude-sonnet-4-6  6 steps  45.2s</span><br><span class="line">├─ Step 0  [call_llm]  3.1s</span><br><span class="line">│  ├─ LLM     in:4.2k out:156 tokens  cache:87%</span><br><span class="line">│  └─ Output  I need to search the user&#x27;s document library first...</span><br><span class="line">├─ Step 1  [call_tool]  2.4s</span><br><span class="line">│  └─ Tool  search_documents  ✓</span><br><span class="line">├─ Step 2  [call_llm]  8.7s</span><br><span class="line">│  ├─ LLM     in:8.1k out:342 tokens  cache:92%</span><br><span class="line">│  ├─ → 2 tool_calls: [edit_file, read_file]</span><br><span class="line">│  └─ Output  Found relevant docs, now I need to modify the config...</span><br><span class="line">├─ Step 3  [call_tool]  1.2s</span><br><span class="line">│  ├─ Tool  read_file  ✓</span><br><span class="line">│  └─ Tool  edit_file  ✓</span><br><span class="line">├─ Step 4  [call_llm]  25.3s</span><br><span class="line">│  ├─ LLM     in:12.5k out:1.2k tokens  cache:76%</span><br><span class="line">│  └─ Output  File modified. Here&#x27;s a summary of the changes...</span><br><span class="line">└─ Step 5  [call_tool]  4.5s</span><br><span class="line">   └─ Tool  create_pr  ✓</span><br><span class="line">└─ done  tokens=8.4k  cost=$0.0423  cache:84%  hit:7.2k  miss:1.2k</span><br></pre></td></tr></table></figure>
+
+<h2 id="生产案例：Error-Pattern-自动巡检"><a href="#生产案例：Error-Pattern-自动巡检" class="headerlink" title="生产案例：Error Pattern 自动巡检"></a>生产案例：Error Pattern 自动巡检</h2><p>这是 Self-Evolving Harness 理念的真实落地。</p>
+<p>LobeHub Model Runtime 接入 70+ AI Providers，每天大量 Agent 运行。每次模型调用失败都留下错误记录。Error handling 本质上是后置的——<strong>你只能在错误真实发生后，才知道需要处理什么</strong>。</p>
+<h3 id="做法"><a href="#做法" class="headerlink" title="做法"></a>做法</h3><p>把失败 trace 的查询权限开放给 Agent，让它批量解析 tracing，按 provider、errorType、status code 和 message 分桶，对照已有 pattern 找出未覆盖的错误，生成修复建议。标准化巡检流程为 7 步：</p>
+<ol>
+<li><strong>数据采集</strong>：拉取最近的 error records，多维度分桶</li>
+<li><strong>模式识别</strong>：对比已有 ERROR_PATTERNS，识别新错误模式</li>
+<li><strong>自动分类</strong>：将用户侧错误与 Harness 自身 bug 分开</li>
+<li><strong>自动修复</strong>：用户侧错误直接更新匹配 Pattern</li>
+<li><strong>自动提交</strong>：commit → push → 开 PR</li>
+<li><strong>自动清理</strong>：删除 Dashboard 中匹配新 pattern 的历史噪音</li>
+<li><strong>根因分析</strong>：Harness 自身 bug 深入分析根因，创建修复 Task</li>
+</ol>
+<h3 id="成果"><a href="#成果" class="headerlink" title="成果"></a>成果</h3><p>系统运行了九轮，数据说明问题：</p>
+<ul>
+<li><strong>累计 Pattern 从 31 增长到 104 后趋于平稳，新增 Pattern 持续下降至 0</strong>——即使 error 日志量在 334~1158 之间大幅波动，Pattern 库趋于饱和，新错误几乎全部命中已有 pattern</li>
+<li><strong>Agent 自主发现了 20+ Harness 自身缺陷</strong>：Tool schema 不兼容、负数 max_tokens、DeepSeek reasoning_content 丢失、Context Window 过载等</li>
+<li><strong>Agent 成功率从约 75% 提升到 95% 以上</strong></li>
+</ul>
+<h2 id="Harness-自进化的四个层次"><a href="#Harness-自进化的四个层次" class="headerlink" title="Harness 自进化的四个层次"></a>Harness 自进化的四个层次</h2><ul>
+<li><strong>L1 · 纯人工</strong>：人发现问题，人分析，人修复</li>
+<li><strong>L2 · Agent 辅助</strong>：Agent 找出可疑问题，人确认，Agent 执行部分修复</li>
+<li><strong>L3 · Agent 主导</strong>：Agent 完成数据采集、模式识别、代码修改、PR 提交，人保留关键判断</li>
+<li><strong>L4 · 自主进化</strong>：Harness 持续观察自身运行状态，自动优化 Context Engine 策略、调整 Tool schema 兼容层、预测和预防错误</li>
+</ul>
+<p>LobeHub 的 Error Pattern 巡检大致处在 L3。L4 是正在实现的方向。</p>
+<h2 id="为什么-Consumer-Product-本质上是-Self-Evolving-的-Harness？"><a href="#为什么-Consumer-Product-本质上是-Self-Evolving-的-Harness？" class="headerlink" title="为什么 Consumer Product 本质上是 Self-Evolving 的 Harness？"></a>为什么 Consumer Product 本质上是 Self-Evolving 的 Harness？</h2><p><strong>传统 SaaS</strong>：产品 &#x3D; 功能代码 + 用户数据。功能是固定的，产品变好靠版本更新。</p>
+<p><strong>AI-Native 产品</strong>：产品 &#x3D; Harness（运行时）+ 用户交互数据 + 进化能力。每一次用户交互都在为 Harness 提供进化信号。</p>
+<p>真正的护城河不是模型，而是 Harness 中沉淀的上下文、pattern、trajectory。模型是通用的、可替换的，Harness 是专属的、持续积累的。</p>
+<p>文章也对比了 OpenClaw、Hermes 等自部署方案：虽然技术上出色，但每个用户的 Agent 执行量有限，本地部署使得应用开发方无法获得原始执行数据，反馈信号太稀疏。<strong>稀疏信号无法支撑高效的自我迭代，进化天花板一眼望得到头。</strong></p>
+<p>Consumer Product 天然拥有信号密度优势。以 LobeHub 为例，每天上万次 Agent 执行，Error 样本按分钟级积累。<strong>反馈闭环的速度，直接决定了 Self-Evolving 能进化到什么程度。</strong></p>
+<h2 id="The-Bitter-Lesson-Revisited"><a href="#The-Bitter-Lesson-Revisited" class="headerlink" title="The Bitter Lesson Revisited"></a>The Bitter Lesson Revisited</h2><p>LangChain 一年内重构了三次架构，Manus 的 Harness 六个月内重构了五次，Anthropic 也在不断从 Claude Code 的 Harness 中剥离过时的逻辑。模型在快速迭代，手工编写的 Harness 逻辑随时可能过时。</p>
+<p>唯一的解法：<strong>让 Harness 自己能进化，而不是等人来重构。</strong></p>
+<h2 id="正在构建的未来"><a href="#正在构建的未来" class="headerlink" title="正在构建的未来"></a>正在构建的未来</h2><ul>
+<li><strong>Agent Level 自动进化</strong>：夜间自动回放当天所有 Tracing，分析失败模式和优化机会，自我调整策略</li>
+<li><strong>用户 Level 自动进化</strong>：自动识别用户使用模式，更新生成提示词与 Persona 记忆</li>
+<li><strong>全局自动化 Eval Harness</strong>：每个 Failed Task 自动进入评估→归因→修复闭环</li>
+</ul>
+<hr>
+<p><strong>一句话总结</strong>：新一代 Consumer Product 的本质，是一个活的、会自我进化的运行时。它观察每一次交互，从错误中学习，自动修复自己，在用户不知不觉中变得更好。</p>
+<hr>
+<p><em>原文链接：<a target="_blank" rel="noopener" href="https://x.com/arvin17x/status/2059489592097849698">空谷 Arvin Xu @arvin17x - 需要自进化的不是 Agent，而是 Harness</a></em></p>
+<p><em>开源 Agent Tracing：<a target="_blank" rel="noopener" href="https://github.com/lobehub/lobehub/tree/canary/packages/agent-tracing">github.com&#x2F;lobehub&#x2F;lobehub&#x2F;packages&#x2F;agent-tracing</a></em></p>
+</section>
+    
+
+    <footer id="post-meta" class="clearfix">
+        <a href="/about/">
+        <img class="avatar" src="/images/avatar.png">
+        <div>
+            <span class="dark">Api Intelligence Daily Life</span>
+            <span>知识库 &amp; 博客</span>
+        </div>
+        </a>
+        <section id="sharing">
+            <a title="Share to Twitter" class="twitter" target="_blank" rel="noopener" href="https://twitter.com/intent/tweet?text=https://arbow.github.io/2026/05/27/digest-2026-05-27-self-evolving-harness/ - 文摘：需要自进化的不是 Agent，而是 Harness @"><span class="icon-twitter">tweet</span></a>
+            <a title="Share to Facebook" class="facebook" href="#" onclick="
+                window.open(
+                  'https://www.facebook.com/sharer/sharer.php?u='+encodeURIComponent(location.href),
+                  'facebook-share-dialog',
+                  'width=626,height=436');
+                return false;"><span class="icon-facebook-sign">Share</span>
+            </a>
+        </section>
+    </footer>
+
+
+  <section id="comment">
+    <button class="btn" id="loadcmts" onclick="cmts.load();">加载评论</button>
+    <div id="gitment"></div>
+    <script src='/js/gitment.browser.js'></script>
+    <link rel="stylesheet" href=''>
+    <script>
+      var cmts={
+        load:function cmts(){
+          var gitment = new Gitment({
+          
+            id: "文摘：需要自进化的不是 Agent，而是 Harness",
+          
+            owner: "",
+            repo: "",
+            oauth: {
+              client_id: "",
+              client_secret: "",
+            },
+          })
+          gitment.render('gitment');
+          var loadcmt = document.getElementById("loadcmts");
+          var imyourfather = loadcmt.parentNode;
+          imyourfather.removeChild(loadcmts)
+        }
+      }
+    </script>
+  </section>
+
+
+	<footer id="footer">
+	<div id="social">
+		<p class="small">©  Arbow| Powered by Hexo & 
+			<a target="_blank" rel="noopener" href="https://github.com/F0r3at/Lights"> Lights</a>
+		</p>
+	</div>
+</footer>
+
+</section>
+
+	<script src="//cdnjs.loli.net/ajax/libs/instantclick/3.0.1/instantclick.min.js" data-no-instant></script>
+	<script data-no-instant>
+		
+		InstantClick.init('mousedown');
+	</script>
+
+
+
