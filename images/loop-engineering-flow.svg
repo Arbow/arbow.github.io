@@ -1,0 +1,187 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 980">
+  <defs>
+    <pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse">
+      <path d="M 40 0 L 0 0 0 40" fill="none" stroke="#1e293b" stroke-width="0.5"/>
+    </pattern>
+    <marker id="arrow" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#64748b"/>
+    </marker>
+    <marker id="arrow-emerald" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#34d399"/>
+    </marker>
+    <marker id="arrow-rose" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#fb7185"/>
+    </marker>
+    <marker id="arrow-amber" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#fbbf24"/>
+    </marker>
+    <marker id="arrow-blue" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#60a5fa"/>
+    </marker>
+  </defs>
+
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&amp;display=swap');
+    text { font-family: 'JetBrains Mono', 'SF Mono', 'Cascadia Code', 'Noto Sans SC', 'PingFang SC', monospace; }
+  </style>
+
+  <!-- Background -->
+  <rect width="100%" height="100%" fill="#0f172a"/>
+  <rect width="100%" height="100%" fill="url(#grid)"/>
+
+  <!-- Title -->
+  <text x="30" y="32" fill="white" font-size="16" font-weight="700">Loop Engineering Flow</text>
+  <text x="30" y="50" fill="#94a3b8" font-size="9">Design the system that prompts the agent</text>
+
+  <!-- ===== STEP 1: START — Automation Triggers ===== -->
+  <rect x="260" y="70" width="260" height="50" rx="25" fill="#0f172a"/>
+  <rect x="260" y="70" width="260" height="50" rx="25" fill="rgba(59,130,246,0.3)" stroke="#60a5fa" stroke-width="1.5"/>
+  <text x="390" y="100" fill="white" font-size="11" font-weight="600" text-anchor="middle">Automation Triggers</text>
+
+  <!-- Arrow 1→2 -->
+  <line x1="390" y1="120" x2="390" y2="148" stroke="#64748b" stroke-width="1.5" marker-end="url(#arrow)"/>
+
+  <!-- ===== STEP 2: Load Skills & State ===== -->
+  <rect x="260" y="150" width="260" height="50" rx="6" fill="#0f172a"/>
+  <rect x="260" y="150" width="260" height="50" rx="6" fill="rgba(8,51,68,0.4)" stroke="#22d3ee" stroke-width="1.5"/>
+  <text x="390" y="173" fill="white" font-size="11" font-weight="600" text-anchor="middle">Load Skills &amp; State</text>
+  <text x="390" y="189" fill="#94a3b8" font-size="8" text-anchor="middle">SKILL.md + progress files</text>
+
+  <!-- Arrow 2→3 -->
+  <line x1="390" y1="200" x2="390" y2="228" stroke="#64748b" stroke-width="1.5" marker-end="url(#arrow)"/>
+
+  <!-- ===== STEP 3: Triage & Discovery ===== -->
+  <rect x="260" y="230" width="260" height="50" rx="6" fill="#0f172a"/>
+  <rect x="260" y="230" width="260" height="50" rx="6" fill="rgba(8,51,68,0.4)" stroke="#22d3ee" stroke-width="1.5"/>
+  <text x="390" y="253" fill="white" font-size="11" font-weight="600" text-anchor="middle">Triage &amp; Discovery</text>
+  <text x="390" y="269" fill="#94a3b8" font-size="8" text-anchor="middle">CI failures · issues · recent commits</text>
+
+  <!-- Arrow 3→4 -->
+  <line x1="390" y1="280" x2="390" y2="308" stroke="#64748b" stroke-width="1.5" marker-end="url(#arrow)"/>
+
+  <!-- ===== STEP 4: Decision — Work Found? ===== -->
+  <g transform="translate(390, 352)">
+    <polygon points="0,-40 70,0 0,40 -70,0" fill="#0f172a"/>
+    <polygon points="0,-40 70,0 0,40 -70,0" fill="rgba(120,53,15,0.3)" stroke="#fbbf24" stroke-width="1.5"/>
+    <text y="4" fill="white" font-size="10" font-weight="600" text-anchor="middle">Work?</text>
+  </g>
+
+  <!-- Yes label → down -->
+  <text x="402" y="398" fill="#34d399" font-size="8">Yes</text>
+
+  <!-- No label → right to Human Inbox -->
+  <line x1="460" y1="352" x2="580" y2="352" stroke="#fb7185" stroke-width="1.2" marker-end="url(#arrow-rose)"/>
+  <text x="505" y="345" fill="#fb7185" font-size="8">No</text>
+
+  <!-- Human Inbox (right side) -->
+  <rect x="582" y="327" width="170" height="50" rx="6" fill="#0f172a"/>
+  <rect x="582" y="327" width="170" height="50" rx="6" fill="rgba(30,41,59,0.5)" stroke="#94a3b8" stroke-width="1.2"/>
+  <text x="667" y="350" fill="white" font-size="10" font-weight="600" text-anchor="middle">Human Inbox</text>
+  <text x="667" y="365" fill="#94a3b8" font-size="8" text-anchor="middle">awaiting manual review</text>
+
+  <!-- Arrow down from decision -->
+  <line x1="390" y1="392" x2="390" y2="418" stroke="#34d399" stroke-width="1.5" marker-end="url(#arrow-emerald)"/>
+
+  <!-- ===== STEP 5: Spawn Worktree ===== -->
+  <rect x="260" y="420" width="260" height="50" rx="6" fill="#0f172a"/>
+  <rect x="260" y="420" width="260" height="50" rx="6" fill="rgba(76,29,149,0.4)" stroke="#a78bfa" stroke-width="1.5"/>
+  <text x="390" y="443" fill="white" font-size="11" font-weight="600" text-anchor="middle">Spawn Worktree</text>
+  <text x="390" y="459" fill="#94a3b8" font-size="8" text-anchor="middle">isolated branch per work item</text>
+
+  <!-- Arrow 5→6 -->
+  <line x1="390" y1="470" x2="390" y2="498" stroke="#64748b" stroke-width="1.5" marker-end="url(#arrow)"/>
+
+  <!-- ===== STEP 6: Maker Agent Implements ===== -->
+  <rect x="260" y="500" width="260" height="50" rx="6" fill="#0f172a"/>
+  <rect x="260" y="500" width="260" height="50" rx="6" fill="rgba(6,78,59,0.4)" stroke="#34d399" stroke-width="1.5"/>
+  <text x="390" y="523" fill="white" font-size="11" font-weight="600" text-anchor="middle">Maker Agent</text>
+  <text x="390" y="539" fill="#94a3b8" font-size="8" text-anchor="middle">implement fix / feature</text>
+
+  <!-- Arrow 6→7 -->
+  <line x1="390" y1="550" x2="390" y2="578" stroke="#64748b" stroke-width="1.5" marker-end="url(#arrow)"/>
+
+  <!-- ===== STEP 7: Checker Agent Verifies ===== -->
+  <rect x="260" y="580" width="260" height="50" rx="6" fill="#0f172a"/>
+  <rect x="260" y="580" width="260" height="50" rx="6" fill="rgba(136,19,55,0.4)" stroke="#fb7185" stroke-width="1.5"/>
+  <text x="390" y="603" fill="white" font-size="11" font-weight="600" text-anchor="middle">Checker Agent</text>
+  <text x="390" y="619" fill="#94a3b8" font-size="8" text-anchor="middle">verify against skills &amp; tests</text>
+
+  <!-- Arrow 7→8 -->
+  <line x1="390" y1="630" x2="390" y2="658" stroke="#64748b" stroke-width="1.5" marker-end="url(#arrow)"/>
+
+  <!-- ===== STEP 8: Decision — Passed? ===== -->
+  <g transform="translate(390, 702)">
+    <polygon points="0,-40 70,0 0,40 -70,0" fill="#0f172a"/>
+    <polygon points="0,-40 70,0 0,40 -70,0" fill="rgba(120,53,15,0.3)" stroke="#fbbf24" stroke-width="1.5"/>
+    <text y="4" fill="white" font-size="10" font-weight="600" text-anchor="middle">Pass?</text>
+  </g>
+
+  <!-- Yes label → down -->
+  <text x="402" y="748" fill="#34d399" font-size="8">Yes</text>
+
+  <!-- No label → right, loop back to Maker -->
+  <line x1="460" y1="702" x2="580" y2="702" stroke="#fb7185" stroke-width="1.2" marker-end="url(#arrow-rose)"/>
+  <text x="505" y="695" fill="#fb7185" font-size="8">No</text>
+
+  <!-- Retry box (right) -->
+  <rect x="582" y="677" width="170" height="50" rx="6" fill="#0f172a"/>
+  <rect x="582" y="677" width="170" height="50" rx="6" fill="rgba(120,53,15,0.3)" stroke="#fbbf24" stroke-width="1.2"/>
+  <text x="667" y="700" fill="white" font-size="10" font-weight="600" text-anchor="middle">Revise &amp; Retry</text>
+  <text x="667" y="715" fill="#94a3b8" font-size="8" text-anchor="middle">feed issues back to Maker</text>
+
+  <!-- Retry → loop back up to Maker -->
+  <path d="M 752 702 L 780 702 L 780 525 L 520 525" fill="none" stroke="#fbbf24" stroke-width="1.2" marker-end="url(#arrow-amber)" stroke-dasharray="5,3"/>
+
+  <!-- Arrow down from Pass? Yes -->
+  <line x1="390" y1="742" x2="390" y2="768" stroke="#34d399" stroke-width="1.5" marker-end="url(#arrow-emerald)"/>
+
+  <!-- ===== STEP 9: Connectors Act ===== -->
+  <rect x="260" y="770" width="260" height="50" rx="6" fill="#0f172a"/>
+  <rect x="260" y="770" width="260" height="50" rx="6" fill="rgba(251,146,60,0.3)" stroke="#fb923c" stroke-width="1.5"/>
+  <text x="390" y="793" fill="white" font-size="11" font-weight="600" text-anchor="middle">Connectors Act</text>
+  <text x="390" y="809" fill="#94a3b8" font-size="8" text-anchor="middle">open PR · link ticket · notify</text>
+
+  <!-- Arrow 9→10 -->
+  <line x1="390" y1="820" x2="390" y2="848" stroke="#64748b" stroke-width="1.5" marker-end="url(#arrow)"/>
+
+  <!-- ===== STEP 10: Update State ===== -->
+  <rect x="260" y="850" width="260" height="50" rx="6" fill="#0f172a"/>
+  <rect x="260" y="850" width="260" height="50" rx="6" fill="rgba(76,29,149,0.4)" stroke="#a78bfa" stroke-width="1.5"/>
+  <text x="390" y="873" fill="white" font-size="11" font-weight="600" text-anchor="middle">Update State</text>
+  <text x="390" y="889" fill="#94a3b8" font-size="8" text-anchor="middle">mark done · persist progress</text>
+
+  <!-- ===== LOOP BACK: State → Automation Triggers ===== -->
+  <path d="M 260 875 L 60 875 L 60 95 L 260 95" fill="none" stroke="#fbbf24" stroke-width="1.8" marker-end="url(#arrow-amber)" stroke-dasharray="8,4"/>
+  <text x="56" y="500" fill="#fbbf24" font-size="9" font-weight="600" transform="rotate(-90, 56, 500)">next cycle</text>
+
+  <!-- ===== HUMAN OVERSIGHT label (left margin) ===== -->
+  <rect x="30" y="320" width="160" height="40" rx="6" fill="none" stroke="#94a3b8" stroke-width="1" stroke-dasharray="4,3"/>
+  <text x="110" y="337" fill="#94a3b8" font-size="9" font-weight="600" text-anchor="middle">Human Reviews</text>
+  <text x="110" y="351" fill="#64748b" font-size="8" text-anchor="middle">output &amp; inbox</text>
+
+  <!-- ===== LEGEND ===== -->
+  <g transform="translate(530, 880)">
+    <text x="0" y="0" fill="#94a3b8" font-size="9" font-weight="600">Legend</text>
+
+    <rect x="0" y="10" width="12" height="8" rx="4" fill="rgba(59,130,246,0.3)" stroke="#60a5fa" stroke-width="1"/>
+    <text x="18" y="18" fill="#94a3b8" font-size="8">Start / Trigger</text>
+
+    <rect x="0" y="24" width="12" height="8" rx="2" fill="rgba(8,51,68,0.4)" stroke="#22d3ee" stroke-width="1"/>
+    <text x="18" y="32" fill="#94a3b8" font-size="8">Load / Triage</text>
+
+    <rect x="130" y="10" width="12" height="8" rx="2" fill="rgba(76,29,149,0.4)" stroke="#a78bfa" stroke-width="1"/>
+    <text x="148" y="18" fill="#94a3b8" font-size="8">Isolate / Persist</text>
+
+    <rect x="130" y="24" width="12" height="8" rx="2" fill="rgba(6,78,59,0.4)" stroke="#34d399" stroke-width="1"/>
+    <text x="148" y="32" fill="#94a3b8" font-size="8">Maker Agent</text>
+
+    <rect x="260" y="10" width="12" height="8" rx="2" fill="rgba(136,19,55,0.4)" stroke="#fb7185" stroke-width="1"/>
+    <text x="278" y="18" fill="#94a3b8" font-size="8">Checker Agent</text>
+
+    <rect x="260" y="24" width="12" height="8" rx="2" fill="rgba(251,146,60,0.3)" stroke="#fb923c" stroke-width="1"/>
+    <text x="278" y="32" fill="#94a3b8" font-size="8">Connectors</text>
+
+    <polygon points="386,18 392,14 398,18 392,22" fill="rgba(120,53,15,0.3)" stroke="#fbbf24" stroke-width="1"/>
+    <text x="404" y="21" fill="#94a3b8" font-size="8">Decision</text>
+  </g>
+</svg>

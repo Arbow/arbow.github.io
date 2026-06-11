@@ -1,0 +1,191 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 920 680">
+  <defs>
+    <pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse">
+      <path d="M 40 0 L 0 0 0 40" fill="none" stroke="#1e293b" stroke-width="0.5"/>
+    </pattern>
+    <marker id="arrow" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#64748b"/>
+    </marker>
+    <marker id="arrow-cyan" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#22d3ee"/>
+    </marker>
+    <marker id="arrow-emerald" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#34d399"/>
+    </marker>
+    <marker id="arrow-amber" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#fbbf24"/>
+    </marker>
+    <marker id="arrow-rose" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#fb7185"/>
+    </marker>
+    <marker id="arrow-violet" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#a78bfa"/>
+    </marker>
+    <marker id="arrow-orange" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#fb923c"/>
+    </marker>
+    <marker id="arrow-blue" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#60a5fa"/>
+    </marker>
+  </defs>
+
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&amp;display=swap');
+    text { font-family: 'JetBrains Mono', 'SF Mono', 'Cascadia Code', 'Noto Sans SC', 'PingFang SC', monospace; }
+  </style>
+
+  <!-- Background -->
+  <rect width="100%" height="100%" fill="#0f172a"/>
+  <rect width="100%" height="100%" fill="url(#grid)"/>
+
+  <!-- Title -->
+  <text x="30" y="32" fill="white" font-size="16" font-weight="700">Loop Engineering</text>
+  <text x="30" y="50" fill="#94a3b8" font-size="9">Design the system that prompts the agent — Addy Osmani</text>
+
+  <!-- ===== REGION: Loop Engine Core ===== -->
+  <rect x="30" y="70" width="860" height="320" rx="12" fill="none" stroke="#fbbf24" stroke-width="1" stroke-dasharray="8,4"/>
+  <text x="42" y="88" fill="#fbbf24" font-size="9" font-weight="600">LOOP ENGINE</text>
+
+  <!-- 1. AUTOMATIONS (top center, the heartbeat) -->
+  <rect x="350" y="100" width="200" height="64" rx="6" fill="#0f172a"/>
+  <rect x="350" y="100" width="200" height="64" rx="6" fill="rgba(59,130,246,0.3)" stroke="#60a5fa" stroke-width="1.5"/>
+  <text x="450" y="125" fill="white" font-size="11" font-weight="600" text-anchor="middle">Automations</text>
+  <text x="450" y="141" fill="#94a3b8" font-size="9" text-anchor="middle">Schedule · Triage · /goal</text>
+  <!-- heartbeat icon -->
+  <circle cx="370" cy="120" r="4" fill="#60a5fa" opacity="0.6"/>
+
+  <!-- 2. SKILLS (left middle) -->
+  <rect x="60" y="195" width="180" height="64" rx="6" fill="#0f172a"/>
+  <rect x="60" y="195" width="180" height="64" rx="6" fill="rgba(8,51,68,0.4)" stroke="#22d3ee" stroke-width="1.5"/>
+  <text x="150" y="220" fill="white" font-size="11" font-weight="600" text-anchor="middle">Skills</text>
+  <text x="150" y="236" fill="#94a3b8" font-size="9" text-anchor="middle">Project Knowledge · SKILL.md</text>
+
+  <!-- 3. SUB-AGENTS (right middle, split into maker + checker) -->
+  <rect x="660" y="185" width="100" height="54" rx="6" fill="#0f172a"/>
+  <rect x="660" y="185" width="100" height="54" rx="6" fill="rgba(6,78,59,0.4)" stroke="#34d399" stroke-width="1.5"/>
+  <text x="710" y="208" fill="white" font-size="10" font-weight="600" text-anchor="middle">Maker</text>
+  <text x="710" y="222" fill="#94a3b8" font-size="8" text-anchor="middle">Implement</text>
+
+  <rect x="790" y="185" width="100" height="54" rx="6" fill="#0f172a"/>
+  <rect x="790" y="185" width="100" height="54" rx="6" fill="rgba(136,19,55,0.4)" stroke="#fb7185" stroke-width="1.5"/>
+  <text x="840" y="208" fill="white" font-size="10" font-weight="600" text-anchor="middle">Checker</text>
+  <text x="840" y="222" fill="#94a3b8" font-size="8" text-anchor="middle">Verify</text>
+
+  <!-- sub-agents bracket label -->
+  <text x="775" y="180" fill="#94a3b8" font-size="8" text-anchor="middle">Sub-Agents</text>
+
+  <!-- 4. WORKTREES (center, between automations and sub-agents) -->
+  <rect x="330" y="200" width="180" height="64" rx="6" fill="#0f172a"/>
+  <rect x="330" y="200" width="180" height="64" rx="6" fill="rgba(76,29,149,0.4)" stroke="#a78bfa" stroke-width="1.5"/>
+  <text x="420" y="225" fill="white" font-size="11" font-weight="600" text-anchor="middle">Worktrees</text>
+  <text x="420" y="241" fill="#94a3b8" font-size="9" text-anchor="middle">Parallel Isolation · Git</text>
+
+  <!-- 5. PLUGINS / CONNECTORS (center bottom) -->
+  <rect x="270" y="296" width="220" height="64" rx="6" fill="#0f172a"/>
+  <rect x="270" y="296" width="220" height="64" rx="6" fill="rgba(251,146,60,0.3)" stroke="#fb923c" stroke-width="1.5"/>
+  <text x="380" y="321" fill="white" font-size="11" font-weight="600" text-anchor="middle">Plugins &amp; Connectors</text>
+  <text x="380" y="337" fill="#94a3b8" font-size="9" text-anchor="middle">MCP · GitHub · Linear · Slack</text>
+
+  <!-- ===== 6. STATE (outside loop, below) ===== -->
+  <!-- Database cylinder -->
+  <g transform="translate(300, 430)">
+    <rect x="0" y="10" width="160" height="44" rx="2" fill="#0f172a"/>
+    <ellipse cx="80" cy="10" rx="80" ry="10" fill="#0f172a"/>
+    <ellipse cx="80" cy="54" rx="80" ry="10" fill="#0f172a"/>
+    <rect x="0" y="10" width="160" height="44" fill="rgba(76,29,149,0.4)"/>
+    <ellipse cx="80" cy="10" rx="80" ry="10" fill="rgba(76,29,149,0.4)" stroke="#a78bfa" stroke-width="1.5"/>
+    <ellipse cx="80" cy="54" rx="80" ry="10" fill="rgba(76,29,149,0.4)" stroke="#a78bfa" stroke-width="1.5"/>
+    <line x1="0" y1="10" x2="0" y2="54" stroke="#a78bfa" stroke-width="1.5"/>
+    <line x1="160" y1="10" x2="160" y2="54" stroke="#a78bfa" stroke-width="1.5"/>
+    <text x="80" y="38" fill="white" font-size="11" font-weight="600" text-anchor="middle">State / Memory</text>
+  </g>
+  <text x="380" y="504" fill="#94a3b8" font-size="9" text-anchor="middle">Markdown · AGENTS.md · Progress Files</text>
+
+  <!-- ===== ARROWS ===== -->
+
+  <!-- Automations → Worktrees (down) -->
+  <line x1="420" y1="164" x2="420" y2="200" stroke="#60a5fa" stroke-width="1.5" marker-end="url(#arrow-blue)"/>
+  <text x="430" y="186" fill="#60a5fa" font-size="7">spawn</text>
+
+  <!-- Automations → Skills (left) -->
+  <path d="M 350 132 L 270 132 L 270 210 L 240 210" fill="none" stroke="#22d3ee" stroke-width="1.2" marker-end="url(#arrow-cyan)" stroke-opacity="0.7"/>
+  <text x="265" y="170" fill="#22d3ee" font-size="7" text-anchor="end">load skills</text>
+
+  <!-- Automations → Sub-Agents (right) -->
+  <path d="M 550 132 L 620 132 L 620 210 L 660 210" fill="none" stroke="#34d399" stroke-width="1.2" marker-end="url(#arrow-emerald)" stroke-opacity="0.7"/>
+  <text x="630" y="170" fill="#34d399" font-size="7">delegate</text>
+
+  <!-- Worktrees → Sub-Agents Maker (right) -->
+  <line x1="510" y1="225" x2="660" y2="210" stroke="#a78bfa" stroke-width="1.2" marker-end="url(#arrow-violet)" stroke-opacity="0.6"/>
+  <text x="575" y="210" fill="#a78bfa" font-size="7">isolate</text>
+
+  <!-- Worktrees → Plugins (down) -->
+  <line x1="420" y1="264" x2="400" y2="296" stroke="#fb923c" stroke-width="1.2" marker-end="url(#arrow-orange)" stroke-opacity="0.7"/>
+  <text x="425" y="284" fill="#fb923c" font-size="7">connect</text>
+
+  <!-- Maker → Checker (horizontal) -->
+  <line x1="760" y1="212" x2="790" y2="212" stroke="#64748b" stroke-width="1.2" marker-end="url(#arrow)"/>
+  <text x="775" y="206" fill="#94a3b8" font-size="7" text-anchor="middle">review</text>
+
+  <!-- Plugins → State (down) -->
+  <line x1="380" y1="360" x2="380" y2="410" stroke="#a78bfa" stroke-width="1.2" marker-end="url(#arrow-violet)" stroke-opacity="0.7"/>
+  <text x="390" y="390" fill="#a78bfa" font-size="7">persist</text>
+
+  <!-- State → Automations (feedback loop, left side) -->
+  <path d="M 300 460 L 50 460 L 50 132 L 350 132" fill="none" stroke="#fbbf24" stroke-width="1.5" marker-end="url(#arrow-amber)" stroke-dasharray="6,3" stroke-opacity="0.8"/>
+  <text x="46" y="310" fill="#fbbf24" font-size="8" font-weight="500" transform="rotate(-90, 46, 310)">next cycle →</text>
+
+  <!-- Checker → State (feedback) -->
+  <path d="M 840 239 L 840 460 L 460 460" fill="none" stroke="#fb7185" stroke-width="1.2" marker-end="url(#arrow-rose)" stroke-opacity="0.6"/>
+  <text x="700" y="456" fill="#fb7185" font-size="7">results</text>
+
+  <!-- ===== HUMAN ROLE (bottom right) ===== -->
+  <rect x="580" y="430" width="250" height="90" rx="10" fill="none" stroke="#94a3b8" stroke-width="1" stroke-dasharray="6,3"/>
+  <text x="592" y="448" fill="#94a3b8" font-size="9" font-weight="600">YOUR ROLE</text>
+
+  <rect x="600" y="458" width="100" height="44" rx="6" fill="#0f172a"/>
+  <rect x="600" y="458" width="100" height="44" rx="6" fill="rgba(30,41,59,0.5)" stroke="#94a3b8" stroke-width="1.2"/>
+  <text x="650" y="477" fill="white" font-size="9" font-weight="600" text-anchor="middle">Design</text>
+  <text x="650" y="490" fill="#94a3b8" font-size="8" text-anchor="middle">the Loop</text>
+
+  <rect x="720" y="458" width="100" height="44" rx="6" fill="#0f172a"/>
+  <rect x="720" y="458" width="100" height="44" rx="6" fill="rgba(30,41,59,0.5)" stroke="#94a3b8" stroke-width="1.2"/>
+  <text x="770" y="477" fill="white" font-size="9" font-weight="600" text-anchor="middle">Review</text>
+  <text x="770" y="490" fill="#94a3b8" font-size="8" text-anchor="middle">the Output</text>
+
+  <!-- Human → Automations (design) -->
+  <path d="M 650 458 L 650 430 L 560 430 L 560 132 L 550 132" fill="none" stroke="#94a3b8" stroke-width="1" marker-end="url(#arrow)" stroke-dasharray="4,3" stroke-opacity="0.5"/>
+
+  <!-- ===== LEGEND ===== -->
+  <g transform="translate(530, 555)">
+    <text x="0" y="0" fill="#94a3b8" font-size="9" font-weight="600">Legend</text>
+
+    <rect x="0" y="10" width="12" height="8" rx="2" fill="rgba(59,130,246,0.3)" stroke="#60a5fa" stroke-width="1"/>
+    <text x="18" y="18" fill="#94a3b8" font-size="8">Automations</text>
+
+    <rect x="0" y="24" width="12" height="8" rx="2" fill="rgba(8,51,68,0.4)" stroke="#22d3ee" stroke-width="1"/>
+    <text x="18" y="32" fill="#94a3b8" font-size="8">Skills</text>
+
+    <rect x="0" y="38" width="12" height="8" rx="2" fill="rgba(76,29,149,0.4)" stroke="#a78bfa" stroke-width="1"/>
+    <text x="18" y="46" fill="#94a3b8" font-size="8">Worktrees / State</text>
+
+    <rect x="130" y="10" width="12" height="8" rx="2" fill="rgba(6,78,59,0.4)" stroke="#34d399" stroke-width="1"/>
+    <text x="148" y="18" fill="#94a3b8" font-size="8">Maker Agent</text>
+
+    <rect x="130" y="24" width="12" height="8" rx="2" fill="rgba(136,19,55,0.4)" stroke="#fb7185" stroke-width="1"/>
+    <text x="148" y="32" fill="#94a3b8" font-size="8">Checker Agent</text>
+
+    <rect x="130" y="38" width="12" height="8" rx="2" fill="rgba(251,146,60,0.3)" stroke="#fb923c" stroke-width="1"/>
+    <text x="148" y="46" fill="#94a3b8" font-size="8">Plugins / MCP</text>
+
+    <line x1="260" y1="14" x2="285" y2="14" stroke="#fbbf24" stroke-width="1.5" stroke-dasharray="6,3"/>
+    <text x="292" y="18" fill="#94a3b8" font-size="8">Feedback Loop</text>
+
+    <line x1="260" y1="28" x2="285" y2="28" stroke="#94a3b8" stroke-width="1" stroke-dasharray="4,3"/>
+    <text x="292" y="32" fill="#94a3b8" font-size="8">Human Oversight</text>
+  </g>
+
+  <!-- Quote at bottom -->
+  <text x="30" y="635" fill="#94a3b8" font-size="9" font-style="italic" opacity="0.7">"Build the loop. But build it like someone who intends to stay the engineer."</text>
+  <text x="30" y="650" fill="#64748b" font-size="8">— Addy Osmani, Loop Engineering (2025)</text>
+</svg>
