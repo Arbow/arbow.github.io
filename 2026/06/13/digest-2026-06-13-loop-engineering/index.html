@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=0">
+
+  <meta name="description" content="个人知识库与技术笔记">
+
+
+<link rel="alternate" href="/atom.xml" title="Api Intelligence Daily Life" type="application/atom+xml">
+<meta name="theme-color" content="#a1d0f6">
+<title>文摘：Loop Engineering——当 AI Agent 不再需要你来 Prompt - Api Intelligence Daily Life</title>
+<!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+<link rel="shortcut icon" href="/favicon.png">
+
+<link rel="stylesheet" href="/css/style.css">
+
+<nav class="main-nav">
+	
+	    <a href="/">← 主页</a>
+	
+	
+	    <a href="/about/">About</a>
+	
+	    <a href="/archives/">Archives</a>
+	
+	<a class="cta" href="/atom.xml" data-no-instant>订阅</a>
+</nav>
+
+<section id="wrapper">
+    <article class="post">
+    <header>
+        
+            <h1>文摘：Loop Engineering——当 AI Agent 不再需要你来 Prompt</h1>
+        
+        <h2 class="headline">Jun 13 2026
+        
+            
+            <a href="/categories/文摘/#文摘">文摘</a>
+        
+        </h2>
+    </header>
+</article>
+<section id="post-body"><p>Addy Osmani 的这篇 <a target="_blank" rel="noopener" href="https://addyosmani.com/blog/loop-engineering/">Loop Engineering</a> 发布于 2025 年 6 月 7 日，核心论点只有一句话：</p>
+<blockquote>
+<p><strong>Loop engineering is replacing yourself as the person who prompts the agent. You design the system that does it instead.</strong></p>
+</blockquote>
+<p>他用 Peter Steinberger 和 Anthropic Claude Code 负责人 Boris Cherny 的话来锚定这个判断——“你不应该再 prompt agent 了，你应该设计 prompt agent 的 loop”。</p>
+<p>这篇文章不长，但切中的是一个正在发生的范式转移。结合近期 <a target="_blank" rel="noopener" href="https://github.com/nicepkg/openclaw">OpenClaw</a>、<a target="_blank" rel="noopener" href="https://hermes-agent.nousresearch.com/">Hermes Agent</a>、<a target="_blank" rel="noopener" href="https://docs.anthropic.com/en/docs/claude-code">Claude Code</a>、OpenAI <a target="_blank" rel="noopener" href="https://openai.com/codex/">Codex</a> 等项目的火热，值得认真讨论。</p>
+<h2 id="Addy-的框架：一个-Loop-的五个零件"><a href="#Addy-的框架：一个-Loop-的五个零件" class="headerlink" title="Addy 的框架：一个 Loop 的五个零件"></a>Addy 的框架：一个 Loop 的五个零件</h2><p>Addy 总结了一个”loop”——即让 AI 自主运行的循环系统——需要五个核心原语加一个记忆层：</p>
+<ol>
+<li><strong>Automations</strong>：定时触发、自动发现和分类工作项</li>
+<li><strong>Worktrees</strong>：让并行 agent 互不干扰的 git 隔离机制</li>
+<li><strong>Skills</strong>：把项目知识固化成可复用的指令文件</li>
+<li><strong>Plugins&#x2F;Connectors</strong>（MCP）：让 agent 连接你的真实工具链</li>
+<li><strong>Sub-agents</strong>：分离”制造者”和”检查者”角色</li>
+<li><strong>State（记忆）</strong>：跨会话的状态持久化</li>
+</ol>
+<p>他做了一个对比表，展示 Codex 和 Claude Code 在这五个维度上几乎完全对齐——名字不同，能力同构。</p>
+<h2 id="我的评论：为什么-Loop-Engineering-不只是”自动化”"><a href="#我的评论：为什么-Loop-Engineering-不只是”自动化”" class="headerlink" title="我的评论：为什么 Loop Engineering 不只是”自动化”"></a>我的评论：为什么 Loop Engineering 不只是”自动化”</h2><h3 id="从-Harness-到-Loop：Agent-基建的层级跃迁"><a href="#从-Harness-到-Loop：Agent-基建的层级跃迁" class="headerlink" title="从 Harness 到 Loop：Agent 基建的层级跃迁"></a>从 Harness 到 Loop：Agent 基建的层级跃迁</h3><p>Addy 在文中提到他之前提出过一个相关概念叫 “<a target="_blank" rel="noopener" href="https://addyosmani.com/blog/agent-harness-engineering/">Agent Harness Engineering</a>“——为单个 agent 构建运行环境。Loop engineering 在 harness 之上再加一层：不仅搭好环境，还要让它自己跑起来、分配任务、记忆进度。</p>
+<p>这正是 2025 年下半年 Agent 生态的集体方向。看几个例子：</p>
+<p><strong><a target="_blank" rel="noopener" href="https://hermes-agent.nousresearch.com/">Hermes Agent</a></strong> 把这个思路推到了极致——它不是”一个 agent”，而是一个完整的 agent 编排系统：cron job 调度、子 agent 派发、持久化 memory、skill 体系、MCP 连接器、Kanban 工作流……本质上 Hermes 就是一个 Loop 的完整实现。你在 Hermes 里做的事不是”跟 AI 对话”，而是设计让 AI 自己运行的循环。Addy 文中的五个原语在 Hermes 里全部有对应：Automations &#x3D; Cron Job，Worktrees &#x3D; 子 agent 隔离执行，Skills &#x3D; Skill 体系，Connectors &#x3D; MCP + 原生工具集成，Sub-agents &#x3D; delegate_task。</p>
+<p><strong><a target="_blank" rel="noopener" href="https://github.com/nicepkg/openclaw">OpenClaw</a></strong> 从另一个角度切入——它专注于 agent 的标准化和开源生态，试图让 loop 的零件可组合、可共享。如果 Addy 的框架是对的，那 OpenClaw 做的就是让”五个零件”变成公共标准件，而不是每个团队自己造。</p>
+<p><strong>Claude Code 和 Codex</strong> 则是在产品层面原生支持 loop 原语。两者都在快速迭代 automations、sub-agents、skills 等能力，竞争的核心已经不是”谁的模型更强”，而是”谁的 loop 更好搭”。</p>
+<h3 id="关键洞察：Loop-的竞争不在工具层"><a href="#关键洞察：Loop-的竞争不在工具层" class="headerlink" title="关键洞察：Loop 的竞争不在工具层"></a>关键洞察：Loop 的竞争不在工具层</h3><p>Addy 文中最有价值的一句话是：</p>
+<blockquote>
+<p>“Once you notice the shape is the same you stop arguing about which tool, you just design a loop that still works no matter which one you happen to be sitting in.”</p>
+</blockquote>
+<p>这暗示了一个重要的趋势：<strong>agent 工具的差异化正在缩小，竞争重心上移到了 loop 设计能力上</strong>。当 Codex 和 Claude Code 的原语趋于同构，当 Hermes 这样的编排层可以接入任意底层模型，当 OpenClaw 试图标准化 agent 交互协议——“用哪个 agent”变得越来越不重要，”你怎么编排它们”才是。</p>
+<p>这和云计算的发展路径很像：早期大家争论 AWS vs GCP vs Azure，后来 Terraform 把它们抽象成了同一套配置语言。Agent 生态正在经历同样的抽象——从”用 Claude 还是用 GPT”到”设计什么样的 loop”。</p>
+<h3 id="认知成本与”认知投降”的风险"><a href="#认知成本与”认知投降”的风险" class="headerlink" title="认知成本与”认知投降”的风险"></a>认知成本与”认知投降”的风险</h3><p>Addy 在文末提出了三个 Loop 依然不能解决的问题，其中最尖锐的是 <strong>comprehension debt</strong>（理解债务）和 <strong>cognitive surrender</strong>（认知投降）：</p>
+<blockquote>
+<p>“Two people can build the exact same loop and get completely opposite results. One uses it to move faster on work they understand deeply. The other uses it to avoid understanding the work at all.”</p>
+</blockquote>
+<p>这恰好呼应了 Hermes Agent 设计中的一个核心理念：agent 是你的工具，不是你的替代。Hermes 的 memory 系统、skill 体系，本质上都是在帮助用户保持对 agent 工作的”可理解性”——你可以走开，但你必须能回来看懂它做了什么。一个你不理解的 loop 不是生产力，是定时炸弹。</p>
+<h3 id="Token-成本：Loop-的隐性瓶颈"><a href="#Token-成本：Loop-的隐性瓶颈" class="headerlink" title="Token 成本：Loop 的隐性瓶颈"></a>Token 成本：Loop 的隐性瓶颈</h3><p>Addy 多次提到 token 成本（”usage patterns can vary wildly if you are token rich or poor”），这是很多讨论 loop 和 autonomous agent 时被轻描淡写的问题。Sub-agent 分裂意味着每个子任务都独立消耗 token，automations 定时运行意味着成本是持续性的而非一次性的。对于个人开发者和小团队，一个设计不良的 loop 可能在不知不觉中烧掉远超预期的 API 费用。</p>
+<p>这也是为什么 Hermes 在设计 cron job 时强调”最小化 token 消耗”——只加载必要的工具集、控制上下文注入量、合理使用 script-only 模式。Loop 工程不只是设计逻辑，也是设计 token 经济。</p>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>Loop Engineering 这篇文章的价值不在于它的技术深度——五个原语的总结并不复杂——而在于它准确地命名了一个正在发生的变化，并给出了一个简洁的分析框架。</p>
+<p>2025 年的 Agent 领域正从”prompt engineering”向”loop engineering”迁移。这不是说 prompt 不重要了，而是说 prompt 的写作者从人变成了系统，人的角色从”写 prompt 的人”变成了”设计系统的人”。Hermes、OpenClaw、Claude Code、Codex 这些项目虽然在定位和路径上各不相同，但都在为同一个方向铺路：<strong>让 agent 从被你拿着的工具，变成你设计出来的系统</strong>。</p>
+<p>Addy 的建议很朴素，但可能是最重要的：<strong>Build the loop. But build it like someone who intends to stay the engineer.</strong></p>
+<hr>
+<p>原文链接：<a target="_blank" rel="noopener" href="https://addyosmani.com/blog/loop-engineering/">Loop Engineering - Addy Osmani</a></p>
+</section>
+    
+
+    <footer id="post-meta" class="clearfix">
+        <a href="/about/">
+        <img class="avatar" src="/images/avatar.png">
+        <div>
+            <span class="dark">Api Intelligence Daily Life</span>
+            <span>知识库 &amp; 博客</span>
+        </div>
+        </a>
+        <section id="sharing">
+            <a title="Share to Twitter" class="twitter" target="_blank" rel="noopener" href="https://twitter.com/intent/tweet?text=https://arbow.github.io/2026/06/13/digest-2026-06-13-loop-engineering/ - 文摘：Loop Engineering——当 AI Agent 不再需要你来 Prompt @"><span class="icon-twitter">tweet</span></a>
+            <a title="Share to Facebook" class="facebook" href="#" onclick="
+                window.open(
+                  'https://www.facebook.com/sharer/sharer.php?u='+encodeURIComponent(location.href),
+                  'facebook-share-dialog',
+                  'width=626,height=436');
+                return false;"><span class="icon-facebook-sign">Share</span>
+            </a>
+        </section>
+    </footer>
+
+
+  <section id="comment">
+    <button class="btn" id="loadcmts" onclick="cmts.load();">加载评论</button>
+    <div id="gitment"></div>
+    <script src='/js/gitment.browser.js'></script>
+    <link rel="stylesheet" href=''>
+    <script>
+      var cmts={
+        load:function cmts(){
+          var gitment = new Gitment({
+          
+            id: "文摘：Loop Engineering——当 AI Agent 不再需要你来 Prompt",
+          
+            owner: "",
+            repo: "",
+            oauth: {
+              client_id: "",
+              client_secret: "",
+            },
+          })
+          gitment.render('gitment');
+          var loadcmt = document.getElementById("loadcmts");
+          var imyourfather = loadcmt.parentNode;
+          imyourfather.removeChild(loadcmts)
+        }
+      }
+    </script>
+  </section>
+
+
+	<footer id="footer">
+	<div id="social">
+		<p class="small">©  Arbow| Powered by Hexo & 
+			<a target="_blank" rel="noopener" href="https://github.com/F0r3at/Lights"> Lights</a>
+		</p>
+	</div>
+</footer>
+
+</section>
+
+	<script src="//cdnjs.loli.net/ajax/libs/instantclick/3.0.1/instantclick.min.js" data-no-instant></script>
+	<script data-no-instant>
+		
+		InstantClick.init('mousedown');
+	</script>
+
+
+
