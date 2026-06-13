@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=0">
+
+  <meta name="description" content="个人知识库与技术笔记">
+
+
+<link rel="alternate" href="/atom.xml" title="Api Intelligence Daily Life" type="application/atom+xml">
+<meta name="theme-color" content="#a1d0f6">
+<title>文摘：Setting Up and Using the Pi Coding Agent - Api Intelligence Daily Life</title>
+<!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+<link rel="shortcut icon" href="/favicon.png">
+
+<link rel="stylesheet" href="/css/style.css">
+
+<nav class="main-nav">
+	
+	    <a href="/">← 主页</a>
+	
+	
+	    <a href="/about/">About</a>
+	
+	    <a href="/archives/">Archives</a>
+	
+	<a class="cta" href="/atom.xml" data-no-instant>订阅</a>
+</nav>
+
+<section id="wrapper">
+    <article class="post">
+    <header>
+        
+            <h1>文摘：Setting Up and Using the Pi Coding Agent</h1>
+        
+        <h2 class="headline">Jun 13 2026
+        
+            
+            <a href="/categories/文摘/#文摘">文摘</a>
+        
+        </h2>
+    </header>
+</article>
+<section id="post-body"><h2 id="背景"><a href="#背景" class="headerlink" title="背景"></a>背景</h2><p>DeepakNess 同时是 Cursor 和 OpenAI Codex 的付费用户，但在两周前接触到了 <a target="_blank" rel="noopener" href="https://pi.dev/">Pi</a> —— 一个由 Mario Zechner 创建的开源终端编程 agent。他尝试之后将 Pi 定位为副项目和实验的专用工具，写了这篇实战分享。</p>
+<h2 id="Pi-是什么"><a href="#Pi-是什么" class="headerlink" title="Pi 是什么"></a>Pi 是什么</h2><p>Pi 是一个开源终端编程 agent，核心理念是 <strong>小核心 + 可扩展</strong>。默认只提供四个工具：<code>read</code>、<code>write</code>、<code>edit</code>、<code>bash</code>。没有内置的 plan mode、sub-agents、MCP 或权限弹窗——这些都通过 extensions、skills 和 packages 按需添加。</p>
+<p>Pi 支持多种 AI 提供商：Anthropic、OpenAI、<a target="_blank" rel="noopener" href="https://www.deepseek.com/">DeepSeek</a>、Google Gemini、Groq、xAI、OpenRouter、Kimi 等，可以用 API key 或已有订阅登录。</p>
+<h2 id="作者的使用策略"><a href="#作者的使用策略" class="headerlink" title="作者的使用策略"></a>作者的使用策略</h2><p>不同工具分工：</p>
+<ul>
+<li><strong>OpenAI Codex</strong> — 主项目的复杂任务</li>
+<li><strong>Cursor</strong> — 同一项目的日常轻量编码</li>
+<li><strong>Pi</strong> — 副项目、实验和一次性任务，搭配 DeepSeek、Kimi 等便宜模型</li>
+</ul>
+<p>亮点案例：用 Pi + DeepSeek v4 Flash 抓取了 285K 个 URL，运行约 1.5 小时，仅花费 <strong>$1</strong>。</p>
+<h2 id="关键配置"><a href="#关键配置" class="headerlink" title="关键配置"></a>关键配置</h2><h3 id="模型选择"><a href="#模型选择" class="headerlink" title="模型选择"></a>模型选择</h3><table>
+<thead>
+<tr>
+<th>模型</th>
+<th>用途</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>DeepSeek v4 Pro</td>
+<td>默认主力，质量与成本均衡</td>
+</tr>
+<tr>
+<td>DeepSeek v4 Flash</td>
+<td>轻量重复任务，快且便宜</td>
+</tr>
+<tr>
+<td>Kimi K2.6 &#x2F; K2.7 Code</td>
+<td>备选模型，限速时切换</td>
+</tr>
+<tr>
+<td>Cursor (via pi-cursor-sdk)</td>
+<td>复用已有 Cursor 订阅</td>
+</tr>
+<tr>
+<td>OpenAI Codex (GPT-5.5)</td>
+<td>需要强推理时偶尔使用</td>
+</tr>
+</tbody></table>
+<p><code>Ctrl+L</code> 打开模型选择器，<code>Ctrl+P</code> 循环切换，<code>Shift+Tab</code> 切换 thinking 等级。作者默认用 <code>xhigh</code> thinking，轻量任务切 Flash。</p>
+<h3 id="安装的-5-个核心-Package"><a href="#安装的-5-个核心-Package" class="headerlink" title="安装的 5 个核心 Package"></a>安装的 5 个核心 Package</h3><ol>
+<li><strong>pi-web-access</strong> — 赋予 Pi 网页搜索、页面抓取、YouTube 转录和 GitHub 仓库探索能力，开箱即用 Exa 搜索（无需 API key）</li>
+<li><strong>pi-codex-goal</strong> — 长任务目标追踪，提供 <code>get_goal</code>&#x2F;<code>create_goal</code>&#x2F;<code>update_goal</code> 三个工具</li>
+<li><strong>pi-vision-proxy</strong> — DeepSeek 没有视觉能力时，将图片代理转发给有视觉的模型（如 Kimi K2.6），支持感知哈希去重和批量处理</li>
+<li><strong>pi-agent-browser-native</strong> — 在终端内提供真实浏览器：截图、点击、填表、QA 检查、页面内容提取</li>
+<li><strong>pi-cursor-sdk</strong> — 复用 Cursor 订阅，让 <code>cursor/auto</code> 作为模型选项出现在 Pi 中</li>
+</ol>
+<h3 id="项目指令：AGENTS-md-APPEND-SYSTEM-md"><a href="#项目指令：AGENTS-md-APPEND-SYSTEM-md" class="headerlink" title="项目指令：AGENTS.md + APPEND_SYSTEM.md"></a>项目指令：AGENTS.md + APPEND_SYSTEM.md</h3><ul>
+<li><strong>AGENTS.md</strong> — 项目上下文，从 <code>~/.pi/agent/</code> 向上查找到当前目录，拼接注入 system prompt</li>
+<li><strong>APPEND_SYSTEM.md</strong> — 全局行为规则，直接追加到 system prompt，权威性高于 AGENTS.md</li>
+</ul>
+<p>作者的 APPEND_SYSTEM.md 规则包括：先读本地文件再搜索网络、破坏性操作先确认、避免 AI 套话文风、使用 en dash 等。</p>
+<h3 id="自定义扩展"><a href="#自定义扩展" class="headerlink" title="自定义扩展"></a>自定义扩展</h3><p>作者让 Pi 自己写了一个最小化 footer 扩展（<code>~/.pi/agent/extensions/minimal-footer.ts</code>），只显示目录、git 分支、模型、thinking 等级和 context 用量，放在 <a target="_blank" rel="noopener" href="https://gist.github.com/deepakness/81e716c4654d22bee6b3a830553ec004">gist</a> 公开分享。</p>
+<h2 id="作者喜欢的点"><a href="#作者喜欢的点" class="headerlink" title="作者喜欢的点"></a>作者喜欢的点</h2><ul>
+<li><strong>快且简洁</strong>：纯终端界面，没有 Electron 和 UI 卡顿</li>
+<li><strong>高度可定制</strong>：自己想要的 footer、package 和配置都可以自由组合</li>
+<li><strong>多提供商支持</strong>：DeepSeek、Kimi、Cursor 之间一个快捷键切换</li>
+<li><strong>Session Tree</strong>：对话可分支、可回溯，这是其他工具没有的体验</li>
+<li><strong>开源 (MIT)</strong>：不受任何公司功能或定价的限制</li>
+<li><strong>Compaction 好用</strong>：上下文压缩自动进行，比其他工具更快更好</li>
+</ul>
+<h2 id="我的评论"><a href="#我的评论" class="headerlink" title="我的评论"></a>我的评论</h2><p>这篇文章的价值不在于 Pi 本身的介绍——Pi 的设计理念（极简核心 + 可扩展）在 coding agent 领域并不算新颖，Claude Code、Aider 等都有类似的模块化思路。真正值得关注的是作者的 <strong>工具组合策略</strong> 和 <strong>成本意识</strong>。</p>
+<p><strong>多工具分工而非单一替代</strong>。作者没有用 Pi 替换 Cursor 或 Codex，而是让各工具发挥所长：Codex 做重活、Cursor 做日常、Pi 做实验。这种务实的态度比”某工具能完全取代一切”的叙事靠谱得多。</p>
+<p><strong>低成本批量的可行性</strong>。285K URL 抓取花了 $1，这组数字很有说服力。它说明对于确定性强、可并发的批量任务，用便宜模型 + 好 prompt engineering + 长任务追踪（pi-codex-goal），可以做到极低的单位成本。这对需要大规模数据处理的团队有直接参考价值。</p>
+<p><strong>APPEND_SYSTEM.md 的设计思路值得借鉴</strong>。把”先读本地文件”、”破坏性操作先确认”、”避免 AI 套话”这类跨项目通用规则与项目特定的 AGENTS.md 分离，并且赋予更高优先级——这是一个很好的 prompt engineering 实践，适用于所有支持分层 system prompt 的 agent 系统。</p>
+<p><strong>Pi 的 Package 生态是最大看点</strong>。pi-vision-proxy 用感知哈希去重截图、pi-cursor-sdk 复用订阅……这些 package 展示了”小核心 + 社区扩展”模式的潜力。不过生态规模和成熟度仍然需要观察——文章只涉及了 5 个 package，且其中两个来自同一个作者 (Mitch Fultz)。</p>
+<hr>
+<p>原文链接：<a target="_blank" rel="noopener" href="https://deepakness.com/blog/pi-agent-setup/">Setting Up and Using the Pi Coding Agent</a></p>
+</section>
+    
+
+    <footer id="post-meta" class="clearfix">
+        <a href="/about/">
+        <img class="avatar" src="/images/avatar.png">
+        <div>
+            <span class="dark">Api Intelligence Daily Life</span>
+            <span>知识库 &amp; 博客</span>
+        </div>
+        </a>
+        <section id="sharing">
+            <a title="Share to Twitter" class="twitter" target="_blank" rel="noopener" href="https://twitter.com/intent/tweet?text=https://arbow.github.io/2026/06/13/digest-2026-06-13-pi-coding-agent-setup/ - 文摘：Setting Up and Using the Pi Coding Agent @"><span class="icon-twitter">tweet</span></a>
+            <a title="Share to Facebook" class="facebook" href="#" onclick="
+                window.open(
+                  'https://www.facebook.com/sharer/sharer.php?u='+encodeURIComponent(location.href),
+                  'facebook-share-dialog',
+                  'width=626,height=436');
+                return false;"><span class="icon-facebook-sign">Share</span>
+            </a>
+        </section>
+    </footer>
+
+
+  <section id="comment">
+    <button class="btn" id="loadcmts" onclick="cmts.load();">加载评论</button>
+    <div id="gitment"></div>
+    <script src='/js/gitment.browser.js'></script>
+    <link rel="stylesheet" href=''>
+    <script>
+      var cmts={
+        load:function cmts(){
+          var gitment = new Gitment({
+          
+            id: "文摘：Setting Up and Using the Pi Coding Agent",
+          
+            owner: "",
+            repo: "",
+            oauth: {
+              client_id: "",
+              client_secret: "",
+            },
+          })
+          gitment.render('gitment');
+          var loadcmt = document.getElementById("loadcmts");
+          var imyourfather = loadcmt.parentNode;
+          imyourfather.removeChild(loadcmts)
+        }
+      }
+    </script>
+  </section>
+
+
+	<footer id="footer">
+	<div id="social">
+		<p class="small">©  Arbow| Powered by Hexo & 
+			<a target="_blank" rel="noopener" href="https://github.com/F0r3at/Lights"> Lights</a>
+		</p>
+	</div>
+</footer>
+
+</section>
+
+	<script src="//cdnjs.loli.net/ajax/libs/instantclick/3.0.1/instantclick.min.js" data-no-instant></script>
+	<script data-no-instant>
+		
+		InstantClick.init('mousedown');
+	</script>
+
+
+
