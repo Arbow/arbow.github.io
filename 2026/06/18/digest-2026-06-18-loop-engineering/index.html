@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=0">
+
+  <meta name="description" content="个人知识库与技术笔记">
+
+
+<link rel="alternate" href="/atom.xml" title="Api Intelligence Daily Life" type="application/atom+xml">
+<meta name="theme-color" content="#a1d0f6">
+<title>文摘：Loop Engineering 概念解析、思考与实践 - Api Intelligence Daily Life</title>
+<!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+<link rel="shortcut icon" href="/favicon.png">
+
+<link rel="stylesheet" href="/css/style.css">
+
+<nav class="main-nav">
+	
+	    <a href="/">← 主页</a>
+	
+	
+	    <a href="/about/">About</a>
+	
+	    <a href="/archives/">Archives</a>
+	
+	<a class="cta" href="/atom.xml" data-no-instant>订阅</a>
+</nav>
+
+<section id="wrapper">
+    <article class="post">
+    <header>
+        
+            <h1>文摘：Loop Engineering 概念解析、思考与实践</h1>
+        
+        <h2 class="headline">Jun 18 2026
+        
+            
+            <a href="/categories/文摘/#文摘">文摘</a>
+        
+        </h2>
+    </header>
+</article>
+<section id="post-body"><h2 id="文章概要"><a href="#文章概要" class="headerlink" title="文章概要"></a>文章概要</h2><p>这篇文章来自「飞雪谈AI」（作者：飞樰），系统化地拆解了近期 AI 圈密集讨论的新概念——<strong>Loop Engineering（循环工程）</strong>。Addy Osmani 在 6 月初正式定义了这个概念，其核心一句话是：</p>
+<blockquote>
+<p>Loop engineering is replacing yourself as the person who prompts the agent. You design the system that does it instead.</p>
+</blockquote>
+<p>翻译过来就是：把你从”给 Agent 写提示词的人”这个位置上替换掉，转而设计一套能自动完成这件事的系统。</p>
+<h2 id="Agent-Loop-≠-Loop-Engineering"><a href="#Agent-Loop-≠-Loop-Engineering" class="headerlink" title="Agent Loop ≠ Loop Engineering"></a>Agent Loop ≠ Loop Engineering</h2><p>文章做出了一个关键区分：</p>
+<p><strong>Agent Loop</strong> 是底层基础——大模型输出 Function Call → 工具执行 → 结果回传 → 再推理，形成循环。这是 Agent 的”默认基础设施”，ReAct、Ralph Loop 等都是这个原理的变种。</p>
+<p><strong>Loop Engineering</strong> 则是构建在 Agent 之上的<strong>新范式</strong>。它不是关注底层 Agent 怎么转，而是关注：如何设计一个把”开发→验证→反馈→调优”完整链路串起来的外部闭环，让 Agent 自己跑起来，而不是人一直在旁边喊”继续””报错””回滚”。</p>
+<blockquote>
+<p>从 Coding 到 Vibe Coding，是我们从”写代码”变成了”提需求”；而从 Vibe Coding 到 Loop Engineering，则是从”提一个需求”变成了”提一套闭环流程”。</p>
+</blockquote>
+<h2 id="Loop-Engineering-六大核心框架"><a href="#Loop-Engineering-六大核心框架" class="headerlink" title="Loop Engineering 六大核心框架"></a>Loop Engineering 六大核心框架</h2><p>根据 Addy Osmani 的定义，一个完整的 Loop 包含：</p>
+<table>
+<thead>
+<tr>
+<th>组成部分</th>
+<th>作用</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>Automations（自动化）</strong></td>
+<td>定时循环触发，如 Codex <code>/goal</code>、Claude Code <code>/loop</code> + Cron 调度</td>
+</tr>
+<tr>
+<td><strong>Worktrees（工作树隔离）</strong></td>
+<td>Git Worktree 让多 Agent 并行不冲突</td>
+</tr>
+<tr>
+<td><strong>Skills（可进化技能包）</strong></td>
+<td>每次循环中自我沉淀经验，越跑越聪明</td>
+</tr>
+<tr>
+<td><strong>Connectors&#x2F;Plugins（连接器）</strong></td>
+<td>MCP 工具接入，让 Agent 触达真实世界</td>
+</tr>
+<tr>
+<td><strong>Sub Agents（子智能体）</strong></td>
+<td>独立验收&#x2F;探索&#x2F;设计分支，角色隔离打破认知盲区</td>
+</tr>
+<tr>
+<td><strong>State（状态管理）</strong></td>
+<td>追踪任务进度，可用 Markdown 或对接 Linear 等</td>
+</tr>
+</tbody></table>
+<p>其中 Sub Agents 的设计尤为巧妙：主 Agent 完成开发后，由独立的验收 Sub Agent 来检查——刻意制造”博弈”关系，避免”既当运动员又当裁判员”。</p>
+<h2 id="实践案例：文本分类"><a href="#实践案例：文本分类" class="headerlink" title="实践案例：文本分类"></a>实践案例：文本分类</h2><p>作者用一个文本分类任务做了对比：</p>
+<ul>
+<li><strong>传统方式</strong>：写 Prompt → 输出结果 → 人工检查 → 手动反馈调整 → 沉淀 Skill</li>
+<li><strong>Loop 方式</strong>：把验证标准和迭代逻辑写进 Loop 定义，设定量化目标（如”100条测试数据准确率≥95%”），Agent 自主循环打磨逼近目标</li>
+</ul>
+<p>关键差异在于：这个过程<strong>完全由 Agent 自主驱动</strong>，不依赖外部框架。Agent 自己跑测试、改逻辑、沉淀能力——在 AI 时代，你未必需要先造一个全新框架，用 Claude Code 或 Codex 写一个结构化 Loop 就能”跑”出很多原本需要工程化封装的能力。</p>
+<h2 id="Loop-不是银弹"><a href="#Loop-不是银弹" class="headerlink" title="Loop 不是银弹"></a>Loop 不是银弹</h2><p>文章最后给出了清醒的提醒：</p>
+<ol>
+<li><strong>需求必须更明确</strong>：以前模糊的需求靠人工纠偏，用了 Loop 后中间不参与，开头没写清楚就会跑偏、烧 token</li>
+<li><strong>验证标准要清晰</strong>：Loop 对使用者描述需求的能力要求更高了</li>
+<li><strong>固定流程建议沉淀为脚本&#x2F;Skill</strong>，不要每天重跑 Loop——既费 token，模型实现路径也可能漂移</li>
+<li>如果发现自己很难把控 Loop 效果，老老实实回到 HITL 模式可能更经济</li>
+</ol>
+<blockquote>
+<p>技术方法论没有对错，只有适不适合。</p>
+</blockquote>
+<h2 id="我的思考"><a href="#我的思考" class="headerlink" title="我的思考"></a>我的思考</h2><p>这篇文章把 Loop Engineering 的概念讲得很清晰，尤其是”Agent Loop vs Loop Engineering”的区分点出了很多人混淆的地方。六大核心框架的梳理也很有参考价值——其中 Automations、Worktrees、Sub Agents、Skills 这几个维度在 Hermes Agent 的实践中都有直接对应（Cron 定时任务、隔离子代理、Skill 进化、子任务编排）。</p>
+<p>不过文中对”Loop 就是循环起来的 Pipeline”的类比可能让一些读者觉得概念过于宽泛。实际上 Loop Engineering 的核心增量不在于 Pipeline 本身（CI&#x2F;CD 早已是成熟实践），而在于<strong>让 Agent 自主驱动验证和迭代</strong>——也就是把 HITL 中人的角色从”循环参与者”降级为”目标定义者和最终确认者”。这个区分是真正的范式变化。</p>
+<hr>
+<p><strong>原文链接</strong>：<a target="_blank" rel="noopener" href="https://mp.weixin.qq.com/s/YYE0A2jplflw0QdgrCwOmA">https://mp.weixin.qq.com/s/YYE0A2jplflw0QdgrCwOmA</a></p>
+<p><strong>参考阅读</strong>：</p>
+<ul>
+<li>Addy Osmani《Loop Engineering》：<a target="_blank" rel="noopener" href="https://addyosmani.com/blog/loop-engineering/">https://addyosmani.com/blog/loop-engineering/</a></li>
+<li>《Loop Engineering: Build Self-Running Coding Agents 2026》：<a target="_blank" rel="noopener" href="https://www.the-ai-corner.com/p/loop-engineering-coding-agents-2026">https://www.the-ai-corner.com/p/loop-engineering-coding-agents-2026</a></li>
+</ul>
+</section>
+    
+
+    <footer id="post-meta" class="clearfix">
+        <a href="/about/">
+        <img class="avatar" src="/images/avatar.png">
+        <div>
+            <span class="dark">Api Intelligence Daily Life</span>
+            <span>知识库 &amp; 博客</span>
+        </div>
+        </a>
+        <section id="sharing">
+            <a title="Share to Twitter" class="twitter" target="_blank" rel="noopener" href="https://twitter.com/intent/tweet?text=https://arbow.github.io/2026/06/18/digest-2026-06-18-loop-engineering/ - 文摘：Loop Engineering 概念解析、思考与实践 @"><span class="icon-twitter">tweet</span></a>
+            <a title="Share to Facebook" class="facebook" href="#" onclick="
+                window.open(
+                  'https://www.facebook.com/sharer/sharer.php?u='+encodeURIComponent(location.href),
+                  'facebook-share-dialog',
+                  'width=626,height=436');
+                return false;"><span class="icon-facebook-sign">Share</span>
+            </a>
+        </section>
+    </footer>
+
+
+  <section id="comment">
+    <button class="btn" id="loadcmts" onclick="cmts.load();">加载评论</button>
+    <div id="gitment"></div>
+    <script src='/js/gitment.browser.js'></script>
+    <link rel="stylesheet" href=''>
+    <script>
+      var cmts={
+        load:function cmts(){
+          var gitment = new Gitment({
+          
+            id: "文摘：Loop Engineering 概念解析、思考与实践",
+          
+            owner: "",
+            repo: "",
+            oauth: {
+              client_id: "",
+              client_secret: "",
+            },
+          })
+          gitment.render('gitment');
+          var loadcmt = document.getElementById("loadcmts");
+          var imyourfather = loadcmt.parentNode;
+          imyourfather.removeChild(loadcmts)
+        }
+      }
+    </script>
+  </section>
+
+
+	<footer id="footer">
+	<div id="social">
+		<p class="small">©  Arbow| Powered by Hexo & 
+			<a target="_blank" rel="noopener" href="https://github.com/F0r3at/Lights"> Lights</a>
+		</p>
+	</div>
+</footer>
+
+</section>
+
+	<script src="//cdnjs.loli.net/ajax/libs/instantclick/3.0.1/instantclick.min.js" data-no-instant></script>
+	<script data-no-instant>
+		
+		InstantClick.init('mousedown');
+	</script>
+
+
+
