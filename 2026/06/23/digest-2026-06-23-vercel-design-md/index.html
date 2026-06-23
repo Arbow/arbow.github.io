@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=0">
+
+  <meta name="description" content="个人知识库与技术笔记">
+
+
+<link rel="alternate" href="/atom.xml" title="Api Intelligence Daily Life" type="application/atom+xml">
+<meta name="theme-color" content="#a1d0f6">
+<title>文摘：Vercel 的 DESIGN.md —— 教科书级别的 AI 设计规范 - Api Intelligence Daily Life</title>
+<!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+<link rel="shortcut icon" href="/favicon.png">
+
+<link rel="stylesheet" href="/css/style.css">
+
+<nav class="main-nav">
+	
+	    <a href="/">← 主页</a>
+	
+	
+	    <a href="/about/">About</a>
+	
+	    <a href="/archives/">Archives</a>
+	
+	<a class="cta" href="/atom.xml" data-no-instant>订阅</a>
+</nav>
+
+<section id="wrapper">
+    <article class="post">
+    <header>
+        
+            <h1>文摘：Vercel 的 DESIGN.md —— 教科书级别的 AI 设计规范</h1>
+        
+        <h2 class="headline">Jun 23 2026
+        
+            
+            <a href="/categories/文摘/#文摘">文摘</a>
+        
+        </h2>
+    </header>
+</article>
+<section id="post-body"><h2 id="背景"><a href="#背景" class="headerlink" title="背景"></a>背景</h2><p><a target="_blank" rel="noopener" href="https://vercel.com/design.md">DESIGN.md</a> 是一份给 AI 看的设计规范文件。当 AI 帮我们写代码的时候，它需要知道该用什么颜色、多大的字号、元素的间隔。没有这份文件，AI 每次出的界面都长得不一样，风格飘忽不定。</p>
+<p>Vercel 公开了自己的 DESIGN.md（<a target="_blank" rel="noopener" href="https://vercel.com/design.md">亮色版</a> + <a target="_blank" rel="noopener" href="https://vercel.com/design.dark.md">暗色版</a>），并提供了亮暗两套主题。小盖（<a target="_blank" rel="noopener" href="https://x.com/xiaogaifun">@xiaogaifun</a>）在 X 上发布了一篇长文，逐层拆解了这份文件的精妙之处。</p>
+<h2 id="颜色：从色值到交互状态"><a href="#颜色：从色值到交互状态" class="headerlink" title="颜色：从色值到交互状态"></a>颜色：从色值到交互状态</h2><p>DESIGN.md 最核心的设计在于：颜色不是色值，而是<strong>交互状态的语义</strong>。</p>
+<p>Vercel 将每个颜色系列拆成 100 到 1000 共 10 个梯度，每个数字对应固定的界面状态：</p>
+<table>
+<thead>
+<tr>
+<th>梯度范围</th>
+<th>语义</th>
+<th>具体映射</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>100-300</td>
+<td>背景状态</td>
+<td>100 默认背景 → 200 悬停背景 → 300 点击背景</td>
+</tr>
+<tr>
+<td>400-600</td>
+<td>边框状态</td>
+<td>400 默认边框 → 500 悬停边框 → 600 点击边框</td>
+</tr>
+<tr>
+<td>700-800</td>
+<td>实心色块</td>
+<td>700 标签&#x2F;按钮 → 800 悬停状态</td>
+</tr>
+<tr>
+<td>900-1000</td>
+<td>信息层级</td>
+<td>900 辅助文字&#x2F;图标 → 1000 主要文字&#x2F;图标</td>
+</tr>
+</tbody></table>
+<p>这意味着 AI 写代码时不再需要猜”按钮悬停时该变深多少”——默认态对应 100，悬停对应 200，点击对应 300，规则已经提前定义好了。</p>
+<p>更妙的是亮暗主题切换：同一个 Token 名字（如 <code>gray-1000</code>），在亮色主题里是接近纯黑的 <code>#171717</code>，在暗色主题里是接近纯白的 <code>#ededed</code>。开发和 AI 关注的是语义，而非具体色值，主题切换由系统自动映射。</p>
+<h2 id="间距：约束即节奏"><a href="#间距：约束即节奏" class="headerlink" title="间距：约束即节奏"></a>间距：约束即节奏</h2><p>Vercel 的间距体系基于 4px 倍数，总共只给了 <strong>9 个值</strong>：4、8、12、16、24、32、40、64、96。</p>
+<p>看起来很少，但这正是设计系统的精髓——<strong>优秀的设计系统不会给无限选择，它会主动限制选择。</strong></p>
+<p>节奏建议：</p>
+<ul>
+<li>组内元素间距 → 8px</li>
+<li>组与组间距 → 16px</li>
+<li>板块间距 → 32-40px</li>
+</ul>
+<p>用户未必会注意到这些间距数字，但会自然感受到哪里属于同一个整体，哪里已经进入新的内容区域。</p>
+<h2 id="字体：从字号思维到角色思维"><a href="#字体：从字号思维到角色思维" class="headerlink" title="字体：从字号思维到角色思维"></a>字体：从字号思维到角色思维</h2><p>所有文字被归纳成几个固定角色：<strong>标题 heading、标签 label、正文 copy、按钮 button</strong>。每个角色下提供不同尺寸的 Token，预先定义好字体、字号、字重、行高和字间距。</p>
+<p>这改变了思考方式：不再纠结”用 14px 还是 15px”，而是先判断”这是什么角色”——角色确定后，样式自动确定。<strong>从视觉决策变成语义决策。</strong></p>
+<h2 id="文案：被忽视的设计维度"><a href="#文案：被忽视的设计维度" class="headerlink" title="文案：被忽视的设计维度"></a>文案：被忽视的设计维度</h2><p>这是大多数 DESIGN.md 最容易缺失的部分。Vercel 对文案的规定极其具体：</p>
+<p><strong>按钮文案</strong>：必须是”动作 + 对象”</p>
+<ul>
+<li>✅ 部署项目、删除成员</li>
+<li>❌ 部署、确定、删除</li>
+</ul>
+<p><strong>报错信息</strong>：先说发生了什么 → 再说怎么办</p>
+<ul>
+<li>✅ 构建失败，原因是打包文件超过了大小限制，解决办法是缩减体积或调整限制</li>
+<li>❌ 操作失败，请稍后重试</li>
+</ul>
+<p><strong>完成提示</strong>：只说明发生了什么变化</p>
+<ul>
+<li>✅ 项目已删除</li>
+<li>❌ 项目删除成功（”成功”是重复信息，提示框弹出本身就说明操作完成了）</li>
+</ul>
+<h2 id="动效：克制是最高级的设计"><a href="#动效：克制是最高级的设计" class="headerlink" title="动效：克制是最高级的设计"></a>动效：克制是最高级的设计</h2><p>Vercel 的态度与直觉相反——<strong>很多场景下，0 毫秒往往是最好的选择。</strong></p>
+<p>如果一个状态变化已经足够清晰，最好的反馈就是立刻发生，额外加动画反而显得拖沓。需要动效时，时长也有明确规定：</p>
+<table>
+<thead>
+<tr>
+<th>场景</th>
+<th>时长</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>普通状态变化</td>
+<td>~150ms</td>
+</tr>
+<tr>
+<td>弹出层</td>
+<td>~200ms</td>
+</tr>
+<tr>
+<td>模态框</td>
+<td>~300ms</td>
+</tr>
+</tbody></table>
+<p>原则：<strong>变化越大，反应时间越长；变化越小，反馈越直接。能不动就不动，需要动时也要快、轻、克制。</strong></p>
+<h2 id="无障碍：服务所有人"><a href="#无障碍：服务所有人" class="headerlink" title="无障碍：服务所有人"></a>无障碍：服务所有人</h2><p>Vercel 在无障碍方面写得特别认真：</p>
+<ul>
+<li>文字和背景之间必须保持足够的对比度</li>
+<li>状态变化不能只靠颜色表达，还要搭配图标或文字说明</li>
+<li>所有可交互元素必须有清晰的焦点状态，不能为了视觉干净而去掉</li>
+</ul>
+<p>这些规则意味着设计系统服务的是所有人——包括色觉不敏感的人、用键盘导航的人、在强光下看手机的人。</p>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>Vercel 的 DESIGN.md 展示了一个成熟设计系统应有的样子：<strong>不是罗列色值和字号，而是定义交互语义和决策规则。</strong> 颜色是状态的表现形式，间距是页面的呼吸节奏，字体是语义角色，文案是用户认知的引导，动效是克制的反馈，无障碍是对所有人的尊重。</p>
+<p>对于所有正在用 AI 做 Vibe Coding 的开发者，这份文件值得作为自己 DESIGN.md 的起点。</p>
+<hr>
+<p><em>原文：<a target="_blank" rel="noopener" href="https://x.com/xiaogaifun/status/2069014055579509117">小盖 @xiaogaifun 的 X 长文</a></em><br><em>参考：<a target="_blank" rel="noopener" href="https://vercel.com/design.md">Vercel DESIGN.md</a> | <a target="_blank" rel="noopener" href="https://vercel.com/design.dark.md">Vercel DESIGN.md (Dark)</a></em></p>
+</section>
+    
+
+    <footer id="post-meta" class="clearfix">
+        <a href="/about/">
+        <img class="avatar" src="/images/avatar.png">
+        <div>
+            <span class="dark">Api Intelligence Daily Life</span>
+            <span>知识库 &amp; 博客</span>
+        </div>
+        </a>
+        <section id="sharing">
+            <a title="Share to Twitter" class="twitter" target="_blank" rel="noopener" href="https://twitter.com/intent/tweet?text=https://arbow.github.io/2026/06/23/digest-2026-06-23-vercel-design-md/ - 文摘：Vercel 的 DESIGN.md —— 教科书级别的 AI 设计规范 @"><span class="icon-twitter">tweet</span></a>
+            <a title="Share to Facebook" class="facebook" href="#" onclick="
+                window.open(
+                  'https://www.facebook.com/sharer/sharer.php?u='+encodeURIComponent(location.href),
+                  'facebook-share-dialog',
+                  'width=626,height=436');
+                return false;"><span class="icon-facebook-sign">Share</span>
+            </a>
+        </section>
+    </footer>
+
+
+  <section id="comment">
+    <button class="btn" id="loadcmts" onclick="cmts.load();">加载评论</button>
+    <div id="gitment"></div>
+    <script src='/js/gitment.browser.js'></script>
+    <link rel="stylesheet" href=''>
+    <script>
+      var cmts={
+        load:function cmts(){
+          var gitment = new Gitment({
+          
+            id: "文摘：Vercel 的 DESIGN.md —— 教科书级别的 AI 设计规范",
+          
+            owner: "",
+            repo: "",
+            oauth: {
+              client_id: "",
+              client_secret: "",
+            },
+          })
+          gitment.render('gitment');
+          var loadcmt = document.getElementById("loadcmts");
+          var imyourfather = loadcmt.parentNode;
+          imyourfather.removeChild(loadcmts)
+        }
+      }
+    </script>
+  </section>
+
+
+	<footer id="footer">
+	<div id="social">
+		<p class="small">©  Arbow| Powered by Hexo & 
+			<a target="_blank" rel="noopener" href="https://github.com/F0r3at/Lights"> Lights</a>
+		</p>
+	</div>
+</footer>
+
+</section>
+
+	<script src="//cdnjs.loli.net/ajax/libs/instantclick/3.0.1/instantclick.min.js" data-no-instant></script>
+	<script data-no-instant>
+		
+		InstantClick.init('mousedown');
+	</script>
+
+
+
