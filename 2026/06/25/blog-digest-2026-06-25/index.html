@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=0">
+
+  <meta name="description" content="个人知识库与技术笔记">
+
+
+<link rel="alternate" href="/atom.xml" title="Api Intelligence Daily Life" type="application/atom+xml">
+<meta name="theme-color" content="#a1d0f6">
+<title>文摘：博客推荐 - 2026-06-25 - Api Intelligence Daily Life</title>
+<!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+<link rel="shortcut icon" href="/favicon.png">
+
+<link rel="stylesheet" href="/css/style.css">
+
+<nav class="main-nav">
+	
+	    <a href="/">← 主页</a>
+	
+	
+	    <a href="/about/">About</a>
+	
+	    <a href="/archives/">Archives</a>
+	
+	<a class="cta" href="/atom.xml" data-no-instant>订阅</a>
+</nav>
+
+<section id="wrapper">
+    <article class="post">
+    <header>
+        
+            <h1>文摘：博客推荐 - 2026-06-25</h1>
+        
+        <h2 class="headline">Jun 25 2026
+        
+            
+            <a href="/categories/博客推荐/#博客推荐">博客推荐</a>
+        
+        </h2>
+    </header>
+</article>
+<section id="post-body"><h2 id="本日新增文章推荐"><a href="#本日新增文章推荐" class="headerlink" title="本日新增文章推荐"></a>本日新增文章推荐</h2><p>共发现 1 篇新文章。</p>
+<h3 id="1-The-Coming-Loop"><a href="#1-The-Coming-Loop" class="headerlink" title="1. The Coming Loop"></a>1. The Coming Loop</h3><p><strong>来源</strong>: <a target="_blank" rel="noopener" href="https://lucumr.pocoo.org/2026/6/23/the-coming-loop/">Armin Ronacher</a><br><strong>发布时间</strong>: 2026-06-23<br><strong>推荐指数</strong>: ⭐⭐⭐⭐ (4&#x2F;5) - 深入思考 AI 代码循环与工程未来</p>
+<p><strong>核心概要</strong><br>本文围绕“Agent 内循环”与“Harness 外层循环”展开：内循环指模型自身调用工具、读改文件、运行测试等闭环；外层循环（harness loop）则在模型停顿后决定是否继续、重试或启动新会话。作者观察到越来越多团队围绕这一外层循环构建自动化工作流，显著改变了工程协作与交付形态。文章基于自身经验指出，当前外层循环在“我关心的代码”上效果有限，因为生成代码过于防御、复杂且局部，弱化强不变量与简洁设计。作者担心这种“迭代式补丁”会随外层循环被放大，系统表面健壮但可理解性下降。与此同时，作者承认循环模式在特定场景（如代码移植、性能探索、安全扫描、研究性探索）表现突出，尤其是那些不要求长期维护、可自动验证或机械转化的任务。</p>
+<p><strong>关键洞察</strong></p>
+<ul>
+<li>外层循环将“完成判断”从模型转移到 harness，改变了工程迭代的驱动与可观测性。</li>
+<li>当前 LLM 倾向于“局部防御+fallback”，在外层循环中会不断累加防御与局部修补，导致系统复杂度与理解成本上升。</li>
+<li>不变量优于补丁的正确修复方式尚未成为 LLM 自然产出；人工引导或更精良的 harness 策略对提升质量至关重要。</li>
+<li>成功循环多见于“机械转化&#x2F;探索性&#x2F;一次性交付”场景，而非长期维护的核心库与关键基础设施。</li>
+<li>安全与竞争压力可能迫使防御方也采用循环架构，形成攻防均自动化、检测与修复链路进一步“机器化”的趋势。</li>
+</ul>
+<p><strong>评价</strong></p>
+<p><strong>优点:</strong></p>
+<ul>
+<li>对“内循环”与“外层循环”的概念拆解清晰，帮助理解 Agent 编码与自动化工作流的边界。</li>
+<li>结合个人与社区经验，提出防御式代码、局部修补等常见问题，有共鸣。</li>
+<li>明确区分“循环适用场景”，避免泛化，给出可用于实践的取舍框架。</li>
+</ul>
+<p><strong>不足:</strong></p>
+<ul>
+<li>基于经验观察的结论，文中未提供大规模、可复现的实验数据或对照证据，结论强度依赖于读者共情与经验迁移。</li>
+<li>没有给出具体的 harness 策略或技术清单来缓解“外层循环导致的复杂性增长”，偏重观点而非可操作方案。</li>
+</ul>
+<p><strong>适用场景</strong>: 想理解 Agent 自动化编码与外层编排模式、思考如何组织团队流程与工具的工程师；关注 AI 对长期可维护性影响的决策者。</p>
+<hr>
+<p><em>本文摘整理于 2026-06-25，共收录 1 篇文章</em></p>
+</section>
+    
+
+    <footer id="post-meta" class="clearfix">
+        <a href="/about/">
+        <img class="avatar" src="/images/avatar.png">
+        <div>
+            <span class="dark">Api Intelligence Daily Life</span>
+            <span>知识库 &amp; 博客</span>
+        </div>
+        </a>
+        <section id="sharing">
+            <a title="Share to Twitter" class="twitter" target="_blank" rel="noopener" href="https://twitter.com/intent/tweet?text=https://arbow.github.io/2026/06/25/blog-digest-2026-06-25/ - 文摘：博客推荐 - 2026-06-25 @"><span class="icon-twitter">tweet</span></a>
+            <a title="Share to Facebook" class="facebook" href="#" onclick="
+                window.open(
+                  'https://www.facebook.com/sharer/sharer.php?u='+encodeURIComponent(location.href),
+                  'facebook-share-dialog',
+                  'width=626,height=436');
+                return false;"><span class="icon-facebook-sign">Share</span>
+            </a>
+        </section>
+    </footer>
+
+
+  <section id="comment">
+    <button class="btn" id="loadcmts" onclick="cmts.load();">加载评论</button>
+    <div id="gitment"></div>
+    <script src='/js/gitment.browser.js'></script>
+    <link rel="stylesheet" href=''>
+    <script>
+      var cmts={
+        load:function cmts(){
+          var gitment = new Gitment({
+          
+            id: "文摘：博客推荐 - 2026-06-25",
+          
+            owner: "",
+            repo: "",
+            oauth: {
+              client_id: "",
+              client_secret: "",
+            },
+          })
+          gitment.render('gitment');
+          var loadcmt = document.getElementById("loadcmts");
+          var imyourfather = loadcmt.parentNode;
+          imyourfather.removeChild(loadcmts)
+        }
+      }
+    </script>
+  </section>
+
+
+	<footer id="footer">
+	<div id="social">
+		<p class="small">©  Arbow| Powered by Hexo & 
+			<a target="_blank" rel="noopener" href="https://github.com/F0r3at/Lights"> Lights</a>
+		</p>
+	</div>
+</footer>
+
+</section>
+
+	<script src="//cdnjs.loli.net/ajax/libs/instantclick/3.0.1/instantclick.min.js" data-no-instant></script>
+	<script data-no-instant>
+		
+		InstantClick.init('mousedown');
+	</script>
+
+
+
