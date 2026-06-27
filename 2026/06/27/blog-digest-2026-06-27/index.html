@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=0">
+
+  <meta name="description" content="个人知识库与技术笔记">
+
+
+<link rel="alternate" href="/atom.xml" title="Api Intelligence Daily Life" type="application/atom+xml">
+<meta name="theme-color" content="#a1d0f6">
+<title>文摘：博客推荐 - 2026-06-27 - Api Intelligence Daily Life</title>
+<!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+<link rel="shortcut icon" href="/favicon.png">
+
+<link rel="stylesheet" href="/css/style.css">
+
+<nav class="main-nav">
+	
+	    <a href="/">← 主页</a>
+	
+	
+	    <a href="/about/">About</a>
+	
+	    <a href="/archives/">Archives</a>
+	
+	<a class="cta" href="/atom.xml" data-no-instant>订阅</a>
+</nav>
+
+<section id="wrapper">
+    <article class="post">
+    <header>
+        
+            <h1>文摘：博客推荐 - 2026-06-27</h1>
+        
+        <h2 class="headline">Jun 27 2026
+        
+            
+            <a href="/categories/博客推荐/#博客推荐">博客推荐</a>
+        
+        </h2>
+    </header>
+</article>
+<section id="post-body"><p>本期收录 6 篇新增博文，来自 2 个源：Lilian Weng 的一篇 Scaling Laws 深度技术综述，以及卢向东&#x2F;肖玉民团队围绕”企业 AI 落地与知识引擎”连续发布的 5 篇实战系列文章。两边的画风截然不同——前者是学术界顶级的系统性梳理，后者是产业一线的真实踩坑与方法论沉淀，恰好构成”理论—落地”的完整对照。</p>
+<hr>
+<h2 id="1-Scaling-Laws-Carefully"><a href="#1-Scaling-Laws-Carefully" class="headerlink" title="1. Scaling Laws, Carefully"></a>1. Scaling Laws, Carefully</h2><p><strong>来源</strong>：<a target="_blank" rel="noopener" href="https://lilianweng.github.io/posts/2026-06-24-scaling-laws/">Lilian Weng</a><br><strong>作者</strong>：Lilian Weng<br><strong>日期</strong>：2026-06-24</p>
+<h3 id="核心概要"><a href="#核心概要" class="headerlink" title="核心概要"></a>核心概要</h3><p>Lilian Weng 这篇文章是关于深度学习 Scaling Laws 的一次系统性、教科书级的梳理。文章从一个简洁的观察出发：训练损失 $L$ 随模型规模 $N$、数据量 $D$ 和算力 $C$ 的增长沿幂律曲线下降，在对数坐标下呈直线。作者把 Scaling Laws 定位为”描述 compute、loss、模型规模与数据之间关系的框架”，其本质问题是如何在 $N$ 和 $D$ 之间最优地分配宝贵的算力。</p>
+<p>文章先追溯了 Scaling Laws 普遍化之前的研究脉络（Amari 等人 1992 年用贝叶斯方法推导的学习曲线），然后分两大区域展开：<strong>数据无限区域</strong>（Data-Infinite Region）和<strong>数据受限区域</strong>（Data-Limited Region）。在数据无限区域，作者详细对比了 <a target="_blank" rel="noopener" href="https://arxiv.org/abs/2001.08361">Kaplan et al. 2020</a> 和 <a target="_blank" rel="noopener" href="https://arxiv.org/abs/2203.15556">Chinchilla（Hoffmann et al. 2022）</a> 两条经典的 Scaling Law，并用三种不同的拟合方法（固定模型规模变化 token 预算、IsoFLOP 轮廓、参数化拟合）去还原 Chinchilla 的结论，深入讨论了 Kaplan 和 Chinchilla 为何给出看似不同的最优数据-参数配比建议（Kaplan 主张大模型少数据，Chinchilla 主张均衡）。</p>
+<p>最有价值的是后半部分：作者转向<strong>现实中的拟合陷阱</strong>（Trickiness of Fitting Scaling Laws in Reality）和<strong>数据受限区域</strong>的 Scaling Laws。这正是 2024-2026 年业界最关心的议题——当训练数据逼近”数据墙”，传统 Chinchilla 式外推会系统性高估收益。文章用一个 toy simulation 直观演示了拟合偏差如何产生，提醒读者不要把小模型上拟合出的幂律盲目外推到数百倍规模的大模型。</p>
+<h3 id="关键洞察"><a href="#关键洞察" class="headerlink" title="关键洞察"></a>关键洞察</h3><ul>
+<li><strong>Scaling Laws 的核心是算力分配问题</strong>：不是”要不要 scale”，而是”在固定算力预算下，参数 $N$ 和数据 $D$ 各投多少最优”。</li>
+<li><strong>Kaplan 与 Chinchilla 的分歧并非对错之分，而是方法论差异</strong>：两者实验设置（学习率调度、IsoFLOP 曲线、参数化拟合方法）不同，导致了对最优 N&#x2F;D 比的不同结论。理解分歧来源比记住结论更重要。</li>
+<li><strong>外推是危险的</strong>：小规模实验拟合出的幂律，在数据受限区域或数百倍规模外推时可能严重失真。文章的 toy simulation 清楚展示了这一点。</li>
+<li><strong>数据受限场景下需要新框架</strong>：传统 Scaling Law 假设数据无限，但现实是高质量数据正在枯竭，data-limited region 的规律（包括重复数据、多轮训练的边际收益递减）需要单独建模。</li>
+</ul>
+<h3 id="评价"><a href="#评价" class="headerlink" title="评价"></a>评价</h3><p><strong>优点</strong>：这是目前能找到的对 Scaling Laws 最完整、最严谨的中文&#x2F;英文综述之一。Lilian Weng 一贯的风格——大量原始论文引用、数学推导清晰、配有 toy simulation——使它兼具参考价值和教学价值。Kaplan vs Chinchilla 的方法论对比、三种拟合方法的横向对照，是其他博客极少系统讲透的。</p>
+<p><strong>不足</strong>：文章偏学术和公式密集，对只想快速了解”我该训多大模型、用多少数据”的工程读者来说门槛较高；Data-Limited Region 的篇幅相对短，前沿进展（如多轮训练的 scaling）点到为止。</p>
+<p><strong>适用场景</strong>：大模型训练团队的技术决策者、预训练研究员、想系统理解 Scaling Law 数学基础的读者。建议作为案头参考长期保留。</p>
+<p><strong>推荐指数</strong>：⭐⭐⭐⭐⭐ (5&#x2F;5) — 顶级研究者的系统性综述，兼具教学深度与参考价值，是理解大模型时代的基石性资料。</p>
+<hr>
+<h2 id="2-AI-时代，企业的业务底座正在从数据库变成知识引擎"><a href="#2-AI-时代，企业的业务底座正在从数据库变成知识引擎" class="headerlink" title="2. AI 时代，企业的业务底座正在从数据库变成知识引擎"></a>2. AI 时代，企业的业务底座正在从数据库变成知识引擎</h2><p><strong>来源</strong>：<a target="_blank" rel="noopener" href="https://www.luxiangdong.com/2026/06/25/w2-ais-db/">卢向东</a><br><strong>日期</strong>：2026-06-25</p>
+<h3 id="核心概要-1"><a href="#核心概要-1" class="headerlink" title="核心概要"></a>核心概要</h3><p>这篇文章提出了一个清晰且具说服力的论点：过去三十年的企业信息化围绕”把业务装进数据库”展开（ERP&#x2F;CRM&#x2F;OA&#x2F;BI 全都站在关系型数据库之上），而 AI 时代企业的核心基础设施正在从<strong>数据库</strong>迁移到<strong>知识引擎</strong>。</p>
+<p>作者用一组生动的对照说明数据与知识的区别：”数据库告诉你一个客户逾期了几次，知识告诉你这类客户还能不能授信；数据库告诉你某个零件换过三次，知识告诉你这可能不是零件问题而是安装环境问题。”企业真正想让 AI 做的——合规判断、故障推理、风险解释——答案往往不在一张表里，而散落在制度文件、合同条款、会议纪要和专家经验中。</p>
+<p>文章进而指出企业 AI 落地的真正瓶颈：不是模型不够聪明，也不是没有 RAG，而是”知识很多但不可用、文档很多但不可信、系统很多但不互通”。作者认为企业缺的是一个让 AI 能正确使用企业知识的”底座”——即知识引擎。</p>
+<h3 id="关键洞察-1"><a href="#关键洞察-1" class="headerlink" title="关键洞察"></a>关键洞察</h3><ul>
+<li><strong>数据库是”记录时代”的基础设施，知识引擎是”判断时代”的基础设施</strong>：前者解决”业务准确记录”，后者解决”业务正确判断”。</li>
+<li><strong>企业不缺知识，缺的是可用的知识</strong>：结构化数据只占企业有价值资产的一部分，大量非结构化的制度、案例、经验才是 AI 判断的真正燃料。</li>
+<li><strong>“非结构化数据”在 AI 时代被重新定义为”企业知识”</strong>——这个命名视角的转变，直接影响企业 AI 的架构设计优先级。</li>
+</ul>
+<h3 id="评价-1"><a href="#评价-1" class="headerlink" title="评价"></a>评价</h3><p><strong>优点</strong>：论点鲜明、对照生动（数据 vs 知识的并列句式很有感染力），从基础设施演进的高度看问题，而非纠缠于具体的 RAG 技术细节。对 CIO&#x2F;CTO 级别的读者有启发。</p>
+<p><strong>不足</strong>：作为”底座论”的开篇，概念阐述充分但落地方案偏概括；部分论述带产品推广色彩（作者团队产品 TorchV 贯穿全系列）。</p>
+<p><strong>适用场景</strong>：企业 AI 战略决策者、正在规划知识中台&#x2F;知识引擎架构的技术负责人。</p>
+<p><strong>推荐指数</strong>：⭐⭐⭐⭐ (4&#x2F;5) — 视点锐利、对照清晰，是理解企业 AI 架构演进的一篇好引子。扣除一星是因为落地细节需配合本系列其他文章才完整。</p>
+<hr>
+<h2 id="3-跨越业务视角与-AI-技术视角的鸿沟，Facade-模式在企业-AI-落地中的应用思考"><a href="#3-跨越业务视角与-AI-技术视角的鸿沟，Facade-模式在企业-AI-落地中的应用思考" class="headerlink" title="3. 跨越业务视角与 AI 技术视角的鸿沟，Facade 模式在企业 AI 落地中的应用思考"></a>3. 跨越业务视角与 AI 技术视角的鸿沟，Facade 模式在企业 AI 落地中的应用思考</h2><p><strong>来源</strong>：<a target="_blank" rel="noopener" href="https://www.luxiangdong.com/2026/06/25/facade/">卢向东</a><br><strong>日期</strong>：2026-06-25</p>
+<h3 id="核心概要-2"><a href="#核心概要-2" class="headerlink" title="核心概要"></a>核心概要</h3><p>这是本系列中最扎实、最有洞见的一篇。作者从一个真实场景切入：在与会计师事务所交流时发现，企业 AI 项目卡住的点往往不是模型能力，而是”业务人员不知道如何通过一个对话框完成一整套复杂业务流程”。</p>
+<p>文章以工商审计业务为例，完整展开了一个含 6 个阶段（项目准备→资料收集→资料比对→生成底稿→生成报告→复审记录）的真实业务流程，并指出：习惯了三十年 GUI 系统（列表、表单、状态机、审批流、退回、挂起）的企业用户，很难把这套流程”压缩进一个聊天窗口”。对话式交互（CUI）适合问答检索，但并不天然适合承载有状态、有回退、有协作的复杂业务流程。</p>
+<p>作者借用软件工程中的 <a target="_blank" rel="noopener" href="https://en.wikipedia.org/wiki/Facade_pattern">Facade 模式</a>——“用一个更简单、更符合使用者认知的外观层屏蔽底层复杂性”——提出企业 AI 落地需要一个面向业务用户的 Facade 层：底层是知识库、Agent、Skill、文档解析、任务编排等复杂能力，但业务用户真正需要看到的是”资料是否齐了””底稿生成了没””报告哪里要复审”这些业务动作。</p>
+<h3 id="关键洞察-2"><a href="#关键洞察-2" class="headerlink" title="关键洞察"></a>关键洞察</h3><ul>
+<li><strong>企业 AI 的真正鸿沟不是技术能力，而是交互范式</strong>：CUI 对技术人友好，对习惯了 GUI 流程的传统业务人员却是高墙。</li>
+<li><strong>Facade 模式是企业 AI 的关键设计模式</strong>：用业务用户能理解的界面层，屏蔽底层 Agent&#x2F;知识库的复杂性，是降低使用门槛的核心。</li>
+<li><strong>“方案即交付”</strong>：作者提出从需求沟通到业务应用雏形应当用快速原型对齐，而不是抽象讨论——这呼应了 FDE 角色的价值。</li>
+</ul>
+<h3 id="评价-2"><a href="#评价-2" class="headerlink" title="评价"></a>评价</h3><p><strong>优点</strong>：用真实的六阶段审计流程做案例，论证非常具体、可信，而非空谈理论。Facade 模式的类比精准——它确实是多数 AI 应用设计中被忽视的一环。CUI vs GUI 的张力分析击中了当前 Agent 落地的真实痛点。</p>
+<p><strong>不足</strong>：文章后半转入 FDE 和产品方案，Facade 层的技术实现细节（如何设计状态机、如何编排 GUI+CUI 混合交互）留白较多。</p>
+<p><strong>适用场景</strong>：企业 AI 产品经理、Agent 应用架构师、负责 AI 落地交付的团队。</p>
+<p><strong>推荐指数</strong>：⭐⭐⭐⭐ (4&#x2F;5) — 本系列中最具独立阅读价值的一篇，Facade 模式的洞察对所有做 Agent 产品的人都有启发。</p>
+<hr>
+<h2 id="4-FDE-越来越火，你认为这会是-2026-年-AI-落地之道吗？"><a href="#4-FDE-越来越火，你认为这会是-2026-年-AI-落地之道吗？" class="headerlink" title="4. FDE 越来越火，你认为这会是 2026 年 AI 落地之道吗？"></a>4. FDE 越来越火，你认为这会是 2026 年 AI 落地之道吗？</h2><p><strong>来源</strong>：<a target="_blank" rel="noopener" href="https://www.luxiangdong.com/2026/06/25/fde/">卢向东</a><br><strong>日期</strong>：2026-06-25</p>
+<h3 id="核心概要-3"><a href="#核心概要-3" class="headerlink" title="核心概要"></a>核心概要</h3><p>文章讨论了 FDE（Forward Deployed Engineer，前线部署工程师）这一角色在 2026 年 AI 落地中越来越受追捧的原因和定位。作者认为 AI 时代的软件形态正在两极分化——CUI 对部分用户极度友好，但对大部分企业来说流程无法靠一句”帮我处理一下”自动跑起来，背后有审批规则、数据口径、权限边界和隐性知识。</p>
+<p>这使得 AI 落地反而比传统 SaaS 更复杂：产品本身越来越简单，但落地需要有人把 AI 能力翻译成可执行的业务方案，同时企业内部又普遍缺乏成熟的 AI 部门和 AI 业务架构师。FDE 正是填补这个缺口的角色——“既懂 AI 系统，又能理解业务现场；既能和业务人员交流，又能和技术团队协作”。</p>
+<p>文章把 FDE 的工作归纳为三类：需求分析与方案敲定、推进实施进度、试运行与目标检查迭代。作者结合一年多的现场交付经验，强调”客户真正关心的是当你提出各种复杂问题时，你能不能接得住”。</p>
+<h3 id="关键洞察-3"><a href="#关键洞察-3" class="headerlink" title="关键洞察"></a>关键洞察</h3><ul>
+<li><strong>AI 落地复杂度不降反升</strong>：产品变简单了，但把 AI 嵌入真实业务流程（审批、权限、口径）反而更难。</li>
+<li><strong>FDE 的核心价值是”翻译”</strong>：把 AI 能力翻译成业务方案，把现场问题翻译成迭代目标，连接服务商与客户。</li>
+<li><strong>AI 不是卖完账号就结束</strong>：它需要在客户真实业务环境里反复调试、验证和迭代，这决定了 FDE 会成为服务商与客户之间最关键的连接点。</li>
+</ul>
+<h3 id="评价-3"><a href="#评价-3" class="headerlink" title="评价"></a>评价</h3><p><strong>优点</strong>：对 FDE 角色定位的阐述清晰，三类工作（需求、实施、迭代）的划分有实操参考价值。结合真实交付经验的判断（而非纯概念）有说服力。</p>
+<p><strong>不足</strong>：FDE 概念本身并不新（受 Palantir 等公司启发已久），文章更多是经验性论述而非方法论创新；部分内容与同系列其他文章（尤其是 Facade 篇）有重叠。</p>
+<p><strong>适用场景</strong>：AI 服务商的交付团队负责人、正在组建 AI 落地团队的企业管理者。</p>
+<p><strong>推荐指数</strong>：⭐⭐⭐ (3&#x2F;5) — 对 FDE 角色感兴趣的读者值得一看，但观点的原创性和深度中等，更适合作为行业趋势参考。</p>
+<hr>
+<h2 id="5-企业级知识库有哪些特殊之处，讲讲安全合规与知识健康"><a href="#5-企业级知识库有哪些特殊之处，讲讲安全合规与知识健康" class="headerlink" title="5. 企业级知识库有哪些特殊之处，讲讲安全合规与知识健康"></a>5. 企业级知识库有哪些特殊之处，讲讲安全合规与知识健康</h2><p><strong>来源</strong>：<a target="_blank" rel="noopener" href="https://www.luxiangdong.com/2026/06/25/qyj/">卢向东</a><br><strong>日期</strong>：2026-06-25</p>
+<h3 id="核心概要-4"><a href="#核心概要-4" class="headerlink" title="核心概要"></a>核心概要</h3><p>文章聚焦企业级知识库两个常被忽视的特性：<strong>安全合规</strong>与<strong>知识健康</strong>。合规部分以银行为例，拆解为三个标准问题——合规依据在哪里、合规检测怎么做、合规用在哪些场景。作者强调合规是强监管行业（银行、证券、保险、医疗等）AI 落地的重中之重，描述了在 Agentic RAG 问答流程中嵌入”检测-判断-循环”的设计：Agent 对合规性、完整性、可读性、准确率、证据链完整度等多维打分，超过阈值（如 8.5 分且合规满分）才对外输出，否则循环重试（最多三次）。</p>
+<p>知识健康部分点出了一个普遍却少有人讲的痛点：知识库上线时召回准确率很高，但几个月后大量重复、冲突、过期知识涌入，准确率断崖式下降。作者的解法是用知识健康模块自动监测各类知识问题，形成待办交给知识维护者修复。</p>
+<h3 id="关键洞察-4"><a href="#关键洞察-4" class="headerlink" title="关键洞察"></a>关键洞察</h3><ul>
+<li><strong>合规不是事后补丁，而是 Agentic RAG 流程中的”检测-判断-循环”环节</strong>：在输出前做多维打分卡控，是面向强监管行业的必要设计。</li>
+<li><strong>知识库会”腐烂”</strong>：上线三个月后准确率断崖式下降，根因是知识重复、冲突、过期——知识健康治理是被严重低估的运维课题。</li>
+</ul>
+<h3 id="评价-4"><a href="#评价-4" class="headerlink" title="评价"></a>评价</h3><p><strong>优点</strong>：合规检测的多维打分与循环设计有实操参考价值；”知识健康”这个概念点出了企业知识库长期运维的真问题，少有人系统讨论。</p>
+<p><strong>不足</strong>：篇幅偏短，知识健康模块的监测方法只一笔带过（”比较技术性”）；合规部分更接近产品功能介绍而非方法论。整体偏自家产品 TorchV 的功能阐述。</p>
+<p><strong>适用场景</strong>：面向金融&#x2F;医疗等强监管行业做 AI 落地的团队、企业知识库运维负责人。</p>
+<p><strong>推荐指数</strong>：⭐⭐⭐ (3&#x2F;5) — 选题有价值（合规与知识健康都是实战盲区），但深度不足，更像系列文章中的产品能力补充说明。</p>
+<hr>
+<h2 id="6-知识加工驱动知识库整个生命周期的三个阶段"><a href="#6-知识加工驱动知识库整个生命周期的三个阶段" class="headerlink" title="6. 知识加工驱动知识库整个生命周期的三个阶段"></a>6. 知识加工驱动知识库整个生命周期的三个阶段</h2><p><strong>来源</strong>：<a target="_blank" rel="noopener" href="https://www.luxiangdong.com/2026/06/25/jg/">肖玉民（卢向东团队 CTO）</a><br><strong>日期</strong>：2026-06-25</p>
+<h3 id="核心概要-5"><a href="#核心概要-5" class="headerlink" title="核心概要"></a>核心概要</h3><p>这是本系列中最短的一篇，作者是团队 CTO 肖玉民。文章提出以”知识加工”驱动知识库的三个生命周期阶段：早期阶段（知识准入，强调数据源支撑广度）、中期阶段（关注知识质量，借助大模型&#x2F;多模态&#x2F;OCR 做清洗、结构化、高质量解析）、后期阶段（关注知识治理，通过知识加工 ETL 贯穿全生命周期，提供可视化治理流程）。</p>
+<h3 id="关键洞察-5"><a href="#关键洞察-5" class="headerlink" title="关键洞察"></a>关键洞察</h3><ul>
+<li><strong>知识库生命周期可由知识加工 ETL 贯穿</strong>：准入（广度）→质量（清洗结构化）→治理（可视化决策）三阶段递进。</li>
+</ul>
+<h3 id="评价-5"><a href="#评价-5" class="headerlink" title="评价"></a>评价</h3><p><strong>优点</strong>：三阶段框架简洁清晰，点出”数据质量是中期核心瓶颈”这一真实问题。</p>
+<p><strong>不足</strong>：全文不足千字，每个阶段都停留在概述层面，无技术细节、无案例、无数据。结尾直接转入产品试用推广，实质内容稀薄。更像是配合本系列其他文章的”占位”短文，独立阅读价值有限。</p>
+<p><strong>适用场景</strong>：只需快速了解知识库生命周期框架概念的读者。</p>
+<p><strong>推荐指数</strong>：⭐⭐ (2&#x2F;5) — 内容过于单薄，更像产品宣传页而非独立文章，建议直接阅读本系列其他几篇获取更完整的信息。</p>
+<hr>
+<h2 id="本期小结"><a href="#本期小结" class="headerlink" title="本期小结"></a>本期小结</h2><p>本期两组文章恰好构成两个极端：Lilian Weng 的 Scaling Laws 综述代表了技术认知的”天花板”——严谨、系统、经得起反复研读；卢向东团队的 5 篇文章则代表了产业落地的”泥土味”——真实、具体、带着客户现场的汗水和教训。</p>
+<p>如果你只读一篇，毫无疑问是 Scaling Laws；但如果你正在做企业 AI 落地，<strong>Facade 模式</strong>和<strong>知识引擎底座论</strong>这两篇的实战价值反而更高——它们点破了当前 Agent 产品设计中最容易被忽视的两个问题：交互范式鸿沟和知识可用性。至于 FDE、安全合规、知识加工三阶段，可作为补充参考，按需取用。</p>
+<hr>
+<p><em>本期博客推荐整理于 2026-06-27，共检查 10 个博客源，收录 6 篇新增文章。各源最新文章日期均从实际 RSS&#x2F;网页获取。</em></p>
+</section>
+    
+
+    <footer id="post-meta" class="clearfix">
+        <a href="/about/">
+        <img class="avatar" src="/images/avatar.png">
+        <div>
+            <span class="dark">Api Intelligence Daily Life</span>
+            <span>知识库 &amp; 博客</span>
+        </div>
+        </a>
+        <section id="sharing">
+            <a title="Share to Twitter" class="twitter" target="_blank" rel="noopener" href="https://twitter.com/intent/tweet?text=https://arbow.github.io/2026/06/27/blog-digest-2026-06-27/ - 文摘：博客推荐 - 2026-06-27 @"><span class="icon-twitter">tweet</span></a>
+            <a title="Share to Facebook" class="facebook" href="#" onclick="
+                window.open(
+                  'https://www.facebook.com/sharer/sharer.php?u='+encodeURIComponent(location.href),
+                  'facebook-share-dialog',
+                  'width=626,height=436');
+                return false;"><span class="icon-facebook-sign">Share</span>
+            </a>
+        </section>
+    </footer>
+
+
+  <section id="comment">
+    <button class="btn" id="loadcmts" onclick="cmts.load();">加载评论</button>
+    <div id="gitment"></div>
+    <script src='/js/gitment.browser.js'></script>
+    <link rel="stylesheet" href=''>
+    <script>
+      var cmts={
+        load:function cmts(){
+          var gitment = new Gitment({
+          
+            id: "文摘：博客推荐 - 2026-06-27",
+          
+            owner: "",
+            repo: "",
+            oauth: {
+              client_id: "",
+              client_secret: "",
+            },
+          })
+          gitment.render('gitment');
+          var loadcmt = document.getElementById("loadcmts");
+          var imyourfather = loadcmt.parentNode;
+          imyourfather.removeChild(loadcmts)
+        }
+      }
+    </script>
+  </section>
+
+
+	<footer id="footer">
+	<div id="social">
+		<p class="small">©  Arbow| Powered by Hexo & 
+			<a target="_blank" rel="noopener" href="https://github.com/F0r3at/Lights"> Lights</a>
+		</p>
+	</div>
+</footer>
+
+</section>
+
+	<script src="//cdnjs.loli.net/ajax/libs/instantclick/3.0.1/instantclick.min.js" data-no-instant></script>
+	<script data-no-instant>
+		
+		InstantClick.init('mousedown');
+	</script>
+
+
+
