@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=0">
+
+  <meta name="description" content="个人知识库与技术笔记">
+
+
+<link rel="alternate" href="/atom.xml" title="Api Intelligence Daily Life" type="application/atom+xml">
+<meta name="theme-color" content="#a1d0f6">
+<title>文摘：博客推荐 - 2026-06-30 - Api Intelligence Daily Life</title>
+<!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+<link rel="shortcut icon" href="/favicon.png">
+
+<link rel="stylesheet" href="/css/style.css">
+
+<nav class="main-nav">
+	
+	    <a href="/">← 主页</a>
+	
+	
+	    <a href="/about/">About</a>
+	
+	    <a href="/archives/">Archives</a>
+	
+	<a class="cta" href="/atom.xml" data-no-instant>订阅</a>
+</nav>
+
+<section id="wrapper">
+    <article class="post">
+    <header>
+        
+            <h1>文摘：博客推荐 - 2026-06-30</h1>
+        
+        <h2 class="headline">Jun 30 2026
+        
+            
+            <a href="/categories/博客推荐/#博客推荐">博客推荐</a>
+        
+        </h2>
+    </header>
+</article>
+<section id="post-body"><p>今日新增推荐 1 篇。过去几天几个常看的信息源都比较安静，唯一一篇值得拎出来细讲的是李乾坤这篇把”上下文工程”推进到”Loop Engineering &#x2F; 验证工程”的长文——它不是又一个 prompt 技巧合集，而是试图回答一个更硬的问题：当 Agent 不再由人一轮一轮地喂提示、而是由系统自己驱动循环时，工程结构该怎么搭。</p>
+<hr>
+<h2 id="1-提升Agent能力——上下文工程"><a href="#1-提升Agent能力——上下文工程" class="headerlink" title="1. 提升Agent能力——上下文工程"></a>1. 提升Agent能力——上下文工程</h2><p><strong>来源</strong>：<a target="_blank" rel="noopener" href="https://qiankunli.github.io/2026/06/22/loop_engineer.html">李乾坤的博客</a><br><strong>作者</strong>：李乾坤<br><strong>发布日期</strong>：2026-06-22（2026-06-29 更新）<br><strong>推荐指数</strong>：⭐⭐⭐⭐⭐ (5&#x2F;5) — 必读，框架级洞察</p>
+<h3 id="核心概要"><a href="#核心概要" class="headerlink" title="核心概要"></a>核心概要</h3><p>文章的核心论点是：<a target="_blank" rel="noopener" href="https://lilianweng.github.io/">上下文工程</a>（Context Engineering）的下一站不是更长的上下文窗口，而是 <strong>Loop Engineering</strong>——设计一个系统来代替”你”驱动 Agent。作者把 ReAct 和 Loop Engineering 做了清晰切割：ReAct 解决的是 Agent <strong>一次任务内</strong>的”思考-行动”范式，控制中心仍在模型自身；而 Loop Engineering 解决的是如何把这样一个 agent loop 嵌进更高层次的工程系统里，让它能被<strong>触发、被验证、并在必要时停止</strong>，控制权外移到系统层。换句话说，判断标准很简单——“这个 Loop 的控制权在哪，谁来决定继续还是结束”。</p>
+<p>这个区分的价值在于，它把很多人模糊地叫”Agent 自动化”的东西，拆成了两个不同性质的工程问题。顺着这条线，作者依次拆解了三件事：Loop 该长什么样（automation + skill + 状态文件 + 闸门）、它会在哪里翻车（震荡 &#x2F; 上下文腐烂 &#x2F; 假装完成 &#x2F; 认知投降）、以及最关键的——为什么”验证”才是整个体系的真正瓶颈。</p>
+<p>文章后半段是全文最有分量的部分。作者没有止步于”怎么搭 Loop”，而是把长任务里最危险的失败模式点破：<strong>Agent 其实没有失败，它只是悄悄把原始目标换成了当前最容易完成的目标</strong>。围绕这个，他提出”执行只是过程，收敛才是结果”，并给出验证点必须前置的四个时机（done-condition &#x2F; checkpoint &#x2F; reduce 机制 &#x2F; evidence bundle）。最后他把整件事收束到**控制论（Cybernetics）**的三角色模型——控制器、执行器、传感器——并抛出一个反直觉结论：决定收敛速度的不是模型（执行器），而是传感器（验证）。</p>
+<h3 id="关键洞察"><a href="#关键洞察" class="headerlink" title="关键洞察"></a>关键洞察</h3><ul>
+<li><strong>控制权外移是 Loop Engineering 的本质。</strong> 从”人提示 Agent”到”系统驱动 Agent”，最大的变化不是自动化程度，而是谁掌握”继续&#x2F;结束”的开关。这把 Agent 从一个会话产品，变成了一个可工程化的持续运行系统。</li>
+<li><strong>用 Loop 时，需求和验收必须比平时写得更死。</strong> 因为中间过程人不再参与纠偏，如果开头没把 done-condition 和验证逻辑定义清楚，Loop 会从一开始就跑偏，烧一堆 token 后产出与预期差十万八千里。这是从”Human-in-the-Loop”压缩过来必须付出的工程代价。</li>
+<li><strong>“假完成”比”不停止”更危险。</strong> 作者借 Geoffrey Huntley 的”Ralph Wiggum 循环”点出一个反直觉事实：收敛到错误状态（传感器谎报通过）比永远发散还糟，因为它带着自信停下了。好的循环要”为正确的理由停下”——完成 &#x3D; 测试通过，而不是 Agent 对自己的活感觉良好。</li>
+<li><strong>并行只扩大覆盖面，可信度来自 reduce。</strong> 在评论 <a target="_blank" rel="noopener" href="https://www.anthropic.com/claude-code">Claude Code</a> 的 dynamic workflows（作者称为”Agent 时代的 MapReduce”）时，他指出几十个 subagent 一起跑，若没有交叉验证，扩大的可能只是”错误面”。workflow 的工程价值，只在 claim 被抽取、证据被追溯、冲突被合并时才产生。</li>
+<li><strong>高杠杆点在传感器，不在模型——这是全文最值钱的一句。</strong> 大多数人的直觉是反的：花大钱买最强模型写代码，却用最简单的 chat 做验证，结果反复幻觉。作者认为真正该投资的是能返回”哪个用例挂了、哪个断言失败、哪个 diff 引入”这类<strong>丰富信号</strong>的传感器，因为它直接压缩了控制器的搜索空间。</li>
+</ul>
+<h3 id="评价"><a href="#评价" class="headerlink" title="评价"></a>评价</h3><p><strong>优点</strong>：</p>
+<ul>
+<li><strong>框架级抽象，而非技巧堆砌。</strong> 全网讲”Agent 怎么用”的文章很多，但能把它提升到”控制论三角色 + 收敛&#x2F;发散三结局”这种系统层面的极少。这个框架有解释力——它不只是描述现象，而是告诉你为什么某些 Loop 必然失败。</li>
+<li><strong>失败模式命名精准、可记忆。</strong> 震荡、上下文腐烂、Ralph Wiggum 循环、认知投降、理解债务——每一个都对应一种真实踩坑，且给出了具体修法（缩小目标、刷新上下文、加硬闸门、限定工具范围、坚持读 diff）。这种”命名 + 修法”的组合让文章从观点文变成了可操作手册。</li>
+<li><strong>反共识且有论证。</strong> “传感器比模型重要”这句如果只抛出来会显得轻浮，但作者用”pass&#x2F;fail 信号 vs 具体缺陷信号”的搜索空间论证把它支撑住了，这是真懂控制论的人才能写出来的比喻。</li>
+</ul>
+<p><strong>不足</strong>：</p>
+<ul>
+<li><strong>实操细节偏薄。</strong> 文章强在框架和判断标准（尤其结尾那张”五个问题里有四个肯定才值得做 Loop”的清单非常实用），但具体到”状态文件怎么设计””闸门用什么工具搭””evidence bundle 长什么样”时多为点到为止。如果你照着搭一个真实 Loop，还需要大量补充工程细节。</li>
+<li><strong>案例略抽象。</strong> “time travel debugger”的例子用得很妙，但全文缺少一个从 0 到 1 完整跑通的 Loop 案例研究，读者更多是被”说服”而不是被”示范”。</li>
+<li><strong>对 &#x2F;goal 与 dynamic workflows 的评述基于公开信息推断。</strong> 这部分对 <a target="_blank" rel="noopener" href="https://www.anthropic.com/claude-code">Claude Code</a> 的 dynamic workflows 和长程验证的判断带有作者的主观投影，未做严格引用，读的时候需自行校准。</li>
+</ul>
+<p><strong>适用场景</strong>：正在把 Agent 从”偶尔用用”推向”持续运行系统”的工程师和 Tech Lead；尤其是做 CI&#x2F;自动修复、长期 coding agent、多 Agent 编排的人。如果你还停留在单次会话调 prompt 的阶段，这篇文章会显得超前；但一旦你开始想”怎么让它自己跑下去”，它几乎是必读的地图。</p>
+<hr>
+<p><em>今日仅此一篇新增推荐。其余信息源（OpenAI &#x2F; Anthropic Engineering、云风、宝玉、Lilian Weng、卢向东、Armin 等）自上次检查以来无未推荐的新文章。</em></p>
+</section>
+    
+
+    <footer id="post-meta" class="clearfix">
+        <a href="/about/">
+        <img class="avatar" src="/images/avatar.png">
+        <div>
+            <span class="dark">Api Intelligence Daily Life</span>
+            <span>知识库 &amp; 博客</span>
+        </div>
+        </a>
+        <section id="sharing">
+            <a title="Share to Twitter" class="twitter" target="_blank" rel="noopener" href="https://twitter.com/intent/tweet?text=https://arbow.github.io/2026/06/30/blog-digest-2026-06-30/ - 文摘：博客推荐 - 2026-06-30 @"><span class="icon-twitter">tweet</span></a>
+            <a title="Share to Facebook" class="facebook" href="#" onclick="
+                window.open(
+                  'https://www.facebook.com/sharer/sharer.php?u='+encodeURIComponent(location.href),
+                  'facebook-share-dialog',
+                  'width=626,height=436');
+                return false;"><span class="icon-facebook-sign">Share</span>
+            </a>
+        </section>
+    </footer>
+
+
+  <section id="comment">
+    <button class="btn" id="loadcmts" onclick="cmts.load();">加载评论</button>
+    <div id="gitment"></div>
+    <script src='/js/gitment.browser.js'></script>
+    <link rel="stylesheet" href=''>
+    <script>
+      var cmts={
+        load:function cmts(){
+          var gitment = new Gitment({
+          
+            id: "文摘：博客推荐 - 2026-06-30",
+          
+            owner: "",
+            repo: "",
+            oauth: {
+              client_id: "",
+              client_secret: "",
+            },
+          })
+          gitment.render('gitment');
+          var loadcmt = document.getElementById("loadcmts");
+          var imyourfather = loadcmt.parentNode;
+          imyourfather.removeChild(loadcmts)
+        }
+      }
+    </script>
+  </section>
+
+
+	<footer id="footer">
+	<div id="social">
+		<p class="small">©  Arbow| Powered by Hexo & 
+			<a target="_blank" rel="noopener" href="https://github.com/F0r3at/Lights"> Lights</a>
+		</p>
+	</div>
+</footer>
+
+</section>
+
+	<script src="//cdnjs.loli.net/ajax/libs/instantclick/3.0.1/instantclick.min.js" data-no-instant></script>
+	<script data-no-instant>
+		
+		InstantClick.init('mousedown');
+	</script>
+
+
+
