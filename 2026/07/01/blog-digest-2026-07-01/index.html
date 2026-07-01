@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=0">
+
+  <meta name="description" content="个人知识库与技术笔记">
+
+
+<link rel="alternate" href="/atom.xml" title="Api Intelligence Daily Life" type="application/atom+xml">
+<meta name="theme-color" content="#a1d0f6">
+<title>文摘：博客推荐 - 2026-07-01 - Api Intelligence Daily Life</title>
+<!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+<link rel="shortcut icon" href="/favicon.png">
+
+<link rel="stylesheet" href="/css/style.css">
+
+<nav class="main-nav">
+	
+	    <a href="/">← 主页</a>
+	
+	
+	    <a href="/about/">About</a>
+	
+	    <a href="/archives/">Archives</a>
+	
+	<a class="cta" href="/atom.xml" data-no-instant>订阅</a>
+</nav>
+
+<section id="wrapper">
+    <article class="post">
+    <header>
+        
+            <h1>文摘：博客推荐 - 2026-07-01</h1>
+        
+        <h2 class="headline">Jul 01 2026
+        
+            
+            <a href="/categories/博客推荐/#博客推荐">博客推荐</a>
+        
+        </h2>
+    </header>
+</article>
+<section id="post-body"><p>今日仅 1 篇新增文章，来自 <a target="_blank" rel="noopener" href="https://openai.com/news/engineering/">OpenAI Engineering</a>。虽然数量不多，但这篇技术深潜的质量非常高，值得花时间细读。</p>
+<hr>
+<h2 id="1-Core-dump-epidemiology-fixing-an-18-year-old-bug"><a href="#1-Core-dump-epidemiology-fixing-an-18-year-old-bug" class="headerlink" title="1. Core dump epidemiology: fixing an 18-year-old bug"></a>1. Core dump epidemiology: fixing an 18-year-old bug</h2><p><strong>来源</strong>：<a target="_blank" rel="noopener" href="https://openai.com/index/core-dump-epidemiology-data-infrastructure-bug">OpenAI Engineering</a><br><strong>发布日期</strong>：2026-06-30<br><strong>推荐指数</strong>：⭐⭐⭐⭐⭐ (5&#x2F;5) — 必读，年度级基础设施调试范文</p>
+<h3 id="核心概要"><a href="#核心概要" class="headerlink" title="核心概要"></a>核心概要</h3><p>OpenAI 的 <a target="_blank" rel="noopener" href="https://rockset.com/">Rockset</a> 服务（2024 年被收购，现用于 ChatGPT 数据基础设施中的搜索和实时分析）在生产环境遭遇了一系列极其诡异的 C++ 崩溃。崩溃表现为两种形态：函数返回时跳到 NULL 地址，或者 <code>%rsp</code> 栈指针莫名偏移 8 字节——这两种都不是正常应用代码的失败模式，任何合理的软件假设都无法解释。</p>
+<p>工程师团队最初采用”医生模式”——逐个检查 core dump，形成假设再逐一排除。这个方向完全走进了死胡同，因为他们不自觉地把两个完全不同的 bug 混为一谈，用 A 的反例推翻 B 的假设，又用 B 的反例推翻 A 的假设，陷入了逻辑死循环。</p>
+<p><strong>转折点</strong>是方法论的根本转变：从”医生”切换到”流行病学家”。团队用 ChatGPT 生成了一个自动化脚本，批量下载并分析过去一年所有的生产环境 core dump，自动提取寄存器状态并分类标记。一旦拥有了高质量的全量数据集，答案几乎立刻浮出水面——实际上是两个独立的 bug：</p>
+<ul>
+<li><strong>Bug #1</strong>：一台 Azure 物理机的 CPU 硬件损坏，导致寄存器计算出错。所有栈指针偏移崩溃都集中在同一区域、同一台机器。</li>
+<li><strong>Bug #2</strong>：<a target="_blank" rel="noopener" href="https://github.com/libunwind/libunwind">GNU libunwind</a> 中一个存在了 18 年的竞态条件——在异常展开（exception unwinding）过程中，<code>_Ux86_64_setcontext</code> 函数更新 <code>%rsp</code> 后、读取目标 <code>%rip</code> 之前的那一条指令的窗口内，如果恰好收到 OpenAI 频繁使用的 <code>SIGUSR2</code> 信号，内核会在 <code>%rsp-128</code> 处构建信号帧，覆盖掉尚未被读取的 <code>ucontext_t</code> 结构体，导致恢复的指令指针变成 NULL。</li>
+</ul>
+<p>文章深入分析了 x86_64 ABI 的红区（red zone）、异常展开机制、信号传递的时序细节，并用费米估算验证了竞态窗口的合理性：窗口约 $10^{-10}$ 秒，信号间隔约 $10^{-2}$ 秒，每次异常展开碰撞概率约 $10^{-8}$，而 Rockset 每秒可抛出 $10^4$ 次异常用于背压控制——在集群规模下完全能解释每天十余次崩溃的频率。</p>
+<h3 id="关键洞察"><a href="#关键洞察" class="headerlink" title="关键洞察"></a>关键洞察</h3><ul>
+<li><strong>方法论决定成败</strong>：最关键的一步不是精妙的汇编阅读或对 ABI 的深度理解，而是<strong>构建高质量的全量数据集</strong>。在数据清洗之前，团队将两个独立现象混为一个故事，任何推理都无法自洽；数据清洗之后，问题结构立刻清晰。</li>
+<li><strong>反直觉的竞态窗口</strong>：漏洞窗口只有一条指令宽（约 100 皮秒），却因为 OpenAI 极高的异常频率 × 信号频率 × 处理函数栈使用的叠加，在集群规模下被放大到每天可见。这种”微观上不可能、宏观上必然发生”的故障模式，是大规模基础设施独有的调试挑战。</li>
+<li><strong>沉默的依赖链</strong>：这个 18 年的 bug 一直存在，但从未被触发。直到 Rockset 同时满足三个罕见条件——高频异常抛出、高频 <code>SIGUSR2</code> 信号、信号处理函数因增加 <code>timer_getoverrun</code> 调用而使用更多栈——才越过了”操作可见”的阈值。这揭示了一个深层问题：广泛使用的开源库中的潜在缺陷，可能在特定工作负载组合下突然激活。</li>
+<li><strong>解耦调试与缓解</strong>：团队不仅在 libunwind 上游提交了<a target="_blank" rel="noopener" href="https://github.com/libunwind/libunwind/commit/a9b9293b286c14b9ed19db501aa347b46edd8a28">修复补丁</a>，还在运维层面做了多层防御——改进致命信号处理函数以记录寄存器状态、改用 libgcc 的展开器（减少锁争用）、修改控制平面使 VM 尽量复用而非回收（便于追踪坏节点）。</li>
+</ul>
+<h3 id="评价"><a href="#评价" class="headerlink" title="评价"></a>评价</h3><p><strong>优点</strong>：</p>
+<ul>
+<li>叙事结构极佳——从”看似不可能的崩溃”到”方法论转变”再到”双 bug 揭晓”，像侦探小说一样层层推进，读起来非常过瘾。</li>
+<li>技术深度和可读性兼得。作者在涉及 x86_64 ABI、DWARF 元数据、信号传递机制时都做了恰到好处的解释，既不跳步也不堆术语，即使不是系统编程专家也能跟上主线。</li>
+<li>核心教训简洁有力且可迁移：<strong>在缺乏可靠数据集时不要过度推理。</strong> 这对所有做大规模系统运维的团队都适用。</li>
+</ul>
+<p><strong>不足</strong>：</p>
+<ul>
+<li>文章聚焦于 Rockset 场景，对于不使用频繁信号 + 异常背压组合的系统，这个 bug 的复现条件非常苛刻，直接可迁移性有限。但方法论部分（全量数据 vs 个案分析）仍然普适。</li>
+<li>硬件故障（Bug #1）部分着墨较少，虽然结论清晰（denylist 一台主机后消失），但缺乏对硬件损坏根因的深入分析。不过这属于篇幅取舍，不算严重缺陷。</li>
+</ul>
+<p><strong>适用场景</strong>：后端工程师、SRE、系统编程从业者，尤其是处理大规模 C++ 服务稳定性问题的人。对想学习”如何系统性地调试诡异故障”的人来说，这是一篇教科书级别的范文。</p>
+<hr>
+<p><em>本日推荐文章 1 篇。各源最新文章日期（实际从 RSS&#x2F;feed 获取）：OpenAI Engineering 2026-06-30，Anthropic Engineering 2026-04-22，云风的博客 2026-06-25，liruifengv 2026-03-09，宝玉 2026-06-13，Chip Huyen 2025-01-16，Lilian Weng 2026-06-24，李乾坤 2026-06-22，卢向东 2026-06-25，Armin Ronacher 2026-06-23。</em></p>
+</section>
+    
+
+    <footer id="post-meta" class="clearfix">
+        <a href="/about/">
+        <img class="avatar" src="/images/avatar.png">
+        <div>
+            <span class="dark">Api Intelligence Daily Life</span>
+            <span>知识库 &amp; 博客</span>
+        </div>
+        </a>
+        <section id="sharing">
+            <a title="Share to Twitter" class="twitter" target="_blank" rel="noopener" href="https://twitter.com/intent/tweet?text=https://arbow.github.io/2026/07/01/blog-digest-2026-07-01/ - 文摘：博客推荐 - 2026-07-01 @"><span class="icon-twitter">tweet</span></a>
+            <a title="Share to Facebook" class="facebook" href="#" onclick="
+                window.open(
+                  'https://www.facebook.com/sharer/sharer.php?u='+encodeURIComponent(location.href),
+                  'facebook-share-dialog',
+                  'width=626,height=436');
+                return false;"><span class="icon-facebook-sign">Share</span>
+            </a>
+        </section>
+    </footer>
+
+
+  <section id="comment">
+    <button class="btn" id="loadcmts" onclick="cmts.load();">加载评论</button>
+    <div id="gitment"></div>
+    <script src='/js/gitment.browser.js'></script>
+    <link rel="stylesheet" href=''>
+    <script>
+      var cmts={
+        load:function cmts(){
+          var gitment = new Gitment({
+          
+            id: "文摘：博客推荐 - 2026-07-01",
+          
+            owner: "",
+            repo: "",
+            oauth: {
+              client_id: "",
+              client_secret: "",
+            },
+          })
+          gitment.render('gitment');
+          var loadcmt = document.getElementById("loadcmts");
+          var imyourfather = loadcmt.parentNode;
+          imyourfather.removeChild(loadcmts)
+        }
+      }
+    </script>
+  </section>
+
+
+	<footer id="footer">
+	<div id="social">
+		<p class="small">©  Arbow| Powered by Hexo & 
+			<a target="_blank" rel="noopener" href="https://github.com/F0r3at/Lights"> Lights</a>
+		</p>
+	</div>
+</footer>
+
+</section>
+
+	<script src="//cdnjs.loli.net/ajax/libs/instantclick/3.0.1/instantclick.min.js" data-no-instant></script>
+	<script data-no-instant>
+		
+		InstantClick.init('mousedown');
+	</script>
+
+
+
