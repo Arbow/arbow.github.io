@@ -1,0 +1,509 @@
+<!DOCTYPE html>
+
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=0">
+
+  <meta name="description" content="个人知识库与技术笔记">
+
+
+<link rel="alternate" href="/atom.xml" title="Api Intelligence Daily Life" type="application/atom+xml">
+<meta name="theme-color" content="#a1d0f6">
+<title>文摘：AI Infra 全景图 - Api Intelligence Daily Life</title>
+<!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+<link rel="shortcut icon" href="/favicon.png">
+
+<link rel="stylesheet" href="/css/style.css">
+
+<nav class="main-nav">
+	
+	    <a href="/">← 主页</a>
+	
+	
+	    <a href="/about/">About</a>
+	
+	    <a href="/archives/">Archives</a>
+	
+	<a class="cta" href="/atom.xml" data-no-instant>订阅</a>
+</nav>
+
+<section id="wrapper">
+    <article class="post">
+    <header>
+        
+            <h1>文摘：AI Infra 全景图</h1>
+        
+        <h2 class="headline">Jul 02 2026
+        
+            
+            <a href="/categories/文摘/#文摘">文摘</a>
+        
+        </h2>
+    </header>
+</article>
+<section id="post-body"><p><strong>来源</strong>：ThinkingAgent (Knock)<br><strong>原文链接</strong>：<a target="_blank" rel="noopener" href="https://mp.weixin.qq.com/s/dmlwqGylzG0eQVUlcZocUQ">https://mp.weixin.qq.com/s/dmlwqGylzG0eQVUlcZocUQ</a><br><strong>字数</strong>：约 7500 字  </p>
+<h2 id="核心洞察"><a href="#核心洞察" class="headerlink" title="核心洞察"></a>核心洞察</h2><p>2026 年，几乎每家公司都在做 AI Agent，但一个残酷的事实是：绝大多数 Agent 项目停留在 Demo 阶段，无法融入生产。问题不是模型不行，不是算法不行——是 <strong>Infra 不行</strong>。</p>
+<p>构建生产级 AI Agent 系统，需要的远不止一个大模型和一个向量库。你需要算力调度、模型网关、数据管道、Prompt 管理、Agent 编排、工具沙箱、记忆系统、评测体系、可观测平台——还要让安全、CI&#x2F;CD、成本和开发者体验贯穿每一层。</p>
+<h2 id="全景架构：9-层-4-横切"><a href="#全景架构：9-层-4-横切" class="headerlink" title="全景架构：9 层 + 4 横切"></a>全景架构：9 层 + 4 横切</h2><h3 id="纵向-9-层（从底层资源到上层应用）"><a href="#纵向-9-层（从底层资源到上层应用）" class="headerlink" title="纵向 9 层（从底层资源到上层应用）"></a>纵向 9 层（从底层资源到上层应用）</h3><table>
+<thead>
+<tr>
+<th>层级</th>
+<th>名称</th>
+<th>核心问题</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>L0</td>
+<td>基础资源层</td>
+<td>模型和应用运行在哪里？</td>
+</tr>
+<tr>
+<td>L1</td>
+<td>模型与推理层</td>
+<td>用哪个模型？怎么调用？怎么降本？</td>
+</tr>
+<tr>
+<td>L2</td>
+<td>数据与知识层</td>
+<td>模型如何安全、准确地使用企业私有知识？</td>
+</tr>
+<tr>
+<td>L3</td>
+<td>Prompt 与上下文层</td>
+<td>如何组织模型能可靠执行的输入？</td>
+</tr>
+<tr>
+<td>L4</td>
+<td>编排与 Agent 层</td>
+<td>复杂任务如何被拆解、调度、执行？</td>
+</tr>
+<tr>
+<td>L5</td>
+<td>工具执行层</td>
+<td>Agent 能做什么？执行边界在哪里？</td>
+</tr>
+<tr>
+<td>L6</td>
+<td>状态与记忆层</td>
+<td>系统如何记住一切而不越权？</td>
+</tr>
+<tr>
+<td>L7</td>
+<td>评测与质量层</td>
+<td>改动后质量是变好了还是变坏了？</td>
+</tr>
+<tr>
+<td>L8</td>
+<td>可观测与运营层</td>
+<td>出了问题能否定位？成本能否归因？</td>
+</tr>
+</tbody></table>
+<h3 id="横向-4-个能力（贯穿所有层）"><a href="#横向-4-个能力（贯穿所有层）" class="headerlink" title="横向 4 个能力（贯穿所有层）"></a>横向 4 个能力（贯穿所有层）</h3><ul>
+<li><strong>安全治理</strong>：身份认证、权限控制、PII&#x2F;DLP、Prompt Injection 防护、审计日志</li>
+<li><strong>CI&#x2F;CD 与发布治理</strong>：代码、Prompt、模型、RAG 索引、工具 Schema、Workflow 全面版本化</li>
+<li><strong>FinOps 成本治理</strong>：Token 消耗、GPU 计算、向量数据库、日志存储全链路计量归因</li>
+<li><strong>开发者体验（DevEx）</strong>：Playground、Trace 回放、Prompt 调试、RAG 调试、Eval 看板</li>
+</ul>
+<p><strong>关键洞察</strong>：大多数团队只关注 L4（Agent Framework）+ L2（向量库），忽略了其他 7 层和 4 个横切能力。但生产级 Agent 的稳定性，恰恰取决于那些「不起眼」的基础设施。</p>
+<h2 id="L0：基础资源层——算力、存储、网络"><a href="#L0：基础资源层——算力、存储、网络" class="headerlink" title="L0：基础资源层——算力、存储、网络"></a>L0：基础资源层——算力、存储、网络</h2><p>核心组件：</p>
+<table>
+<thead>
+<tr>
+<th>类别</th>
+<th>技术</th>
+<th>代表工具</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>计算</td>
+<td>GPU &#x2F; TPU &#x2F; NPU &#x2F; CPU</td>
+<td>NVIDIA A100&#x2F;H100、Google TPU v5e</td>
+</tr>
+<tr>
+<td>编排</td>
+<td>容器调度</td>
+<td>Kubernetes、Ray、Slurm、Volcano、Kueue</td>
+</tr>
+<tr>
+<td>存储</td>
+<td>对象 &#x2F; 块 &#x2F; 文件</td>
+<td>S3、MinIO、JuiceFS、Alluxio</td>
+</tr>
+<tr>
+<td>网络</td>
+<td>高速互联</td>
+<td>RDMA、InfiniBand、VPC、服务网格</td>
+</tr>
+<tr>
+<td>镜像</td>
+<td>容器与模型</td>
+<td>Harbor、Artifact Registry、HuggingFace Hub</td>
+</tr>
+<tr>
+<td>安全</td>
+<td>密钥与隔离</td>
+<td>Secret Manager、KMS、多租户隔离</td>
+</tr>
+</tbody></table>
+<p><strong>生产级实践</strong>：</p>
+<ul>
+<li>推理用 GPU 按需弹性伸缩（如 Modal、RunPod Serverless），避免空跑</li>
+<li>训练用 Ray Cluster + Kueue 做任务队列，多租户公平调度</li>
+<li>模型权重统一存到 Artifact Registry，版本化管理，禁止散落本地磁盘</li>
+</ul>
+<h2 id="L1：模型与推理层——模型服务与智能网关"><a href="#L1：模型与推理层——模型服务与智能网关" class="headerlink" title="L1：模型与推理层——模型服务与智能网关"></a>L1：模型与推理层——模型服务与智能网关</h2><p>主流工具对比：</p>
+<table>
+<thead>
+<tr>
+<th>工具</th>
+<th>定位</th>
+<th>特点</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>LiteLLM</td>
+<td>开源网关</td>
+<td>100+ 模型统一接口，自动 Fallback</td>
+</tr>
+<tr>
+<td>Portkey</td>
+<td>商业网关</td>
+<td>内置缓存、重试、日志、成本分析</td>
+</tr>
+<tr>
+<td>vLLM</td>
+<td>推理引擎</td>
+<td>PagedAttention，高吞吐</td>
+</tr>
+<tr>
+<td>OpenRouter</td>
+<td>SaaS 路由</td>
+<td>按量计费，零部署</td>
+</tr>
+<tr>
+<td>自建网关</td>
+<td>完全控制</td>
+<td>可定制路由策略、合规审计</td>
+</tr>
+</tbody></table>
+<p><strong>生产级最佳实践</strong>：</p>
+<ul>
+<li><strong>智能路由</strong>：简单任务用小模型（降本），复杂任务用大模型（保质量）</li>
+<li><strong>自动 Fallback</strong>：主模型超时或报错，自动切换备用模型</li>
+<li><strong>成本控制</strong>：设置每用户 &#x2F; 每应用的 Token 预算，超额自动降级</li>
+<li><strong>KV Cache 复用</strong>：相同前缀的请求共享 KV Cache，减少重复计算</li>
+</ul>
+<h2 id="L2：数据与知识层——RAG-的基础"><a href="#L2：数据与知识层——RAG-的基础" class="headerlink" title="L2：数据与知识层——RAG 的基础"></a>L2：数据与知识层——RAG 的基础</h2><p>完整数据管道：数据源 → 解析&#x2F;清洗 → Chunking → Embedding → 向量索引 → 检索 → Rerank → 注入 Prompt</p>
+<p>向量数据库对比（2026）：</p>
+<table>
+<thead>
+<tr>
+<th>数据库</th>
+<th>部署方式</th>
+<th>适用场景</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Pinecone</td>
+<td>全托管 SaaS</td>
+<td>快速上线，不想管基础设施</td>
+</tr>
+<tr>
+<td>Qdrant</td>
+<td>自托管 &#x2F; Cloud</td>
+<td>大规模数据，性能敏感</td>
+</tr>
+<tr>
+<td>Milvus</td>
+<td>自托管</td>
+<td>十亿级向量，企业级分布式</td>
+</tr>
+<tr>
+<td>Weaviate</td>
+<td>自托管 &#x2F; Cloud</td>
+<td>多模态 RAG，GraphQL API</td>
+</tr>
+<tr>
+<td>pgvector</td>
+<td>PostgreSQL 插件</td>
+<td>已有 PG，数据量不大</td>
+</tr>
+<tr>
+<td>ChromaDB</td>
+<td>嵌入式</td>
+<td>本地开发，原型验证</td>
+</tr>
+</tbody></table>
+<p><strong>从朴素 RAG 到 Agentic RAG</strong>：</p>
+<ul>
+<li>朴素 RAG：Query → 检索 Top-K → 拼接 Prompt → 生成</li>
+<li>Advanced RAG：Query Rewrite → 混合检索 → Rerank → Citation → 生成</li>
+<li>Agentic RAG：Agent 主动决定何时检索、检索什么、是否需要二次检索</li>
+</ul>
+<h2 id="L3：Prompt-与上下文层——PromptOps-与上下文工程"><a href="#L3：Prompt-与上下文层——PromptOps-与上下文工程" class="headerlink" title="L3：Prompt 与上下文层——PromptOps 与上下文工程"></a>L3：Prompt 与上下文层——PromptOps 与上下文工程</h2><p>上下文的组成：System Prompt + Developer Prompt + RAG 结果 + Few-shot Examples + 用户画像 + 会话记忆 + User Prompt</p>
+<p><strong>PromptOps 核心能力</strong>：Prompt 版本管理、Prompt Registry、Prompt 实验（A&#x2F;B 测试）、Prompt 审批、上下文压缩、Token Budget</p>
+<p>主流工具：LangSmith、LangFuse、PromptLayer、自建（Git + YAML）</p>
+<p><strong>最佳实践</strong>：Prompt 即代码——将 Prompt 纳入版本控制、Code Review、灰度发布。</p>
+<h2 id="L4：编排与-Agent-层——Workflow-与-Agent-Runtime"><a href="#L4：编排与-Agent-层——Workflow-与-Agent-Runtime" class="headerlink" title="L4：编排与 Agent 层——Workflow 与 Agent Runtime"></a>L4：编排与 Agent 层——Workflow 与 Agent Runtime</h2><p>四大主流 Agent Framework 对比（2025-2026）：</p>
+<table>
+<thead>
+<tr>
+<th>维度</th>
+<th>LangGraph</th>
+<th>CrewAI</th>
+<th>AutoGen (0.4+)</th>
+<th>OpenAI Agents SDK</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>架构模式</td>
+<td>有向图状态机</td>
+<td>角色扮演 + 任务分工</td>
+<td>异步事件驱动</td>
+<td>简单链式 + Handoff</td>
+</tr>
+<tr>
+<td>多 Agent</td>
+<td>原生支持</td>
+<td>内置角色协作</td>
+<td>对话式协作</td>
+<td>Handoff 模式</td>
+</tr>
+<tr>
+<td>状态管理</td>
+<td>Checkpoint 持久化</td>
+<td>内置 Memory</td>
+<td>异步状态</td>
+<td>简单上下文</td>
+</tr>
+<tr>
+<td>学习曲线</td>
+<td>陡峭</td>
+<td>平缓</td>
+<td>中等</td>
+<td>最平缓</td>
+</tr>
+</tbody></table>
+<p><strong>选型建议</strong>：</p>
+<ul>
+<li>复杂工作流、精细控制 → LangGraph</li>
+<li>多角色协作、团队分工 → CrewAI</li>
+<li>实时对话、事件驱动 → AutoGen 0.4+</li>
+<li>快速原型、OpenAI 生态 → OpenAI Agents SDK</li>
+</ul>
+<p><strong>LangGraph 核心优势——有向图状态机</strong>：</p>
+<ul>
+<li>节点（Node）：每个步骤是一个函数</li>
+<li>边（Edge）：定义步骤之间的转移逻辑</li>
+<li>状态（State）：全局共享的可持久化状态</li>
+<li>天然支持：循环、分支、并行、断点恢复（Checkpoint）</li>
+</ul>
+<h2 id="L5：工具执行层——沙箱、集成与执行边界"><a href="#L5：工具执行层——沙箱、集成与执行边界" class="headerlink" title="L5：工具执行层——沙箱、集成与执行边界"></a>L5：工具执行层——沙箱、集成与执行边界</h2><p>工具执行层的完整能力矩阵：函数调用、MCP Server、API Connector、代码解释器、浏览器自动化、RPA、权限校验、沙箱隔离、输出校验、幂等&#x2F;事务</p>
+<p>沙箱方案对比：</p>
+<table>
+<thead>
+<tr>
+<th>方案</th>
+<th>启动速度</th>
+<th>隔离级别</th>
+<th>适用场景</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>E2B</td>
+<td>&lt; 150ms</td>
+<td>VM 级</td>
+<td>Agent 代码执行首选</td>
+</tr>
+<tr>
+<td>Modal</td>
+<td>&lt; 500ms</td>
+<td>容器级</td>
+<td>GPU 密集型任务</td>
+</tr>
+<tr>
+<td>Fly.io Machines</td>
+<td>&lt; 300ms</td>
+<td>VM 级</td>
+<td>全球分布式执行</td>
+</tr>
+<tr>
+<td>Docker（自建）</td>
+<td>1-3s</td>
+<td>弱隔离</td>
+<td>开发环境</td>
+</tr>
+</tbody></table>
+<p><strong>安全设计三原则</strong>：最小权限、网络隔离、资源限制</p>
+<h2 id="L6：状态与记忆层——让-Agent-记住一切而不越权"><a href="#L6：状态与记忆层——让-Agent-记住一切而不越权" class="headerlink" title="L6：状态与记忆层——让 Agent 记住一切而不越权"></a>L6：状态与记忆层——让 Agent 记住一切而不越权</h2><p>记忆的分层模型：</p>
+<table>
+<thead>
+<tr>
+<th>类型</th>
+<th>时间范围</th>
+<th>存储方式</th>
+<th>典型场景</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>工作记忆</td>
+<td>当前对话</td>
+<td>Context Window</td>
+<td>对话上下文</td>
+</tr>
+<tr>
+<td>短期记忆</td>
+<td>最近 N 轮</td>
+<td>内存 &#x2F; Redis</td>
+<td>多轮对话连贯性</td>
+</tr>
+<tr>
+<td>长期记忆</td>
+<td>跨会话</td>
+<td>向量数据库</td>
+<td>用户偏好、历史事实</td>
+</tr>
+<tr>
+<td>情景记忆</td>
+<td>特定事件</td>
+<td>结构化存储</td>
+<td>「上次你说过……」</td>
+</tr>
+<tr>
+<td>语义记忆</td>
+<td>通用知识</td>
+<td>知识图谱 &#x2F; 向量</td>
+<td>「Python 是一种编程语言」</td>
+</tr>
+</tbody></table>
+<p>主流记忆管理工具：Mem0（个人助理）、LangGraph Memory（LangGraph 生态）、Zep（客服、对话型 Agent）</p>
+<p><strong>必须管理的能力</strong>：TTL（过期清除）、隐私（PII 脱敏）、写入策略、召回策略</p>
+<h2 id="L7：评测与质量层——AI-系统能否生产化的关键"><a href="#L7：评测与质量层——AI-系统能否生产化的关键" class="headerlink" title="L7：评测与质量层——AI 系统能否生产化的关键"></a>L7：评测与质量层——AI 系统能否生产化的关键</h2><p>没有评测，你就是在「盲飞」——改了 Prompt、换了模型、调了 RAG 参数，不知道质量是变好了还是变坏了。</p>
+<p>评测的三个层次：离线评测（Golden Set、合成数据、回归测试）、在线评测（实时指标、用户反馈、A&#x2F;B 测试）、人审抽检（人工标注、安全红队）</p>
+<p>关键评测指标：RAG Faithfulness（忠于上下文）、Answer Relevance（与问题相关）、Context Precision（检索精准）、Tool Success Rate（工具调用成功）、Agent Completion Rate（任务完成率）、Toxicity&#x2F;Bias（有害&#x2F;偏见）、幻觉检测</p>
+<p>评测工具：RAGAS、DeepEval、LangSmith Evaluation、自建 Golden Set</p>
+<p><strong>最佳实践</strong>：发布门禁——每次 Prompt &#x2F; 模型 &#x2F; RAG &#x2F; 工具改动，必须通过评测门禁才能上线。</p>
+<h2 id="L8：可观测与运营层——看见系统里发生了什么"><a href="#L8：可观测与运营层——看见系统里发生了什么" class="headerlink" title="L8：可观测与运营层——看见系统里发生了什么"></a>L8：可观测与运营层——看见系统里发生了什么</h2><p>AI 可观测性的三大支柱：Tracing（追踪）、Metrics（指标）、Logs（日志）</p>
+<p>一次完整的 Trace 应包含：用户原始问题、完整 Prompt、Tool Calls 及参数、Tool Results、LLM 原始输出、最终回复、Token 用量、延迟、成本</p>
+<p>主流工具对比：LangSmith（商业，Tracing + Eval + Prompt Hub）、LangFuse（开源，Tracing + Prompt 管理，可自建）、OpenTelemetry（开源标准，通用追踪协议，厂商中立）、Arize Phoenix（开源，Tracing + 模型漂移检测）</p>
+<p><strong>OpenTelemetry 作为通用基础</strong>：OpenTelemetry（OTel）是 CNCF 项目，提供厂商中立的 traces、metrics、logs 采集标准。许多 AI 可观测工具都支持 OTel 协议，让你不被锁定在特定供应商。</p>
+<h2 id="技术选型路线图"><a href="#技术选型路线图" class="headerlink" title="技术选型路线图"></a>技术选型路线图</h2><h3 id="阶段-1：验证期（1-2-周）"><a href="#阶段-1：验证期（1-2-周）" class="headerlink" title="阶段 1：验证期（1-2 周）"></a>阶段 1：验证期（1-2 周）</h3><ul>
+<li>L1：直接 OpenAI API</li>
+<li>L2：ChromaDB（嵌入式）</li>
+<li>L3：Prompt 硬编码在代码中</li>
+<li>L4：LangChain 简单 Chain</li>
+<li>L5：本地 Docker</li>
+<li>L6：简单变量存储</li>
+<li>L7：人工检查输出</li>
+<li>L8：print() 日志</li>
+</ul>
+<h3 id="阶段-2：原型期（1-2-月）"><a href="#阶段-2：原型期（1-2-月）" class="headerlink" title="阶段 2：原型期（1-2 月）"></a>阶段 2：原型期（1-2 月）</h3><ul>
+<li>L1：LiteLLM（统一接口 + Fallback）</li>
+<li>L2：Pinecone &#x2F; Qdrant Cloud</li>
+<li>L3：LangFuse Prompt 管理</li>
+<li>L4：LangGraph &#x2F; CrewAI</li>
+<li>L5：E2B 沙箱</li>
+<li>L6：LangGraph Memory</li>
+<li>L7：RAGAS + Golden Set</li>
+<li>L8：LangFuse（开源部署）</li>
+</ul>
+<h3 id="阶段-3：生产期（持续迭代）"><a href="#阶段-3：生产期（持续迭代）" class="headerlink" title="阶段 3：生产期（持续迭代）"></a>阶段 3：生产期（持续迭代）</h3><ul>
+<li>L0：K8s + GPU 弹性伸缩</li>
+<li>L1：自建网关 + vLLM + 智能路由</li>
+<li>L2：Milvus &#x2F; Qdrant 集群 + Advanced RAG</li>
+<li>L3：Prompt Registry + 审批流程</li>
+<li>L4：LangGraph + Temporal 持久化工作流</li>
+<li>L5：E2B + Modal（GPU 任务）+ MCP</li>
+<li>L6：Mem0 + 自建记忆策略</li>
+<li>L7：在线评测 + 发布门禁 + 人审抽检</li>
+<li>L8：OpenTelemetry + Grafana + 告警</li>
+<li>横切：安全治理、CI&#x2F;CD、FinOps、DevEx 全面落地</li>
+</ul>
+<h2 id="一次完整的-Agent-调用：穿越-9-层"><a href="#一次完整的-Agent-调用：穿越-9-层" class="headerlink" title="一次完整的 Agent 调用：穿越 9 层"></a>一次完整的 Agent 调用：穿越 9 层</h2><p>场景：用户问 Agent 「帮我分析这份 CSV 文件里的销售趋势」</p>
+<ul>
+<li><strong>L0</strong>：请求到达 Kubernetes 集群，调度到 GPU 节点</li>
+<li><strong>L1</strong>：LLM 网关路由到 GPT-4o（复杂分析任务），启用 KV Cache</li>
+<li><strong>L2</strong>：Agent 从向量数据库检索 「CSV 分析最佳实践」</li>
+<li><strong>L3</strong>：System Prompt + RAG 结果 + 用户偏好拼装成完整上下文</li>
+<li><strong>L4</strong>：LangGraph 启动工作流——Agent 决定需要读取文件 + 执行代码</li>
+<li><strong>L5</strong>：Agent 在 E2B 沙箱中启动 Python 环境，执行 pandas 分析代码</li>
+<li><strong>L6</strong>：Agent 读取用户偏好（「偏好中文报告」），写入分析结果到长期记忆</li>
+<li><strong>L7</strong>：离线评测确认分析质量达标，在线指标监控幻觉率</li>
+<li><strong>L8</strong>：LangFuse 记录完整 Trace——Prompt、Tool Calls、Token 消耗、延迟</li>
+</ul>
+<p>每一步都有日志，每一步都可追溯，每一步都有 Fallback。这就是生产级 Agent 和 Demo 级 Agent 的区别。</p>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>完整 AI Infra 不是 「模型 + LangChain + 向量库」，而是：算力资源底座 + 模型服务与网关 + 数据&#x2F;RAG 管道 + Prompt&#x2F;Context 管理 + Agent&#x2F;Workflow 编排 + 工具执行沙箱 + 状态记忆系统 + 评测质量体系 + 可观测&#x2F;SRE + 安全治理&#x2F;合规 + 成本与开发者平台。</p>
+<p><strong>9 层纵向架构 + 4 个横切能力，缺一不可。Demo 只需要 L1 + L4，生产需要全部 9 层 + 4 横切。</strong></p>
+<hr>
+<p><em>本文摘整理于 2026-07-02，收录 AI Infra 全景图的分层拆解与生产级最佳实践。</em></p>
+</section>
+    
+
+    <footer id="post-meta" class="clearfix">
+        <a href="/about/">
+        <img class="avatar" src="/images/avatar.png">
+        <div>
+            <span class="dark">Api Intelligence Daily Life</span>
+            <span>知识库 &amp; 博客</span>
+        </div>
+        </a>
+        <section id="sharing">
+            <a title="Share to Twitter" class="twitter" target="_blank" rel="noopener" href="https://twitter.com/intent/tweet?text=https://arbow.github.io/2026/07/02/digest-2026-07-02-ai-infra-panorama/ - 文摘：AI Infra 全景图 @"><span class="icon-twitter">tweet</span></a>
+            <a title="Share to Facebook" class="facebook" href="#" onclick="
+                window.open(
+                  'https://www.facebook.com/sharer/sharer.php?u='+encodeURIComponent(location.href),
+                  'facebook-share-dialog',
+                  'width=626,height=436');
+                return false;"><span class="icon-facebook-sign">Share</span>
+            </a>
+        </section>
+    </footer>
+
+
+  <section id="comment">
+    <button class="btn" id="loadcmts" onclick="cmts.load();">加载评论</button>
+    <div id="gitment"></div>
+    <script src='/js/gitment.browser.js'></script>
+    <link rel="stylesheet" href=''>
+    <script>
+      var cmts={
+        load:function cmts(){
+          var gitment = new Gitment({
+          
+            id: "文摘：AI Infra 全景图",
+          
+            owner: "",
+            repo: "",
+            oauth: {
+              client_id: "",
+              client_secret: "",
+            },
+          })
+          gitment.render('gitment');
+          var loadcmt = document.getElementById("loadcmts");
+          var imyourfather = loadcmt.parentNode;
+          imyourfather.removeChild(loadcmts)
+        }
+      }
+    </script>
+  </section>
+
+
+	<footer id="footer">
+	<div id="social">
+		<p class="small">©  Arbow| Powered by Hexo & 
+			<a target="_blank" rel="noopener" href="https://github.com/F0r3at/Lights"> Lights</a>
+		</p>
+	</div>
+</footer>
+
+</section>
+
+	<script src="//cdnjs.loli.net/ajax/libs/instantclick/3.0.1/instantclick.min.js" data-no-instant></script>
+	<script data-no-instant>
+		
+		InstantClick.init('mousedown');
+	</script>
+
+
+
