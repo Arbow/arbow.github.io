@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=0">
+
+  <meta name="description" content="个人知识库与技术笔记">
+
+
+<link rel="alternate" href="/atom.xml" title="Api Intelligence Daily Life" type="application/atom+xml">
+<meta name="theme-color" content="#a1d0f6">
+<title>文摘：阿图因 AI 在 CyberGym 测试中超过了 Mythos，不过这只是拼图的一部分 - Api Intelligence Daily Life</title>
+<!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+<link rel="shortcut icon" href="/favicon.png">
+
+<link rel="stylesheet" href="/css/style.css">
+
+<nav class="main-nav">
+	
+	    <a href="/">← 主页</a>
+	
+	
+	    <a href="/about/">About</a>
+	
+	    <a href="/archives/">Archives</a>
+	
+	<a class="cta" href="/atom.xml" data-no-instant>订阅</a>
+</nav>
+
+<section id="wrapper">
+    <article class="post">
+    <header>
+        
+            <h1>文摘：阿图因 AI 在 CyberGym 测试中超过了 Mythos，不过这只是拼图的一部分</h1>
+        
+        <h2 class="headline">Jul 04 2026
+        
+            
+            <a href="/categories/文摘/#文摘">文摘</a>
+        
+        </h2>
+    </header>
+</article>
+<section id="post-body"><h2 id="背景"><a href="#背景" class="headerlink" title="背景"></a>背景</h2><p>腾讯玄武实验室负责人 TK 回顾了从 2014 年 Heartbleed 漏洞开始的安全研究之路。玄武实验室的核心项目”阿图因”起初是一套全自动已知漏洞扫描系统，目标是获得”软件安全领域的上帝视角”。2023 年起，团队开始用 LLM 做漏洞挖掘，研发了新一代”阿图因 AI”。</p>
+<h2 id="阿图因-AI-vs-Mythos"><a href="#阿图因-AI-vs-Mythos" class="headerlink" title="阿图因 AI vs Mythos"></a>阿图因 AI vs Mythos</h2><p>2026 年 4 月，Anthropic 发布了 Claude Mythos Preview，Linux 基金会用它审计 curl 源码，结果 5 个发现中只有 1 个低危漏洞。玄武实验室随后用阿图因 AI 分析 curl，发现了 Mythos 遗漏的<strong>中危漏洞 CVE-2026-9079</strong>（curl 8.21.0 已修复）。</p>
+<p>在 UC Berkeley 的 <strong>CyberGym</strong> 基准测试中（1507 个真实漏洞，来自 Google OSS-Fuzz 的 188 个开源项目），阿图因 AI 得分 <strong>84.0%</strong>，略高于 Mythos，使用的模型是 GLM-5.1。</p>
+<p>TK 坦率指出：这不意味着阿图因 AI 整体强于 Mythos。阿图因 AI 是<strong>面向漏洞挖掘的 Agent</strong>，而 Mythos 是通用模型。但网络安全领域高质量训练数据稀缺，是 LLM 走向 AGI 之路上最后几个里程碑之一——这正是开源模型 + 安全能力有机会追赶的原因。</p>
+<h2 id="CyberGym-与-BVI-的局限"><a href="#CyberGym-与-BVI-的局限" class="headerlink" title="CyberGym 与 BVI 的局限"></a>CyberGym 与 BVI 的局限</h2><ul>
+<li><strong>CyberGym</strong>：漏洞信息公开，可能已进入训练数据（”考试前看过题”）；且只覆盖内存破坏类漏洞，无法评估逻辑漏洞发现能力。</li>
+<li><strong>BVI 榜单</strong>（收集 AI 在真实世界发现的新漏洞）：阿图因 AI 严重漏洞总数排名第 5，严重程度排名第 1。但 BVI 是”自己找题做”，分数与投入算力相关。</li>
+</ul>
+<h2 id="逻辑漏洞：更高危的战场"><a href="#逻辑漏洞：更高危的战场" class="headerlink" title="逻辑漏洞：更高危的战场"></a>逻辑漏洞：更高危的战场</h2><p>阿图因 AI 的亮点在于<strong>逻辑漏洞</strong>——语法合法、甚至符合安全规范，但语义上可被利用的漏洞。现代操作系统的缓解措施（ASLR 等）和 Rust 等安全语言对逻辑漏洞都无能为力。</p>
+<p>代表性成果：</p>
+<ul>
+<li><strong>gnark</strong>（ConsenSys 零知识证明库，用于 Worldcoin、BNB Chain）：评分 9.1 的密码学逻辑漏洞 CVE-2025-57801，可构造伪造签名反复执行交易</li>
+<li><strong>加密算法库批量发现</strong>：cryptography（Python）、bc-java（Java）、RustCrypto（Rust）、sm-crypto（前端&#x2F;Node 国密）、OpenSSL，最高评分 9.3，部分漏洞可直接破解明文或获取私钥</li>
+<li><strong>XRDP</strong>：9.8 分漏洞，可远程入侵 Linux 发行版（CVE-2026-41252 等）</li>
+<li><strong>Flowise &#x2F; BoxLite</strong>（AI 生态项目）：9.9 甚至满分 10 分漏洞（CVE-2025-61913、CVE-2026-46695）</li>
+<li><strong>闭源软件</strong>：已发现 Windows 和 macOS 系统漏洞</li>
+</ul>
+<h2 id="Skill-漏洞：Agent-时代的新攻击面"><a href="#Skill-漏洞：Agent-时代的新攻击面" class="headerlink" title="Skill 漏洞：Agent 时代的新攻击面"></a>Skill 漏洞：Agent 时代的新攻击面</h2><p>阿图因 AI 还发现了 Google、OpenAI、Nvidia 等 AI 企业的 Skill 漏洞。例如 Google 某个 Skill 处理邮件时存在命令注入——攻击者只需发送一封特殊邮件到受害者 Gmail。OpenAI 和 Nvidia 的部分 Skill 在处理 GitHub PR 时也存在注入问题，恶意 PR 可篡改代码仓库甚至执行任意命令。</p>
+<h2 id="ClamAV-后门分析：二十年伏笔"><a href="#ClamAV-后门分析：二十年伏笔" class="headerlink" title="ClamAV 后门分析：二十年伏笔"></a>ClamAV 后门分析：二十年伏笔</h2><p>文章最精彩的部分是对 ClamAV 中疑似后门的深度还原。一位代码贡献者 W 在 2004-2007 年间：</p>
+<ol>
+<li>写了含漏洞 V1 的脱壳代码，社区修复后通过重构”复活”漏洞</li>
+<li>在另一模块中用相似变量名制造极隐蔽的漏洞 V2</li>
+<li>当 V2 即将被间接修复时，用异常复杂的修复方式保全漏洞</li>
+<li>2007 年补充信息泄露漏洞 V3，绕过 ASLR 为 V2 铺路</li>
+</ol>
+<p>四个漏洞跨越三年、互相配合、形成完整利用链，存在了二十多年未被发现。TK 指出，后门和漏洞在技术层面难以区分，但综合分析代码、人、时间、事件之间的隐秘联系，比单纯的漏洞挖掘更接近安全的本质——这也是阿图因 AI 未来努力的方向。</p>
+<h2 id="评论"><a href="#评论" class="headerlink" title="评论"></a>评论</h2><p>这篇文章的信息密度很高，几个点值得关注：</p>
+<ol>
+<li><strong>GLM-5.1 跑出 84% 的 CyberGym 成绩</strong>，说明安全漏洞挖掘不只是前沿闭源模型的专利。Agent 架构 + 开源模型 + 垂直领域能力，可以在特定赛道追平甚至超过旗舰模型。</li>
+<li><strong>逻辑漏洞是 AI 安全的真正差异化方向</strong>。Fuzzing 和静态分析在内存破坏漏洞上已经很成熟，但逻辑漏洞需要”理解代码意图”，这是 LLM 的天然优势。</li>
+<li><strong>Skill 漏洞和 Agent 攻击面</strong>是全新的安全课题。当 Agent 成为操作系统的等价物，Skill 就是新型可执行代码——注入攻击正在以新形态重演。</li>
+<li><strong>ClamAV 案例展示了”安全情报分析”的价值</strong>：不是单点发现漏洞，而是跨时间、跨人、跨事件建立关联。这可能是 AI 安全研究的下一个范式。</li>
+</ol>
+<hr>
+<p><em>原文作者：TK（腾讯玄武实验室）  |  发布于 2026-07-03</em></p>
+<p>原文链接：<a target="_blank" rel="noopener" href="https://mp.weixin.qq.com/s/BzU7g-2iG7d6h4ViwMhxyg">https://mp.weixin.qq.com/s/BzU7g-2iG7d6h4ViwMhxyg</a></p>
+</section>
+    
+
+    <footer id="post-meta" class="clearfix">
+        <a href="/about/">
+        <img class="avatar" src="/images/avatar.png">
+        <div>
+            <span class="dark">Api Intelligence Daily Life</span>
+            <span>知识库 &amp; 博客</span>
+        </div>
+        </a>
+        <section id="sharing">
+            <a title="Share to Twitter" class="twitter" target="_blank" rel="noopener" href="https://twitter.com/intent/tweet?text=https://arbow.github.io/2026/07/04/digest-2026-07-04-atuian-ai-cybergym-mythos/ - 文摘：阿图因 AI 在 CyberGym 测试中超过了 Mythos，不过这只是拼图的一部分 @"><span class="icon-twitter">tweet</span></a>
+            <a title="Share to Facebook" class="facebook" href="#" onclick="
+                window.open(
+                  'https://www.facebook.com/sharer/sharer.php?u='+encodeURIComponent(location.href),
+                  'facebook-share-dialog',
+                  'width=626,height=436');
+                return false;"><span class="icon-facebook-sign">Share</span>
+            </a>
+        </section>
+    </footer>
+
+
+  <section id="comment">
+    <button class="btn" id="loadcmts" onclick="cmts.load();">加载评论</button>
+    <div id="gitment"></div>
+    <script src='/js/gitment.browser.js'></script>
+    <link rel="stylesheet" href=''>
+    <script>
+      var cmts={
+        load:function cmts(){
+          var gitment = new Gitment({
+          
+            id: "文摘：阿图因 AI 在 CyberGym 测试中超过了 Mythos，不过这只是拼图的一部分",
+          
+            owner: "",
+            repo: "",
+            oauth: {
+              client_id: "",
+              client_secret: "",
+            },
+          })
+          gitment.render('gitment');
+          var loadcmt = document.getElementById("loadcmts");
+          var imyourfather = loadcmt.parentNode;
+          imyourfather.removeChild(loadcmts)
+        }
+      }
+    </script>
+  </section>
+
+
+	<footer id="footer">
+	<div id="social">
+		<p class="small">©  Arbow| Powered by Hexo & 
+			<a target="_blank" rel="noopener" href="https://github.com/F0r3at/Lights"> Lights</a>
+		</p>
+	</div>
+</footer>
+
+</section>
+
+	<script src="//cdnjs.loli.net/ajax/libs/instantclick/3.0.1/instantclick.min.js" data-no-instant></script>
+	<script data-no-instant>
+		
+		InstantClick.init('mousedown');
+	</script>
+
+
+
