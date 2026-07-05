@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=0">
+
+  <meta name="description" content="个人知识库与技术笔记">
+
+
+<link rel="alternate" href="/atom.xml" title="Api Intelligence Daily Life" type="application/atom+xml">
+<meta name="theme-color" content="#a1d0f6">
+<title>文摘：uv 创始人反思 AI 编程——代码审查、信任崩塌与工程师困境 - Api Intelligence Daily Life</title>
+<!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+<link rel="shortcut icon" href="/favicon.png">
+
+<link rel="stylesheet" href="/css/style.css">
+
+<nav class="main-nav">
+	
+	    <a href="/">← 主页</a>
+	
+	
+	    <a href="/about/">About</a>
+	
+	    <a href="/archives/">Archives</a>
+	
+	<a class="cta" href="/atom.xml" data-no-instant>订阅</a>
+</nav>
+
+<section id="wrapper">
+    <article class="post">
+    <header>
+        
+            <h1>文摘：uv 创始人反思 AI 编程——代码审查、信任崩塌与工程师困境</h1>
+        
+        <h2 class="headline">Jul 05 2026
+        
+            
+            <a href="/categories/文摘/#文摘">文摘</a>
+        
+        </h2>
+    </header>
+</article>
+<section id="post-body"><h2 id="背景"><a href="#背景" class="headerlink" title="背景"></a>背景</h2><p>Charlie Marsh，<a target="_blank" rel="noopener" href="https://github.com/astral-sh/ruff">Ruff</a> 和 <a target="_blank" rel="noopener" href="https://github.com/astral-sh/uv">uv</a> 的创建者、Astral 公司创始人。他用 Rust 打造了比传统 Python 工具快一到两个数量级的 linter 和包管理器，GitHub 星标数以万计增长，最终在今年三月将整家公司卖给了 OpenAI。</p>
+<p>日前，他在播客中与主持人 Ryan Peterman 深入探讨了 AI Agent 如何重塑软件工程的每一个环节。这不是一个”技术天才征服世界”的成功学叙事，而是一线实践者对当下软件开发困惑最诚实的思考：当提交 PR 的成本降到零、审查成本却居高不下，开源生态将何去何从？当写代码的乐趣被”指挥 Agent + 逐行审查”取代，编程还值得热爱吗？</p>
+<h2 id="核心观点"><a href="#核心观点" class="headerlink" title="核心观点"></a>核心观点</h2><h3 id="1-Python-工具链的”Rust-革命”"><a href="#1-Python-工具链的”Rust-革命”" class="headerlink" title="1. Python 工具链的”Rust 革命”"></a>1. Python 工具链的”Rust 革命”</h3><p>Charlie 在计算生物学公司工作时，接触了 Go 和 Rust，发现 JavaScript 生态早已用原生语言重写工具链（ESBuild、SWC、Bun、Deno），而 Python 生态仍停留在用 Python 写工具的阶段，性能天花板明显。Ruff 的起点很简单：<strong>为什么 Python 不能拥有同样快的工具？</strong> 他用 9 天做出了原型，验证了这个假设。</p>
+<p>关键洞察：linter 是验证想法的完美形态——核心逻辑简单，规则可无限扩展，用户从小核心就能立刻获得价值。相比之下，完成了 75% 的类型检查器几乎毫无用处。<strong>能够迭代式地交付、同时保持对用户有用，是建立工具势能的核心能力。</strong></p>
+<h3 id="2-开发者营销的”10-秒法则”"><a href="#2-开发者营销的”10-秒法则”" class="headerlink" title="2. 开发者营销的”10 秒法则”"></a>2. 开发者营销的”10 秒法则”</h3><p>Charlie 对开发者营销有独到见解。他认为工程师圈子里”营销”几乎是脏话，但大量优秀项目正因为不会营销而永远无人发现。他的方法论：</p>
+<ul>
+<li><strong>10 秒内抓住注意力</strong>：博客、README、宣传材料，核心问题是”当一个人打开页面，我只有 10 秒让他明白这对他有什么用”</li>
+<li><strong>一张好的 benchmark 图是无价的</strong>：Ruff 的性能对比图在 Twitter 上被疯狂转发，不需要任何文字解释</li>
+<li><strong>一天内响应-修复-发布的循环</strong>：每完成一次就赢得一个支持者，项目势能增加一分</li>
+<li>他研究过 OpenAI 的 DALL-E 博客，即使一个字都不读，光看图片和标题也能理解他们做了什么</li>
+</ul>
+<h3 id="3-为什么选-Rust——从跟风到真香"><a href="#3-为什么选-Rust——从跟风到真香" class="headerlink" title="3. 为什么选 Rust——从跟风到真香"></a>3. 为什么选 Rust——从跟风到真香</h3><p>坦白说，Charlie 当初选 Rust 很大程度是因为跟风（hype）。但回头看，这是一个极其正确的决定：</p>
+<ul>
+<li><strong>Cargo 工具链是被低估的优势</strong>：<code>git clone</code> 然后 <code>cargo run/build/test</code> 就能跑起来，这在 C&#x2F;C++ 生态几乎不可想象</li>
+<li><strong>内存安全从不在乎到真香</strong>：他开始做 Ruff 时甚至不知道内存安全是什么，现在认为这是构建可靠软件的基础</li>
+<li><strong>他明确表示不理解为什么新项目还要用 C&#x2F;C++</strong>，除非有非常特定的技术原因</li>
+</ul>
+<h3 id="4-AI-时代的代码重写——“我一行代码都没读就发布了”"><a href="#4-AI-时代的代码重写——“我一行代码都没读就发布了”" class="headerlink" title="4. AI 时代的代码重写——“我一行代码都没读就发布了”"></a>4. AI 时代的代码重写——“我一行代码都没读就发布了”</h3><p>这是整篇访谈最有争议的部分。Charlie 去年圣诞假期才开始用 Agent 编程，到现在几乎所有修改都通过 Codex 完成。他分享了一个极端案例：</p>
+<blockquote>
+<p>上周我写了个个人用的自定义 Rust linter，全程由 GPT-5.5 完成，我一行代码都没读。因为那是只有我们内部使用的工具，很容易判断正确性。</p>
+</blockquote>
+<p>但他对大规模重写持强烈保留态度，给出三层反对理由：</p>
+<ol>
+<li><strong>代码理解问题</strong>：如果代码被完全重写，人类可能就不再理解任何代码了</li>
+<li><strong>已知问题换未知问题</strong>：即使最好的测试套件也只是程序正确性的近似逼近。希拉姆定律（Hyrum’s Law）告诉我们，任何实现细节最终都会变成某些人依赖的行为。测试全过不代表行为一致，最终坑的是用户</li>
+<li><strong>责任问题</strong>：uv 被数百万工程师依赖，任何变更必须极其谨慎；而个人工具可以 YOLO 式发布。关键在于你对用户负多大责任</li>
+</ol>
+<p>他观察到 <a target="_blank" rel="noopener" href="https://github.com/oven-sh/bun">Bun</a> 仓库的运作方式与 Astral 完全不同——头号贡献者是一个 bot，人类提交的 PR 评论也明显是 agent 写的。他对此持欣赏但保留态度。</p>
+<h3 id="5-对抗-AI-Slop-的具体策略"><a href="#5-对抗-AI-Slop-的具体策略" class="headerlink" title="5. 对抗 AI Slop 的具体策略"></a>5. 对抗 AI Slop 的具体策略</h3><p>Charlie 分享了团队应对 AI 生成低质量贡献的策略：</p>
+<p><strong>开源维护层面：</strong></p>
+<ul>
+<li>制定 AI 政策，过滤净负面贡献——核心要求是”你提交的东西，你自己得理解”</li>
+<li>识别 agent 写的回复的特征：过于详尽、格式过于规范、用词过于学术、塞满各种链接、在不必要的地方投入远超人类的”努力”</li>
+<li>引用 Zig 项目提出的”贡献者扑克”概念：传统模式下，新贡献者通过反馈循环成长；agent PR 打破了这个循环，没有累积，没有成长</li>
+</ul>
+<p><strong>根本困境：</strong></p>
+<blockquote>
+<p>提交一个”看起来合理”的 PR 的成本已经降到了零，但审查和验证它的成本依然很高，甚至更高。以类型检查器 TY 为例，有人可能花 2 分钟写一个 PR，但团队需要花 1 小时去理解它。这种不平衡正在严重破坏开源社区生态。</p>
+</blockquote>
+<p><strong>团队内部层面：</strong></p>
+<ul>
+<li>大量自动化验证：每个 PR 在 Valgrind 和 CodSpeed 上跑 benchmark，对比生态项目诊断信息差异</li>
+<li>提 PR 前用 Codex Review 预审多轮</li>
+<li>持续优化 <code>agents.md</code> 文件，把团队和 Agent 常犯的错误编码化</li>
+<li><strong>底线标准：你必须理解 PR 里的每一行代码</strong></li>
+</ul>
+<h3 id="6-信任的瓦解与重建"><a href="#6-信任的瓦解与重建" class="headerlink" title="6. 信任的瓦解与重建"></a>6. 信任的瓦解与重建</h3><p>Charlie 坦陈团队内部出现的信任变化：</p>
+<blockquote>
+<p>以前同事提 PR，我基本扫一眼就过了，因为信任他的工作。但现在他提 PR，我得逐行细审，因为那些代码不是他写的，是 Agent 写的。</p>
+</blockquote>
+<p>他自己也经历同样的困境——有时候第二天早上看自己昨晚提的 PR，心里想的是”等等，这代码写得也太烂了吧”。代码看起来能用、可接受，但根本达不到以前的质量门槛，这种灰色地带是最难识别的 AI slop。</p>
+<h3 id="7-初级工程师的困境"><a href="#7-初级工程师的困境" class="headerlink" title="7. 初级工程师的困境"></a>7. 初级工程师的困境</h3><p>Charlie 对初级工程师在 AI 时代的处境直言不讳：</p>
+<blockquote>
+<p>我们倾向于招资深工程师，因为优秀的工程师用 AI 更猛。如果我是初期工程师，太容易掉进使用 Agent 时发生的那些坏事情里了。</p>
+</blockquote>
+<p>他担心初级工程师缺乏”给 AI 当教练”的能力——很多时候是他在指导 Codex、纠正它、为它提供安全护栏。没有扎实基础的人，只能被 AI 带沟里去。他引用 Mitchell Hashimoto（<a target="_blank" rel="noopener" href="https://ghostty.org/">Ghostty</a> 作者）的实验：手写渲染器比 LLM 优化后的版本还快 100 倍，说明<strong>不先用大脑从第一性原理思考，就会满足于次优结果</strong>。</p>
+<h3 id="8-从困惑到和解"><a href="#8-从困惑到和解" class="headerlink" title="8. 从困惑到和解"></a>8. 从困惑到和解</h3><p>访谈最动人的部分是 Charlie 的心路转变。他一度恐惧 AI 会让编程变得无趣：</p>
+<blockquote>
+<p>我一直有个恐惧：AI 会让我们更高效，但编程会变得没那么有趣，因为我就是热爱编程本身。以后我得把所有时间花在审查代码和提示这个总犯错、但最终确实更高效的蠢 Agent 上。</p>
+</blockquote>
+<p>但几个月后，他发现与 Agent 协作解锁了新的可能性——运行实验的成本变得极低，那些以前很难、成本很高才能回答的问题，现在几乎可以瞬间得到答案。他从构建软件中获得的价值并未消失：仔细思考数据结构布局、合并一个关闭用户问题的 PR，这些满足感依然存在。</p>
+<h2 id="个人评论"><a href="#个人评论" class="headerlink" title="个人评论"></a>个人评论</h2><p>这篇文章值得反复读。几个让我印象深刻的点：</p>
+<p><strong>关于审查成本的不对称</strong>——这可能是当下开源生态最尖锐的问题。当生成 PR 的边际成本趋近于零，而验证成本不变甚至上升（因为需要甄别 AI slop），开源维护者的负担会指数级增长。Charlie 提到有人花 2 分钟生成 PR，维护者需要 1 小时审查，这种 1:30 的不对称如果不解决，依赖志愿者的开源模式将面临严峻考验。</p>
+<p><strong>“我一行代码都没读就发布了”</strong>——这句话在社交媒体上会很抓眼球，但 Charlie 的完整语境很重要：那是内部工具，容易验证正确性。他对 uv 这种被数百万人依赖的项目则极其谨慎。这说明真正值得关注的不是”敢不敢不看代码”，而是<strong>如何根据项目风险等级建立分层审查策略</strong>。很多 AI 编程讨论的非黑即白（要么全盘拥抱要么全面抵制）其实偏离了重点。</p>
+<p><strong>Mitchell Hashimoto 的 100x vs 10x 实验</strong>值得每个用 AI 写代码的人深思。LLM 擅长在现有架构内做局部优化，但不擅长从第一性原理重新思考。如果你没有能力判断”这东西理论上应该有多快”，你就会把次优当成最优交付出去。这恰恰是初级工程师最危险的陷阱——他们既缺乏判断力，又被 AI 的”看起来很厉害”所迷惑。</p>
+<p><strong>关于开发者营销</strong>——Charlie 对”10 秒法则”的阐述值得所有做开源的人学习。注意力经济是现实，与其抱怨用户不愿意深入阅读，不如想想如何用诚实的方式在几秒钟内传达价值。一张精心设计的 benchmark 图胜过千言万语。</p>
+<hr>
+<p>原文链接：<a target="_blank" rel="noopener" href="https://mp.weixin.qq.com/s/lXKclvGMaRcW2fNmJCEKug">https://mp.weixin.qq.com/s/lXKclvGMaRcW2fNmJCEKug</a></p>
+<p>访谈视频原链接：<a target="_blank" rel="noopener" href="https://www.youtube.com/watch?v=Iw65FD4MGgs">https://www.youtube.com/watch?v=Iw65FD4MGgs</a></p>
+<p><em>本文摘整理于 2026-07-05，基于 InfoQ 编译的播客访谈内容。</em></p>
+</section>
+    
+
+    <footer id="post-meta" class="clearfix">
+        <a href="/about/">
+        <img class="avatar" src="/images/avatar.png">
+        <div>
+            <span class="dark">Api Intelligence Daily Life</span>
+            <span>知识库 &amp; 博客</span>
+        </div>
+        </a>
+        <section id="sharing">
+            <a title="Share to Twitter" class="twitter" target="_blank" rel="noopener" href="https://twitter.com/intent/tweet?text=https://arbow.github.io/2026/07/05/digest-2026-07-05-charlie-marsh-ai-coding-reflection/ - 文摘：uv 创始人反思 AI 编程——代码审查、信任崩塌与工程师困境 @"><span class="icon-twitter">tweet</span></a>
+            <a title="Share to Facebook" class="facebook" href="#" onclick="
+                window.open(
+                  'https://www.facebook.com/sharer/sharer.php?u='+encodeURIComponent(location.href),
+                  'facebook-share-dialog',
+                  'width=626,height=436');
+                return false;"><span class="icon-facebook-sign">Share</span>
+            </a>
+        </section>
+    </footer>
+
+
+  <section id="comment">
+    <button class="btn" id="loadcmts" onclick="cmts.load();">加载评论</button>
+    <div id="gitment"></div>
+    <script src='/js/gitment.browser.js'></script>
+    <link rel="stylesheet" href=''>
+    <script>
+      var cmts={
+        load:function cmts(){
+          var gitment = new Gitment({
+          
+            id: "文摘：uv 创始人反思 AI 编程——代码审查、信任崩塌与工程师困境",
+          
+            owner: "",
+            repo: "",
+            oauth: {
+              client_id: "",
+              client_secret: "",
+            },
+          })
+          gitment.render('gitment');
+          var loadcmt = document.getElementById("loadcmts");
+          var imyourfather = loadcmt.parentNode;
+          imyourfather.removeChild(loadcmts)
+        }
+      }
+    </script>
+  </section>
+
+
+	<footer id="footer">
+	<div id="social">
+		<p class="small">©  Arbow| Powered by Hexo & 
+			<a target="_blank" rel="noopener" href="https://github.com/F0r3at/Lights"> Lights</a>
+		</p>
+	</div>
+</footer>
+
+</section>
+
+	<script src="//cdnjs.loli.net/ajax/libs/instantclick/3.0.1/instantclick.min.js" data-no-instant></script>
+	<script data-no-instant>
+		
+		InstantClick.init('mousedown');
+	</script>
+
+
+
