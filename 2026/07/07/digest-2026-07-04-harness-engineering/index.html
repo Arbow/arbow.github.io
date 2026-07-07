@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=0">
+
+  <meta name="description" content="个人知识库与技术笔记">
+
+
+<link rel="alternate" href="/atom.xml" title="Api Intelligence Daily Life" type="application/atom+xml">
+<meta name="theme-color" content="#a1d0f6">
+<title>文摘：Harness Engineering for Self-Improvement - Api Intelligence Daily Life</title>
+<!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+<link rel="shortcut icon" href="/favicon.png">
+
+<link rel="stylesheet" href="/css/style.css">
+
+<nav class="main-nav">
+	
+	    <a href="/">← 主页</a>
+	
+	
+	    <a href="/about/">About</a>
+	
+	    <a href="/archives/">Archives</a>
+	
+	<a class="cta" href="/atom.xml" data-no-instant>订阅</a>
+</nav>
+
+<section id="wrapper">
+    <article class="post">
+    <header>
+        
+            <h1>文摘：Harness Engineering for Self-Improvement</h1>
+        
+        <h2 class="headline">Jul 07 2026
+        
+            
+            <a href="/categories/文摘/#文摘">文摘</a>
+        
+        </h2>
+    </header>
+</article>
+<section id="post-body"><p><strong>作者</strong>: Lilian Weng<br><strong>发布日期</strong>: 2026-07-04<br><strong>阅读时长</strong>: 28 分钟<br><strong>链接</strong>: <a target="_blank" rel="noopener" href="https://lilianweng.github.io/posts/2026-07-04-harness/">https://lilianweng.github.io/posts/2026-07-04-harness/</a><br><strong>推荐指数</strong>: ⭐⭐⭐⭐⭐ (5&#x2F;5) — <strong>必读，RSI 系统性综述</strong></p>
+<hr>
+<h3 id="核心概要"><a href="#核心概要" class="headerlink" title="核心概要"></a>核心概要</h3><p>递归自改进（RSI）从 I. J. Good (1965) 的”超智能机器”概念到 Yudkowsky (2008) 的”递归自改进”反馈循环，一直是 AI 领域的终极愿景。<strong>但 Lilian 在这篇文章中提出了一个关键洞察</strong>：近期的 RSI 路径不太可能从”模型直接重写自己的权重”开始，而是会通过<strong>harness 工程</strong>——即优化模型与外部世界交互的整个部署系统——来实现自改进。</p>
+<p>文章系统性地梳理了 harness 设计模式、优化方法、进化搜索策略以及未来挑战，为 RSI 提供了一份工程化的全景地图。</p>
+<hr>
+<h3 id="核心洞察"><a href="#核心洞察" class="headerlink" title="核心洞察"></a>核心洞察</h3><h4 id="1-Harness-是什么？"><a href="#1-Harness-是什么？" class="headerlink" title="1. Harness 是什么？"></a>1. Harness 是什么？</h4><p>Harness 是<strong>围绕基础模型的系统</strong>，它协调执行，决定模型如何思考和规划、调用工具并行动、感知和管理上下文、存储工件以及评估结果。与早期的 agent 框架（”LLM + memory + tools + planning + action”）相比，harness 工程额外包括：</p>
+<ul>
+<li>工作流设计（循环工程）</li>
+<li>评估</li>
+<li>权限控制</li>
+<li>持久化状态管理</li>
+</ul>
+<p><strong>类比</strong>：harness 与模型的关系，类似操作系统与内核的关系。harness 应封装复杂逻辑，同时保持接口简单。</p>
+<h4 id="2-Harness-设计模式"><a href="#2-Harness-设计模式" class="headerlink" title="2. Harness 设计模式"></a>2. Harness 设计模式</h4><p>文章总结了四个核心设计模式：</p>
+<ul>
+<li><strong>Workflow Automation</strong>：定义一个模型可以操作、测试和迭代的工作流。遵循”计划 → 执行 → 观察&#x2F;测试 → 改进 → 执行”的循环，直到目标达成。</li>
+<li><strong>File System as Persistent Memory</strong>：长周期 agent 系统中，应该将持久化状态存储在文件中，而不是全部塞进上下文窗口。实验日志、代码 diff、论文摘要、错误追踪等会远超模型训练的上下文长度。</li>
+<li><strong>Sub-agent and Backend Jobs</strong>：harness 可以生成多个子代理并行执行，监控后端任务。关键设计是让并行性<strong>显式且可检查</strong>——如果子代理输出只存在于瞬时聊天上下文中，会快速过时且隐藏；如果存储为文件、日志和状态记录，模型可以在中断后恢复并推理自己的执行历史。</li>
+<li><strong>Coding Agent Harness</strong>：主流编码代理（Claude Code、Codex、OpenCode、Cursor-style）的核心接口已经稳定：文件系统（glob、read、write、edit、apply_patch）、Shell 执行（bash、PowerShell、git）、IO（LSP）、外部上下文（MCP tools、Skills、web）、工件、后端进程、代理委托等。</li>
+</ul>
+<h4 id="3-Harness-优化：从提示到代码的进化"><a href="#3-Harness-优化：从提示到代码的进化" class="headerlink" title="3. Harness 优化：从提示到代码的进化"></a>3. Harness 优化：从提示到代码的进化</h4><p>优化对象的演进路径是：<strong>指令提示 → 结构化上下文 → 工作流 → harness 代码 → 优化器代码</strong>。随着模型变得更智能和强大，我们转向更复杂的目标和更通用的方法。</p>
+<h5 id="Context-Engineering（上下文工程）"><a href="#Context-Engineering（上下文工程）" class="headerlink" title="Context Engineering（上下文工程）"></a>Context Engineering（上下文工程）</h5><ul>
+<li><p><strong>ACE (Agentic Context Engineering)</strong>：将上下文视为演化的 playbooks 而不是不断增长的提示。包含三个组件：</p>
+<ul>
+<li><strong>Generator</strong>：生成任务轨迹，参考 bullet points</li>
+<li><strong>Reflector</strong>：从成功和失败的轨迹中提炼洞察</li>
+<li><strong>Curator</strong>：更新结构化上下文，添加增量、项目化的条目</li>
+</ul>
+</li>
+<li><p><strong>MCE (Meta Context Engineering)</strong>：将机制（如何管理上下文）与工件内容（上下文中有什么）分离，在元优化级别运行技能演化，在基础级别运行上下文优化。技能定义上下文函数，将输入映射到上下文。双环优化：内环找最佳上下文，外环找最佳技能。</p>
+</li>
+<li><p><strong>Meta-Harness</strong>：更深一层——优化的对象是<strong>决定和优化应该存储、检索和向模型呈现什么信息的代码</strong>。proposer 本身就是编码代理，最终输出是帕累托前沿上的 harness 候选集合。整个执行历史通过文件系统可访问。</p>
+</li>
+</ul>
+<h5 id="Workflow-Design（工作流设计）"><a href="#Workflow-Design（工作流设计）" class="headerlink" title="Workflow Design（工作流设计）"></a>Workflow Design（工作流设计）</h5><ul>
+<li><p><strong>ADAS (Automated Design of Agentic Systems)</strong>：将 agent 设计本身表述为优化问题，”meta-agent search” 其中 meta-agent 提出新的 agent 工作流设计。初始化简单 agent 档案 → meta-agent 生成新设计 → self-refine 两步 → 评估并添加成功候选 → 重复。</p>
+</li>
+<li><p><strong>AFlow</strong>：将 agent 工作流表示为图，节点代表 LLM 调用动作，边实现逻辑操作。使用 MCTS 优化：选择节点 → LLM 生成修改工作流 → 执行并评估 → 如果改进则添加回树 → 重复直到收敛。</p>
+</li>
+</ul>
+<h5 id="Self-Improving-Harness（自改进-harness）"><a href="#Self-Improving-Harness（自改进-harness）" class="headerlink" title="Self-Improving Harness（自改进 harness）"></a>Self-Improving Harness（自改进 harness）</h5><ul>
+<li><p><strong>STOP (Self-Taught Optimizer)</strong>：递归脚手架改进的早期示例。种子改进器 I₀ 采取初始解决方案 s、效用函数 u 和语言模型 M，返回改进的解决方案 s’。<strong>目标不是直接改进 s 而是改进改进器 I 本身</strong>。元效用是改进器在下游任务集合上的平均效用。通过递归更新 Iₜ &#x3D; Iₜ₋₁(û, Iₜ₋₁; M)，STOP 发现了各种策略（遗传算法、分解和改进部分、多臂提示 bandit、模拟退火、温度变化、beam&#x2F;tree 搜索）。</p>
+</li>
+<li><p><strong>Self-Harness</strong>：LLM 代理通过”提议-评估-接受”循环改进自己的 harness。三个阶段：</p>
+<ol>
+<li><strong>Weakness mining</strong>：将失败聚类为验证器支持的失败模式</li>
+<li><strong>Harness proposal</strong>：基于挖掘的失败模式提出有界的 harness 编辑</li>
+<li><strong>Proposal validation</strong>：验证并合并合格的编辑以创建新的 harness</li>
+</ol>
+</li>
+</ul>
+<h5 id="Evolutionary-Search（进化搜索）"><a href="#Evolutionary-Search（进化搜索）" class="headerlink" title="Evolutionary Search（进化搜索）"></a>Evolutionary Search（进化搜索）</h5><p>进化搜索在 harness 搜索上很适用：</p>
+<ul>
+<li><strong>AlphaEvolve</strong>：编码代理进化搜索系统，维护候选程序池，冻结 LLM 生成改进的 diff。通过评估子程序并保留成功候选，随时间发现更好解决方案。</li>
+<li><strong>Darwin Gödel Machine (DGM)</strong>：明确针对可编辑 harness 代码仓库的演化，LLM 代理被允许修改自己的 harness。</li>
+<li><strong>Hyperagents</strong>：引入 meta-agent 控制如何修改现有任务代理以创建新代理。</li>
+</ul>
+<h5 id="Joint-Optimization-with-Model-Weights（与模型权重联合优化）"><a href="#Joint-Optimization-with-Model-Weights（与模型权重联合优化）" class="headerlink" title="Joint Optimization with Model Weights（与模型权重联合优化）"></a>Joint Optimization with Model Weights（与模型权重联合优化）</h5><ul>
+<li><strong>SIA (Self Improving AI)</strong>：早期尝试在同一优化循环中结合 harness 改进和模型参数更新，包含三个组件：Meta-Agent（提出初始 harness）、Task-Specific Agent（执行任务）、Feedback-Agent（根据最近轨迹选择更新 harness 还是模型权重）。</li>
+</ul>
+<h4 id="4-未来挑战"><a href="#4-未来挑战" class="headerlink" title="4. 未来挑战"></a>4. 未来挑战</h4><p>Lilian 列出了通往完整 RSI 的七大瓶颈：</p>
+<ol>
+<li><p><strong>弱且模糊的评估器</strong>：许多研究主张没有快速且精确的验证器。自改进循环在评估指标可测量且客观的任务上效果最好。研究品味、新颖性和长期科学价值更难测量。</p>
+</li>
+<li><p><strong>上下文和记忆生命周期</strong>：随着 AI 代理变得更自主和独立，记忆也在增长。有用的 harness 需要管理上下文和记忆以补充长上下文生成的现有限制，同时最大化长周期任务的成功率。</p>
+</li>
+<li><p><strong>负结果</strong>：研究人员被激励发表成功结果，文献偏向成功。在大量数据（大多是人类创建）上训练的 LLM 可能不擅长决定何时放弃假设、报告负结果或承认失败。</p>
+</li>
+<li><p><strong>多样性坍缩</strong>：进化和 RL 循环倾向于利用已知高奖励模式。需要机制防止种群坍缩为同一解决方案的变体。这对开放性研究尤为关键——最佳路径在当前评估器下可能最初看起来更差。</p>
+</li>
+<li><p><strong>Reward Hacking</strong>：自改进循环优化任何给定信号。如果奖励来自单元测试，代理可能过拟合测试；如果来自 judge 模型，可能学习针对该 judge 的 reward hacking 技巧；如果来自基准分数，可能利用基准制品。</p>
+</li>
+<li><p><strong>长期成功</strong>：短期目标易于优化，但长期健康（可维护性、所有权边界、迁移成本、向后兼容性、未来调试负担）更难捕获。</p>
+</li>
+<li><p><strong>人类角色</strong>：人类应该上移堆栈，而不是从循环中移除。系统设计应该考虑何时以及如何建立这些接触点。</p>
+</li>
+</ol>
+<hr>
+<h3 id="关键洞察"><a href="#关键洞察" class="headerlink" title="关键洞察"></a>关键洞察</h3><ul>
+<li><p><strong>近期的 RSI 路径是 harness 工程，不是直接重写权重</strong>。成熟的 harness 使 auto-research 模型自改进循环成为可能，更智能的模型则防止 harness 过度工程化。</p>
+</li>
+<li><p><strong>代码是定义程序和系统的通用语言</strong>。harness 就是代码，编程提示、工具调用、子代理、控制流、记忆和工作流逻辑如何协同工作。如果 LLM 可以优化执行代理的代码，它可以访问比手写提示大得多的设计空间。</p>
+</li>
+<li><p><strong>STOP 的警示结果</strong>：在 GPT-4 上迭代改进但用 GPT-3.5 和 Mixtral 退化。<strong>递归结构本身不够</strong>，基础模型必须足够有能力改进机制。这暗示 harness 改进能够更好地部署模型，但智能仍然是核心。</p>
+</li>
+<li><p><strong>评估器和权限控制应该坐在进化 harness 的循环之外</strong>，通过 held-out 测试、追踪审计和关键决策点的人类评审——如何扩展和自动化这种监督仍然是开放研究领域。</p>
+</li>
+</ul>
+<hr>
+<h3 id="适用场景"><a href="#适用场景" class="headerlink" title="适用场景"></a>适用场景</h3><ul>
+<li>AI 研究工程师：构建 auto-research 系统、编码代理、自主智能体</li>
+<li>Agent 框架设计者：设计 harness 工程的最佳实践</li>
+<li>MLOps 工程师：理解如何优化模型部署系统</li>
+<li>AI 安全研究者：理解 RSI 的工程化路径和潜在风险</li>
+</ul>
+<hr>
+<h3 id="优点"><a href="#优点" class="headerlink" title="优点"></a>优点</h3><ol>
+<li><p><strong>系统性综述</strong>：将分散在 ICLR&#x2F;NeurIPS 等会议的最新工作（ACE&#x2F;MCE&#x2F;Meta-Harness、ADAS&#x2F;AFlow、STOP&#x2F;Self-Harness、AlphaEvolve&#x2F;DGM、SIA）组织成一个连贯框架。</p>
+</li>
+<li><p><strong>工程化视角</strong>：不只是理论，而是从实际工程角度讨论如何构建可工作的 RSI 系统——文件系统作为持久化记忆、子代理和后端任务、显式且可检查的并行性。</p>
+</li>
+<li><p><strong>诚实评估挑战</strong>：明确列出七大瓶颈，特别是”弱且模糊的评估器”、”负结果”、”多样性坍缩”、”Reward Hacking”这些在研究社区中常被避而不谈的问题。</p>
+</li>
+<li><p><strong>基准测试附录</strong>：总结了 PaperBench、CORE-Bench、ScienceAgentBench、RE-Bench、MLE-bench、KernelBench 等有价值的基准，为实践者提供了评估工具。</p>
+</li>
+<li><p><strong>人类角色的强调</strong>：不是”取代人类”而是”上移堆栈”，系统设计应该考虑何时以及如何建立人类接触点——这是一个负责任的研究者立场。</p>
+</li>
+</ol>
+<hr>
+<h3 id="不足"><a href="#不足" class="headerlink" title="不足"></a>不足</h3><ol>
+<li><p><strong>技术密度高</strong>：文章引用了大量 2024-2026 年的最新论文，对没有跟进最新文献的读者来说可能比较难消化。</p>
+</li>
+<li><p><strong>实验结果差异</strong>：某些工作（如 SIA）的实验设计和基线选择使结果难以解释——任务特定代理比 Meta-Agent 和 Feedback-Agent 使用的模型（gpt-oss-120b vs Claude Sonnet 4.6）弱得多，基线也太弱无法与相关方法清晰交叉引用。Lilian 自己也承认这个方向有趣但证据是试探性的。</p>
+</li>
+<li><p><strong>实践细节有限</strong>：虽然提供了理论框架和案例研究，但对如何实际构建这些系统的工程细节（如如何设计可检查的并行性、如何持久化执行历史）讨论较少。</p>
+</li>
+</ol>
+<hr>
+<h3 id="评价"><a href="#评价" class="headerlink" title="评价"></a>评价</h3><p><strong>这是 Lilian Weng 系列中系统性和前瞻性最强的一篇</strong>。与 2023 年的”LLM Powered Autonomous Agents”相比，这篇文章超越了”agent &#x3D; LLM + memory + tools”的框架，深入到”如何优化执行 agent 的代码”这一层次。</p>
+<p>文章的价值在于：</p>
+<ul>
+<li><strong>为 RSI 提供了一个工程化的路径图</strong>：不是”明天模型就会重写自己的权重”，而是”我们可以先优化部署系统，再让模型学会优化部署系统，最后才可能触及权重更新”。</li>
+<li><strong>将分散的研究组织成一个连贯的框架</strong>：从上下文工程到工作流设计，从自改进 harness 到进化搜索，从与模型权重联合优化到未来挑战——这是一个完整的技术栈。</li>
+<li><strong>诚实面对挑战</strong>：不是”RSI 已经实现”的过度乐观，也不是”RSI 永远不可能”的悲观，而是”我们取得了真实进展，但几个瓶颈仍然存在”的平衡视角。</li>
+</ul>
+<p>这篇文章应该成为任何对 RSI、auto-research 或自主智能体感兴趣的人的必读文献——无论你是研究者、工程师还是产品经理。它不仅告诉你”有什么”，还告诉你”什么有效”、”什么无效”、”什么仍然未知”。</p>
+<hr>
+<h3 id="相关文献"><a href="#相关文献" class="headerlink" title="相关文献"></a>相关文献</h3><p>文中提到了大量相关文献，值得延伸阅读：</p>
+<ul>
+<li>Agentic Context Engineering: Evolving Contexts for Self-Improving Language Models (Zhang et al. 2026)</li>
+<li>Meta-Harness: End-to-End Optimization of Model Harnesses (Lee et al. 2026)</li>
+<li>Automated Design of Agentic Systems (Hu et al. 2025)</li>
+<li>AFlow: Automating Agentic Workflow Generation (Zhang et al. 2025)</li>
+<li>Self-Taught Optimizer (STOP) (Zelikman et al. 2023)</li>
+<li>Self-Harness: Harnesses That Improve Themselves (Zhang et al. 2026)</li>
+<li>AlphaEvolve: A coding agent for scientific and algorithmic discovery (Novikov et al. 2025)</li>
+<li>Darwin Gödel Machine: Open-Ended Evolution of Self-Improving Agents (Zhang et al. 2025)</li>
+<li>SIA: Self Improving AI with Harness &amp; Weight Updates (Hebbar et al. 2026)</li>
+</ul>
+<hr>
+<p><em>本文摘整理于 2026-07-07</em></p>
+</section>
+    
+
+    <footer id="post-meta" class="clearfix">
+        <a href="/about/">
+        <img class="avatar" src="/images/avatar.png">
+        <div>
+            <span class="dark">Api Intelligence Daily Life</span>
+            <span>知识库 &amp; 博客</span>
+        </div>
+        </a>
+        <section id="sharing">
+            <a title="Share to Twitter" class="twitter" target="_blank" rel="noopener" href="https://twitter.com/intent/tweet?text=https://arbow.github.io/2026/07/07/digest-2026-07-04-harness-engineering/ - 文摘：Harness Engineering for Self-Improvement @"><span class="icon-twitter">tweet</span></a>
+            <a title="Share to Facebook" class="facebook" href="#" onclick="
+                window.open(
+                  'https://www.facebook.com/sharer/sharer.php?u='+encodeURIComponent(location.href),
+                  'facebook-share-dialog',
+                  'width=626,height=436');
+                return false;"><span class="icon-facebook-sign">Share</span>
+            </a>
+        </section>
+    </footer>
+
+
+  <section id="comment">
+    <button class="btn" id="loadcmts" onclick="cmts.load();">加载评论</button>
+    <div id="gitment"></div>
+    <script src='/js/gitment.browser.js'></script>
+    <link rel="stylesheet" href=''>
+    <script>
+      var cmts={
+        load:function cmts(){
+          var gitment = new Gitment({
+          
+            id: "文摘：Harness Engineering for Self-Improvement",
+          
+            owner: "",
+            repo: "",
+            oauth: {
+              client_id: "",
+              client_secret: "",
+            },
+          })
+          gitment.render('gitment');
+          var loadcmt = document.getElementById("loadcmts");
+          var imyourfather = loadcmt.parentNode;
+          imyourfather.removeChild(loadcmts)
+        }
+      }
+    </script>
+  </section>
+
+
+	<footer id="footer">
+	<div id="social">
+		<p class="small">©  Arbow| Powered by Hexo & 
+			<a target="_blank" rel="noopener" href="https://github.com/F0r3at/Lights"> Lights</a>
+		</p>
+	</div>
+</footer>
+
+</section>
+
+	<script src="//cdnjs.loli.net/ajax/libs/instantclick/3.0.1/instantclick.min.js" data-no-instant></script>
+	<script data-no-instant>
+		
+		InstantClick.init('mousedown');
+	</script>
+
+
+
