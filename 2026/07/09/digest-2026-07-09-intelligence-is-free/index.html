@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=0">
+
+  <meta name="description" content="个人知识库与技术笔记">
+
+
+<link rel="alternate" href="/atom.xml" title="Api Intelligence Daily Life" type="application/atom+xml">
+<meta name="theme-color" content="#a1d0f6">
+<title>文摘：智能免费后，数据系统将如何进化 - Api Intelligence Daily Life</title>
+<!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+<link rel="shortcut icon" href="/favicon.png">
+
+<link rel="stylesheet" href="/css/style.css">
+
+<nav class="main-nav">
+	
+	    <a href="/">← 主页</a>
+	
+	
+	    <a href="/about/">About</a>
+	
+	    <a href="/archives/">Archives</a>
+	
+	<a class="cta" href="/atom.xml" data-no-instant>订阅</a>
+</nav>
+
+<section id="wrapper">
+    <article class="post">
+    <header>
+        
+            <h1>文摘：智能免费后，数据系统将如何进化</h1>
+        
+        <h2 class="headline">Jul 09 2026
+        
+            
+            <a href="/categories/文摘/#文摘">文摘</a>
+        
+        </h2>
+    </header>
+</article>
+<section id="post-body"><h2 id="背景"><a href="#背景" class="headerlink" title="背景"></a>背景</h2><p>AI 推理成本正在以惊人的速度下降。2023 年初，GPT-4 级别的模型推理成本约为 3000 万 tokens 30 美元；而今天，同样的成本已降至 1 美元以下，甚至有供应商将成本压到了 0.10 美元。根据 Epoch AI 的数据，推理价格每年下降 9 倍到 900 倍，中位数约为 50 倍。</p>
+<p>虽然我们还没有达到”诺贝尔奖级别的天才级智能”，但对于绝大多数知识工作而言，今天的智能已经足够，而且成本还在逐月下降。按照这个趋势，我们很快就会进入”几乎免费的智能时代”——那种足够完成日常知识工作的智能。</p>
+<p>这个趋势对数据系统意味着什么？伯克利的研究团队提出了三个关键问题：</p>
+<ol>
+<li><strong>数据系统 <em>For</em> Agents</strong> —— Agent 将成为数据系统的主导工作负载</li>
+<li><strong>数据系统 <em>Of</em> Agents</strong> —— 成千上万个 Agent 需要可靠高效的基础设施来协调和管理</li>
+<li><strong>数据系统 <em>By</em> Agents</strong> —— Agent 越来越有能力从零合成整个数据系统</li>
+</ol>
+<h2 id="Data-Systems-For-Agents"><a href="#Data-Systems-For-Agents" class="headerlink" title="Data Systems For Agents"></a>Data Systems For Agents</h2><h3 id="核心问题：Agent-查询数据库的方式不同于人类或-BI-工具"><a href="#核心问题：Agent-查询数据库的方式不同于人类或-BI-工具" class="headerlink" title="核心问题：Agent 查询数据库的方式不同于人类或 BI 工具"></a>核心问题：Agent 查询数据库的方式不同于人类或 BI 工具</h3><p>Agent 会进行一种被称为”<strong>agentic speculation</strong>（代理推测）”的工作模式：这是一个高吞吐量、异构的工作流，包含 schema 内省、列探索、部分到完整的查询制定。当多个 Agent 各自探索假设空间的不同部分时，每个用户请求可能产生上千个独立的 SQL 查询。</p>
+<p>这意味着用户可以提出”高层次”的数据任务，例如根因分析（”为什么今年伯克利的咖啡销售下降了”）或探索性队列分析（”哪些用户群体最可能在下个季度流失”）——每个任务都涉及连接、聚合和过滤组合的指数级搜索空间。</p>
+<h3 id="优化机会"><a href="#优化机会" class="headerlink" title="优化机会"></a>优化机会</h3><p>在一个文本到 SQL 的基准测试中，让多个 Agent 尝试每个任务，结果发现只有 10-20% 的子计划是不同的。这意味着 80-90% 的子查询在执行重复工作。虽然更多尝试确实提高了任务成功率，但从数据系统的角度看，这是浪费。</p>
+<p>面向 Agent 的数据系统可以利用这些特性帮助 Agent 更快地取得进展：</p>
+<ol>
+<li><strong>重用重叠子计划的结果</strong> —— 借鉴多查询优化和共享扫描的思想</li>
+<li><strong>满足式查询</strong> —— 返回足够好的近似答案，让 Agent 能够推进工作流，而不是等待精确结果。可以借鉴近似查询处理（AQP）文献，或者流式返回最终或中间算子的结果，帮助 Agent 决定是否需要继续查看</li>
+<li><strong>重新思考查询接口</strong> —— Agent 可以批量发出查询，每个查询有自己的近似需求。数据系统应该支持更高级的原语，而不是让 Agent 明确列出每个 SQL 查询。一个思路是借鉴 DBT 风格的 Jinja 宏，提供基于循环的原语</li>
+<li><strong>主动数据系统</strong> —— 数据系统不再是查询的被动执行者，而是主动引导 Agent：提供相关查询的结果、性能级反馈（比如在执行昂贵查询前先给出延迟估计）、预先准备物化视图和虚拟视图作为 Agent 的上下文</li>
+</ol>
+<h3 id="个人评论"><a href="#个人评论" class="headerlink" title="个人评论"></a>个人评论</h3><p>这部分的洞察非常到位。在实际的 Agent 开发中，我发现 Agent 确实会进行大量的”推测性查询”——它们需要通过多次尝试来理解数据结构和发现模式。当前的数据系统（如 PostgreSQL、ClickHouse）根本没有针对这种场景优化。</p>
+<p>批量查询和高阶原语的想法尤其重要。现在的 Agent 需要显式编写每个 SQL 查询，这既低效又容易出错。如果数据系统能直接接受”找到用户流失的根本原因”这样的高层次任务，Agent 就可以把精力集中在推理和验证上，而不是机械地生成 SQL。</p>
+<p>主动数据系统的想法也很前瞻。当数据系统理解 Agent 的工作流和目标时，它可以在 Agent 请求之前就准备好相关结果，或者引导 Agent 朝着更有希望的方向前进。这就像一个经验丰富的数据工程师在旁边提供实时建议。</p>
+<h2 id="Data-Systems-Of-Agents"><a href="#Data-Systems-Of-Agents" class="headerlink" title="Data Systems Of Agents"></a>Data Systems Of Agents</h2><h3 id="核心问题：Agent-群体需要什么样的基础设施？"><a href="#核心问题：Agent-群体需要什么样的基础设施？" class="headerlink" title="核心问题：Agent 群体需要什么样的基础设施？"></a>核心问题：Agent 群体需要什么样的基础设施？</h3><p>之前我们关注的是 Agent 如何与数据系统交互。现在考虑 Agent 运行所需的一切：它们住在哪里、如何记忆、如何相互协调、如何处理彼此的失败。这个”<strong>agentic substrate</strong>（代理基底）”不同于驱动原始智能的推理栈。</p>
+<p>推理栈本身正在通过 API（如 OpenAI 或 Anthropic）或服务框架（如 vLLM、SGLang）被抽象化。目前的 agentic substrate 通过 Claude Code、Codex 等工具管理，加上各种机制来存储和检索记忆（如 mem0、Letta）。</p>
+<h3 id="当前的记忆方式：文件就够了吗？"><a href="#当前的记忆方式：文件就够了吗？" class="headerlink" title="当前的记忆方式：文件就够了吗？"></a>当前的记忆方式：文件就够了吗？</h3><p>当前的共识是”<strong>文件就是一切</strong>“：Agent 写入非结构化的 Markdown 文件，然后通过 grep 或嵌入检索来搜索。许多人认为持续学习的解决方案是让 Agent 消耗大量内容（如整个代码库、Slack、公司 wiki……），然后把学习结果写入 MD 文件，按需检索。</p>
+<p>确实，文件系统、bash 脚本和 MD 文件对 Agent 来说很重要，也仍将保持重要。但是，当 Agent 在规模上承担绝大多数知识工作时，这种方法将不再有效。</p>
+<h3 id="为什么文件系统不够用"><a href="#为什么文件系统不够用" class="headerlink" title="为什么文件系统不够用"></a>为什么文件系统不够用</h3><p>由于上下文窗口的限制，检索所有可能相关的 MD 文件片段并将其塞入上下文在某些时刻会崩溃。即使上下文窗口继续增长，不把所有信息放入上下文也有延迟好处——而且在许多情况下（如知识工作涉及与大型数据库或代码库交互时），将所有相关数据序列化到上下文中是不可行的。</p>
+<h3 id="更好的解决方案：结构化记忆"><a href="#更好的解决方案：结构化记忆" class="headerlink" title="更好的解决方案：结构化记忆"></a>更好的解决方案：结构化记忆</h3><p>可以使用知识图谱，但知识图谱由于缺乏结构化搜索，与非结构化 MD 记忆有相同的限制。我们需要的是能够只在多维度属性上匹配相关记忆。</p>
+<p>举例：一个调试 flaky 测试的 Agent 应该能够只拉取带有相关模块、语言、框架和失败模式标签的记忆——而不是基于关键词或嵌入相似度检索。另一个问题是要检索什么内容；带有错误的原始 Agent traces 并不太有用，因为会诱导 Agent 重复同样的错误——相反，我们希望检索到的记忆是纠正性的。</p>
+<p>作者最近探索了一个相关概念：<strong>结构化记忆</strong>（structured memory），即将记忆组织在各种属性中，每个属性可以设置为 <code>*</code> 表示通用适用性，或者设置为要匹配的值列表。</p>
+<p>对于数据 Agent，维度可能包括列和表、操作类型，以及开放式的自然语言纠正指令。例如：</p>
+<ul>
+<li>只适用于特定类型操作的记忆（”执行日期时间操作时，使用财年而不是日历年约定”）</li>
+<li>只适用于特定表的记忆（”在产品名称上查询时，列 product_cleaned 比列 product 更好”）</li>
+</ul>
+<h3 id="其他挑战"><a href="#其他挑战" class="headerlink" title="其他挑战"></a>其他挑战</h3><ol>
+<li><p><strong>支持并发编辑</strong> —— 当数千个 Agent 同时尝试编辑共享状态时，多版本化和写时复制语义是否足够？当 Agent 尝试各种潜在事务响应一个用户请求时，绝大多数事务的效果需要回滚——只有”正确”事务的结果保留。支持恰好一次语义的工作、CRDT 和操作转换技术都是相关的。</p>
+</li>
+<li><p><strong>Agent 失败处理</strong> —— 当 Agent 失败时该怎么做？</p>
+</li>
+<li><p><strong>Agent 间通信</strong> —— Agent 应该如何相互通信（直接还是通过中间共享状态）？</p>
+</li>
+<li><p><strong>Straggler Agent 处理</strong> —— 如何处理落后的 Agent？</p>
+</li>
+</ol>
+<p>作者提到了 Temporal 在支持持久多 Agent 执行方面的进展，但还不清楚这些解决方案是否能应用于数千个 Agent 的规模。在通信方面，需要机制让 Agent 相互协商。例如，四个开发者 Agent 试图就共享 schema 达成共识，各有不同但重叠的目标——人类环境会涉及迭代讨论和妥协；对于 Agent 群体，我们必须定义允许它们收敛到反映各自委托人底层目标的设计的机制。</p>
+<h3 id="个人评论-1"><a href="#个人评论-1" class="headerlink" title="个人评论"></a>个人评论</h3><p>结构化记忆的洞察非常深刻。在我使用 Agent 的过程中，我确实遇到了”记忆检索不精准”的问题：Agent 经常检索到不相关的历史经验，或者遗漏了关键的上下文维度。</p>
+<p>传统的嵌入检索只能捕获语义相似度，但很多时候相关性是多维的。调试错误时，我需要的是”相同模块 + 相同错误类型 + 相似解决方案”的记忆，而不是”所有看起来相似的文本”。</p>
+<p>但我也担心结构化记忆的复杂性。定义一个完善的 schema 需要领域专家的深度理解，而 Agent 自己定义 schema 又可能产生不一致的命名和结构。一个可能的折中方案是让 Agent 先用非结构化记忆积累大量经验，然后基于聚类和模式发现自动提取结构——这与人类专家从实践中提炼最佳实践的过程类似。</p>
+<p>并发编辑的挑战也很真实。当多个 Agent 同时修改同一个文件或状态时，冲突是不可避免的。传统的乐观锁、悲观锁都不够用，因为 Agent 的工作流是非确定性的——它们可能会回滚到之前的状态，或者在不同的执行路径中产生不同的冲突。我们需要一种更灵活的冲突解决策略，能够容忍一定的不一致性，同时保证最终一致性。</p>
+<h2 id="Data-Systems-By-Agents"><a href="#Data-Systems-By-Agents" class="headerlink" title="Data Systems By Agents"></a>Data Systems By Agents</h2><h3 id="核心问题：如果智能免费，我们能否用它合成新的数据系统？"><a href="#核心问题：如果智能免费，我们能否用它合成新的数据系统？" class="headerlink" title="核心问题：如果智能免费，我们能否用它合成新的数据系统？"></a>核心问题：如果智能免费，我们能否用它合成新的数据系统？</h3><p>如果智能实际上是免费的，我们就可以利用这种智能从头合成新的数据系统。实际上，在许多场景中，通用数据系统可能是过度的——它们必须支持每个 schema、查询和硬件目标。</p>
+<p>给定一个工作负载，近期的研究（如 Bespoke OLAP 和 GenDB）表明，人们可以使用 Agent 流程来合成一个完整的、工作负载特定的分析引擎——在几分钟到几小时内，成本仅几美元。这些引擎是可丢弃的：当工作负载转移时，可以简单地重新生成它们。</p>
+<p>类似地，作者的工作表明可以从头合成定制的 key-value 存储，针对工作负载优化。现代 IDE（如 Kiro）将系统开发的规范提升为头等公民。</p>
+<h3 id="主要问题：规范不完整和奖励黑客攻击"><a href="#主要问题：规范不完整和奖励黑客攻击" class="headerlink" title="主要问题：规范不完整和奖励黑客攻击"></a>主要问题：规范不完整和奖励黑客攻击</h3><p>主要问题是规范通常是不完美的，没有覆盖所有边界情况。当前的 Agent 会利用缺失的规范来奖励黑客式地获得高性能指标。</p>
+<p>在作者的定制 key-value 存储工作中，发现一种缓解方法是让辅助验证 Agent 尝试生成测试用例来捕获对边界情况的利用，本质上是扩展规范。另一种方法是一起生成系统和其正确性证明——作者在这方面取得了一些早期成功，但还需要做更多工作来巩固这种方法。</p>
+<p>另一个未决问题是什么是最好的方式来征求人工编写的系统规范——这可以通过迭代式、人机协作的方式完成，而不是一次性的、不完整的方式。人工编写的规范即使对手动编写的软件也是不完整的，所以人们预期未来更对齐的 Agent 在做出设计决策时会越来越多地运用更好的判断力。</p>
+<h3 id="其他开放问题"><a href="#其他开放问题" class="headerlink" title="其他开放问题"></a>其他开放问题</h3><ol>
+<li><strong>从成熟系统出发</strong> —— 从成熟系统（如 Postgres）开始并移除组件&#x2F;功能是否会导致更高的性能或更多用户信任？</li>
+<li><strong>可组合设计</strong> —— 是否有机会让设计可组合，包含各种验证组件，根据工作负载混合匹配？</li>
+<li><strong>部分验证</strong> —— 是否有机会让 Agent 结合证明系统针对与形式证明相关的代码的关键部分，而不是对整个系统这样做？</li>
+<li><strong>组件融合</strong> —— Agent 可以找到新方式”融合”组件，或许因此识别新的优化机会</li>
+<li><strong>功能补全</strong> —— Agent 可以填补功能缺口，使现有系统功能更完整，或与其他竞争系统功能对等</li>
+<li><strong>持续优化</strong> —— 持续优化开源系统响应功能请求或 issue（或许由其他 Agent 提交！）</li>
+</ol>
+<p>所有这些都需要正确性、长期维护和人类可解释性优先。</p>
+<h3 id="个人评论-2"><a href="#个人评论-2" class="headerlink" title="个人评论"></a>个人评论</h3><p>这是我最兴奋的部分。如果 Agent 真的能从零合成工作负载特定的数据系统，这将彻底改变基础设施的构建方式。想象一下：</p>
+<ul>
+<li><p>你有一个日志分析场景，传统方案是搭建一个 ELK 栈，配置索引、聚合规则、可视化面板。有了 Agent，你只需要描述需求：”我想分析用户行为漏斗，重点关注转化率下降的原因”。Agent 会为你合成一个定制化的分析引擎，针对你的数据模式、查询模式、延迟要求进行优化。</p>
+</li>
+<li><p>你有一个时序数据库的需求，但现有方案要么太贵，要么功能不够。Agent 可以从头合成一个时序存储引擎，只保留你需要的特性（例如高写入吞吐量、特定类型的聚合），删除所有不相关的功能，从而达到极致的性能。</p>
+</li>
+</ul>
+<p>但我也担心”规范不完整”的问题。人类工程师在编写系统需求时都会遗漏边界情况，Agent 更是如此。即使有多轮验证和辅助 Agent，也不可能穷尽所有可能的测试用例。</p>
+<p>一个可能的解决方案是<strong>形式化规范 + 渐进式信任</strong>。Agent 首先生成一个形式化规范（如使用 TLA+ 或 Alloy），然后基于这个规范合成系统，并自动生成形式化证明。如果证明失败，说明规范或实现有问题。人类可以审查这些证明来建立信任，而不是审查成千上万行代码。</p>
+<p>另一个挑战是<strong>可维护性</strong>。如果系统是由 Agent 生成的，当需求变更时，如何修改？是重新生成整个系统，还是在现有系统上迭代？如果重新生成，如何保证向后兼容？如果迭代，如何保证修改的正确性？</p>
+<p>我认为现实的路径可能是<strong>混合模式</strong>：Agent 从成熟系统（如 Postgres）出发，通过移除不需要的组件、优化关键路径、添加特定功能来合成定制系统。这样既保证了基础系统的正确性，又允许针对工作负载进行深度优化。</p>
+<h2 id="展望未来"><a href="#展望未来" class="headerlink" title="展望未来"></a>展望未来</h2><p>在接近免费智能的时代，数据系统比以往任何时候都更重要。随着 Agent 承担大部分知识工作，数据系统的工作负载将改变，它们需要运行的基础设施必须构建，而且越来越多地，它们将参与设计数据系统本身。每一次转变都开启了一个新的、激动人心的研究议程。</p>
+<p>从更长远的角度看，Agent 和数据系统之间的界限可能会开始模糊。例如，Agent 可能设计它们自己运行的数据系统，定义接口以及底层的系统组件。接口和内部都可以通过 Agent 随时间演进，形成一种递归自我改进的形式。</p>
+<p>另一个机会是重新思考数据系统作为所有相关状态的整体单一真实来源：包括原始数据、记忆和协调状态，进一步抹消被 Agent 查询的数据和 Agent 活动产生的数据之间的区别。</p>
+<p>最后，数据系统本身可能会包含 Agent 组件，从根本上从被动计算引擎演变为智能、主动、自优化的架构。</p>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>这篇文章提出了一个极其重要的视角：随着智能变得几乎免费，数据系统面临的三重挑战和机遇：</p>
+<ol>
+<li><strong>为 Agent 重新设计数据系统</strong> —— 从批处理、预定义查询转向高吞吐量、推测性的探索式查询</li>
+<li><strong>构建 Agent 群体的基础设施</strong> —— 从简单的文件系统转向结构化记忆、并发协调、容错机制</li>
+<li><strong>让 Agent 合成数据系统</strong> —— 从通用系统转向工作负载特定的定制引擎</li>
+</ol>
+<p>我个人的判断是：这个转变比很多人想象的更快。推理成本下降的速度超出了最激进的预测，而 Agent 能力的提升也在加速。我们可能在 2-3 年内就看到第一批由 Agent 合成的生产级数据系统。</p>
+<p>但风险也很明显：</p>
+<ul>
+<li><strong>规范不完整导致的边界 bug</strong> —— 这可能是最大的质量风险</li>
+<li><strong>并发冲突和协调失效</strong> —— 当数千个 Agent 同时工作时，协调开销可能成为瓶颈</li>
+<li><strong>安全性和可解释性</strong> —— Agent 合成的系统可能包含难以理解的设计决策</li>
+</ul>
+<p>我对未来持乐观态度，但需要更深入的研究来解决这些挑战。伯克利的这篇文章给出了一个清晰的研究路线图，值得所有从事 AI Infra 工作的工程师仔细阅读。</p>
+<hr>
+<p><strong>原文链接</strong>：<a target="_blank" rel="noopener" href="https://bair.berkeley.edu/blog/2026/07/07/intelligence-is-free-now-what/">https://bair.berkeley.edu/blog/2026/07/07/intelligence-is-free-now-what/</a></p>
+<p><strong>作者</strong>：Aditya G. Parameswaran, Shubham Agarwal, Kerem Akillioglu, Shreya Shankar, Sepanta Zeighami, Rishabh Iyer, Matei Zaharia, Alvin Cheung, Natacha Crooks, Joseph Gonzalez, Joseph Hellerstein, Ion Stoica</p>
+<p><strong>来源</strong>：UC Berkeley BAIR Blog</p>
+<p><strong>相关论文</strong>：</p>
+<ul>
+<li>Agentic Speculation: <a target="_blank" rel="noopener" href="https://arxiv.org/abs/2509.00997">https://arxiv.org/abs/2509.00997</a></li>
+<li>Structured Memory: <a target="_blank" rel="noopener" href="https://arxiv.org/abs/2602.13521">https://arxiv.org/abs/2602.13521</a></li>
+<li>Bespoke OLAP: <a target="_blank" rel="noopener" href="https://arxiv.org/abs/2603.02001">https://arxiv.org/abs/2603.02001</a></li>
+<li>GenDB: <a target="_blank" rel="noopener" href="https://arxiv.org/abs/2603.02081">https://arxiv.org/abs/2603.02081</a></li>
+<li>Custom Key-Value Stores: <a target="_blank" rel="noopener" href="https://arxiv.org/abs/2605.24096">https://arxiv.org/abs/2605.24096</a></li>
+<li>System Synthesis: <a target="_blank" rel="noopener" href="https://arxiv.org/abs/2605.23109">https://arxiv.org/abs/2605.23109</a></li>
+</ul>
+</section>
+    
+
+    <footer id="post-meta" class="clearfix">
+        <a href="/about/">
+        <img class="avatar" src="/images/avatar.png">
+        <div>
+            <span class="dark">Api Intelligence Daily Life</span>
+            <span>知识库 &amp; 博客</span>
+        </div>
+        </a>
+        <section id="sharing">
+            <a title="Share to Twitter" class="twitter" target="_blank" rel="noopener" href="https://twitter.com/intent/tweet?text=https://arbow.github.io/2026/07/09/digest-2026-07-09-intelligence-is-free/ - 文摘：智能免费后，数据系统将如何进化 @"><span class="icon-twitter">tweet</span></a>
+            <a title="Share to Facebook" class="facebook" href="#" onclick="
+                window.open(
+                  'https://www.facebook.com/sharer/sharer.php?u='+encodeURIComponent(location.href),
+                  'facebook-share-dialog',
+                  'width=626,height=436');
+                return false;"><span class="icon-facebook-sign">Share</span>
+            </a>
+        </section>
+    </footer>
+
+
+  <section id="comment">
+    <button class="btn" id="loadcmts" onclick="cmts.load();">加载评论</button>
+    <div id="gitment"></div>
+    <script src='/js/gitment.browser.js'></script>
+    <link rel="stylesheet" href=''>
+    <script>
+      var cmts={
+        load:function cmts(){
+          var gitment = new Gitment({
+          
+            id: "文摘：智能免费后，数据系统将如何进化",
+          
+            owner: "",
+            repo: "",
+            oauth: {
+              client_id: "",
+              client_secret: "",
+            },
+          })
+          gitment.render('gitment');
+          var loadcmt = document.getElementById("loadcmts");
+          var imyourfather = loadcmt.parentNode;
+          imyourfather.removeChild(loadcmts)
+        }
+      }
+    </script>
+  </section>
+
+
+	<footer id="footer">
+	<div id="social">
+		<p class="small">©  Arbow| Powered by Hexo & 
+			<a target="_blank" rel="noopener" href="https://github.com/F0r3at/Lights"> Lights</a>
+		</p>
+	</div>
+</footer>
+
+</section>
+
+	<script src="//cdnjs.loli.net/ajax/libs/instantclick/3.0.1/instantclick.min.js" data-no-instant></script>
+	<script data-no-instant>
+		
+		InstantClick.init('mousedown');
+	</script>
+
+
+
