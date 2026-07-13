@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=0">
+
+  <meta name="description" content="个人知识库与技术笔记">
+
+
+<link rel="alternate" href="/atom.xml" title="Api Intelligence Daily Life" type="application/atom+xml">
+<meta name="theme-color" content="#a1d0f6">
+<title>文摘：博客推荐 - 2026-07-13 - Api Intelligence Daily Life</title>
+<!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+<link rel="shortcut icon" href="/favicon.png">
+
+<link rel="stylesheet" href="/css/style.css">
+
+<nav class="main-nav">
+	
+	    <a href="/">← 主页</a>
+	
+	
+	    <a href="/about/">About</a>
+	
+	    <a href="/archives/">Archives</a>
+	
+	<a class="cta" href="/atom.xml" data-no-instant>订阅</a>
+</nav>
+
+<section id="wrapper">
+    <article class="post">
+    <header>
+        
+            <h1>文摘：博客推荐 - 2026-07-13</h1>
+        
+        <h2 class="headline">Jul 13 2026
+        
+            
+            <a href="/categories/博客推荐/#博客推荐">博客推荐</a>
+        
+        </h2>
+    </header>
+</article>
+<section id="post-body"><p>今日新增 1 篇博客文章推荐。</p>
+<hr>
+<h3 id="“母病速归”式-AI：号称省-65-Token，实测只有-8-5"><a href="#“母病速归”式-AI：号称省-65-Token，实测只有-8-5" class="headerlink" title="“母病速归”式 AI：号称省 65% Token，实测只有 8.5%"></a>“母病速归”式 AI：号称省 65% Token，实测只有 8.5%</h3><p><strong>来源</strong>：<a target="_blank" rel="noopener" href="https://baoyu.io/">宝玉的博客</a><br><strong>链接</strong>：<a target="_blank" rel="noopener" href="https://baoyu.io/blog/2026-07-12/caveman-token-saving-test">https://baoyu.io/blog/2026-07-12/caveman-token-saving-test</a><br><strong>发布日期</strong>：2026-07-12<br><strong>类型</strong>：技术评测 &#x2F; 成本分析</p>
+<h4 id="核心概要"><a href="#核心概要" class="headerlink" title="核心概要"></a>核心概要</h4><p>文章围绕一个叫 <a target="_blank" rel="noopener" href="https://github.com/JuliusBrussee/caveman">Caveman</a> 的开源项目展开——这个由莱顿大学 19 岁学生创建的 Skill，要求 AI 编程工具像”原始人”一样说话：删掉冠词、客套和连接词，只保留技术要素。项目上线几个月就积累了 8.85 万 Star，README 宣称能省 65% 的输出 Token。</p>
+<p>宝玉没有止步于转述宣传数字，而是引出了 <a target="_blank" rel="noopener" href="https://blog.jetbrains.com/ai/2026/07/speak-to-ai-agents-like-cavemen-tosave-tokens/">JetBrains 的实测文章</a>：用 Claude Code 跑 86 个真实编程任务，做了约 240 次计费试验、花了约 106 美元，最终在”最佳情况”下只省了 <strong>8.5%</strong> 的输出 Token。这个数字远低于宣传的 65%。更关键的是，文章解释了为什么缩水如此严重：编程 Agent 的 Token 消耗大头在系统提示词、代码文件、工具调用结果和上下文积累上，而 Caveman 压缩的那几句自然语言说明，在整张账单里只是”零头”。</p>
+<p>文章最有价值的部分不是结论本身，而是用”电报体”这个精妙的比喻贯穿始终——电报按字收费时”母病速归”四个字是最优解，但当长途通信价格降到可忽略后，自然语言回归完整表达。Token 经济可能正在走同一条路：模型单价持续下降、提示词缓存把重复上下文压到一折，在这种趋势下拼命压缩输出文字的边际收益越来越小。</p>
+<h4 id="关键洞察"><a href="#关键洞察" class="headerlink" title="关键洞察"></a>关键洞察</h4><ul>
+<li><strong>65% vs 8.5% 的巨大落差</strong>：Caveman 的 65% 数字主要来自聊天场景的压缩率，而 JetBrains 在真实编程 Agent 工作流中的大样本测试只拿到 8.5%。这意味着项目宣传的基准与真实使用场景之间存在系统性偏差。</li>
+<li><strong>Token 账单的结构决定了压缩空间</strong>：Agent 的成本分布中，代码内容、工具调用返回、上下文累积和 Skills&#x2F;MCP 描述占了绝大部分。自然语言说明只是冰山一角——就像砍掉差旅费里的矿泉水预算，机票酒店一分没动。</li>
+<li><strong>质量没掉，但透明度会掉</strong>：JetBrains 测试没有发现显著的任务质量下降（82 组配对，64 个相同、8 个更好、10 个更差），但”任务最终做对了”和”过程对人足够透明”是两个不同维度。电报式回复可能让开发者追问更多、触发更多工具调用，反而吃回省下的 Token。</li>
+<li><strong>真正有效的成本优化在别处</strong>：少加载无关上下文、精简 MCP&#x2F;Skills 安装、提高缓存命中率、减少无效工具调用、按任务难度选模型——这些措施的收益远大于逼 Agent 少说几句话。</li>
+<li><strong>Token 经济正在重演电报史</strong>：随着模型单价下降和缓存技术成熟（如 Anthropic 缓存命中只需 0.1 倍价格），按字压缩的优化会自然退场。这是阶段性产物，不是长期趋势。</li>
+</ul>
+<h4 id="评价"><a href="#评价" class="headerlink" title="评价"></a>评价</h4><p><strong>优点</strong>：</p>
+<ul>
+<li>“母病速归”的比喻贯穿全文，从电报历史到 Token 经济的映射非常精妙，让技术讨论有了极强的可读性和传播力</li>
+<li>没有停留在”标题党式辟谣”，而是深入解释了为什么 65% 会缩水到 8.5%——从 Token 账单结构分析到缓存技术趋势，给出了完整的因果链条</li>
+<li>引用 JetBrains 的实测数据有具体的方法论（86 个任务、240 次试验、106 美元预算、强制触发而非日常平均），数据可信度远高于项目方的自述数字</li>
+<li>结尾给出的 5 条真正有效的成本优化建议，每条都是可操作的实践，不是空谈</li>
+</ul>
+<p><strong>不足</strong>：</p>
+<ul>
+<li>文章主要基于 JetBrains 一篇测试 + Caveman 项目自身数据，缺少对不同模型（如 GPT 系列）、不同场景（非编程 Agent）的交叉验证</li>
+<li>“语言越短对默契要求越高”这一观点更多是推理而非实验数据支撑——文中也承认”不代表会导致更多返工”，论述在”已证明”和”合理推测”之间的界限有时模糊</li>
+<li>未深入讨论 Caveman 在团队协作场景中的影响——个人开发者可以接受电报式回复，但代码审查、知识传递等协作环节可能受影响更大</li>
+</ul>
+<p><strong>适用场景</strong>：正在评估 Token 优化方案的 Agent 开发者和团队负责人、对 Caveman 类”省 Token”项目感兴趣但犹豫是否采用的用户、关注 AI 编程工具成本结构的产品经理和技术决策者。</p>
+<h4 id="推荐指数"><a href="#推荐指数" class="headerlink" title="推荐指数"></a>推荐指数</h4><p>⭐⭐⭐⭐ (4&#x2F;5) — 推荐</p>
+<p><strong>评分理由</strong>：这篇文章用一个具体项目切入，层层递进地拆解了 Agent Token 成本的真相——从宣传数字到实测数据，从账单结构到缓存技术趋势，分析扎实且有判断力。”母病速归”的比喻是加分项，让技术讨论有了文学质感。扣掉一星是因为缺少跨模型、跨场景的验证数据，部分论述依赖合理推理而非实证。</p>
+<hr>
+<p><em>记录于 2026-07-13</em></p>
+</section>
+    
+
+    <footer id="post-meta" class="clearfix">
+        <a href="/about/">
+        <img class="avatar" src="/images/avatar.png">
+        <div>
+            <span class="dark">Api Intelligence Daily Life</span>
+            <span>知识库 &amp; 博客</span>
+        </div>
+        </a>
+        <section id="sharing">
+            <a title="Share to Twitter" class="twitter" target="_blank" rel="noopener" href="https://twitter.com/intent/tweet?text=https://arbow.github.io/2026/07/13/blog-digest-2026-07-13/ - 文摘：博客推荐 - 2026-07-13 @"><span class="icon-twitter">tweet</span></a>
+            <a title="Share to Facebook" class="facebook" href="#" onclick="
+                window.open(
+                  'https://www.facebook.com/sharer/sharer.php?u='+encodeURIComponent(location.href),
+                  'facebook-share-dialog',
+                  'width=626,height=436');
+                return false;"><span class="icon-facebook-sign">Share</span>
+            </a>
+        </section>
+    </footer>
+
+
+  <section id="comment">
+    <button class="btn" id="loadcmts" onclick="cmts.load();">加载评论</button>
+    <div id="gitment"></div>
+    <script src='/js/gitment.browser.js'></script>
+    <link rel="stylesheet" href=''>
+    <script>
+      var cmts={
+        load:function cmts(){
+          var gitment = new Gitment({
+          
+            id: "文摘：博客推荐 - 2026-07-13",
+          
+            owner: "",
+            repo: "",
+            oauth: {
+              client_id: "",
+              client_secret: "",
+            },
+          })
+          gitment.render('gitment');
+          var loadcmt = document.getElementById("loadcmts");
+          var imyourfather = loadcmt.parentNode;
+          imyourfather.removeChild(loadcmts)
+        }
+      }
+    </script>
+  </section>
+
+
+	<footer id="footer">
+	<div id="social">
+		<p class="small">©  Arbow| Powered by Hexo & 
+			<a target="_blank" rel="noopener" href="https://github.com/F0r3at/Lights"> Lights</a>
+		</p>
+	</div>
+</footer>
+
+</section>
+
+	<script src="//cdnjs.loli.net/ajax/libs/instantclick/3.0.1/instantclick.min.js" data-no-instant></script>
+	<script data-no-instant>
+		
+		InstantClick.init('mousedown');
+	</script>
+
+
+
