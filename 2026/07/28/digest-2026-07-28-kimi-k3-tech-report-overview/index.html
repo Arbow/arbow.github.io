@@ -1,0 +1,851 @@
+<!DOCTYPE html>
+
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=0">
+
+  <meta name="description" content="个人知识库与技术笔记">
+
+
+<link rel="alternate" href="/atom.xml" title="Api Intelligence Daily Life" type="application/atom+xml">
+<meta name="theme-color" content="#a1d0f6">
+<title>文摘：Kimi K3 技术报告综述：从 K2.x 的能力叠加，到一次“三轴架构换代” - Api Intelligence Daily Life</title>
+<!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+<link rel="shortcut icon" href="/favicon.png">
+
+<link rel="stylesheet" href="/css/style.css">
+
+<nav class="main-nav">
+	
+	    <a href="/">← 主页</a>
+	
+	
+	    <a href="/about/">About</a>
+	
+	    <a href="/archives/">Archives</a>
+	
+	<a class="cta" href="/atom.xml" data-no-instant>订阅</a>
+</nav>
+
+<section id="wrapper">
+    <article class="post">
+    <header>
+        
+            <h1>文摘：Kimi K3 技术报告综述：从 K2.x 的能力叠加，到一次“三轴架构换代”</h1>
+        
+        <h2 class="headline">Jul 28 2026
+        
+            
+            <a href="/categories/文摘/#文摘">文摘</a>
+        
+        </h2>
+    </header>
+</article>
+<section id="post-body"><h2 id="核心结论"><a href="#核心结论" class="headerlink" title="核心结论"></a>核心结论</h2><p>Kimi K3 <strong>不是简单把 K2 从 1T 参数放大到 2.8T</strong>，而是在三个维度同时更换底层机制：</p>
+<ol>
+<li><strong>序列维度</strong>：从以 MLA 为主，变为 <strong>KDA 线性循环记忆 + 周期性 Gated MLA</strong>；</li>
+<li><strong>网络深度维度</strong>：从普通残差连接，变为可以“沿深度做注意力检索”的 <strong>AttnRes</strong>；</li>
+<li><strong>MoE 容量维度</strong>：从 K2 的 384 专家扩展到 896 专家，并引入 <strong>Stable LatentMoE、Quantile Balancing 和 Per-Head Muon</strong>。</li>
+</ol>
+<p>再加上 1M 上下文、原生图文视频输入，以及从 SFT 阶段开始的 MXFP4&#x2F;MXFP8 量化感知训练，K3 实际上是一次基础架构换代，而不是 K2.7 的迭代版。(<a target="_blank" rel="noopener" href="https://github.com/MoonshotAI/Kimi-K3" title="https:&#x2F;&#x2F;github.com&#x2F;MoonshotAI&#x2F;Kimi-K3">GitHub</a>)</p>
+<p>与 DeepSeek V4 相比，两者的方向也很不一样：</p>
+<ul>
+<li><strong>K3 更像“能力优先”路线</strong>：更大、更深、更多专家、原生多模态，重点是复杂 Agent、编码和知识工作；</li>
+<li><strong>DeepSeek V4 更像“效率优先”路线</strong>：通过 CSA&#x2F;HCA 压缩注意力、mHC 残差流和更小的激活规模，把百万上下文的计算量和 KV Cache 明确压下来。</li>
+</ul>
+<p>一句话概括：</p>
+<blockquote>
+<p><strong>K3 是更大、更广、更激进的架构实验；DeepSeek V4 是更克制、更可量化、更关注推理经济性的系统工程。</strong></p>
+</blockquote>
+<hr>
+<h2 id="一、K2、K3-与-DeepSeek-V4-的规格变化"><a href="#一、K2、K3-与-DeepSeek-V4-的规格变化" class="headerlink" title="一、K2、K3 与 DeepSeek V4 的规格变化"></a>一、K2、K3 与 DeepSeek V4 的规格变化</h2><p>下表按照各自官方报告和模型卡整理。K2.5、K2.6、K2.7 虽然能力侧重点不同，但核心仍然属于 K2 的 1T&#x2F;32B 激活架构族。(<a target="_blank" rel="noopener" href="https://arxiv.org/pdf/2507.20534" title="https:&#x2F;&#x2F;arxiv.org&#x2F;pdf&#x2F;2507.20534">arXiv</a>)</p>
+<table>
+<thead>
+<tr>
+<th>项目</th>
+<th align="right">Kimi K2 初代</th>
+<th align="right">K2.5—K2.7</th>
+<th align="right">Kimi K3</th>
+<th align="right">DeepSeek V4-Pro</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>总参数</td>
+<td align="right">约 1.04T</td>
+<td align="right">约 1T</td>
+<td align="right"><strong>2.8T</strong></td>
+<td align="right">1.6T</td>
+</tr>
+<tr>
+<td>单 token 激活参数</td>
+<td align="right">约 32.6B</td>
+<td align="right">约 32B</td>
+<td align="right"><strong>104B</strong></td>
+<td align="right">49B</td>
+</tr>
+<tr>
+<td>Transformer 层数</td>
+<td align="right">61</td>
+<td align="right">61</td>
+<td align="right"><strong>93</strong></td>
+<td align="right">61</td>
+</tr>
+<tr>
+<td>主隐藏维度</td>
+<td align="right">7168</td>
+<td align="right">7168</td>
+<td align="right">7168</td>
+<td align="right">7168</td>
+</tr>
+<tr>
+<td>注意力结构</td>
+<td align="right">MLA</td>
+<td align="right">MLA</td>
+<td align="right"><strong>69 层 KDA + 24 层 Gated MLA</strong></td>
+<td align="right">CSA&#x2F;HCA 混合注意力</td>
+</tr>
+<tr>
+<td>残差结构</td>
+<td align="right">普通 PreNorm 残差</td>
+<td align="right">基本沿用</td>
+<td align="right"><strong>Block AttnRes</strong></td>
+<td align="right">mHC 多流残差</td>
+</tr>
+<tr>
+<td>路由专家数</td>
+<td align="right">384</td>
+<td align="right">384</td>
+<td align="right"><strong>896</strong></td>
+<td align="right">384</td>
+</tr>
+<tr>
+<td>每 token 路由</td>
+<td align="right">Top-8 + 共享专家</td>
+<td align="right">Top-8 + 共享专家</td>
+<td align="right"><strong>Top-16 + 2 个共享专家</strong></td>
+<td align="right">Top-6 + 1 个共享专家</td>
+</tr>
+<tr>
+<td>上下文</td>
+<td align="right">初版 128K，后续 256K</td>
+<td align="right">256K</td>
+<td align="right"><strong>1,048,576</strong></td>
+<td align="right">1M</td>
+</tr>
+<tr>
+<td>模态</td>
+<td align="right">文本</td>
+<td align="right">K2.5 起加入视觉</td>
+<td align="right"><strong>文本、图片、视频</strong></td>
+<td align="right">当前报告以文本为主</td>
+</tr>
+<tr>
+<td>主要优化器创新</td>
+<td align="right">MuonClip</td>
+<td align="right">延续 K2</td>
+<td align="right"><strong>Per-Head Muon</strong></td>
+<td align="right">Muon</td>
+</tr>
+<tr>
+<td>低精度方案</td>
+<td align="right">K2 Thinking 有 INT4 QAT</td>
+<td align="right">不同版本有所调整</td>
+<td align="right"><strong>MXFP4 权重、MXFP8 激活 QAT</strong></td>
+<td align="right">部分路径 FP4 QAT</td>
+</tr>
+</tbody></table>
+<p>一个容易被忽略的事实是：<strong>K3 的主隐藏维度仍然是 7168</strong>。它没有主要依靠把每层做得更宽，而是把容量放在：</p>
+<ul>
+<li>层数：61 → 93；</li>
+<li>专家数：384 → 896；</li>
+<li>专家中间维度：2048 → 3072；</li>
+<li>激活专家：约 32B → 104B。</li>
+</ul>
+<p>按公开配置粗略计算，K3 相比 K2：</p>
+<ul>
+<li>总参数约扩大 <strong>2.69 倍</strong>；</li>
+<li>激活参数扩大 <strong>3.19 倍</strong>；</li>
+<li>层数增加 <strong>52%</strong>；</li>
+<li>专家池扩大 <strong>2.33 倍</strong>。</li>
+</ul>
+<p>所以 K3 的性能提升不能简单归功于某个“免费架构技巧”。它同时付出了非常显著的单 token 计算增长。</p>
+<hr>
+<h1 id="二、K3-真正特别的四项技术"><a href="#二、K3-真正特别的四项技术" class="headerlink" title="二、K3 真正特别的四项技术"></a>二、K3 真正特别的四项技术</h1><h2 id="1-KDA：把大部分序列建模从-KV-Cache-改成循环状态"><a href="#1-KDA：把大部分序列建模从-KV-Cache-改成循环状态" class="headerlink" title="1. KDA：把大部分序列建模从 KV Cache 改成循环状态"></a>1. KDA：把大部分序列建模从 KV Cache 改成循环状态</h2><p>K3 的 93 层中，有 69 层使用 Kimi Delta Attention，只有 24 层使用完整的 Gated MLA，基本上是：</p>
+<blockquote>
+<p><strong>3 层 KDA + 1 层完整注意力</strong></p>
+</blockquote>
+<p>不断循环。</p>
+<p>KDA 来自 Kimi Linear 工作，它可以看作对 Gated DeltaNet 的扩展。传统注意力需要保存随序列长度增长的 K、V；KDA 则维护一个固定大小的循环状态矩阵，并通过：</p>
+<ul>
+<li>通道级遗忘门；</li>
+<li>Delta 更新；</li>
+<li>内容相关的状态写入和擦除；</li>
+</ul>
+<p>把历史信息压入有限状态中。</p>
+<p>因此，对 KDA 层来说，推理状态不会像普通 KV Cache 那样随上下文长度线性膨胀。(<a target="_blank" rel="noopener" href="https://arxiv.org/pdf/2510.26692" title="Kimi Linear: An Expressive, Efficient Attention Architecture">arXiv</a>)</p>
+<h3 id="为什么仍然保留-24-层-MLA"><a href="#为什么仍然保留-24-层-MLA" class="headerlink" title="为什么仍然保留 24 层 MLA"></a>为什么仍然保留 24 层 MLA</h3><p>纯循环式线性注意力有一个根本弱点：</p>
+<blockquote>
+<p>它擅长保存“累计状态”，但不一定擅长从数十万 token 之前精确取回某个原始 token。</p>
+</blockquote>
+<p>例如：</p>
+<ul>
+<li>精确复制一段随机字符串；</li>
+<li>从很多相似记录中选择其中一条；</li>
+<li>对远距离代码定义进行精确引用；</li>
+<li>处理大量相互覆盖的键值对。</li>
+</ul>
+<p>这些任务更适合显式、可寻址的 KV 记忆。</p>
+<p>因此，K3 没有采用纯 KDA，而是每隔数层插入一次完整 Gated MLA，让模型周期性地重新访问完整 token 历史。这是一种典型的混合设计：</p>
+<ul>
+<li>KDA 负责低成本的持续记忆；</li>
+<li>MLA 负责高精度的全局检索。</li>
+</ul>
+<h3 id="KDA-的速度数字应如何理解"><a href="#KDA-的速度数字应如何理解" class="headerlink" title="KDA 的速度数字应如何理解"></a>KDA 的速度数字应如何理解</h3><p>Kimi Linear 论文中的 48B 总参数、3B 激活参数组件模型，在 1M 上下文下报告了：</p>
+<ul>
+<li>最多约 <strong>75% KV Cache 降低</strong>；</li>
+<li>最多约 <strong>6 倍解码加速</strong>；</li>
+<li>某些测试中 TPOT 从约 11.48ms 降至 1.84ms。</li>
+</ul>
+<p>但这些数字来自一个 <strong>48B&#x2F;3B、训练 1.4T token 的组件验证模型</strong>，并不是完整 2.8T K3 的端到端结果。不能直接推导成“K3 比 K2 快 6 倍”。(<a target="_blank" rel="noopener" href="https://arxiv.org/pdf/2510.26692" title="Kimi Linear: An Expressive, Efficient Attention Architecture">arXiv</a>)</p>
+<p>实际 K3 还同时增加了：</p>
+<ul>
+<li>3.2 倍激活参数；</li>
+<li>更深的网络；</li>
+<li>AttnRes；</li>
+<li>更大的专家通信；</li>
+<li>周期性完整 MLA。</li>
+</ul>
+<p>所以 KDA 更准确的意义是：</p>
+<blockquote>
+<p><strong>避免百万上下文下的 KV Cache 和解码成本失控，而不是让整个 K3 成为低成本模型。</strong></p>
+</blockquote>
+<hr>
+<h2 id="2-AttnRes：第一次把“注意力”真正用在网络深度上"><a href="#2-AttnRes：第一次把“注意力”真正用在网络深度上" class="headerlink" title="2. AttnRes：第一次把“注意力”真正用在网络深度上"></a>2. AttnRes：第一次把“注意力”真正用在网络深度上</h2><p>普通 Transformer 的残差结构可以简化为：</p>
+<p>[<br>x_l&#x3D;x_{l-1}+F_l(x_{l-1})<br>]</p>
+<p>第 (l) 层只能看到前一层输出。虽然前一层理论上包含更早层的信息，但它们已经被反复压缩和叠加。</p>
+<p>这会产生两个问题：</p>
+<ul>
+<li>浅层的词法、位置、视觉和局部模式不断被稀释；</li>
+<li>深层只能被动接受上一层整理好的表示，无法主动选择“我要第 8 层的局部信息，还是第 50 层的抽象信息”。</li>
+</ul>
+<p>AttnRes 的做法是把不同深度的隐藏状态当成一个新的“序列”，让当前层对先前层或先前层块进行 softmax 注意力：</p>
+<blockquote>
+<p>传统注意力沿 token 维度检索；<br>AttnRes 沿网络深度检索。</p>
+</blockquote>
+<p>这相当于增加了一条“纵向寻址总线”。(<a target="_blank" rel="noopener" href="https://arxiv.org/pdf/2603.15031" title="Attention Residuals">arXiv</a>)</p>
+<h3 id="为什么使用-Block-AttnRes"><a href="#为什么使用-Block-AttnRes" class="headerlink" title="为什么使用 Block AttnRes"></a>为什么使用 Block AttnRes</h3><p>如果每一层都保存并注意所有先前层输出，内存和通信会很昂贵。K3 使用的是分块版本：</p>
+<ul>
+<li>若干 Transformer 层组成一个 block；</li>
+<li>block 内仍使用局部残差；</li>
+<li>跨 block 时，通过 AttnRes 对先前 block 表示进行选择。</li>
+</ul>
+<p>这样可以把额外存储和通信控制在与 block 数量相关的范围，而不是对全部 93 层做完全连接。</p>
+<h3 id="AttnRes-可能解决什么问题"><a href="#AttnRes-可能解决什么问题" class="headerlink" title="AttnRes 可能解决什么问题"></a>AttnRes 可能解决什么问题</h3><p>它最可能帮助的不是简单知识问答，而是：</p>
+<ul>
+<li>深层推理时保留浅层的原始约束；</li>
+<li>代码任务中重新访问早期语法和变量结构；</li>
+<li>多模态模型中保留视觉编码器的局部细节；</li>
+<li>超深网络中减轻 PreNorm 表示稀释；</li>
+<li>长 Agent 轨迹里同时维护高层计划和底层状态。</li>
+</ul>
+<p>AttnRes 论文的组件实验显示，它在 scaling-law 拟合中约相当于 <strong>1.25 倍计算量</strong>的普通残差模型，同时推理延迟开销可低于约 2%。但这同样是组件模型结果，而不是完整 K3 的严格消融。(<a target="_blank" rel="noopener" href="https://arxiv.org/pdf/2603.15031" title="Attention Residuals">arXiv</a>)</p>
+<h3 id="与普通-Dense-Connection-的区别"><a href="#与普通-Dense-Connection-的区别" class="headerlink" title="与普通 Dense Connection 的区别"></a>与普通 Dense Connection 的区别</h3><p>AttnRes 不是简单把所有历史层 concat 起来，也不是固定加权：</p>
+<ul>
+<li>权重取决于当前 token 和当前层；</li>
+<li>不同 token 可以选择不同深度；</li>
+<li>权重通过 softmax 归一化；</li>
+<li>远距离层可以被直接访问，而不必通过几十层残差逐层传播。</li>
+</ul>
+<p>这是 K3 报告中研究价值最高的部分之一。它把 Transformer 的“上下文”概念，从序列长度扩展到了网络深度。</p>
+<hr>
+<h2 id="3-Stable-LatentMoE：K3-的“超稀疏”其实不等于更便宜"><a href="#3-Stable-LatentMoE：K3-的“超稀疏”其实不等于更便宜" class="headerlink" title="3. Stable LatentMoE：K3 的“超稀疏”其实不等于更便宜"></a>3. Stable LatentMoE：K3 的“超稀疏”其实不等于更便宜</h2><p>K3 的 MoE 配置非常激进：</p>
+<ul>
+<li>896 个路由专家；</li>
+<li>每个 token 选择 16 个；</li>
+<li>另有 2 个共享专家；</li>
+<li>专家隐藏维度 3072；</li>
+<li>专家路径工作在 3584 维 latent space。</li>
+</ul>
+<p>与 K2 相比，它的专家池从 384 扩大到 896，但每次只使用其中约 1.79%：</p>
+<p>[<br>16&#x2F;896\approx1.79%<br>]</p>
+<p>K2 为：</p>
+<p>[<br>8&#x2F;384\approx2.08%<br>]</p>
+<p>DeepSeek V4-Pro 为：</p>
+<p>[<br>6&#x2F;384\approx1.56%<br>]</p>
+<p>因此，从“选择了专家池的多少比例”看，K3 确实更加稀疏。</p>
+<p>但看全模型激活参数占比：</p>
+<table>
+<thead>
+<tr>
+<th>模型</th>
+<th align="right">激活参数 &#x2F; 总参数</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>K2</td>
+<td align="right">32.6B &#x2F; 1.04T ≈ <strong>3.13%</strong></td>
+</tr>
+<tr>
+<td>K3</td>
+<td align="right">104B &#x2F; 2.8T ≈ <strong>3.71%</strong></td>
+</tr>
+<tr>
+<td>DeepSeek V4-Pro</td>
+<td align="right">49B &#x2F; 1.6T ≈ <strong>3.06%</strong></td>
+</tr>
+</tbody></table>
+<p>这说明：</p>
+<blockquote>
+<p>K3 虽然从更大的专家池中选择更小比例，但它实际激活的绝对参数和总参数占比都没有下降。</p>
+</blockquote>
+<p>“更稀疏”主要意味着：</p>
+<ul>
+<li>参数容量更大；</li>
+<li>专家分工可能更细；</li>
+<li>每个 token 可访问更多不同能力子空间；</li>
+</ul>
+<p>而不是每 token 推理更便宜。</p>
+<p>上述比例只是基于模型配置的粗略参数比，不等价于准确 FLOPs，因为注意力、共享专家、路由和通信成本并不完全按参数量线性变化。(<a target="_blank" rel="noopener" href="https://github.com/MoonshotAI/Kimi-K3" title="https:&#x2F;&#x2F;github.com&#x2F;MoonshotAI&#x2F;Kimi-K3">GitHub</a>)</p>
+<h3 id="Quantile-Balancing"><a href="#Quantile-Balancing" class="headerlink" title="Quantile Balancing"></a>Quantile Balancing</h3><p>超大专家池最危险的问题是路由失衡：</p>
+<ul>
+<li>热门专家拥塞；</li>
+<li>冷门专家训练不足；</li>
+<li>不同 GPU 的 token 数量不同；</li>
+<li>动态 shape 和 all-to-all 通信效率下降。</li>
+</ul>
+<p>K3 使用 Quantile Balancing，根据路由分数的分位数确定专家容量和分配，而不是依赖传统的启发式偏置更新和敏感的平衡超参数。</p>
+<p>配合完全平衡的 Expert Parallel 训练，Moonshot 声称可以做到：</p>
+<ul>
+<li>每个设备形状静态；</li>
+<li>避免关键路径上的 host 同步；</li>
+<li>降低动态 token 分布导致的尾部延迟。</li>
+</ul>
+<p>这类优化对 896 专家尤其重要，否则理论上的 MoE 计算节省很容易被通信和负载不均衡吃掉。(<a target="_blank" rel="noopener" href="https://www.kimi.com/blog/kimi-k3" title="https:&#x2F;&#x2F;www.kimi.com&#x2F;blog&#x2F;kimi-k3">Kimi</a>)</p>
+<h3 id="Per-Head-Muon"><a href="#Per-Head-Muon" class="headerlink" title="Per-Head Muon"></a>Per-Head Muon</h3><p>K2 的代表性优化器创新是 MuonClip，重点解决 QK 范数失控和超大 MoE 预训练稳定性问题。K3 则进一步采用 Per-Head Muon，把注意力头作为相对独立的优化单元处理，减少不同头之间尺度和更新方向的相互干扰。(<a target="_blank" rel="noopener" href="https://arxiv.org/pdf/2507.20534" title="https:&#x2F;&#x2F;arxiv.org&#x2F;pdf&#x2F;2507.20534">arXiv</a>)</p>
+<p>这与 K3 的设计很匹配：</p>
+<ul>
+<li>96 个注意力头；</li>
+<li>KDA 和 MLA 两种不同性质的层；</li>
+<li>Gated MLA；</li>
+<li>AttnRes；</li>
+<li>多模态输入。</li>
+</ul>
+<p>不同头的功能差异可能比 K2 更大，统一矩阵级优化未必是最佳选择。</p>
+<hr>
+<h2 id="4-低精度不是事后量化，而是架构与推理系统共同设计"><a href="#4-低精度不是事后量化，而是架构与推理系统共同设计" class="headerlink" title="4. 低精度不是事后量化，而是架构与推理系统共同设计"></a>4. 低精度不是事后量化，而是架构与推理系统共同设计</h2><p>K3 从 SFT 阶段开始进行量化感知训练，发布配置为：</p>
+<ul>
+<li><strong>MXFP4 权重</strong>；</li>
+<li><strong>MXFP8 激活</strong>。</li>
+</ul>
+<p>这比完成模型后再做 PTQ 更有利于保留精度，尤其是 MoE 专家、路由、KDA 状态和 AttnRes 这类对数值误差敏感的结构。需要注意的是，这不等于 K3 从预训练第一天起就在 4-bit 下训练；官方表述是从 SFT 阶段开始 QAT。(<a target="_blank" rel="noopener" href="https://github.com/MoonshotAI/Kimi-K3" title="https:&#x2F;&#x2F;github.com&#x2F;MoonshotAI&#x2F;Kimi-K3">GitHub</a>)</p>
+<p>即使只按理想 4-bit 权重计算：</p>
+<p>[<br>2.8T\times0.5\text{ Byte}\approx1.4\text{ TB}<br>]</p>
+<p>这还没有包括：</p>
+<ul>
+<li>量化 scale 和元数据；</li>
+<li>视觉编码器；</li>
+<li>激活；</li>
+<li>KDA 循环状态；</li>
+<li>MLA KV Cache；</li>
+<li>通信缓冲区；</li>
+<li>并行冗余。</li>
+</ul>
+<p>因此，官方建议使用 64 张以上加速卡构成 supernode，并不夸张。K3 是开放权重模型，但并不是面向普通单机部署的模型。</p>
+<p>vLLM 为支持 K3 也不得不加入或修改：</p>
+<ul>
+<li>KDA 循环状态缓存；</li>
+<li>KDA&#x2F;MLA 混合缓存；</li>
+<li>细粒度 partial prefix cache；</li>
+<li>AttnRes 融合 kernel；</li>
+<li>SiTU 与 MXFP4 专用路径；</li>
+<li>极大规模 Expert Parallel 支持。</li>
+</ul>
+<p>这说明 K3 的复杂度已经从“模型架构创新”外溢到了推理引擎和集群拓扑层面。(<a target="_blank" rel="noopener" href="https://vllm.ai/blog/2026-07-22-kimi-k3-preview" title="A Preview of Production-Scale Kimi K3 Support on vLLM | vLLM Blog">vLLM</a>)</p>
+<hr>
+<h1 id="三、K2-x-到-K3：到底哪些是版本升级，哪些是换代"><a href="#三、K2-x-到-K3：到底哪些是版本升级，哪些是换代" class="headerlink" title="三、K2.x 到 K3：到底哪些是版本升级，哪些是换代"></a>三、K2.x 到 K3：到底哪些是版本升级，哪些是换代</h1><h2 id="K2：建立-1T-超稀疏-MoE-底座"><a href="#K2：建立-1T-超稀疏-MoE-底座" class="headerlink" title="K2：建立 1T 超稀疏 MoE 底座"></a>K2：建立 1T 超稀疏 MoE 底座</h2><p>K2 的核心贡献主要是：</p>
+<ul>
+<li>约 1.04T 总参数、32.6B 激活参数；</li>
+<li>MLA + 超稀疏 MoE；</li>
+<li>MuonClip；</li>
+<li>在约 15.5T token 训练中保持稳定，没有明显 loss spike；</li>
+<li>Agent 数据合成和联合强化学习。</li>
+</ul>
+<p>它本质上仍然与 DeepSeek V3 一代相似：依赖完整注意力&#x2F;MLA、标准残差和经典 MoE 路由，只是在优化器稳定性与 Agent 后训练方面有明显创新。(<a target="_blank" rel="noopener" href="https://arxiv.org/pdf/2507.20534" title="https:&#x2F;&#x2F;arxiv.org&#x2F;pdf&#x2F;2507.20534">arXiv</a>)</p>
+<h2 id="K2-Thinking：主要是后训练与测试时扩展"><a href="#K2-Thinking：主要是后训练与测试时扩展" class="headerlink" title="K2 Thinking：主要是后训练与测试时扩展"></a>K2 Thinking：主要是后训练与测试时扩展</h2><p>K2 Thinking 并没有公开新的基础架构，重点是：</p>
+<ul>
+<li>长思考；</li>
+<li>连续 200—300 次工具调用；</li>
+<li>增加 thinking token 和工具调用次数时继续获得收益；</li>
+<li>INT4 QAT；</li>
+<li>为搜索、研究和编码任务设计长轨迹 Agent 训练。</li>
+</ul>
+<p>因此它更像是给 K2 装上“长推理操作系统”，不是更换发动机。(<a target="_blank" rel="noopener" href="https://www.kimi.com/blog/kimi-k2-thinking" title="https:&#x2F;&#x2F;www.kimi.com&#x2F;blog&#x2F;kimi-k2-thinking">Kimi</a>)</p>
+<h2 id="K2-5：多模态和-Agent-Swarm"><a href="#K2-5：多模态和-Agent-Swarm" class="headerlink" title="K2.5：多模态和 Agent Swarm"></a>K2.5：多模态和 Agent Swarm</h2><p>K2.5 在 K2 基础上加入 MoonViT，并使用大约 15T 图文混合 token 训练。技术亮点包括：</p>
+<ul>
+<li>图文联合预训练；</li>
+<li>从 4K 逐步扩展到 32K、262K；</li>
+<li>Zero-Vision SFT：即使监督样本没有直接视觉输入，也训练模型主动调用视觉工具；</li>
+<li>Visual Outcome RL；</li>
+<li>Agent Swarm 和 PARL，让多个子 Agent 并行执行任务。</li>
+</ul>
+<p>这使 K2.5 成为原生多模态 Agent，但它的语言模型主体仍然是 61 层、384 专家、Top-8 的 K2 架构族。(<a target="_blank" rel="noopener" href="https://arxiv.org/pdf/2602.02276" title="https:&#x2F;&#x2F;arxiv.org&#x2F;pdf&#x2F;2602.02276">arXiv</a>)</p>
+<h2 id="K2-6-与-K2-7"><a href="#K2-6-与-K2-7" class="headerlink" title="K2.6 与 K2.7"></a>K2.6 与 K2.7</h2><p>K2.6、K2.7 的公开模型配置仍然大体保持：</p>
+<ul>
+<li>约 1T 总参数；</li>
+<li>32B 激活参数；</li>
+<li>61 层；</li>
+<li>384 专家、Top-8；</li>
+<li>MLA；</li>
+<li>256K 上下文。</li>
+</ul>
+<p>变化更多来自：</p>
+<ul>
+<li>长时编码训练；</li>
+<li>Agent 协作；</li>
+<li>工具使用；</li>
+<li>代码专门化；</li>
+<li>推理效率和交互策略。</li>
+</ul>
+<p>所以从架构史角度看：</p>
+<blockquote>
+<p><strong>K2、K2 Thinking、K2.5、K2.6、K2.7 是同一代底座上的能力扩展；K3 才是下一代底座。</strong></p>
+</blockquote>
+<p>(<a target="_blank" rel="noopener" href="https://huggingface.co/moonshotai/Kimi-K2.6" title="https:&#x2F;&#x2F;huggingface.co&#x2F;moonshotai&#x2F;Kimi-K2.6">Hugging Face</a>)</p>
+<hr>
+<h1 id="四、K3-与-DeepSeek-V4：两条百万上下文路线"><a href="#四、K3-与-DeepSeek-V4：两条百万上下文路线" class="headerlink" title="四、K3 与 DeepSeek V4：两条百万上下文路线"></a>四、K3 与 DeepSeek V4：两条百万上下文路线</h1><h2 id="1-序列记忆：KDA-的循环压缩，对比-CSA-HCA-的显式压缩检索"><a href="#1-序列记忆：KDA-的循环压缩，对比-CSA-HCA-的显式压缩检索" class="headerlink" title="1. 序列记忆：KDA 的循环压缩，对比 CSA&#x2F;HCA 的显式压缩检索"></a>1. 序列记忆：KDA 的循环压缩，对比 CSA&#x2F;HCA 的显式压缩检索</h2><p>DeepSeek V4 没有采用 KDA 这类循环状态，而是采用 CSA&#x2F;HCA 混合结构：</p>
+<h3 id="CSA：Compressed-Sparse-Attention"><a href="#CSA：Compressed-Sparse-Attention" class="headerlink" title="CSA：Compressed Sparse Attention"></a>CSA：Compressed Sparse Attention</h3><p>大致逻辑是：</p>
+<ol>
+<li>把每 4 个 token 压缩成一个表示；</li>
+<li>为当前 query 检索相关压缩项；</li>
+<li>只对大约 Top-1024 个条目做稀疏注意力。</li>
+</ol>
+<p>它仍然保存显式、可寻址的历史，只是对历史进行了压缩和稀疏选择。</p>
+<h3 id="HCA：Highly-Compressed-Attention"><a href="#HCA：Highly-Compressed-Attention" class="headerlink" title="HCA：Highly Compressed Attention"></a>HCA：Highly Compressed Attention</h3><p>HCA 使用更高的压缩率，大致将每 128 个 token 压为一个表示，然后对这些高压缩表示做全局访问。</p>
+<p>因此两者的差别是：</p>
+<table>
+<thead>
+<tr>
+<th>K3 KDA</th>
+<th>DeepSeek V4 CSA&#x2F;HCA</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>把历史折叠进有限循环状态</td>
+<td>保留压缩后的显式历史条目</td>
+</tr>
+<tr>
+<td>状态不随 token 数持续增长</td>
+<td>缓存仍增长，但增长速度显著降低</td>
+</tr>
+<tr>
+<td>长期累计记忆效率高</td>
+<td>精确寻址和检索更自然</td>
+</tr>
+<tr>
+<td>需要周期性 MLA 修复精确检索</td>
+<td>需要训练索引器和稀疏检索</td>
+</tr>
+<tr>
+<td>prefix cache 边界处理复杂</td>
+<td>稀疏索引和压缩缓存复杂</td>
+</tr>
+</tbody></table>
+<p>DeepSeek 报告给出了很明确的百万上下文成本数据：在 1M 长度下，V4-Pro 的单 token FLOPs 约为 V3.2 的 27%，KV Cache 约为 10%；V4-Flash 分别约为 10% 和 7%。(<a target="_blank" rel="noopener" href="https://arxiv.org/pdf/2606.19348" title="https:&#x2F;&#x2F;arxiv.org&#x2F;pdf&#x2F;2606.19348">arXiv</a>)</p>
+<p>K3 当前公开材料没有给出同口径的完整 2.8T 模型 FLOPs&#x2F;KV 对比。因此：</p>
+<blockquote>
+<p>可以确认 K3 的 KV 增长机制更优，但不能仅凭 KDA 组件实验断言 K3 的整机百万上下文成本低于 DeepSeek V4。</p>
+</blockquote>
+<hr>
+<h2 id="2-深度建模：AttnRes-与-mHC-的差别"><a href="#2-深度建模：AttnRes-与-mHC-的差别" class="headerlink" title="2. 深度建模：AttnRes 与 mHC 的差别"></a>2. 深度建模：AttnRes 与 mHC 的差别</h2><p>DeepSeek V4 的 mHC 可以理解为维护多个并行残差流，并通过受约束的动态矩阵在这些流之间混合。</p>
+<p>其重要特点是混合矩阵受到双随机或 Birkhoff 类约束：</p>
+<ul>
+<li>每个输入流不会无限放大；</li>
+<li>每个输出流能稳定接收信息；</li>
+<li>保持残差传播的平均尺度；</li>
+<li>减少深层网络中信号坍缩或爆炸。</li>
+</ul>
+<p>K3 AttnRes 则更像一次主动检索：</p>
+<ul>
+<li>当前层可以直接选择历史深度；</li>
+<li>不限于少数并行残差流；</li>
+<li>适合重新访问特定浅层或中间层表示。</li>
+</ul>
+<p>二者解决的是相似问题，但侧重点不同：</p>
+<ul>
+<li><strong>mHC 强调稳定的信息传输通道</strong>；</li>
+<li><strong>AttnRes 强调内容相关的深度检索</strong>。</li>
+</ul>
+<p>从理论表现力看，AttnRes 更灵活；从结构约束和稳定性可解释性看，mHC 更规整。(<a target="_blank" rel="noopener" href="https://arxiv.org/pdf/2603.15031" title="Attention Residuals">arXiv</a>)</p>
+<hr>
+<h2 id="3-MoE：K3-用更多激活计算换取更大能力空间"><a href="#3-MoE：K3-用更多激活计算换取更大能力空间" class="headerlink" title="3. MoE：K3 用更多激活计算换取更大能力空间"></a>3. MoE：K3 用更多激活计算换取更大能力空间</h2><table>
+<thead>
+<tr>
+<th>项目</th>
+<th align="right">K3</th>
+<th align="right">DeepSeek V4-Pro</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>总参数</td>
+<td align="right">2.8T</td>
+<td align="right">1.6T</td>
+</tr>
+<tr>
+<td>激活参数</td>
+<td align="right">104B</td>
+<td align="right">49B</td>
+</tr>
+<tr>
+<td>层数</td>
+<td align="right">93</td>
+<td align="right">61</td>
+</tr>
+<tr>
+<td>路由专家</td>
+<td align="right">896</td>
+<td align="right">384</td>
+</tr>
+<tr>
+<td>每 token 路由</td>
+<td align="right">Top-16</td>
+<td align="right">Top-6</td>
+</tr>
+<tr>
+<td>共享专家</td>
+<td align="right">2</td>
+<td align="right">1</td>
+</tr>
+<tr>
+<td>激活参数占比</td>
+<td align="right">约 3.71%</td>
+<td align="right">约 3.06%</td>
+</tr>
+</tbody></table>
+<p>K3 总参数约是 V4-Pro 的 1.75 倍，但激活参数约是其 2.12 倍。</p>
+<p>这意味着 K3 的策略不是仅仅扩大静态知识容量，而是允许每个 token 真正调用更多计算。其优势可能体现在：</p>
+<ul>
+<li>复杂代码生成；</li>
+<li>多模态推理；</li>
+<li>长工具链规划；</li>
+<li>跨领域专业任务；</li>
+<li>大规模专家分工。</li>
+</ul>
+<p>代价则是：</p>
+<ul>
+<li>更高的每 token FLOPs；</li>
+<li>更高的专家通信；</li>
+<li>更困难的部署；</li>
+<li>更依赖高带宽 supernode。</li>
+</ul>
+<p>因此，单看模型质量，K3 可能更有上限；看每美元输出 token、每卡吞吐和自部署门槛，DeepSeek V4 更有优势。</p>
+<hr>
+<h2 id="4-多模态：这是-K3-对-DeepSeek-V4-最明确的领先点"><a href="#4-多模态：这是-K3-对-DeepSeek-V4-最明确的领先点" class="headerlink" title="4. 多模态：这是 K3 对 DeepSeek V4 最明确的领先点"></a>4. 多模态：这是 K3 对 DeepSeek V4 最明确的领先点</h2><p>K3 从基础架构层面整合了 MoonViT-V2，面向：</p>
+<ul>
+<li>图片理解；</li>
+<li>视频理解；</li>
+<li>GUI 操作；</li>
+<li>视觉搜索；</li>
+<li>图表与文档；</li>
+<li>视觉编码和 Agent 工作流。</li>
+</ul>
+<p>DeepSeek V4 当前技术报告则明确把多模态列为后续方向，其主要贡献仍集中在文本、代码、搜索、工具使用和百万上下文。(<a target="_blank" rel="noopener" href="https://github.com/MoonshotAI/Kimi-K3" title="https:&#x2F;&#x2F;github.com&#x2F;MoonshotAI&#x2F;Kimi-K3">GitHub</a>)</p>
+<p>所以在需要统一模型完成：</p>
+<blockquote>
+<p>看网页截图 → 理解 UI → 写代码 → 调工具 → 检查视觉结果</p>
+</blockquote>
+<p>这类闭环任务时，K3 的架构定位更加完整。</p>
+<hr>
+<h2 id="5-训练与后训练：K3-更强调长轨迹状态，V4-更强调专家蒸馏"><a href="#5-训练与后训练：K3-更强调长轨迹状态，V4-更强调专家蒸馏" class="headerlink" title="5. 训练与后训练：K3 更强调长轨迹状态，V4 更强调专家蒸馏"></a>5. 训练与后训练：K3 更强调长轨迹状态，V4 更强调专家蒸馏</h2><p>K3 默认是 always-thinking 模型，并提供 low、high、max 等推理强度。值得注意的是，它在多轮工具调用中建议保留完整 assistant 消息和 reasoning history，这有助于长 Agent 任务持续维护计划和已完成步骤。(<a target="_blank" rel="noopener" href="https://github.com/MoonshotAI/Kimi-K3" title="https:&#x2F;&#x2F;github.com&#x2F;MoonshotAI&#x2F;Kimi-K3">GitHub</a>)</p>
+<p>DeepSeek V4 则采用：</p>
+<ul>
+<li>specialist models；</li>
+<li>多教师统一；</li>
+<li>on-policy distillation；</li>
+<li>非思考、高思考、最大思考等不同模式；</li>
+<li>搜索、编码和工具任务专门训练。</li>
+</ul>
+<p>它更像先训练多个强专家，再把专家行为蒸馏进统一模型。(<a target="_blank" rel="noopener" href="https://arxiv.org/pdf/2606.19348" title="https:&#x2F;&#x2F;arxiv.org&#x2F;pdf&#x2F;2606.19348">arXiv</a>)</p>
+<p>K3 的哲学更偏向“一个超大通用 Agent 内部形成专业化专家”；V4 则更明显地使用“外部专家训练—统一模型吸收”的路线。</p>
+<hr>
+<h1 id="五、评测成绩应当怎样看"><a href="#五、评测成绩应当怎样看" class="headerlink" title="五、评测成绩应当怎样看"></a>五、评测成绩应当怎样看</h1><p>选取两份官方表格中名称大致一致的项目，可以看到 K3 的公开成绩总体领先：</p>
+<table>
+<thead>
+<tr>
+<th>评测</th>
+<th align="right">Kimi K3</th>
+<th align="right">DeepSeek V4-Pro Max</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>GPQA Diamond</td>
+<td align="right"><strong>93.5</strong></td>
+<td align="right">90.1</td>
+</tr>
+<tr>
+<td>Humanity’s Last Exam</td>
+<td align="right"><strong>43.5</strong></td>
+<td align="right">37.7</td>
+</tr>
+<tr>
+<td>HLE with tools</td>
+<td align="right"><strong>56.0</strong></td>
+<td align="right">48.2</td>
+</tr>
+<tr>
+<td>BrowseComp</td>
+<td align="right"><strong>91.2</strong></td>
+<td align="right">83.4</td>
+</tr>
+<tr>
+<td>MCP-Atlas</td>
+<td align="right"><strong>84.2</strong></td>
+<td align="right">73.6</td>
+</tr>
+<tr>
+<td>GDPval-AA</td>
+<td align="right"><strong>1686</strong>，K3 表中为 v2</td>
+<td align="right">1554</td>
+</tr>
+</tbody></table>
+<p>(<a target="_blank" rel="noopener" href="https://github.com/MoonshotAI/Kimi-K3" title="https:&#x2F;&#x2F;github.com&#x2F;MoonshotAI&#x2F;Kimi-K3">GitHub</a>)</p>
+<p>从结果看，K3 的优势主要集中在：</p>
+<ul>
+<li>搜索；</li>
+<li>工具使用；</li>
+<li>MCP；</li>
+<li>知识工作；</li>
+<li>高难度推理；</li>
+<li>Agent 任务。</li>
+</ul>
+<p>这与它 104B 激活参数、长推理训练和多模态 Agent 定位一致。</p>
+<p>但这些分数不能当作严格的同场考试，原因包括：</p>
+<h3 id="1-Harness-不同"><a href="#1-Harness-不同" class="headerlink" title="1. Harness 不同"></a>1. Harness 不同</h3><p>K3 的官方表格混用了：</p>
+<ul>
+<li>Kimi Code；</li>
+<li>Claude Code；</li>
+<li>Codex；</li>
+<li>不同外部 Agent harness；</li>
+<li>不同 context management 策略。</li>
+</ul>
+<p>DeepSeek V4 则使用自有的最小编码和搜索 launcher，部分 Agent 任务限制为 500 步、512K 上下文。(<a target="_blank" rel="noopener" href="https://github.com/MoonshotAI/Kimi-K3" title="https:&#x2F;&#x2F;github.com&#x2F;MoonshotAI&#x2F;Kimi-K3">GitHub</a>)</p>
+<h3 id="2-推理预算不同"><a href="#2-推理预算不同" class="headerlink" title="2. 推理预算不同"></a>2. 推理预算不同</h3><p>K3 的主要成绩使用 max effort，温度 1.0；不同任务还使用不同 top-p、上下文压缩和工具配置。</p>
+<p>因此某个分数可能同时反映：</p>
+<ul>
+<li>基础模型；</li>
+<li>推理 token；</li>
+<li>Agent 框架；</li>
+<li>搜索工具；</li>
+<li>上下文管理；</li>
+<li>重试策略。</li>
+</ul>
+<p>不能完全归因于模型权重。</p>
+<h3 id="3-基准版本不同"><a href="#3-基准版本不同" class="headerlink" title="3. 基准版本不同"></a>3. 基准版本不同</h3><p>例如：</p>
+<ul>
+<li>K3 报告使用 TerminalBench 2.1；</li>
+<li>DeepSeek V4 报告使用 TerminalBench 2.0；</li>
+<li>GDPval 版本口径也可能不同；</li>
+<li>Toolathlon 与 Toolathlon-Verified 不是严格相同集合。</li>
+</ul>
+<p>这些项目不适合直接相减。</p>
+<h3 id="4-K3-缺少与-V4-同口径的-1M-精确检索成绩"><a href="#4-K3-缺少与-V4-同口径的-1M-精确检索成绩" class="headerlink" title="4. K3 缺少与 V4 同口径的 1M 精确检索成绩"></a>4. K3 缺少与 V4 同口径的 1M 精确检索成绩</h3><p>DeepSeek V4 报告明确给出：</p>
+<ul>
+<li>MRCR 1M：83.5；</li>
+<li>CorpusQA 1M：62.0。</li>
+</ul>
+<p>K3 主要表格没有列出完全相同的长上下文测试。K3 在 BrowseComp 中使用 300K 左右上下文压缩得到 91.2，完整 1M、不做上下文管理时为 90.4，这能证明 1M 能运行，但不等于证明 1M 内任意位置的精确取回能力优于 V4。(<a target="_blank" rel="noopener" href="https://github.com/MoonshotAI/Kimi-K3" title="https:&#x2F;&#x2F;github.com&#x2F;MoonshotAI&#x2F;Kimi-K3">GitHub</a>)</p>
+<p>因此更谨慎的表述是：</p>
+<blockquote>
+<p>K3 在当前公开 Agent 和知识工作评测中表现更强，但两份厂商报告不足以证明 K3 在相同计算预算、相同 harness 下全面优于 DeepSeek V4。</p>
+</blockquote>
+<hr>
+<h1 id="六、报告中最值得保留意见的地方"><a href="#六、报告中最值得保留意见的地方" class="headerlink" title="六、报告中最值得保留意见的地方"></a>六、报告中最值得保留意见的地方</h1><h2 id="1-“相对-K2-提升约-2-5-倍-scaling-efficiency”定义不够透明"><a href="#1-“相对-K2-提升约-2-5-倍-scaling-efficiency”定义不够透明" class="headerlink" title="1. “相对 K2 提升约 2.5 倍 scaling efficiency”定义不够透明"></a>1. “相对 K2 提升约 2.5 倍 scaling efficiency”定义不够透明</h2><p>K3 官方材料提到，相对 K2 获得约 2.5 倍 scaling efficiency。这个表述很吸引人，但不能理解成：</p>
+<ul>
+<li>推理速度快 2.5 倍；</li>
+<li>成本降低 2.5 倍；</li>
+<li>相同 token 数性能提升 2.5 倍；</li>
+<li>每个参数效率提高 2.5 倍。</li>
+</ul>
+<p>它更可能来自内部 scaling curve：达到同一损失或能力水平时，需要的训练计算更少。但公开材料没有完整展示定义、拟合区间、对照模型和置信区间，所以它目前属于厂商 scaling 结论，而不是容易独立复现的指标。(<a target="_blank" rel="noopener" href="https://github.com/MoonshotAI/Kimi-K3" title="https:&#x2F;&#x2F;github.com&#x2F;MoonshotAI&#x2F;Kimi-K3">GitHub</a>)</p>
+<p>而且 K3 本身激活参数比 K2 高 3.2 倍，因此即使“训练 scaling efficiency”提高，也不代表线上推理成本下降。</p>
+<h2 id="2-KDA-和-AttnRes-的主要消融来自组件模型"><a href="#2-KDA-和-AttnRes-的主要消融来自组件模型" class="headerlink" title="2. KDA 和 AttnRes 的主要消融来自组件模型"></a>2. KDA 和 AttnRes 的主要消融来自组件模型</h2><p>KDA 与 AttnRes 的论文实验很扎实，但其核心组件模型是：</p>
+<ul>
+<li>48B 总参数；</li>
+<li>3B 激活参数；</li>
+<li>训练约 1.4T token。</li>
+</ul>
+<p>从 48B&#x2F;3B 扩展到 2.8T&#x2F;104B，中间跨越了：</p>
+<ul>
+<li>约 58 倍总参数；</li>
+<li>约 35 倍激活参数；</li>
+<li>更大规模专家通信；</li>
+<li>原生多模态；</li>
+<li>QAT；</li>
+<li>93 层 AttnRes。</li>
+</ul>
+<p>K3 证明了这些组件可以在超大规模上一起训练，但公开资料中仍缺少足够完整的全模型消融，例如：</p>
+<ul>
+<li>K3 去掉 KDA 后怎样；</li>
+<li>去掉 AttnRes 后怎样；</li>
+<li>896 专家改回 384 后怎样；</li>
+<li>相同激活参数下与 K2 架构相比怎样；</li>
+<li>相同训练 FLOPs 下与 V4 相比怎样。</li>
+</ul>
+<p>所以目前可以确认的是“系统能工作且能力很强”，但每个创新分别贡献多少，仍不够清晰。</p>
+<h2 id="3-K3-的推理复杂度可能成为长期负担"><a href="#3-K3-的推理复杂度可能成为长期负担" class="headerlink" title="3. K3 的推理复杂度可能成为长期负担"></a>3. K3 的推理复杂度可能成为长期负担</h2><p>K3 同时包含：</p>
+<ul>
+<li>KDA 循环状态；</li>
+<li>MLA KV Cache；</li>
+<li>Gated MLA；</li>
+<li>AttnRes；</li>
+<li>LatentMoE；</li>
+<li>896 专家；</li>
+<li>SiTU-GLU；</li>
+<li>MXFP4&#x2F;MXFP8；</li>
+<li>MoonViT-V2。</li>
+</ul>
+<p>这对研究很有吸引力，但对推理引擎意味着大量专用 kernel 和缓存语义。</p>
+<p>DeepSeek V4 自己也在报告中承认 CSA&#x2F;HCA、mHC 等架构偏复杂，未来希望简化，而且某些训练稳定性原理仍未完全理解。(<a target="_blank" rel="noopener" href="https://arxiv.org/pdf/2606.19348" title="https:&#x2F;&#x2F;arxiv.org&#x2F;pdf&#x2F;2606.19348">arXiv</a>)</p>
+<p>两者都表现出当前前沿开源权重模型的共同趋势：</p>
+<blockquote>
+<p>不再只是标准 Transformer 加 MoE，而是越来越依赖模型、量化、kernel、缓存和集群拓扑共同设计。</p>
+</blockquote>
+<hr>
+<h1 id="七、我的综合判断"><a href="#七、我的综合判断" class="headerlink" title="七、我的综合判断"></a>七、我的综合判断</h1><h2 id="研究价值"><a href="#研究价值" class="headerlink" title="研究价值"></a>研究价值</h2><p>K3 的研究价值很高。</p>
+<p>真正重要的不是 2.8T 参数，而是它在一个实际发布的超大模型上同时验证了：</p>
+<ul>
+<li>线性循环注意力可以成为主干；</li>
+<li>完整注意力可以只周期性出现；</li>
+<li>网络深度也可以被注意力检索；</li>
+<li>近 900 个专家可以稳定训练；</li>
+<li>多模态、MoE、QAT 和 Agent 后训练可以统一在一套架构中。</li>
+</ul>
+<p>尤其 AttnRes 很可能具有比 K3 本身更长的生命力。它不依赖 2.8T 模型才能使用，未来可能出现在更小的 Dense、MoE、多模态模型中。</p>
+<h2 id="与-K2-x-相比"><a href="#与-K2-x-相比" class="headerlink" title="与 K2.x 相比"></a>与 K2.x 相比</h2><p>K2.x 更像：</p>
+<blockquote>
+<p>在一辆成熟车辆上不断增加长推理、多模态、代码能力和 Agent Swarm。</p>
+</blockquote>
+<p>K3 则是：</p>
+<blockquote>
+<p>更换发动机、变速箱、底盘和车载计算平台，同时把车做大三倍。</p>
+</blockquote>
+<p>因此 K3 的发布意义明显高于 K2.5、K2.6 或 K2.7 的单次版本升级。</p>
+<h2 id="与-DeepSeek-V4-相比"><a href="#与-DeepSeek-V4-相比" class="headerlink" title="与 DeepSeek V4 相比"></a>与 DeepSeek V4 相比</h2><h3 id="K3-更有优势的场景"><a href="#K3-更有优势的场景" class="headerlink" title="K3 更有优势的场景"></a>K3 更有优势的场景</h3><ul>
+<li>大规模多模态 Agent；</li>
+<li>GUI、图片、视频与代码混合任务；</li>
+<li>高预算长推理；</li>
+<li>复杂软件工程；</li>
+<li>搜索与知识工作；</li>
+<li>拥有 64 卡以上高带宽集群；</li>
+<li>研究 KDA、AttnRes 和极大规模 MoE。</li>
+</ul>
+<h3 id="DeepSeek-V4-更有优势的场景"><a href="#DeepSeek-V4-更有优势的场景" class="headerlink" title="DeepSeek V4 更有优势的场景"></a>DeepSeek V4 更有优势的场景</h3><ul>
+<li>文本为主的百万上下文；</li>
+<li>重视每 token 成本；</li>
+<li>需要明确的 FLOPs&#x2F;KV 数据；</li>
+<li>更看重吞吐和部署可预测性；</li>
+<li>希望使用 284B&#x2F;13B 的 V4-Flash；</li>
+<li>不需要原生视觉和视频；</li>
+<li>希望以更低激活参数获得接近前沿的能力。</li>
+</ul>
+<h3 id="K2-6-K2-7-仍然有存在价值"><a href="#K2-6-K2-7-仍然有存在价值" class="headerlink" title="K2.6&#x2F;K2.7 仍然有存在价值"></a>K2.6&#x2F;K2.7 仍然有存在价值</h3><p>即使 K3 更强，K2.x 并不会立即失去意义：</p>
+<ul>
+<li>约 1T 权重已经显著小于 K3；</li>
+<li>激活参数只有约 32B；</li>
+<li>标准 MLA 推理栈更成熟；</li>
+<li>256K 对多数代码任务已经足够；</li>
+<li>K2.7 的代码专门化可能在固定预算下更实用。</li>
+</ul>
+<p>对于私有化部署，K3 很可能不是“K2 的自然替代品”，而是一个更高基础设施等级的产品。</p>
+<hr>
+<h1 id="最终评价"><a href="#最终评价" class="headerlink" title="最终评价"></a>最终评价</h1><p>我会把 K3 定义为：</p>
+<blockquote>
+<p><strong>一次以能力上限为目标的、开放权重的超大规模混合序列模型实验。</strong></p>
+</blockquote>
+<p>它最特别的地方不是 2.8T，而是把三种不同形式的“稀疏化”统一起来：</p>
+<ul>
+<li><strong>沿序列稀疏</strong>：大部分层用 KDA，少数层做完整 MLA；</li>
+<li><strong>沿深度选择</strong>：AttnRes 只取当前任务需要的历史层表示；</li>
+<li><strong>沿参数稀疏</strong>：896 个专家中只激活 16 个。</li>
+</ul>
+<p>DeepSeek V4 则使用另一套更工程化的三层压缩：</p>
+<ul>
+<li>CSA&#x2F;HCA 压缩序列；</li>
+<li>mHC 压缩并稳定残差流；</li>
+<li>Top-6 MoE 控制激活计算。</li>
+</ul>
+<p>所以两者并不是同一路线上的简单胜负关系：</p>
+<blockquote>
+<p><strong>K3 更大、更广、更强调能力上限；DeepSeek V4 更轻、更节制、更强调百万上下文的单位成本。</strong></p>
+</blockquote>
+<p>截至目前，K3 在公开 Agent、搜索和知识工作评测中显示出更高的能力上限；DeepSeek V4 的长上下文成本、训练规模、消融和推理经济性披露则更加完整。K3 是更令人兴奋的研究对象，但 DeepSeek V4 可能是更容易转化为大规模商业推理服务的架构。</p>
+</section>
+    
+
+    <footer id="post-meta" class="clearfix">
+        <a href="/about/">
+        <img class="avatar" src="/images/avatar.png">
+        <div>
+            <span class="dark">Api Intelligence Daily Life</span>
+            <span>知识库 &amp; 博客</span>
+        </div>
+        </a>
+        <section id="sharing">
+            <a title="Share to Twitter" class="twitter" target="_blank" rel="noopener" href="https://twitter.com/intent/tweet?text=https://arbow.github.io/2026/07/28/digest-2026-07-28-kimi-k3-tech-report-overview/ - 文摘：Kimi K3 技术报告综述：从 K2.x 的能力叠加，到一次“三轴架构换代” @"><span class="icon-twitter">tweet</span></a>
+            <a title="Share to Facebook" class="facebook" href="#" onclick="
+                window.open(
+                  'https://www.facebook.com/sharer/sharer.php?u='+encodeURIComponent(location.href),
+                  'facebook-share-dialog',
+                  'width=626,height=436');
+                return false;"><span class="icon-facebook-sign">Share</span>
+            </a>
+        </section>
+    </footer>
+
+
+  <section id="comment">
+    <button class="btn" id="loadcmts" onclick="cmts.load();">加载评论</button>
+    <div id="gitment"></div>
+    <script src='/js/gitment.browser.js'></script>
+    <link rel="stylesheet" href=''>
+    <script>
+      var cmts={
+        load:function cmts(){
+          var gitment = new Gitment({
+          
+            id: "文摘：Kimi K3 技术报告综述：从 K2.x 的能力叠加，到一次“三轴架构换代”",
+          
+            owner: "",
+            repo: "",
+            oauth: {
+              client_id: "",
+              client_secret: "",
+            },
+          })
+          gitment.render('gitment');
+          var loadcmt = document.getElementById("loadcmts");
+          var imyourfather = loadcmt.parentNode;
+          imyourfather.removeChild(loadcmts)
+        }
+      }
+    </script>
+  </section>
+
+
+	<footer id="footer">
+	<div id="social">
+		<p class="small">©  Arbow| Powered by Hexo & 
+			<a target="_blank" rel="noopener" href="https://github.com/F0r3at/Lights"> Lights</a>
+		</p>
+	</div>
+</footer>
+
+</section>
+
+	<script src="//cdnjs.loli.net/ajax/libs/instantclick/3.0.1/instantclick.min.js" data-no-instant></script>
+	<script data-no-instant>
+		
+		InstantClick.init('mousedown');
+	</script>
+
+
+
