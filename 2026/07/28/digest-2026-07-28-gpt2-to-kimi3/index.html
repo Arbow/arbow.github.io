@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=0">
+
+  <meta name="description" content="个人知识库与技术笔记">
+
+
+<link rel="alternate" href="/atom.xml" title="Api Intelligence Daily Life" type="application/atom+xml">
+<meta name="theme-color" content="#a1d0f6">
+<title>文摘：从 GPT-2 到 KimiK3，七年的架构演进 - Api Intelligence Daily Life</title>
+<!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+<link rel="shortcut icon" href="/favicon.png">
+
+<link rel="stylesheet" href="/css/style.css">
+
+<nav class="main-nav">
+	
+	    <a href="/">← 主页</a>
+	
+	
+	    <a href="/about/">About</a>
+	
+	    <a href="/archives/">Archives</a>
+	
+	<a class="cta" href="/atom.xml" data-no-instant>订阅</a>
+</nav>
+
+<section id="wrapper">
+    <article class="post">
+    <header>
+        
+            <h1>文摘：从 GPT-2 到 KimiK3，七年的架构演进</h1>
+        
+        <h2 class="headline">Jul 28 2026
+        
+            
+            <a href="/categories/文摘/#文摘">文摘</a>
+        
+        </h2>
+    </header>
+</article>
+<section id="post-body"><h2 id="引言"><a href="#引言" class="headerlink" title="引言"></a>引言</h2><p>22,580 倍——这是 KimiK3 (2026) 相对于 GPT-2 (2019) 的规模增长。但仅仅归因于规模是错误的。这篇文章从实现层面梳理了七年间 Transformer 架构的关键演化路径，揭示了每一代模型在解决什么问题、如何演进到今天的形式。</p>
+<h2 id="核心洞察"><a href="#核心洞察" class="headerlink" title="核心洞察"></a>核心洞察</h2><h3 id="GPT-2-基石"><a href="#GPT-2-基石" class="headerlink" title="GPT-2: 基石"></a>GPT-2: 基石</h3><p>GPT-2 的结构非常简洁：</p>
+<ul>
+<li>token 嵌入 + 位置嵌入</li>
+<li>12 层 transformer block（每层：LayerNorm → Self-Attention → LayerNorm → MLP）</li>
+<li>约 124M 参数（vocab_size&#x3D;50304, n_layer&#x3D;12, n_head&#x3D;12, n_embd&#x3D;768）</li>
+</ul>
+<p><strong>KV Cache 的引入</strong>解决了自回归解码的效率问题。解码时只使用最终位置的 logits，但需要缓存所有历史 token 的 K、V 向量以避免重复计算。这带来了内存带宽瓶颈——KV cache 随序列长度 O(N) 线性增长。</p>
+<h3 id="Linear-Attention-O-N-的尝试"><a href="#Linear-Attention-O-N-的尝试" class="headerlink" title="Linear Attention: O(N) 的尝试"></a>Linear Attention: O(N) 的尝试</h3><p>标准 attention 在 softmax 之前计算 q·k，需要构建完整的 N×N 矩阵（FlashAttention 之前）。Linear attention 改变了这一点：</p>
+<ul>
+<li>对 q 和 k 分别应用特征映射（如 ELU+1）而非 softmax</li>
+<li>这使 q·k·v 可以重组合并：<code>S = ∑ kᵀv</code>，<code>z = ∑ k</code>，输出 <code>o = qS / (qz)</code></li>
+<li>状态始终是固定的 D×D 矩阵，不再随 N 增长</li>
+</ul>
+<p><strong>代价</strong>：特征映射是 softmax 的近似，表达能力较弱。此外，状态容量固定，当 N ≫ D 时，纯加法更新会导致信息互相干扰——没有”驱逐”机制，旧事实永不消失。</p>
+<h3 id="DeltaNet-精确修改"><a href="#DeltaNet-精确修改" class="headerlink" title="DeltaNet: 精确修改"></a>DeltaNet: 精确修改</h3><p>DeltaNet 解决了固定容量记忆的驱逐问题。核心思想：当写入新事实时，先读取该 key 位置已存储的信息，计算差值，用差值更新。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">v_old = k @ S              # 读取旧值</span><br><span class="line">u = β * (v - v_old)        # 计算差值（只有新信息）</span><br><span class="line">S = S + kᵀ @ u            # 用差值更新</span><br></pre></td></tr></table></figure>
+
+<p>β 是 sigmoid 生成的门控，控制写入强度。这让模型可以精确替换单个 key-value 关联，而非盲目叠加。</p>
+<p><strong>训练问题</strong>：Delta rule 依赖当前状态，无法直接并行化。作者通过重新参数化（引入广义 Householder 过渡矩阵）实现 chunk-wise 并行，使训练成本从 O(N²) 降至 O(N)。</p>
+<h3 id="Gated-Delta-Net-结合精确与遗忘"><a href="#Gated-Delta-Net-结合精确与遗忘" class="headerlink" title="Gated Delta Net: 结合精确与遗忘"></a>Gated Delta Net: 结合精确与遗忘</h3><p>Mamba 的门控更新提供了一个思路：<code>cache = α * cache + new</code>，α ∈ [0,1] 控制全局遗忘。但 Mamba 无法”只忘一个”，要么全忘，要么都留。</p>
+<p><strong>Gated Delta Net 的方案</strong>：结合两者优势——Delta rule 负责精确修改，α 控制整体衰减。实现上，对每个 token 使用数据依赖的 α_t，累计衰减为前序 α 的乘积，类似前缀和的乘法形式。</p>
+<p>这既保留了单个关联的精确更新能力，又能根据需要整体衰减记忆。</p>
+<h3 id="Kimi-Linear-细粒度门控"><a href="#Kimi-Linear-细粒度门控" class="headerlink" title="Kimi Linear: 细粒度门控"></a>Kimi Linear: 细粒度门控</h3><p>Kimi Linear 在 Gated Delta Net 基础上进一步改进：不是用单个标量 α，而是对每个 channel 使用独立的衰减值。<code>alpha.reshape(nb, C, d)</code> 让模型对记忆的每个维度有细粒度控制。</p>
+<p>此外，Kimi Linear 是混合架构：</p>
+<ul>
+<li>交织 KDA (Kimi Delta Attention) 和 MLA (Multi-head Latent Attention) 层</li>
+<li>用 MoE 替换 MLP</li>
+<li>通过 alpha 投影增加容量</li>
+</ul>
+<p>这不是盲目的 scaling，每处容量增加都有明确目的。</p>
+<h3 id="KimiK3-集大成"><a href="#KimiK3-集大成" class="headerlink" title="KimiK3: 集大成"></a>KimiK3: 集大成</h3><p>KimiK3 的最终架构：</p>
+<ul>
+<li>23 个四层宏周期（macrocycles）</li>
+<li>每个宏周期：3 层 KDA + 1 层 MLA</li>
+<li>首层使用 dense FFN，其余层使用 latent MoE（共 898 个专家，每 token 激活 16 个 + 2 个共享专家）</li>
+<li>每 12 层做一次 AttnRes（Attention Residuals）</li>
+<li>MLA query LoRA + 输出门控</li>
+<li>SiTU 激活函数</li>
+</ul>
+<p><strong>AttnRes</strong> 是一个关键创新。传统残差连接 <code>h_l = h_1 + ∑ f_i(h_i)</code> 让所有层权重相同。AttnRes 引入可学习的权重 α_i，让每层能选择性检索之前层中最有用的表示：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">logits = softmax(proj.weight @ K)   # K 是各层归一化状态</span><br><span class="line">h = ∑ logits_i * V_i              # 加权组合</span><br></pre></td></tr></table></figure>
+
+<p>每 12 层执行一次，捕获大部分收益同时控制开销。</p>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>从 GPT-2 到 KimiK3 的演进，不是”越大越好”的简单故事，而是对固定容量关联记忆机制的持续优化：</p>
+<table>
+<thead>
+<tr>
+<th>架构</th>
+<th>解决的问题</th>
+<th>关键机制</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Linear Attention</td>
+<td>O(N²) 复杂度</td>
+<td>固定 D×D 状态</td>
+</tr>
+<tr>
+<td>DeltaNet</td>
+<td>无驱逐机制</td>
+<td>精确差值更新</td>
+</tr>
+<tr>
+<td>Gated Delta Net</td>
+<td>无法整体遗忘</td>
+<td>门控衰减</td>
+</tr>
+<tr>
+<td>Kimi Linear</td>
+<td>粗粒度控制</td>
+<td>Per-channel decay</td>
+</tr>
+<tr>
+<td>KimiK3</td>
+<td>固定容量的召回能力</td>
+<td>KDA + MLA + AttnRes + MoE</td>
+</tr>
+</tbody></table>
+<p>固定容量记忆需要驱逐策略——纯加法操作最终会满载并互相干扰。学到选择（gating、routing、decay）是必要的，而 attention 是最有效的选择性读取机制。</p>
+<p>KimiK3 的核心变化不是规模，而是将额外容量投入有明确功能角色的地方：常量状态循环记忆 + 周期性 softmax 召回 + 稀疏专家容量 + 选择性深度残差访问。</p>
+<hr>
+<p>原文链接：<a target="_blank" rel="noopener" href="https://x.com/waterloo_intern/status/2081762065392541951">https://x.com/waterloo_intern/status/2081762065392541951</a></p>
+<p><em>注：本文基于 X 帖子内容整理，作者为 ali (@waterloo_intern)，Baseten 团队成员。</em></p>
+</section>
+    
+
+    <footer id="post-meta" class="clearfix">
+        <a href="/about/">
+        <img class="avatar" src="/images/avatar.png">
+        <div>
+            <span class="dark">Api Intelligence Daily Life</span>
+            <span>知识库 &amp; 博客</span>
+        </div>
+        </a>
+        <section id="sharing">
+            <a title="Share to Twitter" class="twitter" target="_blank" rel="noopener" href="https://twitter.com/intent/tweet?text=https://arbow.github.io/2026/07/28/digest-2026-07-28-gpt2-to-kimi3/ - 文摘：从 GPT-2 到 KimiK3，七年的架构演进 @"><span class="icon-twitter">tweet</span></a>
+            <a title="Share to Facebook" class="facebook" href="#" onclick="
+                window.open(
+                  'https://www.facebook.com/sharer/sharer.php?u='+encodeURIComponent(location.href),
+                  'facebook-share-dialog',
+                  'width=626,height=436');
+                return false;"><span class="icon-facebook-sign">Share</span>
+            </a>
+        </section>
+    </footer>
+
+
+  <section id="comment">
+    <button class="btn" id="loadcmts" onclick="cmts.load();">加载评论</button>
+    <div id="gitment"></div>
+    <script src='/js/gitment.browser.js'></script>
+    <link rel="stylesheet" href=''>
+    <script>
+      var cmts={
+        load:function cmts(){
+          var gitment = new Gitment({
+          
+            id: "文摘：从 GPT-2 到 KimiK3，七年的架构演进",
+          
+            owner: "",
+            repo: "",
+            oauth: {
+              client_id: "",
+              client_secret: "",
+            },
+          })
+          gitment.render('gitment');
+          var loadcmt = document.getElementById("loadcmts");
+          var imyourfather = loadcmt.parentNode;
+          imyourfather.removeChild(loadcmts)
+        }
+      }
+    </script>
+  </section>
+
+
+	<footer id="footer">
+	<div id="social">
+		<p class="small">©  Arbow| Powered by Hexo & 
+			<a target="_blank" rel="noopener" href="https://github.com/F0r3at/Lights"> Lights</a>
+		</p>
+	</div>
+</footer>
+
+</section>
+
+	<script src="//cdnjs.loli.net/ajax/libs/instantclick/3.0.1/instantclick.min.js" data-no-instant></script>
+	<script data-no-instant>
+		
+		InstantClick.init('mousedown');
+	</script>
+
+
+
