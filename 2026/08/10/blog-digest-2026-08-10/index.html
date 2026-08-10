@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=0">
+
+  <meta name="description" content="个人知识库与技术笔记">
+
+
+<link rel="alternate" href="/atom.xml" title="Api Intelligence Daily Life" type="application/atom+xml">
+<meta name="theme-color" content="#a1d0f6">
+<title>文摘：博客推荐 - 2026-08-10 - Api Intelligence Daily Life</title>
+<!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+<link rel="shortcut icon" href="/favicon.png">
+
+<link rel="stylesheet" href="/css/style.css">
+
+<nav class="main-nav">
+	
+	    <a href="/">← 主页</a>
+	
+	
+	    <a href="/about/">About</a>
+	
+	    <a href="/archives/">Archives</a>
+	
+	<a class="cta" href="/atom.xml" data-no-instant>订阅</a>
+</nav>
+
+<section id="wrapper">
+    <article class="post">
+    <header>
+        
+            <h1>文摘：博客推荐 - 2026-08-10</h1>
+        
+        <h2 class="headline">Aug 10 2026
+        
+            
+            <a href="/categories/博客推荐/#博客推荐">博客推荐</a>
+        
+        </h2>
+    </header>
+</article>
+<section id="post-body"><h2 id="云风：用地标改进-A-star-寻路的启发函数"><a href="#云风：用地标改进-A-star-寻路的启发函数" class="headerlink" title="云风：用地标改进 A star 寻路的启发函数"></a>云风：用地标改进 A star 寻路的启发函数</h2><h3 id="核心概要"><a href="#核心概要" class="headerlink" title="核心概要"></a>核心概要</h3><p>云风在这篇文章里讨论的是 A* 寻路算法的一个经典但常被忽视的优化方向——<strong>如何让启发函数在不增加时间复杂度的前提下”看见”墙和障碍物</strong>。</p>
+<p>传统的 A* 启发函数几乎清一色用欧氏距离（或曼哈顿距离）：从当前节点到目标点的直线距离。它的优点是 O(1)、实现简单，缺点是它对地图结构一无所知。云风用了一个很形象的例子说明问题：假设起点在一个房间里，目标点在房间东侧，但房间的门开在西边。基于直线距离的启发函数会引导算法把房间东侧的每个角落都搜遍，才会”回头”从西门出去——因为东侧离目标的直线距离更近。如果房间是封闭的，算法甚至会穷举完房间内所有点才停手。</p>
+<p>文章给出的解法是引入”地标”（landmark）：在地图上选定若干地标点，预先用 Dijkstra 算法计算出从地标到地图上每个点的最短路径”流图”并缓存下来。寻路时，利用三角形不等式（<code>SE + EL ≥ SL</code>，即当前点 S 到目标 E 的距离、加上地标 L 到 E 的距离，必然不小于 S 到 L 的已知距离），就可以在 O(1) 时间内判断：当前是该继续沿着”去地标”的预设路径走，还是退化回直线距离引导。这本质上就是搜索文献里的 <strong>differential heuristic &#x2F; landmark heuristic</strong>，云风用北京-广州的出行比喻把它讲得很通俗。</p>
+<h3 id="关键洞察"><a href="#关键洞察" class="headerlink" title="关键洞察"></a>关键洞察</h3><ul>
+<li><strong>启发函数的 O(1) 约束是核心矛盾</strong>：它每步都要调用，所以不能去实时”探测远方”。地标方案巧妙地把”远方的信息”预算好缓存起来，查询时仍是 O(1)，兼顾了质量和速度。</li>
+<li><strong>三角形不等式是数学保证</strong>：<code>h(S) = max(直线距离, SL − EL)</code> 永远不会高估真实代价（admissible），因此仍能保证 A* 找到最优路径，只是剪枝更狠。</li>
+<li><strong>地标天然能检测不可达性</strong>：如果地标可达目标而当前点不可达地标（或反之），就能直接判定无解，省掉大量无意义的搜索。这在地图经常有”孤岛”的游戏场景里尤其有用。</li>
+<li><strong>多地标可取最优</strong>：预算多个地标，取 <code>SL − EL</code> 最小者作为引导方向，进一步提升剪枝效率；还可以动态地把”新抵达的目的地”沉淀为新地标，让寻路越用越聪明。</li>
+<li><strong>复用现有寻路模块</strong>：云风特别强调，这套方案不需要重写寻路逻辑，只需替换启发函数，就能大幅提升性能——这对已有代码库的落地非常友好。</li>
+</ul>
+<h3 id="评价"><a href="#评价" class="headerlink" title="评价"></a>评价</h3><p><strong>优点</strong>：从一位写了大半辈子游戏引擎（<a target="_blank" rel="noopener" href="https://github.com/cloudwu/skynet">Skynet</a>、多款商业游戏寻路系统）的资深开发者笔下出来，文章带着很强的工程实战味——没有堆砌论文术语，而是用”北京去广州”的出行类比把 differential heuristic 讲得普通人也能懂。最终落脚到”复用已有模块、只改启发函数”的落地建议，对游戏开发者直接可操作。文中还顺带讲了用流图检测可达性这个常被忽略的实用副产品。</p>
+<p><strong>不足</strong>：篇幅偏短，对一些工程细节（地标如何选取、预算流图的内存开销、在动态地图上如何增量更新地标信息）只是一笔带过；对学术背景感兴趣的读者，文章没有给出 landmark heuristic 的出处（主要是 Goldberg &amp; Harrelson 2005 的 ALT 算法）和与 contraction hierarchy 等更现代方案的对比，深度有限。</p>
+<p><strong>适用场景</strong>：做游戏寻路、地图导航、网格类 AI 移动逻辑的开发者；想理解 A* 启发函数设计原理的算法入门者。对纯 Web&#x2F;后端工程师相关性不高。</p>
+<h3 id="推荐指数"><a href="#推荐指数" class="headerlink" title="推荐指数"></a>推荐指数</h3><p>⭐⭐⭐⭐ (4&#x2F;5) — 领域内的高质量实战短文</p>
+<p><strong>理由</strong>：云风是中文游戏开发圈里少有的、愿意把底层算法掰开揉碎讲清楚的作者，这篇文章延续了他在 <a target="_blank" rel="noopener" href="https://blog.codingnow.com/2014/01/routemap.html">寻路模块系列</a> 的一贯水准——务实、可落地、有真实代码背景。扣掉一星是因为篇幅确实偏短、缺少地标选取策略与内存预算的工程权衡，以及对更前沿方案（ALT、CH）的横向对比，对追求深度的读者略欠”够饱”的感觉。但对目标读者来说，这是周末花十分钟读完就能直接用到项目里的一类文章，值得推荐。</p>
+<hr>
+<p><em>链接：<a target="_blank" rel="noopener" href="https://blog.codingnow.com/2026/08/improved_a_star_heuristics.html">用地标改进 A star 寻路的启发函数</a></em></p>
+</section>
+    
+
+    <footer id="post-meta" class="clearfix">
+        <a href="/about/">
+        <img class="avatar" src="/images/avatar.png">
+        <div>
+            <span class="dark">Api Intelligence Daily Life</span>
+            <span>知识库 &amp; 博客</span>
+        </div>
+        </a>
+        <section id="sharing">
+            <a title="Share to Twitter" class="twitter" target="_blank" rel="noopener" href="https://twitter.com/intent/tweet?text=https://arbow.github.io/2026/08/10/blog-digest-2026-08-10/ - 文摘：博客推荐 - 2026-08-10 @"><span class="icon-twitter">tweet</span></a>
+            <a title="Share to Facebook" class="facebook" href="#" onclick="
+                window.open(
+                  'https://www.facebook.com/sharer/sharer.php?u='+encodeURIComponent(location.href),
+                  'facebook-share-dialog',
+                  'width=626,height=436');
+                return false;"><span class="icon-facebook-sign">Share</span>
+            </a>
+        </section>
+    </footer>
+
+
+  <section id="comment">
+    <button class="btn" id="loadcmts" onclick="cmts.load();">加载评论</button>
+    <div id="gitment"></div>
+    <script src='/js/gitment.browser.js'></script>
+    <link rel="stylesheet" href=''>
+    <script>
+      var cmts={
+        load:function cmts(){
+          var gitment = new Gitment({
+          
+            id: "文摘：博客推荐 - 2026-08-10",
+          
+            owner: "",
+            repo: "",
+            oauth: {
+              client_id: "",
+              client_secret: "",
+            },
+          })
+          gitment.render('gitment');
+          var loadcmt = document.getElementById("loadcmts");
+          var imyourfather = loadcmt.parentNode;
+          imyourfather.removeChild(loadcmts)
+        }
+      }
+    </script>
+  </section>
+
+
+	<footer id="footer">
+	<div id="social">
+		<p class="small">©  Arbow| Powered by Hexo & 
+			<a target="_blank" rel="noopener" href="https://github.com/F0r3at/Lights"> Lights</a>
+		</p>
+	</div>
+</footer>
+
+</section>
+
+	<script src="//cdnjs.loli.net/ajax/libs/instantclick/3.0.1/instantclick.min.js" data-no-instant></script>
+	<script data-no-instant>
+		
+		InstantClick.init('mousedown');
+	</script>
+
+
+
