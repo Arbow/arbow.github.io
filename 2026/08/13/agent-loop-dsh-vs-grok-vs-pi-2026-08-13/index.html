@@ -1,0 +1,428 @@
+<!DOCTYPE html>
+
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=0">
+
+  <meta name="description" content="个人知识库与技术笔记">
+
+
+<link rel="alternate" href="/atom.xml" title="Api Intelligence Daily Life" type="application/atom+xml">
+<meta name="theme-color" content="#a1d0f6">
+<title>Agent 循环对比: deepseek-harness vs grok-build vs pi-mono - Api Intelligence Daily Life</title>
+<!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+<link rel="shortcut icon" href="/favicon.png">
+
+<link rel="stylesheet" href="/css/style.css">
+
+<nav class="main-nav">
+	
+	    <a href="/">← 主页</a>
+	
+	
+	    <a href="/about/">About</a>
+	
+	    <a href="/archives/">Archives</a>
+	
+	<a class="cta" href="/atom.xml" data-no-instant>订阅</a>
+</nav>
+
+<section id="wrapper">
+    <article class="post">
+    <header>
+        
+            <h1>Agent 循环对比: deepseek-harness vs grok-build vs pi-mono</h1>
+        
+        <h2 class="headline">Aug 13 2026
+        
+            
+            <a href="/categories/技术/#技术">技术</a>
+        
+        </h2>
+    </header>
+</article>
+<section id="post-body"><h1 id="Agent-循环对比-deepseek-harness-vs-grok-build-vs-pi-mono"><a href="#Agent-循环对比-deepseek-harness-vs-grok-build-vs-pi-mono" class="headerlink" title="Agent 循环对比: deepseek-harness vs grok-build vs pi-mono"></a>Agent 循环对比: deepseek-harness vs grok-build vs pi-mono</h1><h2 id="一句话概括"><a href="#一句话概括" class="headerlink" title="一句话概括"></a>一句话概括</h2><table>
+<thead>
+<tr>
+<th>项目</th>
+<th>本质</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>deepseek-harness</strong></td>
+<td>严格的<strong>事件溯源 (event-sourced) React 循环</strong> —— 会话日志 (log) 是核心骨架，LLM 历史记录从日志中<em>派生</em>而来；有四个经过类型定义、基于作用域过滤的 <code>agent/*</code> 扩展点；插件化架构，<strong>循环本身不直接修改</strong>。</td>
+</tr>
+<tr>
+<td><strong>grok-build</strong></td>
+<td><strong>Actor 模式 + 分层 turn 循环</strong> (Rust&#x2F;tokio)，一个迭代式循环内嵌于一个响应式 session actor 中；通过 hooks&#x2F;plugins&#x2F;marketplace&#x2F;skills&#x2F;MCP 进行扩展；在基础循环之上拥有一个独特的 <strong>goal-tracker 元代理</strong>。</td>
+</tr>
+<tr>
+<td><strong>pi-mono</strong></td>
+<td><strong>极简的顺序流 ReAct 循环</strong> (~420 行)，一次模型调用 + 顺序执行的工具调用；所有重要功能（压缩、重试、权限、持久化）都存在于 <code>AgentSession</code> 之外的循环外部；以人为本的转向&#x2F;跟进队列是其亮点。</td>
+</tr>
+</tbody></table>
+<hr>
+<h2 id="架构与控制流"><a href="#架构与控制流" class="headerlink" title="架构与控制流"></a>架构与控制流</h2><table>
+<thead>
+<tr>
+<th>维度</th>
+<th>deepseek-harness</th>
+<th>grok-build</th>
+<th>pi-mono</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>语言&#x2F;运行时</td>
+<td>TypeScript (ESM, vendored Cordis DI)</td>
+<td>Rust 2024 (~85 个 crates, tokio)</td>
+<td>TypeScript (ESM, Node ≥20)</td>
+</tr>
+<tr>
+<td>循环位置</td>
+<td><code>packages/core/agent-loop/src/agent.ts</code> (<code>ReactLoopAgent</code>)</td>
+<td><code>xai-grok-shell/.../acp_session_impl/turn.rs:2013</code></td>
+<td><code>packages/agent/src/agent-loop.ts:104</code></td>
+</tr>
+<tr>
+<td>循环形态</td>
+<td><code>Phase</code> 状态机 (<code>idle</code>&#x2F;<code>maintenance</code>&#x2F;<code>running</code>) → <code>turn()</code> → <code>step()</code></td>
+<td>嵌套: session actor (<code>select!</code>) → <code>process_conversation_turn</code> (<code>loop&#123;&#125;</code>)</td>
+<td>双层 <code>while</code>: 内层 (工具+转向) &#x2F; 外层 (跟进)</td>
+</tr>
+<tr>
+<td>抽象单元</td>
+<td><strong>turn</strong> &#x3D; 0..N steps; <strong>step</strong> &#x3D; 1 个模型请求 + 其工具</td>
+<td><strong>turn</strong> &#x3D; 1 个模型采样轮次 + 工具分发</td>
+<td><strong>turn</strong> &#x3D; 1 个 LLM 调用 + 顺序工具调用</td>
+</tr>
+<tr>
+<td>并发模型</td>
+<td>每个代理一个驱动，<code>AsyncLocalStorage</code> 传递发起者</td>
+<td>tokio 多线程 + 每个会话使用 <code>spawn_local</code> LocalSet 用于排序</td>
+<td>单线程 JS 事件循环，纯 async&#x2F;await</td>
+</tr>
+<tr>
+<td>循环代码规模</td>
+<td>~500 行驱动 + 分离的 <code>tool-calls.ts</code> 调度器</td>
+<td>turn.rs 单文件极大 (循环在 ~2013–2730)</td>
+<td>~420 行核心，非常薄</td>
+</tr>
+</tbody></table>
+<hr>
+<h2 id="核心创新-会话日志与模型可见性"><a href="#核心创新-会话日志与模型可见性" class="headerlink" title="核心创新: 会话日志与模型可见性"></a>核心创新: 会话日志与模型可见性</h2><p>这是 deepseek-harness 最鲜明的特征。</p>
+<table>
+<thead>
+<tr>
+<th>维度</th>
+<th>deepseek-harness</th>
+<th>grok-build</th>
+<th>pi-mono</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>LLM 历史存储</td>
+<td><strong>派生，不存储</strong> —— <code>session.deriveMessages()</code> 遍历<em>接口 (surface)</em></td>
+<td>chat-state actor 持有的显式消息缓冲</td>
+<td><code>AgentState.messages</code> 内存数组，从 JSONL 重建</td>
+</tr>
+<tr>
+<td>事实来源</td>
+<td>追加型类型化 <code>SessionEvent</code> 日志</td>
+<td><code>updates.jsonl</code> + 内存 chat-state</td>
+<td>追加型 <code>SessionEntry</code> 树 (JSONL)</td>
+</tr>
+<tr>
+<td>“模型可见 ⟺ 已记录” 不变量</td>
+<td><strong>是，运行时强制执行</strong> —— <code>invariant.ts</code> 在每次 <code>llm/stream</code> 时断言 <code>JSON.stringify(request.messages) === JSON.stringify(session.deriveMessages())</code></td>
+<td>无此类断言</td>
+<td>无此类断言</td>
+</tr>
+<tr>
+<td>压缩如何修改历史记录</td>
+<td>通过 <code>surfaceOp: &#123;op:&#39;replace&#39;&#125;</code> —— 被遮蔽的节点从派生结果中消失</td>
+<td>重写 chat-state 缓冲区 + 摘要</td>
+<td><code>agent.replaceMessages()</code> 交换数组</td>
+</tr>
+<tr>
+<td>历史记录可重放&#x2F;可分叉</td>
+<td>设计上严格保证</td>
+<td>支持回放&#x2F;恢复&#x2F;回溯</td>
+<td>基于树，支持分叉&#x2F;导航 (类 git)</td>
+</tr>
+</tbody></table>
+<hr>
+<h2 id="工具执行"><a href="#工具执行" class="headerlink" title="工具执行"></a>工具执行</h2><table>
+<thead>
+<tr>
+<th>维度</th>
+<th>deepseek-harness</th>
+<th>grok-build</th>
+<th>pi-mono</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>并行工具调用</td>
+<td>✅ 有界池 (默认 10，实时设置)，<strong>重叠分发但保持模型排序</strong></td>
+<td>✅ <code>FuturesUnordered</code>，同文件编辑通过 mutex 序列化</td>
+<td>❌ <strong>严格顺序</strong> (<code>for</code> 循环，一次一个)</td>
+</tr>
+<tr>
+<td>工具中断</td>
+<td><code>exec.concludeTurn()</code>，<code>additionalContexts</code> 进入收件箱</td>
+<td>拒绝 → <code>ToolLoop</code> 结果，hooks 可拒绝</td>
+<td>工具按顺序完成；转向在调用间隙跳过剩余工具</td>
+</tr>
+<tr>
+<td>工具流水线阶段</td>
+<td>5: <code>pre-execute</code> (允许&#x2F;拒绝&#x2F;询问) → 单调防护 → <code>execute</code> (环绕) → body → <code>post-execute</code> (接受&#x2F;阻止&#x2F;替换&#x2F;添加上下文)</td>
+<td>准备: 解析 → 权限 → plan-gate → PreToolUse hook; 然后分发</td>
+<td>包装器: <code>tool_call</code> (阻止) → 执行 → <code>tool_result</code> (修改)</td>
+</tr>
+<tr>
+<td>权限&#x2F;批准</td>
+<td><code>ctx.approval</code> 接口，询问通过 <code>tools/pre-execute</code> 解析</td>
+<td><code>Ask</code>&#x2F;<code>Auto</code> (LLM 分类器)&#x2F;<code>AlwaysApprove</code> 模式</td>
+<td><strong>核心中无</strong> —— 由扩展程序构建 (<code>tool_call</code> 阻止)</td>
+</tr>
+<tr>
+<td>代码模式 (工具即代码)</td>
+<td>✅ <code>native</code>&#x2F;<code>code</code>&#x2F;<code>both</code> 展示，模型仅看到 <code>run_code</code> + SDK</td>
+<td>❌</td>
+<td>❌</td>
+</tr>
+<tr>
+<td>工具 schema</td>
+<td>自定义 + <code>presentCall</code>&#x2F;<code>presentResult</code> 渲染意图</td>
+<td><code>ToolSpec</code> JSON schema, <code>ToolKind</code> 条件提示</td>
+<td>TypeBox + AJV 验证</td>
+</tr>
+</tbody></table>
+<hr>
+<h2 id="扩展性-——-最深层的理念差异"><a href="#扩展性-——-最深层的理念差异" class="headerlink" title="扩展性 —— 最深层的理念差异"></a>扩展性 —— 最深层的理念差异</h2><table>
+<thead>
+<tr>
+<th>维度</th>
+<th>deepseek-harness</th>
+<th>grok-build</th>
+<th>pi-mono</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>哲学理念</td>
+<td>“<strong>插件而非循环修改</strong>“ —— 编辑 <code>agent-loop</code> 需要更新文档；行为仅限于已记录的接缝</td>
+<td>多层 hooks + turn hooks + 插件 + 技能 + MCP + 自定义代理</td>
+<td>核心循环保持微小；繁重功能在 <code>AgentSession</code> + 扩展中</td>
+</tr>
+<tr>
+<td>循环拦截点</td>
+<td><strong>4 个类型化的 <code>agent/*</code> 事件</strong>: <code>pre-step</code> (瀑布), <code>request</code> (瀑布), <code>request-error</code> (瀑布), <code>turn-stopping</code> (串行)</td>
+<td>Turn hooks <code>before_turn</code>&#x2F;<code>after_turn</code> 带 <code>TurnControl</code>; <code>PreToolUse</code> 决定性</td>
+<td>功能性 hooks: <code>convertToLlm</code>, <code>transformContext</code>, <code>getSteeringMessages</code></td>
+</tr>
+<tr>
+<td>调度语义</td>
+<td>Cordis 瀑布 (必须 <code>next()</code>)，<strong>作用域过滤</strong>，零分配</td>
+<td>Hook 脚本 (外部进程&#x2F;文件夹信任门控)</td>
+<td>扩展事件链，顺序，短路</td>
+</tr>
+<tr>
+<td>新模型可见输入</td>
+<td>需要新的 <code>SessionEvent</code> (不变量强制执行)</td>
+<td>推入 chat-state</td>
+<td>推入 <code>messages</code> &#x2F; 自定义消息角色</td>
+</tr>
+<tr>
+<td>系统提示组装</td>
+<td><code>system-prompt/assemble</code> 瀑布; 部分&#x2F;上下文&#x2F;工具&#x2F;变量</td>
+<td>minijinja 模板 (XOR 加密)，<code>$&#123;&#123; &#125;&#125;</code> 分隔符，ToolKind 条件</td>
+<td><code>buildSystemPrompt()</code> 带 ToolKind 条件指南</td>
+</tr>
+</tbody></table>
+<hr>
+<h2 id="流式传输、取消、生命周期"><a href="#流式传输、取消、生命周期" class="headerlink" title="流式传输、取消、生命周期"></a>流式传输、取消、生命周期</h2><table>
+<thead>
+<tr>
+<th>维度</th>
+<th>deepseek-harness</th>
+<th>grok-build</th>
+<th>pi-mono</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>流式传输</td>
+<td><code>llm.stream()</code> 异步迭代，<code>assistant/chunk</code> 已记录，<code>BlockAssembler</code> 累加</td>
+<td>sampler actor JoinSet, SSE, 3 个后端变体</td>
+<td><code>EventStream&lt;T,R&gt;</code> 手写异步队列，精细事件</td>
+</tr>
+<tr>
+<td>取消</td>
+<td>每个阶段一个 <code>AbortController</code>, <code>throwIfAborted()</code> 在每个 await 处; 类型化 <code>AgentCancelCause</code></td>
+<td>每个请求 <code>CancellationToken</code>, <code>CancelOnDrop</code> RAII</td>
+<td>每个循环一个 <code>AbortController</code>，线程化至工具+流</td>
+</tr>
+<tr>
+<td>拆卸顺序</td>
+<td><strong>结构性</strong>: 反向记忆拆卸，<code>FactoryOwnership</code> 追踪实时拆卸</td>
+<td>actor 生命周期</td>
+<td>事件驱动持久化，无显式拆卸顺序</td>
+</tr>
+</tbody></table>
+<hr>
+<h2 id="高级功能"><a href="#高级功能" class="headerlink" title="高级功能"></a>高级功能</h2><table>
+<thead>
+<tr>
+<th>功能</th>
+<th>deepseek-harness</th>
+<th>grok-build</th>
+<th>pi-mono</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>Plan mode</strong></td>
+<td>软记录 (<code>plan/mode</code> 事件), 非沙箱强制</td>
+<td><code>PlanModeTracker</code> 状态机, 编辑通过 <code>exit_plan</code> 毕业</td>
+<td>❌ (扩展构建)</td>
+</tr>
+<tr>
+<td><strong>Todo</strong></td>
+<td><code>todo_write</code> 作为模型可见的持久事件</td>
+<td>TodoGate 强制继续如果待办未完成</td>
+<td>❌</td>
+</tr>
+<tr>
+<td><strong>Compaction</strong></td>
+<td>能力接缝，挂载于 <code>pre-step</code> + <code>request-error</code></td>
+<td>大型多策略引擎 (代码&#x2F;间&#x2F;内&#x2F;选择)，预采样+后置工具，CompactAndResubmit</td>
+<td>外部于循环，溢出自动重试 + 阈值</td>
+</tr>
+<tr>
+<td><strong>Subagents</strong></td>
+<td>✅ 一流能力 (多提供者: in-process&#x2F;fork&#x2F;acp&#x2F;codex&#x2F;claude&#x2F;sdk), 一次性 + 可继续</td>
+<td>✅ 完整子 <code>SessionActor</code>, Task 工具, 协调器</td>
+<td>❌ 核心<strong>无</strong> (扩展必须构建)</td>
+</tr>
+<tr>
+<td><strong>Goal tracker</strong></td>
+<td>同会话目标域</td>
+<td>✅ <strong>独特的</strong> 规划器→策略家→总结器→验证器元循环带停滞检测</td>
+<td>❌</td>
+</tr>
+<tr>
+<td><strong>Loop-hygiene 防护</strong></td>
+<td><code>repeat-tool-reminder</code> 插件, 超时策略</td>
+<td>稳定性防护 (16 个相同调用硬停止), 懒惰检测器, 服务器端 doom-loop 检查</td>
+<td>❌</td>
+</tr>
+<tr>
+<td><strong>Sandbox</strong></td>
+<td>e2b&#x2F;subprocess&#x2F;landlock 能力</td>
+<td><code>xai-grok-sandbox</code> crate, 恢复的配置</td>
+<td>❌ (扩展 + Operations 覆盖)</td>
+</tr>
+<tr>
+<td><strong>Memory</strong></td>
+<td>运行时上下文投影</td>
+<td>✅ 持久化 + “dream” 空闲整合</td>
+<td>❌</td>
+</tr>
+<tr>
+<td><strong>转向&#x2F;中断</strong></td>
+<td><code>agent.steer()</code> → 收件箱, 下一步边界声明; 双收件箱列表 (下一轮&#x2F;下一步)</td>
+<td>轮次顶部内插，等待工具中止</td>
+<td>✅ <strong>旗舰</strong>: <code>steer</code>&#x2F;<code>followUp</code> 队列，跳过剩余工具</td>
+</tr>
+<tr>
+<td><strong>Session 分叉</strong></td>
+<td>通过日志派生</td>
+<td>回溯支持</td>
+<td>✅ <strong>git 风格的树</strong>, 无需复制的分支</td>
+</tr>
+</tbody></table>
+<hr>
+<h2 id="deepseek-harness-Agent-循环的独特特征"><a href="#deepseek-harness-Agent-循环的独特特征" class="headerlink" title="deepseek-harness Agent 循环的独特特征"></a>deepseek-harness Agent 循环的独特特征</h2><p>综合对比，deepseek-harness 的 Agent 循环在设计上具有以下独特点：</p>
+<ol>
+<li><p><strong>事件溯源作为核心骨架</strong> —— 这是其他两者都没有的。LLM 历史记录是 <code>deriveMessages()</code> 从类型化接口中对 <code>SessionEvent</code> 日志的<em>纯投影</em>。grok 和 pi 将消息存储为数据；dsh 将<em>事件</em>存储为数据并派生消息。这使得分叉&#x2F;恢复&#x2F;压缩在结构上是安全的，而非临时性的。</p>
+</li>
+<li><p><strong>运行时强制执行的不变量</strong> —— <code>invariant.ts</code> 断言每个循环构建的请求都等于日志派生。这主动捕获了 “日志重构不同步”，是其他两者缺乏的安全网。</p>
+</li>
+<li><p><strong>“插件而非循环修改”</strong> —— 只有 4 个类型化的扩展点，经过作用域过滤和调度融合。相比 grok 的 hook 脚本&#x2F;turn-hooks&#x2F;marketplace&#x2F;skills&#x2F;MCP&#x2F;custom-agents 层叠，这是一种更<em>教条</em>（狭窄但一致）的可扩展性策略；相比 pi 的功能 hooks 更<em>类型化</em>。</p>
+</li>
+<li><p><strong>工具分发重叠但保持模型排序</strong> —— 带有 <code>commitReady()</code> 跨连续模型顺序槽位推进的边界池是独一无二的。grok 在并行池中序列化同文件；pi 不并行化。</p>
+</li>
+<li><p><strong>能力接缝 (Service Definition&#x2F;Provider&#x2F;Consumer)</strong> —— 每个横切关注点 (shell, fs, subagent, compaction, web, llm) 是一个三角色接缝，核心中”从不只有一个角色”。grok 和 pi 将这些折叠进循环&#x2F;harness 代码中。</p>
+</li>
+<li><p><strong>代码模式</strong> —— 将工具作为生成的 SDK 暴露在单个 <code>run_code</code> 传输后，这是三者中独有的。</p>
+</li>
+</ol>
+<p><strong>deepseek-harness 的权衡</strong>: 哲学上的纯粹性 (日志作为真理、类型化接缝、不变量) 以牺牲接入复杂性为代价换来确定性。<strong>grok 的优势</strong>在于丰富的产品表面 (目标追踪器、内存&#x2F;dream、doom-loop 检测、LLM 权限分类器)。<strong>pi 的优势</strong>在于最小的核心循环简单性和以人为本的转向人体工程学 + git 风格的会话树。</p>
+</section>
+    
+
+    <footer id="post-meta" class="clearfix">
+        <a href="/about/">
+        <img class="avatar" src="/images/avatar.png">
+        <div>
+            <span class="dark">Api Intelligence Daily Life</span>
+            <span>知识库 &amp; 博客</span>
+        </div>
+        </a>
+        <section id="sharing">
+            <a title="Share to Twitter" class="twitter" target="_blank" rel="noopener" href="https://twitter.com/intent/tweet?text=https://arbow.github.io/2026/08/13/agent-loop-dsh-vs-grok-vs-pi-2026-08-13/ - Agent 循环对比: deepseek-harness vs grok-build vs pi-mono @"><span class="icon-twitter">tweet</span></a>
+            <a title="Share to Facebook" class="facebook" href="#" onclick="
+                window.open(
+                  'https://www.facebook.com/sharer/sharer.php?u='+encodeURIComponent(location.href),
+                  'facebook-share-dialog',
+                  'width=626,height=436');
+                return false;"><span class="icon-facebook-sign">Share</span>
+            </a>
+        </section>
+    </footer>
+
+
+  <section id="comment">
+    <button class="btn" id="loadcmts" onclick="cmts.load();">加载评论</button>
+    <div id="gitment"></div>
+    <script src='/js/gitment.browser.js'></script>
+    <link rel="stylesheet" href=''>
+    <script>
+      var cmts={
+        load:function cmts(){
+          var gitment = new Gitment({
+          
+            id: "Agent 循环对比: deepseek-harness vs grok-build vs pi-mono",
+          
+            owner: "",
+            repo: "",
+            oauth: {
+              client_id: "",
+              client_secret: "",
+            },
+          })
+          gitment.render('gitment');
+          var loadcmt = document.getElementById("loadcmts");
+          var imyourfather = loadcmt.parentNode;
+          imyourfather.removeChild(loadcmts)
+        }
+      }
+    </script>
+  </section>
+
+
+	<footer id="footer">
+	<div id="social">
+		<p class="small">©  Arbow| Powered by Hexo & 
+			<a target="_blank" rel="noopener" href="https://github.com/F0r3at/Lights"> Lights</a>
+		</p>
+	</div>
+</footer>
+
+</section>
+
+	<script src="//cdnjs.loli.net/ajax/libs/instantclick/3.0.1/instantclick.min.js" data-no-instant></script>
+	<script data-no-instant>
+		
+		InstantClick.init('mousedown');
+	</script>
+
+
+
