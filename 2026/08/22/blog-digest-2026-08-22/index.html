@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=0">
+
+  <meta name="description" content="个人知识库与技术笔记">
+
+
+<link rel="alternate" href="/atom.xml" title="Api Intelligence Daily Life" type="application/atom+xml">
+<meta name="theme-color" content="#a1d0f6">
+<title>文摘：博客推荐 - 2026-08-22 - Api Intelligence Daily Life</title>
+<!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+<link rel="shortcut icon" href="/favicon.png">
+
+<link rel="stylesheet" href="/css/style.css">
+
+<nav class="main-nav">
+	
+	    <a href="/">← 主页</a>
+	
+	
+	    <a href="/about/">About</a>
+	
+	    <a href="/archives/">Archives</a>
+	
+	<a class="cta" href="/atom.xml" data-no-instant>订阅</a>
+</nav>
+
+<section id="wrapper">
+    <article class="post">
+    <header>
+        
+            <h1>文摘：博客推荐 - 2026-08-22</h1>
+        
+        <h2 class="headline">Aug 22 2026
+        
+            
+            <a href="/categories/博客推荐/#博客推荐">博客推荐</a>
+        
+        </h2>
+    </header>
+</article>
+<section id="post-body"><h2 id="1-银河竞逐的乐趣和策略-—-从桌游博弈到隐藏信息游戏的-AI-设计"><a href="#1-银河竞逐的乐趣和策略-—-从桌游博弈到隐藏信息游戏的-AI-设计" class="headerlink" title="1. 银河竞逐的乐趣和策略 — 从桌游博弈到隐藏信息游戏的 AI 设计"></a>1. 银河竞逐的乐趣和策略 — 从桌游博弈到隐藏信息游戏的 AI 设计</h2><p><strong>来源</strong>: <a target="_blank" rel="noopener" href="https://blog.codingnow.com/">云风的博客</a>（Skynet 作者、资深游戏程序员云风）<br><strong>发布日期</strong>: 2026-08-20</p>
+<h3 id="核心概要"><a href="#核心概要" class="headerlink" title="核心概要"></a>核心概要</h3><p><a target="_blank" rel="noopener" href="https://store.steampowered.com/app/579940/Race_for_the_Galaxy/">银河竞逐（Race for the Galaxy）</a>是云风最喜欢的桌游之一，他早在 2020 年就写过<a target="_blank" rel="noopener" href="https://blog.codingnow.com/2020/08/rftg_design.html">《银河竞逐的设计》</a>，2010 年还写过<a target="_blank" rel="noopener" href="https://bg.codingnow.com/2010/04/rftg.html">《如何教人玩银河竞逐》</a>。这次的不同之处在于视角：他教会了自己的小孩玩，自己在 <a target="_blank" rel="noopener" href="https://boardgamearena.com/">BGA</a> 和官方电子版上打了两百多盘双人局，线上对人类胜率只有略高于 40%，对最高难度 AI 则超过 50%——“说明这个游戏的策略还有很高的天花板我没能摸到”。一篇桌游策略随笔，背后其实是一线游戏 AI 工程师的复盘习惯：把胜负拆解成可计算的决策层。</p>
+<p>文章最有价值的一个观点是对游戏目标的重新表述：<strong>核心不是”更高效地获取 VP（胜利点）”，而是”在触碰结束条件的那一刻，比对手多拿 VP”</strong>。新手往往埋头造引擎比效率，而高手玩的是结束时机——游戏会在任意玩家铺满 12 张卡或 VP token 耗尽时结束，轮次由双方共同决定，拖延一轮还是抢先减一轮，存在大量博弈空间。作者还把 RFTG 的思考层次类比德州扑克：第一层构筑最强引擎，第二层猜测并利用对手的行动，第三层防备对手在第二层猜自己，第四层基于前三层制定最优策略。双人局 6~8 轮就结束、每方在 BGA 上只有 3 分钟总时长，最后两个回合的精算往往就是决胜手：胜券在握时压低黑天鹅概率，形势不利时去博翻盘，均势时连一张手牌的数量差都要算。</p>
+<p>后半段转向 AI：RFTG 很早就有 <a target="_blank" rel="noopener" href="https://github.com/bnordli/rftg">Keldon Jones 的开源神经网络 AI</a>，代码几乎不含人为输入的策略，全部靠训练涌现。云风读代码后发现它只以当前盘面（双方桌面 + 自己手牌）做判断，而有经验的玩家还会根据过往局面推算抽牌堆里”可能有什么、不可能有什么”。Keldon 后来参与了官方电子版（<a target="_blank" rel="noopener" href="https://www.templegatesgames.com/race-for-the-galaxy-ai/">Temple Gates 的这篇文章</a>）证实了改进方向：神经网络输入里专门加入了 Cards in deck, hand, discard；模型按双人&#x2F;多人&#x2F;扩展包分叉训练，决策时把”局面评估”和”对手行动预测”拆成两个独立网络，再用传统搜索整合。而云风认为新版依然没做到的，是<strong>对手建模</strong>——这是有大量隐藏信息的游戏与围棋的本质区别，需要把对局历史而不只是当前局面喂给网络。他还进一步设想：按初始星球分开开局策略、中盘终局拆分决策网络、给对手风格（保守&#x2F;激进）分类，终局的精算”有点类似围棋的收官，但又不完全相同”。</p>
+<h3 id="关键洞察"><a href="#关键洞察" class="headerlink" title="关键洞察"></a>关键洞察</h3><ul>
+<li><strong>目标函数的辨析</strong>：追求”VP 获取效率最大化”和”在结束那一刻领先对手”是两回事——前者降低对抗性变成单机跑分，后者才需要时刻读取对手节奏、控制游戏结束的轮次，这是全文最核心的策略观</li>
+<li><strong>隐藏信息游戏的思考是分层博弈</strong>：像德州扑克一样的四层思考（引擎 → 利用对手 → 防被利用 → 综合最优），意味着”比对手快一点”比”完美执行自己的计划”更接近胜利的本质</li>
+<li><strong>终局是概率精算而非执行收官</strong>：最后一手的选择标准是”让自己与对手潜在利益之差最大”——领先时防黑天鹅、落后时博翻盘、均势时算到一张手牌的差距</li>
+<li><strong>AI 设计的盲区在对手建模</strong>：开源版只看当前局面；官方版补上了牌堆推断（deck&#x2F;hand&#x2F;discard 进输入）并把局面评估与对手行动预测拆成两个网络再用搜索整合，但”根据对手风格调整策略”依然缺位——需要把对局历史纳入输入</li>
+<li><strong>模型分叉优于规则参数化</strong>：官方 AI 按双人&#x2F;多人&#x2F;扩展包分别训练多个模型，比把规则集作为参数输入同一个模型效率更高——这个工程判断对做策略游戏 AI 的人有直接参考价值</li>
+</ul>
+<h3 id="评价"><a href="#评价" class="headerlink" title="评价"></a>评价</h3><p><strong>优点</strong>：</p>
+<ul>
+<li>少见的”玩家视角 + AI 工程师视角”双线写法：前半段的策略复盘（两百盘实战、胜率数据）让后半段的 AI 批评有据可依，不是空谈</li>
+<li>对开源 AI 代码的批评具体到输入特征层面（当前盘面 vs 对局历史），并得到官方后续版本演进的交叉印证，读起来像一份轻量级的 competitive analysis</li>
+<li>把”目标函数表述错误”（效率 vs 时机）作为新手与高手的分水岭，这个洞察可迁移到任何对抗性系统（包括对 agent 的 reward 设计）</li>
+</ul>
+<p><strong>不足</strong>：</p>
+<ul>
+<li>桌游策略部分对没玩过 RFTG 的读者门槛较高，规则细节（生产消费、军事占领等流派）着墨有限，非玩家难以完整体会博弈分析</li>
+<li>对 AI 改进方向的讨论是随笔式的设想，没有实验或原型验证，深度止步于”我感觉还能细化更多”</li>
+<li>单一游戏、单一主题，对不做游戏&#x2F;博弈 AI 的技术读者适用面窄</li>
+</ul>
+<p><strong>适用场景</strong>：桌游尤其是 RFTG 玩家、做策略游戏或博弈 AI 的工程师、对隐藏信息游戏（德扑式的对手建模）与 AlphaGo 式完全信息搜索的差异感兴趣的读者。</p>
+<h3 id="推荐指数"><a href="#推荐指数" class="headerlink" title="推荐指数"></a>推荐指数</h3><p>⭐⭐⭐ (3&#x2F;5)</p>
+<p>理由：作为云风的系列文章，这篇延续了”实战数据 + 工程视角”的可信风格，对目标读者（RFTG 玩家、游戏 AI 从业者）是高质量的心得，对手建模与终局精算两段有真材实料。但它是兴趣驱动的策略随笔而非技术文章：AI 部分停留在”读代码 + 设想”层面没有验证，游戏策略部分又天然受限于小众受众，普适价值低于他此前偏工程的文章（如 A* 启发函数改进），给 3 星”参考，特定场景”是准确的位置。</p>
+<p><em>链接：<a target="_blank" rel="noopener" href="https://blog.codingnow.com/2026/08/rftg_strategy.html">银河竞逐的乐趣和策略</a></em></p>
+</section>
+    
+
+    <footer id="post-meta" class="clearfix">
+        <a href="/about/">
+        <img class="avatar" src="/images/avatar.png">
+        <div>
+            <span class="dark">Api Intelligence Daily Life</span>
+            <span>知识库 &amp; 博客</span>
+        </div>
+        </a>
+        <section id="sharing">
+            <a title="Share to Twitter" class="twitter" target="_blank" rel="noopener" href="https://twitter.com/intent/tweet?text=https://arbow.github.io/2026/08/22/blog-digest-2026-08-22/ - 文摘：博客推荐 - 2026-08-22 @"><span class="icon-twitter">tweet</span></a>
+            <a title="Share to Facebook" class="facebook" href="#" onclick="
+                window.open(
+                  'https://www.facebook.com/sharer/sharer.php?u='+encodeURIComponent(location.href),
+                  'facebook-share-dialog',
+                  'width=626,height=436');
+                return false;"><span class="icon-facebook-sign">Share</span>
+            </a>
+        </section>
+    </footer>
+
+
+  <section id="comment">
+    <button class="btn" id="loadcmts" onclick="cmts.load();">加载评论</button>
+    <div id="gitment"></div>
+    <script src='/js/gitment.browser.js'></script>
+    <link rel="stylesheet" href=''>
+    <script>
+      var cmts={
+        load:function cmts(){
+          var gitment = new Gitment({
+          
+            id: "文摘：博客推荐 - 2026-08-22",
+          
+            owner: "",
+            repo: "",
+            oauth: {
+              client_id: "",
+              client_secret: "",
+            },
+          })
+          gitment.render('gitment');
+          var loadcmt = document.getElementById("loadcmts");
+          var imyourfather = loadcmt.parentNode;
+          imyourfather.removeChild(loadcmts)
+        }
+      }
+    </script>
+  </section>
+
+
+	<footer id="footer">
+	<div id="social">
+		<p class="small">©  Arbow| Powered by Hexo & 
+			<a target="_blank" rel="noopener" href="https://github.com/F0r3at/Lights"> Lights</a>
+		</p>
+	</div>
+</footer>
+
+</section>
+
+	<script src="//cdnjs.loli.net/ajax/libs/instantclick/3.0.1/instantclick.min.js" data-no-instant></script>
+	<script data-no-instant>
+		
+		InstantClick.init('mousedown');
+	</script>
+
+
+
