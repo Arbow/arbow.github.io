@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=0">
+
+  <meta name="description" content="个人知识库与技术笔记">
+
+
+<link rel="alternate" href="/atom.xml" title="Api Intelligence Daily Life" type="application/atom+xml">
+<meta name="theme-color" content="#a1d0f6">
+<title>文摘：博客推荐 - 2026-08-30 - Api Intelligence Daily Life</title>
+<!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+<link rel="shortcut icon" href="/favicon.png">
+
+<link rel="stylesheet" href="/css/style.css">
+
+<nav class="main-nav">
+	
+	    <a href="/">← 主页</a>
+	
+	
+	    <a href="/about/">About</a>
+	
+	    <a href="/archives/">Archives</a>
+	
+	<a class="cta" href="/atom.xml" data-no-instant>订阅</a>
+</nav>
+
+<section id="wrapper">
+    <article class="post">
+    <header>
+        
+            <h1>文摘：博客推荐 - 2026-08-30</h1>
+        
+        <h2 class="headline">Aug 30 2026
+        
+            
+            <a href="/categories/博客推荐/#博客推荐">博客推荐</a>
+        
+        </h2>
+    </header>
+</article>
+<section id="post-body"><p>今日 10 个订阅源全部检查完毕，新增 1 篇值得细读的文章。</p>
+<hr>
+<h2 id="1-Warp-如何让-Agent-自我进化"><a href="#1-Warp-如何让-Agent-自我进化" class="headerlink" title="1. Warp 如何让 Agent 自我进化"></a>1. Warp 如何让 Agent 自我进化</h2><p><strong>来源</strong>：宝玉的博客<br><strong>链接</strong>：<a target="_blank" rel="noopener" href="https://baoyu.io/blog/2026-08-28/warp-self-improving-agents">https://baoyu.io/blog/2026-08-28/warp-self-improving-agents</a><br><strong>发布日期</strong>：2026-08-28<br><strong>推荐指数</strong>：⭐⭐⭐⭐ (4&#x2F;5) — 推荐阅读</p>
+<h3 id="核心概要"><a href="#核心概要" class="headerlink" title="核心概要"></a>核心概要</h3><p>这篇文章是宝玉对 Anthropic 官方博文《How Warp builds self-improving agents on Claude》的解读与延伸思考。原文讲的是终端工具 Warp 在内部用 AI 做 Code Review 时遇到的困境：Agent 不了解项目、不了解团队规范、记不住历史教训——本质上不是能力问题，而是<strong>没有记忆</strong>。</p>
+<p>Warp 尝试过手动改系统提示词、完善 <code>AGENTS.md</code>，但两条路都不行：前者依赖人主动维护、成本高；后者浪费了团队成员在 PR 里自然写下的高质量评论。最终方案是一个「双 Skill」架构：一个<strong>基础 Skill</strong> 负责执行代码审查，一个<strong>改进 Skill</strong>（improver skill）作为观察者 Agent 定期运行——它拉取人类工程师对 Agent 审查结果的评论，对比 Agent 的建议与人类的实际反应，然后对基础 Skill 提出最小化的修改，走正常的 PR 流程合并。因为 Skill 本质是纯文本文件，Agent 非常擅长更新它，而且每次更新都可 review、可回滚。</p>
+<p>宝玉在解读之外贡献了自己的第一手经验：他写过一个反编译 JS 代码的自我进化 Skill，效果不错但 Skill 文件越滚越大；也试过写作领域的自我进化 Skill，结果一言难尽——因为写作没有统一评判标准，Agent 经常负优化，越写越糟。这个对比恰好点出了 Warp 方案的适用边界。</p>
+<h3 id="关键洞察"><a href="#关键洞察" class="headerlink" title="关键洞察"></a>关键洞察</h3><ul>
+<li><strong>反馈摩擦决定进化速度</strong>：整套方案的精髓不在「自我改进」这个概念，而在摩擦力极低——人只要在 PR 下自然写评论，收集、提炼、更新 Skill 全部由 Agent 自动完成。反馈太麻烦，就收不到反馈，也就无法改进。</li>
+<li><strong>Skill ≠ Memory</strong>：Skill 是程序性、稳定的「如何做 X」，跨运行存在、由人刻意修改；Memory 是推理时自动写入、永远在变的。Warp 把「该沉淀的知识」放进 Skill 而不是塞进 prompt，这正是它可 review、可版本化的前提。</li>
+<li><strong>写原则，不写死规则</strong>：Skill 要像指导一个聪明人，而不是给计算机编程。「寻找重复代码」比罗列详尽的变量命名规则更有效；解释规则背后的理由，Agent 才能举一反三。</li>
+<li><strong>保持 Skill 精简 + 渐进式披露</strong>：好的 Skill 文件引用资源文件和脚本，而不是把所有内容一次性塞进上下文——这也顺便治了宝玉遇到的「Skill 越滚越大」问题。</li>
+<li><strong>improver skill 高度可复用</strong>：去掉领域知识部分，「改进 Skill」这套观察者机制几乎可以平移到任何 Agent 上——代码审查的 improver 和 issue 分类的 improver 区别不大，做一次收益多次。</li>
+<li><strong>防错误反馈的三道闸</strong>：给 Agent 足够上下文做合理性检查、限制谁的反馈有权影响更新（领域专家优先，不开放给所有人）、最终始终保留人在循环中审核。有客观标准的领域（测试是否通过）先建验证基准，没有标准的领域（代码风格）靠专家判断。</li>
+</ul>
+<h3 id="评价"><a href="#评价" class="headerlink" title="评价"></a>评价</h3><p><strong>优点</strong>：选题踩在当前 Agent 工程最热的「自我进化 &#x2F; 反馈闭环」话题上；宝玉没有停留在翻译，而是用自己的两个实战案例（反编译 Skill 成功、写作 Skill 失败）给原文补上了适用边界——<strong>有明确验证标准的领域才能安全地自我进化</strong>，这一层是原文没有明说的；6 条最佳实践条条可执行，拿来就能对照改进自己的 Skill 写法。</p>
+<p><strong>不足</strong>：作为解读型文章，核心框架仍来自 Anthropic 官方博文，独立增量主要集中在开头的个人经验部分；对「反馈分布漂移」（团队规范变了，旧 Skill 更新是否会互相冲突）这类更深的问题没有展开。</p>
+<p><strong>适用场景</strong>：正在维护 Agent Skill &#x2F; CLAUDE.md &#x2F; AGENTS.md 的开发者；想给团队 Agent 建反馈闭环但苦于「人肉改 prompt 不可持续」的工程负责人；对 Skill 与 Memory 边界感到困惑的人。</p>
+<hr>
+<p><em>汇总生成于 2026-08-30，基于 10 个订阅源（RSS &#x2F; RSSHub）自动抓取，经 URL 级 + 日期级双重去重。</em></p>
+</section>
+    
+
+    <footer id="post-meta" class="clearfix">
+        <a href="/about/">
+        <img class="avatar" src="/images/avatar.png">
+        <div>
+            <span class="dark">Api Intelligence Daily Life</span>
+            <span>知识库 &amp; 博客</span>
+        </div>
+        </a>
+        <section id="sharing">
+            <a title="Share to Twitter" class="twitter" target="_blank" rel="noopener" href="https://twitter.com/intent/tweet?text=https://arbow.github.io/2026/08/30/blog-digest-2026-08-30/ - 文摘：博客推荐 - 2026-08-30 @"><span class="icon-twitter">tweet</span></a>
+            <a title="Share to Facebook" class="facebook" href="#" onclick="
+                window.open(
+                  'https://www.facebook.com/sharer/sharer.php?u='+encodeURIComponent(location.href),
+                  'facebook-share-dialog',
+                  'width=626,height=436');
+                return false;"><span class="icon-facebook-sign">Share</span>
+            </a>
+        </section>
+    </footer>
+
+
+  <section id="comment">
+    <button class="btn" id="loadcmts" onclick="cmts.load();">加载评论</button>
+    <div id="gitment"></div>
+    <script src='/js/gitment.browser.js'></script>
+    <link rel="stylesheet" href=''>
+    <script>
+      var cmts={
+        load:function cmts(){
+          var gitment = new Gitment({
+          
+            id: "文摘：博客推荐 - 2026-08-30",
+          
+            owner: "",
+            repo: "",
+            oauth: {
+              client_id: "",
+              client_secret: "",
+            },
+          })
+          gitment.render('gitment');
+          var loadcmt = document.getElementById("loadcmts");
+          var imyourfather = loadcmt.parentNode;
+          imyourfather.removeChild(loadcmts)
+        }
+      }
+    </script>
+  </section>
+
+
+	<footer id="footer">
+	<div id="social">
+		<p class="small">©  Arbow| Powered by Hexo & 
+			<a target="_blank" rel="noopener" href="https://github.com/F0r3at/Lights"> Lights</a>
+		</p>
+	</div>
+</footer>
+
+</section>
+
+	<script src="//cdnjs.loli.net/ajax/libs/instantclick/3.0.1/instantclick.min.js" data-no-instant></script>
+	<script data-no-instant>
+		
+		InstantClick.init('mousedown');
+	</script>
+
+
+
