@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=0">
+
+  <meta name="description" content="个人知识库与技术笔记">
+
+
+<link rel="alternate" href="/atom.xml" title="Api Intelligence Daily Life" type="application/atom+xml">
+<meta name="theme-color" content="#a1d0f6">
+<title>文摘：博客推荐 - 2026-09-06 - Api Intelligence Daily Life</title>
+<!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+<link rel="shortcut icon" href="/favicon.png">
+
+<link rel="stylesheet" href="/css/style.css">
+
+<nav class="main-nav">
+	
+	    <a href="/">← 主页</a>
+	
+	
+	    <a href="/about/">About</a>
+	
+	    <a href="/archives/">Archives</a>
+	
+	<a class="cta" href="/atom.xml" data-no-instant>订阅</a>
+</nav>
+
+<section id="wrapper">
+    <article class="post">
+    <header>
+        
+            <h1>文摘：博客推荐 - 2026-09-06</h1>
+        
+        <h2 class="headline">Sep 06 2026
+        
+            
+            <a href="/categories/博客推荐/#博客推荐">博客推荐</a>
+        
+        </h2>
+    </header>
+</article>
+<section id="post-body"><p>今日新增 1 篇，来自 <a target="_blank" rel="noopener" href="https://lucumr.pocoo.org/">Armin Ronacher 的博客</a>。</p>
+<hr>
+<h2 id="1-Latent-Powers"><a href="#1-Latent-Powers" class="headerlink" title="1. Latent Powers"></a>1. Latent Powers</h2><p><strong>来源</strong>: <a target="_blank" rel="noopener" href="https://lucumr.pocoo.org/2026/9/5/latent-powers/">https://lucumr.pocoo.org/2026/9/5/latent-powers/</a><br><strong>作者</strong>: Armin Ronacher（Flask 作者）<br><strong>发布日期</strong>: 2026-09-05<br><strong>推荐指数</strong>: ⭐⭐⭐⭐ (4&#x2F;5) - 篇幅不长，但提出了一个很少有人<br>说透的问题：当所有人都在用同一批模型，”独立”的原创还剩多少？</p>
+<h3 id="核心概要"><a href="#核心概要" class="headerlink" title="核心概要"></a>核心概要</h3><p>Armin 从一个具体的项目讲起：他想给便宜的国产 CarPlay 加密狗刷自定义固件，让它不止做手机-车机的透传桥。在和 LLM 的对话中，模型向他推荐了 <a target="_blank" rel="noopener" href="https://github.com/catplay-labs/catplay">CatPlay</a>——一个 Rust 重写的 CarPlay 协议实现，可以跑在 Carlinkit 设备上。他买回的设备却和原作者用的 SoC 不同，正常情况下这种固件移植项目大概率会烂尾，但这次他靠和 Kimi K3 等模型的反复讨论，搞定了刷机和为不同 SoC 编译 CatPlay。他的感慨是：过去这类繁琐、容易变砖的项目会因”缺乏韧劲”被放弃，而模型恰恰补上了这股韧劲。</p>
+<p>文章真正的重点在后半段。Armin 指出：这次不是他”发现”了 CatPlay，是模型选的；而且他一位朋友在互不知情的情况下，也几乎同时从模型那里了解到 CarPlay 玩固件这条路并做了类似的事。于是他提出一个不安的问题——当无数人独处时和同一批模型对话，模型会以相近的倾向把不同的人推向相同的项目、相同的做法。他举例：几个月前 Lucas Meijer 分享的”让模型产出 HTML 报告而非 Markdown”曾被认为是很独特的想法，如今因为模型（如 Claude Artifacts）被训练得更擅长这个，已成了大家分享报告的默认选择。</p>
+<p>结论是一种既强又怪的观察：LLM 在扩散知识与能力的同时，可能也在同步地、独立地把所有人推向建造同样的东西。”我们都在做同样的事”这个 AI builder 圈的玩笑，可能不只是因为那些方向显而易见，还因为我们用的是同样的模型、激发的是同样的潜在能力（latent powers）。</p>
+<h3 id="关键洞察"><a href="#关键洞察" class="headerlink" title="关键洞察"></a>关键洞察</h3><ul>
+<li><strong>模型是选型者，不只是工具</strong>：技术路线的”选择权”正在部分转移给模型——你以为是你的主意，可能只是几个候选方案里模型最倾向的那个。</li>
+<li><strong>韧劲瓶颈被模型解决</strong>：很多个人项目死于繁琐和挫败而非难度；Agent 的”不死心”（tenacious）让过去必烂尾的硬件移植类项目变得可行。</li>
+<li><strong>同质化的新机制</strong>：观点趋同不只来自 Twitter 上的相互看见，还来自所有人独自与同批模型对话时被推向的相似路径——这是一种不经过社交网络的”隐性趋同”。</li>
+<li><strong>对独立开发者的启示</strong>：如果你在做 AI 辅助的项目，值得刻意检查”这个方向是我自己想的，还是模型 recurrent 地推给我的？”——差异化可能恰恰藏在模型不推荐的那条路上。</li>
+<li><strong>实践样本</strong>：CatPlay（Rust 实现的 CarPlay 协议，可跑在 Carlinkit 硬件上）本身值得想给车机做点自定义功能的人一读。</li>
+</ul>
+<h3 id="评价"><a href="#评价" class="headerlink" title="评价"></a>评价</h3><p><strong>优点</strong>：从一个真实的硬件折腾案例自然引出结构性观察，不堆术语、不喊口号；”模型把独立个体推向同一件事”这个视角很新鲜，比常见的”AI 提效”叙事深一层。</p>
+<p><strong>不足</strong>：本质是一篇随笔，论证靠轶事（自己 + 一位朋友），没有给出任何可验证的证据或数据；”HTML 报告”一例也可以用”产品引导用户行为”这种更平凡的解释来覆盖，文章未排除这种可能。</p>
+<p><strong>适用场景</strong>：适合所有每天和 coding agent 打交道的开发者，尤其适合在立项前想清楚”我的差异化在哪”的独立开发者与 builder；也适合关注 AI 对创造生态影响的研究者作一手观察材料。</p>
+<hr>
+<p>原文链接：<a target="_blank" rel="noopener" href="https://lucumr.pocoo.org/2026/9/5/latent-powers/">https://lucumr.pocoo.org/2026/9/5/latent-powers/</a></p>
+</section>
+    
+
+    <footer id="post-meta" class="clearfix">
+        <a href="/about/">
+        <img class="avatar" src="/images/avatar.png">
+        <div>
+            <span class="dark">Api Intelligence Daily Life</span>
+            <span>知识库 &amp; 博客</span>
+        </div>
+        </a>
+        <section id="sharing">
+            <a title="Share to Twitter" class="twitter" target="_blank" rel="noopener" href="https://twitter.com/intent/tweet?text=https://arbow.github.io/2026/09/06/blog-digest-2026-09-06/ - 文摘：博客推荐 - 2026-09-06 @"><span class="icon-twitter">tweet</span></a>
+            <a title="Share to Facebook" class="facebook" href="#" onclick="
+                window.open(
+                  'https://www.facebook.com/sharer/sharer.php?u='+encodeURIComponent(location.href),
+                  'facebook-share-dialog',
+                  'width=626,height=436');
+                return false;"><span class="icon-facebook-sign">Share</span>
+            </a>
+        </section>
+    </footer>
+
+
+  <section id="comment">
+    <button class="btn" id="loadcmts" onclick="cmts.load();">加载评论</button>
+    <div id="gitment"></div>
+    <script src='/js/gitment.browser.js'></script>
+    <link rel="stylesheet" href=''>
+    <script>
+      var cmts={
+        load:function cmts(){
+          var gitment = new Gitment({
+          
+            id: "文摘：博客推荐 - 2026-09-06",
+          
+            owner: "",
+            repo: "",
+            oauth: {
+              client_id: "",
+              client_secret: "",
+            },
+          })
+          gitment.render('gitment');
+          var loadcmt = document.getElementById("loadcmts");
+          var imyourfather = loadcmt.parentNode;
+          imyourfather.removeChild(loadcmts)
+        }
+      }
+    </script>
+  </section>
+
+
+	<footer id="footer">
+	<div id="social">
+		<p class="small">©  Arbow| Powered by Hexo & 
+			<a target="_blank" rel="noopener" href="https://github.com/F0r3at/Lights"> Lights</a>
+		</p>
+	</div>
+</footer>
+
+</section>
+
+	<script src="//cdnjs.loli.net/ajax/libs/instantclick/3.0.1/instantclick.min.js" data-no-instant></script>
+	<script data-no-instant>
+		
+		InstantClick.init('mousedown');
+	</script>
+
+
+
