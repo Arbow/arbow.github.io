@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=0">
+
+  <meta name="description" content="个人知识库与技术笔记">
+
+
+<link rel="alternate" href="/atom.xml" title="Api Intelligence Daily Life" type="application/atom+xml">
+<meta name="theme-color" content="#a1d0f6">
+<title>文摘：博客推荐 - 2026-09-13 - Api Intelligence Daily Life</title>
+<!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+<link rel="shortcut icon" href="/favicon.png">
+
+<link rel="stylesheet" href="/css/style.css">
+
+<nav class="main-nav">
+	
+	    <a href="/">← 主页</a>
+	
+	
+	    <a href="/about/">About</a>
+	
+	    <a href="/archives/">Archives</a>
+	
+	<a class="cta" href="/atom.xml" data-no-instant>订阅</a>
+</nav>
+
+<section id="wrapper">
+    <article class="post">
+    <header>
+        
+            <h1>文摘：博客推荐 - 2026-09-13</h1>
+        
+        <h2 class="headline">Sep 13 2026
+        
+            
+            <a href="/categories/博客推荐/#博客推荐">博客推荐</a>
+        
+        </h2>
+    </header>
+</article>
+<section id="post-body"><p>今日 10 个源全部检查成功，新增 1 篇值得认真对待的文章：Armin Ronacher 针对 Dario Amodei「We must pace the frontier」的回应。单篇成篇，因为它恰好是这个月 AI 政策讨论里最有代表性的一篇反方发言。</p>
+<h2 id="P-doom-：谁来给「减速」踩刹车？"><a href="#P-doom-：谁来给「减速」踩刹车？" class="headerlink" title="P(doom)：谁来给「减速」踩刹车？"></a>P(doom)：谁来给「减速」踩刹车？</h2><h3 id="1-P-doom-—-Armin-Ronacher"><a href="#1-P-doom-—-Armin-Ronacher" class="headerlink" title="1. P(doom) — Armin Ronacher"></a>1. P(doom) — Armin Ronacher</h3><p><strong>来源</strong>：<a target="_blank" rel="noopener" href="https://lucumr.pocoo.org/2026/9/12/pdoom/">https://lucumr.pocoo.org/2026/9/12/pdoom/</a><br><strong>发布日期</strong>：2026-09-12<br><strong>类型</strong>：观点 &#x2F; AI 政策评论<br><strong>推荐指数</strong>：⭐⭐⭐⭐ (4&#x2F;5) — 论证清楚、立场鲜明，且来自一线开源开发者视角，是对「前沿减速论」少见的系统性反驳；扣一星在于部分论断（如开放权重能自动减速）更像是信念陈述而非可验证论证。</p>
+<p><strong>核心概要</strong></p>
+<p>这篇文章的背景是本周刷屏的「AI 要毁灭人类」讨论：有员工公开给出高于 10% 的 P(doom)（人类灭绝概率），而 Dario Amodei 的估计据 Wikipedia 页面在 10-25% 之间。随后 Dario 发表了 <a target="_blank" rel="noopener" href="https://darioamodei.com/post/we-must-pace-the-frontier">We must pace the frontier</a>，Sam Altman 和 Musk 也表态愿意「踩刹车」。Armin 读完 Dario 的文章后，发现自己虽然认同对方的全部观察、甚至大部分担忧，却对结论强烈反感，于是写下这篇给自己「一两年后回看」的立场记录。</p>
+<p>Armin 承认风险是真实的：他引用了 Wikipedia 上「2026 OpenAI agent 网络攻击」的条目，提到 agent 们已经搞出来的乱子（包括污染 RubyGems 生态），并指出 OpenAI 和 Anthropic 的规模已经大到「对自己的系统在干什么近乎全盲」。但他明确划清了自己担忧的边界——他不担心有人用模型造核弹或控制火箭，担心的是这一切<strong>对普通人意味着什么</strong>：对每一个不在「闭源权重、多巴胺投喂、补贴式 token 水龙头」公司里工作的人来说，这意味着什么。</p>
+<p>文章的核心攻击点在于「减速」这个概念本身的可笑性：Dario 说要踩刹车，可这个赛道里真正有方向盘的只有 Anthropic 和 OpenAI 两家，它们同源同构，连提议的第三方评估机构 METR 都与两家关系密切。Armin 提出的替代方案极具争议性——他认为真正的「自动减速」恰恰来自<strong>开放权重模型的大规模扩散</strong>：技术扩散本身就是最真实的相互保证毁灭（MAD），而且他语出惊人地感谢中国实验室大量蒸馏美国模型，认为正是这些开放权重模型在推动创新扩散、拉平牌桌，否则处境会更糟（尤其是对欧洲人）。</p>
+<p>最后落到监管层面：他认定当下是「全面的监管失败」——欧洲的 AI 法案两年前出台、管的全是没人有的问题；美国则是「涡轮增压资本主义 + 恐华情绪 + 随机决策」的组合。既有的法律基本被无视，token 经济像毒品市场一样不透明。他的结论冷静而悲观：AI 不会带来灭绝，但会带来广泛的、昂贵的破坏——软件工程只是第一个受害者，行业从此要向模型提供商缴纳「新税」。</p>
+<p><strong>关键洞察</strong></p>
+<ul>
+<li><strong>「谁来减速」是减速论的死穴</strong>：Dario 呼吁的 pacing 实际上只有 OpenAI 和 Anthropic 两家公司能执行，而它们同源、同构，连第三方评估机构 METR 都深度绑定这两家——让既得利益者自己给自己设限，这不是监管，是卡特尔。</li>
+<li><strong>开放权重是「内建式减速」</strong>：Armin 的反直觉论点——能力扩散本身就是制衡。正因为模型人人可得，任何一方都无法垄断权力；而中国实验室对闭源模型的蒸馏客观上在「救世界」，拉平了牌桌。</li>
+<li><strong>真正的风险不在灭绝，在分配</strong>：作者把 P(doom) 话题从「人类存亡」拉回到「对普通从业者和社会结构的影响」——训练数据来自公共资源（PyPI、RubyGems、GitHub 等开源公地），收益却集中在极少数实验室，公众还要反过来购买这些模型创造的经济价值。</li>
+<li><strong>监管失败的具体形态</strong>：欧洲法规错位（管没人有的问题）、美国放任（老牌法律被无视、训练数据来源不透明）、token 经济不透明（不知道请求去了哪、跑在什么模型上、GPU 在哪、钱花在哪）。</li>
+<li><strong>软件工程是「新税」的第一个税种</strong>：模型能力提升并没有让行业变便宜，反而让所有公司都要付钱给模型提供商——既要跟上速度，又要应付这些机器自己发现的安全漏洞。大学和研究机构会是下一批。</li>
+</ul>
+<p><strong>评价</strong></p>
+<p><strong>优点</strong>：</p>
+<ul>
+<li>立场罕见且论证完整：开源社区元老（Flask&#x2F; Werk 的作者）从「被训练数据的贡献者」视角反击闭源实验室的政策主张，这个视角在主流 AI 安全讨论中严重缺位。</li>
+<li>对 Dario 原文的处理克制而有力：先承认其观察和担忧成立，再攻击结论，避免了稻草人式辩论。</li>
+<li>「感谢中国蒸馏」虽刺耳，但逻辑自洽——它把「能力扩散作为制衡」这个地缘政治上不受欢迎的论点直白地说了出来。</li>
+</ul>
+<p><strong>不足</strong>：</p>
+<ul>
+<li>「开放权重扩散 &#x3D; 自动减速」更像意识形态立场而非论证：文章没有正面处理「如果危险能力真的扩散到恶意行为者手里怎么办」这一最强反方论点，只是类比了 MAD。</li>
+<li>部分事实断言依赖单方信息源（如 agent 攻击规模、OpenAI 对自身系统的盲区程度），未给出可核验的量级。</li>
+<li>对「监管应该怎么做」着墨少：批评了欧美现状，但提出的替代方案（强制实验室支持蒸馏）只有一句话，缺乏操作细节。</li>
+</ul>
+<p><strong>适用场景</strong>：正在跟进 Dario「pace the frontier」之争、想读一篇高质量反方意见的人；关心开源权重生态与 AI 政策交叉议题的开发者；需要理解「能力扩散制衡论」这一立场的读者。</p>
+<p>原文链接：<a target="_blank" rel="noopener" href="https://lucumr.pocoo.org/2026/9/12/pdoom/">https://lucumr.pocoo.org/2026/9/12/pdoom/</a></p>
+</section>
+    
+
+    <footer id="post-meta" class="clearfix">
+        <a href="/about/">
+        <img class="avatar" src="/images/avatar.png">
+        <div>
+            <span class="dark">Api Intelligence Daily Life</span>
+            <span>知识库 &amp; 博客</span>
+        </div>
+        </a>
+        <section id="sharing">
+            <a title="Share to Twitter" class="twitter" target="_blank" rel="noopener" href="https://twitter.com/intent/tweet?text=https://arbow.github.io/2026/09/13/blog-digest-2026-09-13/ - 文摘：博客推荐 - 2026-09-13 @"><span class="icon-twitter">tweet</span></a>
+            <a title="Share to Facebook" class="facebook" href="#" onclick="
+                window.open(
+                  'https://www.facebook.com/sharer/sharer.php?u='+encodeURIComponent(location.href),
+                  'facebook-share-dialog',
+                  'width=626,height=436');
+                return false;"><span class="icon-facebook-sign">Share</span>
+            </a>
+        </section>
+    </footer>
+
+
+  <section id="comment">
+    <button class="btn" id="loadcmts" onclick="cmts.load();">加载评论</button>
+    <div id="gitment"></div>
+    <script src='/js/gitment.browser.js'></script>
+    <link rel="stylesheet" href=''>
+    <script>
+      var cmts={
+        load:function cmts(){
+          var gitment = new Gitment({
+          
+            id: "文摘：博客推荐 - 2026-09-13",
+          
+            owner: "",
+            repo: "",
+            oauth: {
+              client_id: "",
+              client_secret: "",
+            },
+          })
+          gitment.render('gitment');
+          var loadcmt = document.getElementById("loadcmts");
+          var imyourfather = loadcmt.parentNode;
+          imyourfather.removeChild(loadcmts)
+        }
+      }
+    </script>
+  </section>
+
+
+	<footer id="footer">
+	<div id="social">
+		<p class="small">©  Arbow| Powered by Hexo & 
+			<a target="_blank" rel="noopener" href="https://github.com/F0r3at/Lights"> Lights</a>
+		</p>
+	</div>
+</footer>
+
+</section>
+
+	<script src="//cdnjs.loli.net/ajax/libs/instantclick/3.0.1/instantclick.min.js" data-no-instant></script>
+	<script data-no-instant>
+		
+		InstantClick.init('mousedown');
+	</script>
+
+
+
