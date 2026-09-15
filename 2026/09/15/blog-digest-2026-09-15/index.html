@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=0">
+
+  <meta name="description" content="个人知识库与技术笔记">
+
+
+<link rel="alternate" href="/atom.xml" title="Api Intelligence Daily Life" type="application/atom+xml">
+<meta name="theme-color" content="#a1d0f6">
+<title>文摘：博客推荐 - 2026-09-15 - Api Intelligence Daily Life</title>
+<!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+<link rel="shortcut icon" href="/favicon.png">
+
+<link rel="stylesheet" href="/css/style.css">
+
+<nav class="main-nav">
+	
+	    <a href="/">← 主页</a>
+	
+	
+	    <a href="/about/">About</a>
+	
+	    <a href="/archives/">Archives</a>
+	
+	<a class="cta" href="/atom.xml" data-no-instant>订阅</a>
+</nav>
+
+<section id="wrapper">
+    <article class="post">
+    <header>
+        
+            <h1>文摘：博客推荐 - 2026-09-15</h1>
+        
+        <h2 class="headline">Sep 15 2026
+        
+            
+            <a href="/categories/博客推荐/#博客推荐">博客推荐</a>
+        
+        </h2>
+    </header>
+</article>
+<section id="post-body"><h1 id="今日博客推荐（2026-09-15）"><a href="#今日博客推荐（2026-09-15）" class="headerlink" title="今日博客推荐（2026-09-15）"></a>今日博客推荐（2026-09-15）</h1><p>今日 10 个源全部检查正常，仅 1 篇新增文章，来自 Armin Ronacher。</p>
+<hr>
+<h2 id="1-Interpreting-Pangram"><a href="#1-Interpreting-Pangram" class="headerlink" title="1. Interpreting Pangram"></a>1. Interpreting Pangram</h2><p><strong>来源</strong>：<a target="_blank" rel="noopener" href="https://lucumr.pocoo.org/2026/9/14/interpreting-pangram/">Armin Ronacher - Interpreting Pangram</a><br><strong>发布日期</strong>：2026-09-14<br><strong>推荐指数</strong>：⭐⭐⭐⭐ (4&#x2F;5) —— 实验设计简单但结论扎实，直指”AI 检测器究竟在测什么”这个被回避的问题，且出自一个长期公开 AI 写作透明度页面的作者之手，立场可信。</p>
+<h3 id="核心概要"><a href="#核心概要" class="headerlink" title="核心概要"></a>核心概要</h3><p>事件起因是一场颇具戏剧性的回合制交锋：David Sacks 发了一篇长推文，几分钟后有网友拿去问 AI 检测服务 <a target="_blank" rel="noopener" href="https://www.pangram.com/">Pangram</a>，得到的判定是”完全 AI 生成”。Sacks 随即回击”这些 AI 检测器都是骗人的”。Ronacher 抓住这个契机，做了一个两层实验，来检验 Pangram 的判定到底意味着什么。</p>
+<p>Pangram 本身是一个训练出来的检测模型，思路是”自己制造训练数据”：从确定由人撰写的文本出发，让 LLM 基于同一主题重写新文本，或对原文做局部编辑，从而捕捉人机协作文本的特征。据其论文声称，误判率为 0.0041%（把人写的判成 AI），漏检率 0.34%。</p>
+<p>Ronacher 的实验分两步。第一步，他让 Opus 5 按照一份精心构造的提示词（连提示词本身都是 LLM 帮忙设计的），仿照 Sacks 的风格重写了那篇关于 “Pacing the Frontier” 的推文——Pangram 判定 100% AI，毫无悬念。第二步才是真正的关键：他<strong>不借助任何 LLM，逐段人工重写</strong>了这份 AI 文本，保持整体结构和论点不变，相似度约 50%，没有一句话相同。结果：Pangram 依然判定这份”100% 人类手写”的文本为 100% slop（AI 垃圾文本）。</p>
+<p>Ronacher 对此并不惊讶。他的经验性观察是：<strong>一旦你依赖 LLM 来搭建文本的结构框架，哪怕之后做大量人工修改，Pangram 的评分也会很难看</strong>。一份从”AI 文本”出发的作品，几乎不可能通过人工编辑改写回到”人写”的判定区间。</p>
+<p>文章结尾有一段少见的坦诚自白：他的博客已经”AI 辅助写作”约两年（博客底部挂着 <a target="_blank" rel="noopener" href="https://lucumr.pocoo.org/ai-transparency/">AI transparency</a> 页面），但 recently 他发现自己对这些工具的依赖在加深，而工具也变成了越来越激进的”编辑”——这让他开始警惕。</p>
+<h3 id="关键洞察"><a href="#关键洞察" class="headerlink" title="关键洞察"></a>关键洞察</h3><ol>
+<li><strong>AI 检测器测的不是”谁打的字”，而是”结构是谁想出来的”</strong>。逐句人工重写仍然被判 100% AI，说明检测的是论证结构、行文节奏这类深层特征，而不是表层词汇——这比”检测器不准”这种笼统抱怨精确得多。</li>
+<li><strong>“AI 辅助写作”存在一条不可逆的分界线</strong>：让 LLM 起草结构之后再怎么改，都洗不掉 AI 痕迹；但反过来，人类自己起结构、让 LLM 修 typo，通常不影响判定。使用方式的选择比使用量的多少更决定性。</li>
+<li><strong>低误报率的宣传数字与个体体验存在系统性落差</strong>：0.0041% 的”误判 AI”率听起来很安全，但对重度 LLM 辅助写作的博主来说，”100% AI”几乎是必然结局——统计意义上的低误报不等于对你的文本友好。</li>
+<li><strong>AI 透明度实践值得借鉴</strong>：作者把”哪些内容是 AI 参与的”公开挂在博客上，这是当前内容生态里少有但成本很低的诚实做法。</li>
+<li><strong>对内容消费者的启示</strong>：看到”100% AI 生成”的判定时，不要直接等价于”没有人类智力投入”——结构和观点可能仍是人的，只是产线变了。</li>
+</ol>
+<h3 id="评价"><a href="#评价" class="headerlink" title="评价"></a>评价</h3><p><strong>优点</strong>：</p>
+<ul>
+<li>实验干净利落：两个对照（纯 AI 生成 vs 人工重写 AI 结构），一步排除干扰，结论自然浮现</li>
+<li>作者同时是 AI 重度使用者和透明度实践者，讨论检测器问题时既不站在”检测器皆骗人”也不站在”AI 原罪”的极端</li>
+<li>附上了完整的提示词和三方判定链接（Pangram 的判定历史页面），可复现、可查验</li>
+</ul>
+<p><strong>不足</strong>：</p>
+<ul>
+<li>样本量为一，单一检测器、单一文本、单一领域（时评式推文），结论的外推需谨慎</li>
+<li>没有测试反向路径（人起结构 + LLM 扩写的中间形态会怎样判定），而这条路径恰恰是大多数人真实的写作方式</li>
+<li>Pangram 的训练机制介绍停留在论文摘要层面，未深入为何”结构相似”就足以触发判定</li>
+</ul>
+<p><strong>适用场景</strong>：正在纠结”写作该不该用 AI &#x2F; 用到什么程度”的博主和技术作者；需要解读 AI 检测结果的编辑和平台方；对 AI 内容治理感兴趣的人。如果你只想知道”检测器到底靠不靠谱”，这篇给不出 yes&#x2F;no，但会给你一个更好的提问方式。</p>
+<hr>
+<p><em>原文链接：<a target="_blank" rel="noopener" href="https://lucumr.pocoo.org/2026/9/14/interpreting-pangram/">https://lucumr.pocoo.org/2026/9/14/interpreting-pangram/</a></em></p>
+</section>
+    
+
+    <footer id="post-meta" class="clearfix">
+        <a href="/about/">
+        <img class="avatar" src="/images/avatar.png">
+        <div>
+            <span class="dark">Api Intelligence Daily Life</span>
+            <span>知识库 &amp; 博客</span>
+        </div>
+        </a>
+        <section id="sharing">
+            <a title="Share to Twitter" class="twitter" target="_blank" rel="noopener" href="https://twitter.com/intent/tweet?text=https://arbow.github.io/2026/09/15/blog-digest-2026-09-15/ - 文摘：博客推荐 - 2026-09-15 @"><span class="icon-twitter">tweet</span></a>
+            <a title="Share to Facebook" class="facebook" href="#" onclick="
+                window.open(
+                  'https://www.facebook.com/sharer/sharer.php?u='+encodeURIComponent(location.href),
+                  'facebook-share-dialog',
+                  'width=626,height=436');
+                return false;"><span class="icon-facebook-sign">Share</span>
+            </a>
+        </section>
+    </footer>
+
+
+  <section id="comment">
+    <button class="btn" id="loadcmts" onclick="cmts.load();">加载评论</button>
+    <div id="gitment"></div>
+    <script src='/js/gitment.browser.js'></script>
+    <link rel="stylesheet" href=''>
+    <script>
+      var cmts={
+        load:function cmts(){
+          var gitment = new Gitment({
+          
+            id: "文摘：博客推荐 - 2026-09-15",
+          
+            owner: "",
+            repo: "",
+            oauth: {
+              client_id: "",
+              client_secret: "",
+            },
+          })
+          gitment.render('gitment');
+          var loadcmt = document.getElementById("loadcmts");
+          var imyourfather = loadcmt.parentNode;
+          imyourfather.removeChild(loadcmts)
+        }
+      }
+    </script>
+  </section>
+
+
+	<footer id="footer">
+	<div id="social">
+		<p class="small">©  Arbow| Powered by Hexo & 
+			<a target="_blank" rel="noopener" href="https://github.com/F0r3at/Lights"> Lights</a>
+		</p>
+	</div>
+</footer>
+
+</section>
+
+	<script src="//cdnjs.loli.net/ajax/libs/instantclick/3.0.1/instantclick.min.js" data-no-instant></script>
+	<script data-no-instant>
+		
+		InstantClick.init('mousedown');
+	</script>
+
+
+
