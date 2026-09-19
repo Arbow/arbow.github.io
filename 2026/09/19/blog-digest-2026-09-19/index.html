@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=0">
+
+  <meta name="description" content="个人知识库与技术笔记">
+
+
+<link rel="alternate" href="/atom.xml" title="Api Intelligence Daily Life" type="application/atom+xml">
+<meta name="theme-color" content="#a1d0f6">
+<title>文摘：博客推荐 - 2026-09-19 - Api Intelligence Daily Life</title>
+<!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+<link rel="shortcut icon" href="/favicon.png">
+
+<link rel="stylesheet" href="/css/style.css">
+
+<nav class="main-nav">
+	
+	    <a href="/">← 主页</a>
+	
+	
+	    <a href="/about/">About</a>
+	
+	    <a href="/archives/">Archives</a>
+	
+	<a class="cta" href="/atom.xml" data-no-instant>订阅</a>
+</nav>
+
+<section id="wrapper">
+    <article class="post">
+    <header>
+        
+            <h1>文摘：博客推荐 - 2026-09-19</h1>
+        
+        <h2 class="headline">Sep 19 2026
+        
+            
+            <a href="/categories/博客推荐/#博客推荐">博客推荐</a>
+        
+        </h2>
+    </header>
+</article>
+<section id="post-body"><h1 id="每日博客推荐（2026-09-19）"><a href="#每日博客推荐（2026-09-19）" class="headerlink" title="每日博客推荐（2026-09-19）"></a>每日博客推荐（2026-09-19）</h1><p>今日 10 个订阅源全部检查完毕，发现 1 篇新增文章，来自云风的博客。</p>
+<hr>
+<h2 id="1-Caves-of-Qud-初体验"><a href="#1-Caves-of-Qud-初体验" class="headerlink" title="1. Caves of Qud 初体验"></a>1. Caves of Qud 初体验</h2><p><strong>来源</strong>: <a target="_blank" rel="noopener" href="https://blog.codingnow.com/2026/09/caves_of_qud.html">云风的博客</a>（发布于 2026-09-18）<br><strong>推荐指数</strong>: ⭐⭐⭐⭐ (4&#x2F;5) — 老牌 Roguelike 玩家二十年后再入坑的完整设计复盘，既有游戏设计方法论，又有一段罕见诚实的 LLM 翻车实测，两个主题都有真材实料。</p>
+<h3 id="核心概要"><a href="#核心概要" class="headerlink" title="核心概要"></a>核心概要</h3><p>云风是玩传统 Roguelike 二十多年的老玩家——GBA 时代的特鲁尼克大冒险、2008 年就尝试给 NetHack 做汉化、600+ 小时的 Rogue’s Tale。这次他因为 Caves of Qud（卡德洞窟）更新了多语言支持、创意工坊出现了初步中文 mod 而入坑，两天玩了约 20 小时后写下了这篇设计向的体验汇总。</p>
+<p>文章的核心不是游戏评测，而是一次完整的设计观察。他把传统 Roguelike 分成两大方向：一是<strong>地牢远征</strong>，乐趣不在于”我的角色”变强，而在于玩家本身发现新的游戏规则——物品的隐藏属性、药水的多种用途、怪物与环境的互动；二是<strong>世界沙盒模拟</strong>，玩家揭开作者设定的迷雾、体验人为设计的剧情。Qud 两者兼有，而且几乎不吃”数值 Build”这一套：变强的本质是玩家学会了破墙、飞行、爱情针这些新机制。</p>
+<p>最精彩的部分是对 Qud <strong>淡水经济系统</strong>的拆解。游戏里没有钱，只有淡水：淡水不可找零、相对较重、玩家没有仓库和银行，刷再多的资源也带不走——经济设计直接消灭了 Grinding 的动机。高价值交易靠恒定价格的贵金属贸易品，普通商品则有高额买卖折损（比如读过的书可以高价卖出）。他甚至把这个设定类比到津巴布韦经济崩溃后”美元找零用糖果”的真实案例，指出这套经济和生存机制结合的巧妙：理论上玩家很难脱水而死，渴的代价是经济性的而非生存性的。</p>
+<p>文章末尾有一段很有意思的 AI&#x2F;LLM 吐槽：他最长的 run（10 小时+）终结在主线地牢 Bethesda Susa。出发前他专门和 Gemini 讨论过”12 级去是否安全”，LLM 信誓旦旦说冰抗 40+ 就没问题，结果他死在了半路的巨人三巨头。事后翻 Reddit 才发现，老玩家共识是 20 级极限、推荐 28 级以后再去。他的结论一针见血：<strong>AI 没玩过游戏，只能道听途说；你不会信任一个没玩过游戏的人教你玩高危局，却因为 LLM”把语言组织得太动听”就轻信了它。</strong></p>
+<h3 id="关键洞察"><a href="#关键洞察" class="headerlink" title="关键洞察"></a>关键洞察</h3><ul>
+<li><strong>好的经济设计能直接消灭刷子行为</strong>：把货币设计成”重、不可找零、无仓库可积累”，玩家刷了也带不走，Grinding 的动机就不存在了——这比任何反刷机制都优雅</li>
+<li><strong>永久死亡的挫折感缓解靠”逃跑成本设计”</strong>：Qud 默认给所有 build 一个”疾驰”技能、新手区敌人跑不过你、强怪很难秒人——留退路比降低难度更能保住高风险机制的体验价值</li>
+<li><strong>叙事是廉价的共鸣放大器</strong>：视觉冲击和操作反馈都比不上”脑补”的威力；低成本美术反而是 Roguelike 的优势，作者可以把精力全部投入独特机制，这是商业游戏做不到的</li>
+<li><strong>软屏障不是唯一选择</strong>：魔兽世界用高等级怪挡路，Qud 则完全不阻止大地图旅行，把风险留给主线地牢——设计者要明确”在哪为难玩家”</li>
+<li><strong>LLM 的”知识”是二手的且无法验证边界</strong>：它能把错误答案说得同样动听，越是高风险决策越不能依赖纯语言模型的建议</li>
+</ul>
+<h3 id="评价"><a href="#评价" class="headerlink" title="评价"></a>评价</h3><p><strong>优点</strong>：</p>
+<ul>
+<li>不是泛泛的游戏推荐，而是带着 20 多年 Roguelike 阅历的系统性设计复盘，”地牢远征 vs 世界沙盒”的分类框架清晰实用</li>
+<li>淡水经济系统的拆解足够深入（不可找零、负重即银行、贸易品 vs 商品的价格结构），且能联系真实世界案例</li>
+<li>LLM 翻车的那段尤其珍贵——不是空谈”AI 幻觉”，而是一次有具体等级、具体死法、事后有 Reddit 佐证的实测翻车</li>
+</ul>
+<p><strong>不足</strong>：</p>
+<ul>
+<li>中段的武侠世界随机阴谋点子只是随想，展开不足，对不关心游戏设计的读者略显跳脱</li>
+<li>默认读者对 Roguelike 术语（build、meta 成长、SP）有基本概念，纯路人可能需要边读边查</li>
+</ul>
+<p><strong>适用场景</strong>：游戏设计从业者（经济系统、永久死亡机制、地图软屏障设计都有可直接借鉴的结论）；对 Roguelike 感兴趣但被门槛劝退过的玩家（他专门讲了手柄适配和本地化如何降低门槛）；以及所有想了解”LLM 建议边界在哪”的 AI 使用者。</p>
+<hr>
+<p><em>本篇按订阅源自动抓取生成。原文链接：<a target="_blank" rel="noopener" href="https://blog.codingnow.com/2026/09/caves_of_qud.html">Caves of Qud 初体验 - 云风的 BLOG</a></em></p>
+</section>
+    
+
+    <footer id="post-meta" class="clearfix">
+        <a href="/about/">
+        <img class="avatar" src="/images/avatar.png">
+        <div>
+            <span class="dark">Api Intelligence Daily Life</span>
+            <span>知识库 &amp; 博客</span>
+        </div>
+        </a>
+        <section id="sharing">
+            <a title="Share to Twitter" class="twitter" target="_blank" rel="noopener" href="https://twitter.com/intent/tweet?text=https://arbow.github.io/2026/09/19/blog-digest-2026-09-19/ - 文摘：博客推荐 - 2026-09-19 @"><span class="icon-twitter">tweet</span></a>
+            <a title="Share to Facebook" class="facebook" href="#" onclick="
+                window.open(
+                  'https://www.facebook.com/sharer/sharer.php?u='+encodeURIComponent(location.href),
+                  'facebook-share-dialog',
+                  'width=626,height=436');
+                return false;"><span class="icon-facebook-sign">Share</span>
+            </a>
+        </section>
+    </footer>
+
+
+  <section id="comment">
+    <button class="btn" id="loadcmts" onclick="cmts.load();">加载评论</button>
+    <div id="gitment"></div>
+    <script src='/js/gitment.browser.js'></script>
+    <link rel="stylesheet" href=''>
+    <script>
+      var cmts={
+        load:function cmts(){
+          var gitment = new Gitment({
+          
+            id: "文摘：博客推荐 - 2026-09-19",
+          
+            owner: "",
+            repo: "",
+            oauth: {
+              client_id: "",
+              client_secret: "",
+            },
+          })
+          gitment.render('gitment');
+          var loadcmt = document.getElementById("loadcmts");
+          var imyourfather = loadcmt.parentNode;
+          imyourfather.removeChild(loadcmts)
+        }
+      }
+    </script>
+  </section>
+
+
+	<footer id="footer">
+	<div id="social">
+		<p class="small">©  Arbow| Powered by Hexo & 
+			<a target="_blank" rel="noopener" href="https://github.com/F0r3at/Lights"> Lights</a>
+		</p>
+	</div>
+</footer>
+
+</section>
+
+	<script src="//cdnjs.loli.net/ajax/libs/instantclick/3.0.1/instantclick.min.js" data-no-instant></script>
+	<script data-no-instant>
+		
+		InstantClick.init('mousedown');
+	</script>
+
+
+
