@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=0">
+
+  <meta name="description" content="个人知识库与技术笔记">
+
+
+<link rel="alternate" href="/atom.xml" title="Api Intelligence Daily Life" type="application/atom+xml">
+<meta name="theme-color" content="#a1d0f6">
+<title>文摘：博客推荐 - 2026-09-21 - Api Intelligence Daily Life</title>
+<!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+<link rel="shortcut icon" href="/favicon.png">
+
+<link rel="stylesheet" href="/css/style.css">
+
+<nav class="main-nav">
+	
+	    <a href="/">← 主页</a>
+	
+	
+	    <a href="/about/">About</a>
+	
+	    <a href="/archives/">Archives</a>
+	
+	<a class="cta" href="/atom.xml" data-no-instant>订阅</a>
+</nav>
+
+<section id="wrapper">
+    <article class="post">
+    <header>
+        
+            <h1>文摘：博客推荐 - 2026-09-21</h1>
+        
+        <h2 class="headline">Sep 21 2026
+        
+            
+            <a href="/categories/博客推荐/#博客推荐">博客推荐</a>
+        
+        </h2>
+    </header>
+</article>
+<section id="post-body"><h2 id="1-我用-GPT-6-Astra-做了一个-3D-版的《桃花源记》（文中含提示词）"><a href="#1-我用-GPT-6-Astra-做了一个-3D-版的《桃花源记》（文中含提示词）" class="headerlink" title="1. 我用 GPT 6 Astra 做了一个 3D 版的《桃花源记》（文中含提示词）"></a>1. 我用 GPT 6 Astra 做了一个 3D 版的《桃花源记》（文中含提示词）</h2><p><strong>来源</strong>：<a target="_blank" rel="noopener" href="https://baoyu.io/blog/gpt-6-astra-peach-blossom-land">宝玉</a> · 2026-09-19</p>
+<h3 id="核心概要"><a href="#核心概要" class="headerlink" title="核心概要"></a>核心概要</h3><p>宝玉用 ChatGPT Pro 里的 GPT 6 Astra 把《桃花源记》做成了一个可交互的 3D 文学场景网页：读者可以”循文入境”，跟着原文顺序从”缘溪行”一路坐船穿桃林、入洞、豁然开朗、进村做客，直到”后遂无问津者”，全程支持拖视角、切换视角、控制进度，并在”原文＋白话””只看原文””只看白话”之间切换。整篇课文被拆成 20 幕，空间关系必须真实连通，不靠黑屏和瞬移切换。</p>
+<p>这篇文章的独特价值在于它是一个完整的三阶段工作流实录，而不是单模型炫技：第一步用 GPT 6 Astra 一次性生成完整可运行的 3D 世界原型；第二步发现系统 TTS”能听但不好听”，换成央视李立宏的真人朗诵，把 MP3 和转录出的 SRT 时间轴一起交给模型做完整同步——章节切换、镜头进度、句子高亮都跟着朗诵走，连”豁然开朗”后的音乐留白都给画面留了停顿；第三步发现 GPT 把整段 MP3 用 Base64 嵌进 HTML 导致文件膨胀到 5.6 MB，交给 Codex 做工程化收尾：拆出独立音频文件、替换更自然的溪水鸟鸣环境音，最终缩回约 777 KB。</p>
+<h3 id="关键洞察"><a href="#关键洞察" class="headerlink" title="关键洞察"></a>关键洞察</h3><ul>
+<li><strong>成品质量取决于你有没有把判断标准说清楚</strong>。作者的提示词里没有”画面唯美””交互丰富”这类形容词，而是反复规定空间关系怎样才算忠实、镜头为什么这样走、哪些情节不能省略、哪些文化符号不能混进来——给模型一套审美和验收标准，而不是一堆形容词。</li>
+<li><strong>声音也是交互的一部分</strong>。朗诵的气息、重音和停顿直接决定镜头该怎么走、场景该停多久；过于平、过于干净的合成语音会拖垮整个文学体验。</li>
+<li><strong>第一次生成不必承担所有工作</strong>。一个模型负责把想法迅速变成完整原型（”造世界”），另一个负责文件结构、资源拆分和浏览器测试（”收拾成可交付的作品”）——按能力分工比强行用单一模型跑完全程更高效。</li>
+<li><strong>提示词写成了可复用的模板</strong>：文学理解、3D 空间、叙事镜头、交互、验收标准全部固化，只替换文末的课文与场景描述，就能迁移到《小石潭记》等其他作品。</li>
+<li><strong>提示词明确要求”真实浏览器截图自检后交付”</strong>，并要求模型如实说明哪些测试没做——把验证纪律写进了 prompt 本身。</li>
+</ul>
+<h3 id="评价"><a href="#评价" class="headerlink" title="评价"></a>评价</h3><p><strong>优点</strong>：成品有在线链接可直接体验，不是纸上谈兵；三阶段工作流的每一步问题（TTS 不好听、Base64 膨胀）都有真实原因和对应解法，过程可复现；文末附完整可复用提示词和完整 ChatGPT 会话链接，透明度很高。提示词本身对”空间必须真实连通、不能黑屏瞬移””区分叙事转场与未实现的道路”等要求，几乎是一份微型 3D 叙事交互设计规范，单独拿出来读也有价值。</p>
+<p><strong>不足</strong>：对”造世界 + 收尾”两个模型的分工边界，文章只给了结论式判断（Astra 适合原型、Codex 适合工程化），没有展开两者各自的具体局限；体验效果高度依赖李立宏真人朗诵这一外部素材，如果换回 TTS，同步与体验方案是否依然成立文中未讨论。</p>
+<p><strong>适用场景</strong>：想把语文课文、古文、诗词做成沉浸式教学素材的老师和家长；研究多模型协作工作流（生成原型 → 内容置换 → 工程收尾）的开发者；以及所有想学习”如何给生成式模型写验收标准而非形容词堆砌”的人——文末那份提示词模板值得直接收藏。</p>
+<h3 id="推荐指数"><a href="#推荐指数" class="headerlink" title="推荐指数"></a>推荐指数</h3><p>⭐⭐⭐⭐ (4&#x2F;5) 推荐。一篇罕见地把”提示词工程 + 多模型分工 + 内容品质判断”三件事讲透的实战复盘，且成品、会话记录、完整提示词全部公开。没给满星是因为对两个模型的能力边界分析还停留在体感层面，缺少更系统的对比数据。</p>
+<hr>
+<p><em>本文为自动生成的博客推荐汇总，观点仅代表本站整理视角。</em></p>
+</section>
+    
+
+    <footer id="post-meta" class="clearfix">
+        <a href="/about/">
+        <img class="avatar" src="/images/avatar.png">
+        <div>
+            <span class="dark">Api Intelligence Daily Life</span>
+            <span>知识库 &amp; 博客</span>
+        </div>
+        </a>
+        <section id="sharing">
+            <a title="Share to Twitter" class="twitter" target="_blank" rel="noopener" href="https://twitter.com/intent/tweet?text=https://arbow.github.io/2026/09/21/blog-digest-2026-09-21/ - 文摘：博客推荐 - 2026-09-21 @"><span class="icon-twitter">tweet</span></a>
+            <a title="Share to Facebook" class="facebook" href="#" onclick="
+                window.open(
+                  'https://www.facebook.com/sharer/sharer.php?u='+encodeURIComponent(location.href),
+                  'facebook-share-dialog',
+                  'width=626,height=436');
+                return false;"><span class="icon-facebook-sign">Share</span>
+            </a>
+        </section>
+    </footer>
+
+
+  <section id="comment">
+    <button class="btn" id="loadcmts" onclick="cmts.load();">加载评论</button>
+    <div id="gitment"></div>
+    <script src='/js/gitment.browser.js'></script>
+    <link rel="stylesheet" href=''>
+    <script>
+      var cmts={
+        load:function cmts(){
+          var gitment = new Gitment({
+          
+            id: "文摘：博客推荐 - 2026-09-21",
+          
+            owner: "",
+            repo: "",
+            oauth: {
+              client_id: "",
+              client_secret: "",
+            },
+          })
+          gitment.render('gitment');
+          var loadcmt = document.getElementById("loadcmts");
+          var imyourfather = loadcmt.parentNode;
+          imyourfather.removeChild(loadcmts)
+        }
+      }
+    </script>
+  </section>
+
+
+	<footer id="footer">
+	<div id="social">
+		<p class="small">©  Arbow| Powered by Hexo & 
+			<a target="_blank" rel="noopener" href="https://github.com/F0r3at/Lights"> Lights</a>
+		</p>
+	</div>
+</footer>
+
+</section>
+
+	<script src="//cdnjs.loli.net/ajax/libs/instantclick/3.0.1/instantclick.min.js" data-no-instant></script>
+	<script data-no-instant>
+		
+		InstantClick.init('mousedown');
+	</script>
+
+
+
