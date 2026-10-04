@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=0">
+
+  <meta name="description" content="个人知识库与技术笔记">
+
+
+<link rel="alternate" href="/atom.xml" title="Api Intelligence Daily Life" type="application/atom+xml">
+<meta name="theme-color" content="#a1d0f6">
+<title>文摘：博客推荐 - 2026-10-04 - Api Intelligence Daily Life</title>
+<!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+<link rel="shortcut icon" href="/favicon.png">
+
+<link rel="stylesheet" href="/css/style.css">
+
+<nav class="main-nav">
+	
+	    <a href="/">← 主页</a>
+	
+	
+	    <a href="/about/">About</a>
+	
+	    <a href="/archives/">Archives</a>
+	
+	<a class="cta" href="/atom.xml" data-no-instant>订阅</a>
+</nav>
+
+<section id="wrapper">
+    <article class="post">
+    <header>
+        
+            <h1>文摘：博客推荐 - 2026-10-04</h1>
+        
+        <h2 class="headline">Oct 04 2026
+        
+            
+            <a href="/categories/博客推荐/#博客推荐">博客推荐</a>
+        
+        </h2>
+    </header>
+</article>
+<section id="post-body"><p>本期只来自一个源：李乾坤的博客。他上周集中更新了四篇具身智能（机器人学习）入门笔记，从硬件、软件到算法层层递进，构成了一个相当完整的学习路径——对想从 AI&#x2F;软件背景跨进具身智能的工程师来说，这组文章值得整体读一遍。四篇的质量差距也很明显：核心的长文干货足，几篇短笔记则更像大纲和读书卡片，评分拉开了梯度。</p>
+<hr>
+<h2 id="1-机器人学习（Robot-Learning）学习笔记"><a href="#1-机器人学习（Robot-Learning）学习笔记" class="headerlink" title="1. 机器人学习（Robot Learning）学习笔记"></a>1. 机器人学习（Robot Learning）学习笔记</h2><p><strong>链接</strong>：<a target="_blank" rel="noopener" href="https://qiankunli.github.io/2026/10/03/2026-09-28-robot_learning.html">https://qiankunli.github.io/2026/10/03/2026-09-28-robot_learning.html</a><br><strong>发布时间</strong>：2026-10-03<br><strong>类型</strong>：技术学习笔记<br><strong>推荐指数</strong>：⭐⭐⭐⭐⭐ (5&#x2F;5) 必读 — 四篇中唯一成体系的长文，把 BC&#x2F;Action Chunking&#x2F;Diffusion Policy&#x2F;VLA 的来龙去脉用一条清晰的问题链串起来，罕见地把数学直觉讲透了</p>
+<h3 id="核心概要"><a href="#核心概要" class="headerlink" title="核心概要"></a>核心概要</h3><p>这是四篇中的核心文章，是作者对 <a target="_blank" rel="noopener" href="https://github.com/fracapuano/robot-learning-tutorial">fracapuano&#x2F;robot-learning-tutorial</a> 的学习笔记，但远不止摘抄。文章从”传统机器人怎么让机械臂动起来”讲起：程序控制关节角度，任务关心夹爪位置，于是需要正&#x2F;逆运动学；有了终点姿势还要轨迹规划、Jacobian、微分逆运动学、反馈控制——“把夹爪移过去”背后是一整套建模、求解、规划、纠偏流程。</p>
+<p>接着引出核心问题：哪些东西能从数据中学？摩擦、接触、柔性物体这些真实物理过程很难显式建模，而且”更多数据不会自动让系统变强”——手工设计的规划器不会因为多了一万条示范就自动掌握新技能。由此进入 Behavioral Cloning：把遥操作示范记录成 (observation, action) 对，用监督学习训练 $f_\theta(o) \to a$，没有 reward，也不需要 policy gradient。</p>
+<p>文章最有价值的部分是回答”为什么普通监督学习还不够”：其一是分布偏移与误差累积——预测偏一点，下一帧就面对示范数据里没见过的场景；其二是多模态动作分布——“左绕”和”右绕”的平方误差平均可能恰好是”直直撞上去”。这就自然引出从回归式 BC 走向生成式 BC（学习动作分布而非单点预测），再到 Action Chunking（一次预测 H 步动作序列，ACT &#x3D; Action Chunking + Transformer + CVAE）和 Diffusion Policy（用扩散模型逼近复杂高维动作分布）。最后以异步推理（策略服务器与机器人客户端解耦，让计算时间与执行时间重叠）和 VLA（Vision-Language-Action，连续动作离散化为 token 的 RT-2&#x2F;OpenVLA 路线，vs VLM Backbone + Action Expert 用 Flow Matching 生成动作块的路线）收尾。</p>
+<h3 id="关键洞察"><a href="#关键洞察" class="headerlink" title="关键洞察"></a>关键洞察</h3><ul>
+<li><strong>单步误差小 ≠ 任务成功率高</strong>：BC 的致命弱点是 compounding errors，模型”学会顺利时怎么做，却未必学会偏离之后怎么补救”，这是模仿学习必须用生成式建模和 action chunking 的根本原因</li>
+<li><strong>多模态动作分布是回归的死穴</strong>：两条都正确的绕障路线，用 MSE 训练会学出”撞向障碍物”的平均值——这一例子的解释力极强，一句话说清了 diffusion policy 存在的必要性</li>
+<li><strong>异步推理的本质是重叠而非加速</strong>：动作块推理放到独立的算力更好的机器上，机器人端持续消费动作队列，”不是让模型算得更快，而是让计算时间与执行时间重叠”</li>
+<li><strong>VLA 的核心难题是 embodiment 绑定</strong>：同样一个动作向量在六轴机械臂和双臂机器人上可能根本不是一个意思，关节角度向量脱离身体结构和关节顺序约定并不能唯一描述姿态——这是机器人数据无法像文本那样共享表达的根本原因</li>
+<li><strong>RL 与 BC 的现实权衡</strong>：RL 在真实硬件上有探索安全和样本效率两大硬伤，稠密 reward 设计又依赖人类试错，所以模仿学习成为当前主流起点</li>
+</ul>
+<h3 id="评价"><a href="#评价" class="headerlink" title="评价"></a>评价</h3><p><strong>优点</strong>：问题链组织极佳，每一层技术都是对上一层缺陷的回应；数学直觉（高斯策略、混合分布、$A_t \sim p_\theta(A_t|I_t,q_t,\ell)$）讲得恰到好处，不堆公式；中文语境下能把 LLM 的离散 token 采样和机器人连续动作生成做对照，对从大模型背景过来的读者非常友好。</p>
+<p><strong>不足</strong>：是学习笔记而非原创实践，缺作者自己的实验数据或踩坑记录；VLA 部分点到为止，未展开具体模型（如 π0、OpenVLA）的训练细节；2 分钟的阅读时间标注明显低估了实际消化成本。</p>
+<p><strong>适用场景</strong>：软件&#x2F;AI 工程师想建立具身智能算法侧的知识框架，这一篇就够当主线教材；配合作者另外三篇硬件&#x2F;软件笔记食用效果最佳。</p>
+<hr>
+<h2 id="2-学习具身智能"><a href="#2-学习具身智能" class="headerlink" title="2. 学习具身智能"></a>2. 学习具身智能</h2><p><strong>链接</strong>：<a target="_blank" rel="noopener" href="https://qiankunli.github.io/2026/10/02/learn_robot.html">https://qiankunli.github.io/2026/10/02/learn_robot.html</a><br><strong>发布时间</strong>：2026-10-02<br><strong>类型</strong>：技术入门笔记<br><strong>推荐指数</strong>：⭐⭐⭐⭐ (4&#x2F;5) 推荐 — 四篇中思想密度最高的短文，”为什么 Tool Calling 经验不能直接搬到物理世界”的四重约束分析值得所有 AI Agent 工程师一读</p>
+<h3 id="核心概要-1"><a href="#核心概要-1" class="headerlink" title="核心概要"></a>核心概要</h3><p>这篇是整个系列的”总纲”，先给出具身智能的定义（智能体借助身体，在噪声和持续变化的物理环境中通过”感知-动作-再感知”闭环修正行为），然后铺出四层技术堆栈：硬件层（the body：驱动&#x2F;传感&#x2F;计算平台）、软件系统层（the nervous system：ROS&#x2F;ROS2、Isaac Sim、DDS&#x2F;gRPC）、算法认知层（the brain：感知&#x2F;决策规划&#x2F;控制）、应用层（the purpose）。</p>
+<p>真正的重头戏是”agent”一节。作者精准地戳中了软件工程师跨入具身智能时最容易低估的一步：既然大模型会看图、会规划、会调用工具，是不是把机械臂封装成几个 Tool 就能得到具身智能体？文章用”拿起桌上的纸杯”这个例子展开，指出物理世界给 Agent 增加了四类软件世界不显眼的约束：观测是对真实状态的不完整估计（Coding Agent 读文件第 42 行就是第 42 行，机器人只有带噪声的传感器读数）；”抓取”不是一个瞬间完成的函数调用而是连续多关节运动；模型推理延迟与物理执行时序冲突（需要分层架构：慢思考的任务规划层 + 快执行的策略层 + 兜底的控制安全层）；以及物理动作缺乏低成本、完全一致的回滚。</p>
+<h3 id="关键洞察-1"><a href="#关键洞察-1" class="headerlink" title="关键洞察"></a>关键洞察</h3><ul>
+<li><strong>“ChatGPT 能不能控制机械臂”不是是非题</strong>：通用大模型可以理解任务、调用已封装的机器人技能、重新规划，但让它逐帧输出原始电机指令”既不经济，也不稳定，更不安全”——这个判断对当下 VLA 热潮是一个清醒的锚点</li>
+<li><strong>物理世界的四重约束框架</strong>：不完整观测、连续动作、时序压力、不可逆失败——可以用这四条检验任何具身系统设计</li>
+<li><strong>分层架构 &#x3D; “慢思考 + 快执行”</strong>：大模型秒级规划，策略模型做更快的感知-动作闭环，底层控制器稳定执行和兜底，这与 LLM Agent 社区熟悉的分层有漂亮的同构性</li>
+<li><strong>失败设计清单很实用</strong>：安全边界、失败检测、恢复策略、环境重置——具身系统不能只设计成功路径，这四项缺一不可</li>
+</ul>
+<h3 id="评价-1"><a href="#评价-1" class="headerlink" title="评价"></a>评价</h3><p><strong>优点</strong>：站在 AI Agent 工程师的视角反观具身智能，视角稀缺；”纸杯偏了 3 厘米为什么就抓空了”这类问题驱动写法让抽象约束变得可感；四层技术堆栈+四大挑战的框架清晰可用。</p>
+<p><strong>不足</strong>：本质上是一篇大纲式笔记（作者自己标注”少于 1 分钟阅读”），每个话题都只开了个头；算法层只罗列了名词（PPO&#x2F;BC&#x2F;diffusion policy&#x2F;PID），深度全靠另外几篇补；控制算法里出现”MCP”字样疑似笔误，未作解释。</p>
+<p><strong>适用场景</strong>：适合作为系列阅读的入口和 AI Agent 工程师的”转行须知”；想直接要答案的读者会觉得不够解渴。</p>
+<hr>
+<h2 id="3-机器人软件"><a href="#3-机器人软件" class="headerlink" title="3. 机器人软件"></a>3. 机器人软件</h2><p><strong>链接</strong>：<a target="_blank" rel="noopener" href="https://qiankunli.github.io/2026/10/02/software.html">https://qiankunli.github.io/2026/10/02/software.html</a><br><strong>发布时间</strong>：2026-10-02<br><strong>类型</strong>：技术概念笔记<br><strong>推荐指数</strong>：⭐⭐⭐ (3&#x2F;5) 参考 — 数字孪生的价值论证写得好，但 URDF 和 ROS 两节只是开了个头，更像长文的第一章</p>
+<h3 id="核心概要-2"><a href="#核心概要-2" class="headerlink" title="核心概要"></a>核心概要</h3><p>这篇聚焦机器人软件基础设施的三个概念。数字孪生部分用一张对比表讲清了它与传统仿真的区别（焦点从特定过程到完整实体，范围从局部离线到全局实时同步，目的从分析验证到预测监控和闭环交互），并论证了为什么仿真环境是机器人 AI 开发的刚需：物理成本（”撞坏无数个虚拟机器人，成本为零”）、时间成本（并行跑成百上千个实验）、迭代成本（改臂长参数几秒钟 vs 改物理样机数周）、安全。</p>
+<p>作者还点出了”领域随机化”（随机改变光照、纹理、物理参数来增强泛化）和”在仿真中大规模训练，在现实中少量微调”这一公认开发范式。URDF 一节将其定位为”机器人三维模型说明书”（XML 格式，描述运动学和动力学模型，Links 和 Joints 对应结构关系与电机），ROS 一节强调它并非经典意义上的操作系统，而是开源软件库和工具的集合。</p>
+<h3 id="关键洞察-2"><a href="#关键洞察-2" class="headerlink" title="关键洞察"></a>关键洞察</h3><ul>
+<li><strong>数字孪生对 AI 的意义在数据而非验证</strong>：仿真不只是省钱的测试平台，更是强化学习唯一的规模化训练场——实体机器人抓取 100 万次可能要数年且硬件报废，仿真几小时就能完成</li>
+<li><strong>软硬件并行开发的解耦价值</strong>：算法工程师在仿真中开发调试，无需等待物理样机制造，这等价于软件工程里前后端解耦带来的并行化收益</li>
+<li><strong>领域随机化是 sim-to-real 的关键杠杆</strong>：故意在仿真里”千奇百怪”，换来的恰恰是真实世界更强的泛化能力</li>
+</ul>
+<h3 id="评价-2"><a href="#评价-2" class="headerlink" title="评价"></a>评价</h3><p><strong>优点</strong>：数字孪生的价值论证完整且有层次，四类成本的分析（物理&#x2F;时间&#x2F;迭代&#x2F;安全）可以直接拿去做技术选型汇报；对比表清晰。</p>
+<p><strong>不足</strong>：篇幅太短，URDF 和 ROS 都只有两三百字的定义级介绍，连一个 URDF 示例都没有，标题承诺的内容实际只完成了一半；未涉及 Gazebo&#x2F;Isaac Sim 的具体对比。</p>
+<p><strong>适用场景</strong>：作为理解”为什么机器人开发必须先建仿真”的观念铺垫；想学 URDF&#x2F;ROS 本身的读者需要另找教程。</p>
+<hr>
+<h2 id="4-机器人硬件"><a href="#4-机器人硬件" class="headerlink" title="4. 机器人硬件"></a>4. 机器人硬件</h2><p><strong>链接</strong>：<a target="_blank" rel="noopener" href="https://qiankunli.github.io/2026/10/02/hardware.html">https://qiankunli.github.io/2026/10/02/hardware.html</a><br><strong>发布时间</strong>：2026-10-02<br><strong>类型</strong>：概念笔记<br><strong>推荐指数</strong>：⭐⭐ (2&#x2F;5) 一般 — 只有电机三种类型和一段传动常识，信息量撑不起独立成篇，建议并入学习具身智能的总纲</p>
+<h3 id="核心概要-3"><a href="#核心概要-3" class="headerlink" title="核心概要"></a>核心概要</h3><p>这篇是四篇中最单薄的，只有两个小节。”电机”一节按有刷电机容易损坏引出机器人常用的三类：舵机（电机+传动+传感+控制一体化的集成模块，执行”控制→执行→反馈”闭环，内部含减速齿轮组、电位器和微型 PID 控制器）、步进电机（运动离散化，转过角度&#x3D;步数×步进角，精度高但负载不大）、直流无刷电机。”传动”一节只有一段核心常识：电机天然”高转速、低扭矩”（小型直流电机可轻易上万转），而机器人手臂需要”低转速、高扭矩”才能举起重物，所以减速器是必备环节。</p>
+<h3 id="关键洞察-3"><a href="#关键洞察-3" class="headerlink" title="关键洞察"></a>关键洞察</h3><ul>
+<li><strong>电机选型的本质是三种集成度的权衡</strong>：舵机胜在集成闭环控制、步进胜在离散精度、无刷电机胜在动力，分别对应不同的关节需求</li>
+<li><strong>减速器不是配件而是刚需</strong>：”高转速低扭矩”到”低转速高扭矩”的转换决定了机器人从电机到手臂之间必须有传动层，这也解释了为什么谐波减速器是具身智能硬件链的核心部件</li>
+</ul>
+<h3 id="评价-3"><a href="#评价-3" class="headerlink" title="评价"></a>评价</h3><p><strong>优点</strong>：作为零基础的第一课，舵机&#x3D;电机+传动+传感+控制的拆解对软件背景读者足够友好；3 分钟的篇幅负担极小。</p>
+<p><strong>不足</strong>：内容确实太薄，传动一节只有一段话，没有编码器、力矩传感器、谐波&#x2F;行星减速器对比等关键内容；与《学习具身智能》里硬件层小节高度重叠，独立成篇的价值存疑。</p>
+<p><strong>适用场景</strong>：完全不碰硬件的读者可以直接跳过；准备动手玩 SO-100 之类桌面机械臂前扫一眼建立词汇表即可。</p>
+<hr>
+<h2 id="阅读建议"><a href="#阅读建议" class="headerlink" title="阅读建议"></a>阅读建议</h2><p>这四篇是同一个学习计划的切片，建议按这个顺序读：<strong>学习具身智能</strong>（总纲+agent 视角）→ <strong>机器人学习</strong>（算法主线，花 80% 时间）→ <strong>机器人软件</strong>（仿真与工具链观念）→ <strong>机器人硬件</strong>（可选）。如果你只有时间读一篇，读第一篇《机器人学习》——它单独就值回整个系列的票价。这个系列与作者此前持续输出的 <a target="_blank" rel="noopener" href="https://qiankunli.github.io/2026/09/02/rl_train.html">RL 训练笔记</a>（如《RL 训练》《RL 梯度估计》）构成了一条从纯算法 RL 到具身 RL 的完整轨迹，持续关注他的更新是追踪国内工程师视角具身智能学习的优质来源。</p>
+<hr>
+<p>原文链接：</p>
+<ul>
+<li><a target="_blank" rel="noopener" href="https://qiankunli.github.io/2026/10/03/2026-09-28-robot_learning.html">https://qiankunli.github.io/2026/10/03/2026-09-28-robot_learning.html</a></li>
+<li><a target="_blank" rel="noopener" href="https://qiankunli.github.io/2026/10/02/learn_robot.html">https://qiankunli.github.io/2026/10/02/learn_robot.html</a></li>
+<li><a target="_blank" rel="noopener" href="https://qiankunli.github.io/2026/10/02/software.html">https://qiankunli.github.io/2026/10/02/software.html</a></li>
+<li><a target="_blank" rel="noopener" href="https://qiankunli.github.io/2026/10/02/hardware.html">https://qiankunli.github.io/2026/10/02/hardware.html</a></li>
+</ul>
+</section>
+    
+
+    <footer id="post-meta" class="clearfix">
+        <a href="/about/">
+        <img class="avatar" src="/images/avatar.png">
+        <div>
+            <span class="dark">Api Intelligence Daily Life</span>
+            <span>知识库 &amp; 博客</span>
+        </div>
+        </a>
+        <section id="sharing">
+            <a title="Share to Twitter" class="twitter" target="_blank" rel="noopener" href="https://twitter.com/intent/tweet?text=https://arbow.github.io/2026/10/04/blog-digest-2026-10-04/ - 文摘：博客推荐 - 2026-10-04 @"><span class="icon-twitter">tweet</span></a>
+            <a title="Share to Facebook" class="facebook" href="#" onclick="
+                window.open(
+                  'https://www.facebook.com/sharer/sharer.php?u='+encodeURIComponent(location.href),
+                  'facebook-share-dialog',
+                  'width=626,height=436');
+                return false;"><span class="icon-facebook-sign">Share</span>
+            </a>
+        </section>
+    </footer>
+
+
+  <section id="comment">
+    <button class="btn" id="loadcmts" onclick="cmts.load();">加载评论</button>
+    <div id="gitment"></div>
+    <script src='/js/gitment.browser.js'></script>
+    <link rel="stylesheet" href=''>
+    <script>
+      var cmts={
+        load:function cmts(){
+          var gitment = new Gitment({
+          
+            id: "文摘：博客推荐 - 2026-10-04",
+          
+            owner: "",
+            repo: "",
+            oauth: {
+              client_id: "",
+              client_secret: "",
+            },
+          })
+          gitment.render('gitment');
+          var loadcmt = document.getElementById("loadcmts");
+          var imyourfather = loadcmt.parentNode;
+          imyourfather.removeChild(loadcmts)
+        }
+      }
+    </script>
+  </section>
+
+
+	<footer id="footer">
+	<div id="social">
+		<p class="small">©  Arbow| Powered by Hexo & 
+			<a target="_blank" rel="noopener" href="https://github.com/F0r3at/Lights"> Lights</a>
+		</p>
+	</div>
+</footer>
+
+</section>
+
+	<script src="//cdnjs.loli.net/ajax/libs/instantclick/3.0.1/instantclick.min.js" data-no-instant></script>
+	<script data-no-instant>
+		
+		InstantClick.init('mousedown');
+	</script>
+
+
+
