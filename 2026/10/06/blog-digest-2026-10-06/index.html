@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=0">
+
+  <meta name="description" content="个人知识库与技术笔记">
+
+
+<link rel="alternate" href="/atom.xml" title="Api Intelligence Daily Life" type="application/atom+xml">
+<meta name="theme-color" content="#a1d0f6">
+<title>文摘：博客推荐 - 2026-10-06 - Api Intelligence Daily Life</title>
+<!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+<link rel="shortcut icon" href="/favicon.png">
+
+<link rel="stylesheet" href="/css/style.css">
+
+<nav class="main-nav">
+	
+	    <a href="/">← 主页</a>
+	
+	
+	    <a href="/about/">About</a>
+	
+	    <a href="/archives/">Archives</a>
+	
+	<a class="cta" href="/atom.xml" data-no-instant>订阅</a>
+</nav>
+
+<section id="wrapper">
+    <article class="post">
+    <header>
+        
+            <h1>文摘：博客推荐 - 2026-10-06</h1>
+        
+        <h2 class="headline">Oct 06 2026
+        
+            
+            <a href="/categories/博客推荐/#博客推荐">博客推荐</a>
+        
+        </h2>
+    </header>
+</article>
+<section id="post-body"><p>今日新增 2 篇，均来自李乾坤的博客，主题延续其近期具身智能系列（机器人硬件 &#x2F; 软件 &#x2F; 学习），聚焦”机器人学习”方向。</p>
+<hr>
+<h2 id="1-Robot-Learning-学习笔记：从逆运动学到-Diffusion-Policy-与-VLA"><a href="#1-Robot-Learning-学习笔记：从逆运动学到-Diffusion-Policy-与-VLA" class="headerlink" title="1. Robot Learning 学习笔记：从逆运动学到 Diffusion Policy 与 VLA"></a>1. Robot Learning 学习笔记：从逆运动学到 Diffusion Policy 与 VLA</h2><p><strong>来源</strong>：<a target="_blank" rel="noopener" href="https://qiankunli.github.io/2026/10/05/2026-09-28-robot_learning.html">https://qiankunli.github.io/2026/10/05/2026-09-28-robot_learning.html</a><br><strong>日期</strong>：2026-10-05</p>
+<h3 id="核心概要"><a href="#核心概要" class="headerlink" title="核心概要"></a>核心概要</h3><p>这篇文章是作者对 <a target="_blank" rel="noopener" href="https://github.com/fracapuano/robot-learning-tutorial">fracapuano&#x2F;robot-learning-tutorial</a> 的学习笔记，系统梳理了”机器人学习”（Robot Learning）这一领域的技术脉络。文章的切入点选得很好：先用一个最简单的例子——SO-100 机械臂只保留肩、肘两个关节，简化成平面上的”两根杆、两个转轴”——展示传统机器人控制的完整链条：正&#x2F;逆运动学转换、带约束的位姿求解、轨迹规划、借助 Jacobian 的微分逆运动学，再到反馈控制纠偏。作者以此说明：即便是最简单的”把夹爪移过去”，背后也是一整套建模、求解、规划、纠偏的程序，而换机器人、换任务、增加柔性接触后，人工建模的负担会指数级增长。</p>
+<p>在此背景下，文章引出学习式方法的动机：绕过显式建模，直接从数据中学出”感知到动作”的映射。作者把两大主流路线讲得很清楚：强化学习（RL）适合把控制问题直接 cast 成 RL 问题，但存在安全性差、样本效率低、稠密奖励函数难设计三大硬伤；而行为克隆（BC）把控制变成监督学习——人类示范动作就是 Label，不需要 reward 也不需要 policy gradient。</p>
+<p>文章最有价值的部分是回答了”为什么普通监督学习还不够”：一是分布偏移（Distribution Shift）导致的复合误差——预测偏一点，下一帧输入就变了，模型面对没见过的场景继续犯错；二是多峰动作分布问题——“左绕”和”右绕”都正确，但平方误差回归器会输出两者的平均，恰好是”直直撞上去”。由此自然过渡到生成式 BC（输出动作分布而非单点数值）、Action Chunking（一次预测未来 H 步动作序列）、ACT（Action Chunking with Transformers）和 Diffusion Policy，最后收束到通用机器人策略（VLA）：如何把动作离散化成 token（RT-2、OpenVLA 路线），或用 VLM Backbone + Action Expert 在内部特征层交换信息（Flow Matching 生成动作块），以及本体信息（URDF）为何比”关节数 + 电机型号”复杂得多。</p>
+<h3 id="关键洞察"><a href="#关键洞察" class="headerlink" title="关键洞察"></a>关键洞察</h3><ul>
+<li><strong>单步预测误差小 ≠ 整段任务成功率高</strong>：BC 的复合误差来自闭环执行——动作偏了会改变下一次输入，这是开放环监督学习与闭环控制之间的根本矛盾，也是 Action Chunking、异步推理等技术存在的理由。</li>
+<li><strong>多峰分布是回归式 BC 的致命伤</strong>：面对”左绕&#x2F;右绕都合理”的场景，均方误差会输出”撞上去”这个荒谬的平均值；解决方案是把回归问题改为分布学习问题（高斯混合、扩散模型、离散化 token 均属此类）。</li>
+<li><strong>异步推理的本质是时间重叠而非提速</strong>：机器人客户端持续消费动作队列，策略服务器提前生成下一块动作，让推理时间与执行时间重叠——这也是”动作块推理可以放在算力更强的独立机器上”的架构基础。</li>
+<li><strong>具身数据的对齐难题比 LLM 严重</strong>：同样的动作向量在六轴机械臂和双臂机器人上含义完全不同，文本天然共享词表而机器人数据与”身体”绑定，这是 VLA 通用化必须先解决的问题（URDF 描述本体，通用策略变为 p(A|图像,指令,状态,本体信息)）。</li>
+<li><strong>RL 与 BC 的分工</strong>：RL 绕过显式模型但受限于安全性、样本效率和奖励设计；BC 通过专家示范锚定行为、免去 reward shaping——理解两者约束，才能理解为什么当前 industry 实践大量落在”模仿学习 + 微调”这条线上。</li>
+</ul>
+<h3 id="评价"><a href="#评价" class="headerlink" title="评价"></a>评价</h3><p><strong>优点</strong>：脉络完整且层层递进，从”为什么要学”到”学什么分布”到”怎么工程化部署”（异步推理）再到”如何通用化”（VLA），每一步都有明确的动机驱动；数学表述克制而准确（Jacobian、动作块公式、VLA 条件分布），是少见的既不失严谨又不堆砌公式的中文入门材料。</p>
+<p><strong>不足</strong>：本质是学习笔记，对文中提到的模型（ACT、Diffusion Policy、RT-2、π0 风格的 VLA 架构）只做概念性介绍，没有训练&#x2F;部署的实操细节；部分英文原文与中文翻译混排，个别段落衔接略显生硬。</p>
+<p><strong>适用场景</strong>：想进入具身智能&#x2F;机器人学习领域的工程师的最佳第一课；也适合做 LLM&#x2F;Agent 背景、想理解 VLA 与 LLM 输出空间本质差异的读者——文章用”离散 token vs 连续动作分布”这条线把两个领域串起来了。</p>
+<p><strong>推荐指数</strong>：⭐⭐⭐⭐ (4&#x2F;5) — 概念密度高、逻辑链完整，是理解”从控制到学习”范式转移的优秀中文入门材料；扣一星在于缺少实践层面内容，且作为二手笔记，深度不及原始 tutorial。</p>
+<hr>
+<h2 id="2-microduck-学习：一台双足小机器人"><a href="#2-microduck-学习：一台双足小机器人" class="headerlink" title="2. microduck 学习：一台双足小机器人"></a>2. microduck 学习：一台双足小机器人</h2><p><strong>来源</strong>：<a target="_blank" rel="noopener" href="https://qiankunli.github.io/2026/10/05/microduck.html">https://qiankunli.github.io/2026/10/05/microduck.html</a><br><strong>日期</strong>：2026-10-05</p>
+<h3 id="核心概要-1"><a href="#核心概要-1" class="headerlink" title="核心概要"></a>核心概要</h3><p>这是作者 microduck 双足小机器人的学习笔记开篇。Microduck 是一台装在双足身体里的小电脑，连接 15 个智能舵机、姿态传感器和摄像头。文章给出了清晰的硬件分解：左腿&#x2F;右腿各 5 个关节（hip_yaw、hip_roll、hip_pitch、knee、ankle），脖子和头 4 个关节（neck_pitch、head_pitch、head_yaw、head_roll），嘴部 1 个关节，并解释了 yaw（左右转向）&#x2F; pitch（前后俯仰）&#x2F; roll（侧倾）三个旋转自由度的直观含义。机载计算平台为 Radxa Zero 3W（Rockchip RK3566 SoC），承担运行程序、读取状态、执行策略推理和发送控制目标的工作。</p>
+<h3 id="关键洞察-1"><a href="#关键洞察-1" class="headerlink" title="关键洞察"></a>关键洞察</h3><ul>
+<li><strong>15 自由度的低成本双足平台</strong>：每条腿 5 关节覆盖转向&#x2F;侧摆&#x2F;前后摆&#x2F;屈膝&#x2F;脚部调整，加上头颈和嘴部，结构上是完整的双足 + 表情表达配置。</li>
+<li><strong>板载算力定位清晰</strong>：RK3566 级别的 SoC 只负责程序运行与策略推理调度，暗示策略训练必然在板外完成——这是上一篇文章中”异步推理、策略服务器独立部署”架构的具体落地。</li>
+<li><strong>“策略推理”与”策略训练”两节当前为空</strong>，推测原计划用图表展开的内容未在静态站中渲染出来，本篇更接近系列占位&#x2F;开篇。</li>
+</ul>
+<h3 id="评价-1"><a href="#评价-1" class="headerlink" title="评价"></a>评价</h3><p><strong>优点</strong>：关节表和自由度讲解直观，对想了解小型双足机器人硬件构成（尤其是舵机选型与关节命名约定）的读者有入门参考价值；与作者前几天的硬件&#x2F;软件&#x2F;学习系列形成互链。</p>
+<p><strong>不足</strong>：内容极薄（正文不足千字），标题下的核心章节”策略推理””策略训练”完全是空的，页面也标注”少于 1 分钟阅读”——更像是建站&#x2F;笔记框架先行、内容尚未填充的半成品。单独阅读几乎没有信息增量。</p>
+<p><strong>适用场景</strong>：跟踪作者具身智能系列的读者可以收藏，等策略推理&#x2F;训练章节补全后回头看；不作为独立文章推荐。</p>
+<p><strong>推荐指数</strong>：⭐ (2&#x2F;5) — 内容只有硬件骨架介绍，核心章节缺失，属于未完成的连载开篇；等后续章节充实后这一评分理应上调。</p>
+<hr>
+<p><em>本文为自动生成的博客推荐汇总。原文链接：</em></p>
+<ul>
+<li><em>李乾坤：<a target="_blank" rel="noopener" href="https://qiankunli.github.io/2026/10/05/2026-09-28-robot_learning.html">Robot Learning 学习笔记</a></em></li>
+<li><em>李乾坤：<a target="_blank" rel="noopener" href="https://qiankunli.github.io/2026/10/05/microduck.html">microduck 学习</a></em></li>
+</ul>
+</section>
+    
+
+    <footer id="post-meta" class="clearfix">
+        <a href="/about/">
+        <img class="avatar" src="/images/avatar.png">
+        <div>
+            <span class="dark">Api Intelligence Daily Life</span>
+            <span>知识库 &amp; 博客</span>
+        </div>
+        </a>
+        <section id="sharing">
+            <a title="Share to Twitter" class="twitter" target="_blank" rel="noopener" href="https://twitter.com/intent/tweet?text=https://arbow.github.io/2026/10/06/blog-digest-2026-10-06/ - 文摘：博客推荐 - 2026-10-06 @"><span class="icon-twitter">tweet</span></a>
+            <a title="Share to Facebook" class="facebook" href="#" onclick="
+                window.open(
+                  'https://www.facebook.com/sharer/sharer.php?u='+encodeURIComponent(location.href),
+                  'facebook-share-dialog',
+                  'width=626,height=436');
+                return false;"><span class="icon-facebook-sign">Share</span>
+            </a>
+        </section>
+    </footer>
+
+
+  <section id="comment">
+    <button class="btn" id="loadcmts" onclick="cmts.load();">加载评论</button>
+    <div id="gitment"></div>
+    <script src='/js/gitment.browser.js'></script>
+    <link rel="stylesheet" href=''>
+    <script>
+      var cmts={
+        load:function cmts(){
+          var gitment = new Gitment({
+          
+            id: "文摘：博客推荐 - 2026-10-06",
+          
+            owner: "",
+            repo: "",
+            oauth: {
+              client_id: "",
+              client_secret: "",
+            },
+          })
+          gitment.render('gitment');
+          var loadcmt = document.getElementById("loadcmts");
+          var imyourfather = loadcmt.parentNode;
+          imyourfather.removeChild(loadcmts)
+        }
+      }
+    </script>
+  </section>
+
+
+	<footer id="footer">
+	<div id="social">
+		<p class="small">©  Arbow| Powered by Hexo & 
+			<a target="_blank" rel="noopener" href="https://github.com/F0r3at/Lights"> Lights</a>
+		</p>
+	</div>
+</footer>
+
+</section>
+
+	<script src="//cdnjs.loli.net/ajax/libs/instantclick/3.0.1/instantclick.min.js" data-no-instant></script>
+	<script data-no-instant>
+		
+		InstantClick.init('mousedown');
+	</script>
+
+
+
