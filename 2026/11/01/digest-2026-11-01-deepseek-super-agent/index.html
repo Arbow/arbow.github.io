@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=0">
+
+  <meta name="description" content="个人知识库与技术笔记">
+
+
+<link rel="alternate" href="/atom.xml" title="Api Intelligence Daily Life" type="application/atom+xml">
+<meta name="theme-color" content="#a1d0f6">
+<title>文摘：DeepSeek Super-agent 设计探索：迈向更自主的 Agent 系统 - Api Intelligence Daily Life</title>
+<!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+<link rel="shortcut icon" href="/favicon.png">
+
+<link rel="stylesheet" href="/css/style.css">
+
+<nav class="main-nav">
+	
+	    <a href="/">← 主页</a>
+	
+	
+	    <a href="/about/">About</a>
+	
+	    <a href="/archives/">Archives</a>
+	
+	<a class="cta" href="/atom.xml" data-no-instant>订阅</a>
+</nav>
+
+<section id="wrapper">
+    <article class="post">
+    <header>
+        
+            <h1>文摘：DeepSeek Super-agent 设计探索：迈向更自主的 Agent 系统</h1>
+        
+        <h2 class="headline">Nov 01 2026
+        
+            
+            <a href="/categories/文摘/#文摘">文摘</a>
+        
+        </h2>
+    </header>
+</article>
+<section id="post-body"><p>DeepSeek Harness 团队在 10 月 31 日发了一篇长文《Super-agent 设计探索：迈向更自主的 Agent 系统》，同时开源了原型 <a target="_blank" rel="noopener" href="https://github.com/deepseek-ai/dsh-superagent-prototype">dsh-superagent-prototype</a>。这篇文摘基于原文全文（来源见文末）和仓库文档写成，不是对二手转述的转述。</p>
+<h2 id="整体评论"><a href="#整体评论" class="headerlink" title="整体评论"></a>整体评论</h2><p><strong>1. 论点很朴素，但抓得准：瓶颈已经从模型挪到了人。</strong> 文章的出发点是一个观察：一个人同时只能盯 3 到 5 个活跃会话，所以单任务的上限看模型，多任务的上限看人的注意力。今天不少人同时开着好几个 Agent 会话分头干活，天花板确实常常不是模型，而是自己在会话之间来回切换、记住谁做到哪了。文章把”Session 是用户的认知负担”说成”从底层 LLM API 延续下来的设计惯性”，我觉得这是全文最有洞察的一句话。</p>
+<p><strong>2. 它自己就承认没有新理论。</strong> 结语写得很坦率：只是把计算机系统里的老办法搬了过来。对照一下确实一一对应：Router 是序点和协调点，订阅直通是 Fast Path &#x2F; Slow Path，Inline &amp; Spill 是缓存与局部性，投机执行就是投机执行，存算分离、Control Loop 式的 Watchdog 也都是分布式系统的常规操作。Anthropic 的”脑手分离”思路相近，原文特意说明了差别：Anthropic 讲的是托管沙箱，DeepSeek 要接的是间歇在线、带着未提交修改和本地凭据的个人机器。所以价值不在发明，而在把这些零件拼成一套完整的系统，给出消融数据，再开源一个能读的原型。</p>
+<p><strong>3. 最值得记住的数据点：不是”并行更快”，而是”模型不会自己决定分工”。</strong> 单 Session 加 Subagent 工具的对照组，在中性提示下 5 次运行一次都没有委派，p95 达 29.5 分钟。这个提示词（”Use a subagent for a piece of work when appropriate”）基本就是 Claude Code 这类 harness 里 subagent 的典型用法：作为一个工具，由主会话自己判断要不要用。结论是，拆不拆应该由架构规定，而不是靠模型临场判断。</p>
+<p>不过读原文里的表格会发现，结论没有标题看上去那么极端。第四个对照组”提示优先委派”（明确要求主会话把活交给 subagent）p50 是 13.8 分钟，已经接近 Super-agent 的 12.4，差距主要在长尾：p95 29.0 对 15.7，那一次它觉得活”很小”就自己干了。换句话说，核心是”主会话不亲自执行”这条角色约束，Router&#x2F;Worker 是把这条约束从提示词变成了结构。原文 2.1 节自己也说，用提示词约束一个 Agent Team 的主会话只管对外和分派，也可以看作这种双层架构。</p>
+<p><strong>4. 代价是 token，而且要看跟谁比。</strong> Super-agent 单次实验读缓存 token 是 2323 万；中性提示的单 Session 是 605 万，约 3.8 倍；提示优先委派的是 1082 万，约 2.1 倍。去掉直通后涨到 3177 万（约 +37%）而完成时间几乎不变，说明直通省的是纯开销。另外读缓存 token 单价通常低于新输入，所以 token 倍数不等于账单倍数，但文中没有给金额，这点没法下结论。更关键的是实验只有约 20 个工作请求，团队群聊里有人持续提需求、任务相互穿插，这笔钱花得值；个人日常任务稀疏的话，一个单会话加几个 subagent 可能就够了，常驻 Router 加每任务一个 Worker 未必划算。</p>
+<p><strong>5. 实验要打折扣来看，原文也这么说。</strong> 编码工作被一个”只消耗时间”的工具替代，所以测的只有调度与协作能力，不是任务做得好不好；消息间隔和工作时长按 1&#x2F;4 缩放，模型调用耗时是真实的；每组只跑 5 次。绝对的分钟数不能当真实世界的数字，方向性的结论更可信。</p>
+<p><strong>6. 原型和文章不是一回事，别当成成品。</strong> 仓库 README 明说：它不等同于文章描述的实现，文中一些设计只是未来方向，也不是 DeepSeek 的正式产品。从文档看，原型是”服务一个 GitHub 仓库的主动式 coding agent”，监听 GitHub，可选飞书；概念也换了名字：Trigger 进 Eval 判断，通过后建 Ticket，每个 Ticket 起一个 Executor Session 和独立目录，主 Session 用专门的 router 预设。几个细节挺有意思：主动工作默认处于 <code>observe</code> 模式，只记录”本来会接受”，看过记录再切 <code>auto</code>，这正是文章”低打扰、先收敛再放权”的做法；长命令 5 秒后转后台，让 worker 能在下一步收到新消息，对应文中的异步思路。反过来，我在仓库文档和文件清单里没有找到 Watchdog 和端侧 daemon 的对应实现（没有逐行读完源码，不排除有遗漏），所以存算分离、Watchdog 目前主要还是文章里的设计。</p>
+<p><strong>7. 安全才是真正的开放问题。</strong> 事件驱动意味着要吃进不可信输入，而云端 Agent Loop 又连着装有私有代码和凭据的本机，原文 8.4 节自己说一旦云端被攻破或遭提示词注入，所连设备都有风险。仓库文档里也写了 Executor 以操作者的系统用户身份无需审批地执行命令。这套东西想走出”小而可信的范围”，权限与凭据隔离还有一大段路要走。</p>
+<p><strong>总的看法：</strong> 这是一篇工程味很足的文章，诚实地标出了简化和局限。对个人用户，它最有用的启发不是照搬架构，而是三条便宜的做法：让主会话别亲自干重活；已知归属的后续消息直接送给对应任务；常驻的会话要有人（或 Watchdog）定期查它是不是真有进展。</p>
+<h2 id="原文摘选"><a href="#原文摘选" class="headerlink" title="原文摘选"></a>原文摘选</h2><h3 id="问题：注意力"><a href="#问题：注意力" class="headerlink" title="问题：注意力"></a>问题：注意力</h3><blockquote>
+<p>据我们观察，一个人通常只能同时跟进 3 到 5 个活跃 Session。在这种设计下，单任务的上限取决于模型能力，多任务的上限取决于人的注意力。</p>
+</blockquote>
+<blockquote>
+<p>从这个角度看，让用户手动管理 Session，在很大程度上是从底层 LLM API 延续下来的设计惯性；Session 应当是系统的实现细节，而不应是用户的认知负担。</p>
+</blockquote>
+<h3 id="双层架构"><a href="#双层架构" class="headerlink" title="双层架构"></a>双层架构</h3><blockquote>
+<p>Router 层在设计上不直接执行具体任务，只负责人类交互与任务分派，甚至可以不配备 Bash 工具。</p>
+</blockquote>
+<blockquote>
+<p>从我们的实践来看，Router 层的任务常常没有想象中复杂，使用较轻量的模型往往就能兼顾速度与效果。</p>
+</blockquote>
+<h3 id="实验"><a href="#实验" class="headerlink" title="实验"></a>实验</h3><blockquote>
+<p>在中性提示下，模型在 5 次运行中一次都没有调用 Subagent，所有工作都在主 Session 中进行并不断被新消息打断，p95 达到 29.5 分钟；</p>
+</blockquote>
+<blockquote>
+<p>相比于在单 Session 中依赖提示词工程和模型临场判断分不分工，双层架构通过让 Router 不直接执行具体工作、Worker 仅接收所订阅 Thread 的消息，在系统层面上缓解了这一问题。</p>
+</blockquote>
+<blockquote>
+<p>由于实验基于合成负载与简化环境，部分设置还可以更加严谨，以下结果仅作为初步参考。</p>
+</blockquote>
+<h3 id="存算分离与-Anthropic-的”脑手分离”"><a href="#存算分离与-Anthropic-的”脑手分离”" class="headerlink" title="存算分离与 Anthropic 的”脑手分离”"></a>存算分离与 Anthropic 的”脑手分离”</h3><blockquote>
+<p>既然难以复制和同步的是环境本身，就不必让执行环境跟着 Agent Loop 上云。</p>
+</blockquote>
+<blockquote>
+<p>两者的区别在于场景。那篇文章描述的是托管服务，主要讨论按需创建的沙箱和客户 VPC 内的资源；这里首先要接入的是用户日常使用、可能间歇在线的个人机器，上面有未提交的修改和本地凭据。</p>
+</blockquote>
+<h3 id="安全与结语"><a href="#安全与结语" class="headerlink" title="安全与结语"></a>安全与结语</h3><blockquote>
+<p>如果没有办法很好的解决安全与隐私问题，那么 Super-agent 只有在一个很小且可信的范围才能工作。</p>
+</blockquote>
+<blockquote>
+<p>我们并没有提出全新的理论，而是将计算机系统中经典的工程思想应用到了 Agent 系统的构建中。</p>
+</blockquote>
+<h2 id="原文链接"><a href="#原文链接" class="headerlink" title="原文链接"></a>原文链接</h2><p>原文链接：<a target="_blank" rel="noopener" href="https://www.chaincatcher.com/article/2300676">https://www.chaincatcher.com/article/2300676</a> （DeepSeek Harness 团队《Super-agent 设计探索：迈向更自主的 Agent 系统》全文转载；原文发布于 DeepSeek Harness 团队官方微信公众号）</p>
+<p>原型仓库：<a target="_blank" rel="noopener" href="https://github.com/deepseek-ai/dsh-superagent-prototype">https://github.com/deepseek-ai/dsh-superagent-prototype</a></p>
+<p>二手解读（本文最初的线索）：PaperAgent 公众号 <a target="_blank" rel="noopener" href="https://mp.weixin.qq.com/s/TH1gwvBJpgUFyjl1z7h59w">https://mp.weixin.qq.com/s/TH1gwvBJpgUFyjl1z7h59w</a></p>
+</section>
+    
+
+    <footer id="post-meta" class="clearfix">
+        <a href="/about/">
+        <img class="avatar" src="/images/avatar.png">
+        <div>
+            <span class="dark">Api Intelligence Daily Life</span>
+            <span>知识库 &amp; 博客</span>
+        </div>
+        </a>
+        <section id="sharing">
+            <a title="Share to Twitter" class="twitter" target="_blank" rel="noopener" href="https://twitter.com/intent/tweet?text=https://arbow.github.io/2026/11/01/digest-2026-11-01-deepseek-super-agent/ - 文摘：DeepSeek Super-agent 设计探索：迈向更自主的 Agent 系统 @"><span class="icon-twitter">tweet</span></a>
+            <a title="Share to Facebook" class="facebook" href="#" onclick="
+                window.open(
+                  'https://www.facebook.com/sharer/sharer.php?u='+encodeURIComponent(location.href),
+                  'facebook-share-dialog',
+                  'width=626,height=436');
+                return false;"><span class="icon-facebook-sign">Share</span>
+            </a>
+        </section>
+    </footer>
+
+
+  <section id="comment">
+    <button class="btn" id="loadcmts" onclick="cmts.load();">加载评论</button>
+    <div id="gitment"></div>
+    <script src='/js/gitment.browser.js'></script>
+    <link rel="stylesheet" href=''>
+    <script>
+      var cmts={
+        load:function cmts(){
+          var gitment = new Gitment({
+          
+            id: "文摘：DeepSeek Super-agent 设计探索：迈向更自主的 Agent 系统",
+          
+            owner: "",
+            repo: "",
+            oauth: {
+              client_id: "",
+              client_secret: "",
+            },
+          })
+          gitment.render('gitment');
+          var loadcmt = document.getElementById("loadcmts");
+          var imyourfather = loadcmt.parentNode;
+          imyourfather.removeChild(loadcmts)
+        }
+      }
+    </script>
+  </section>
+
+
+	<footer id="footer">
+	<div id="social">
+		<p class="small">©  Arbow| Powered by Hexo & 
+			<a target="_blank" rel="noopener" href="https://github.com/F0r3at/Lights"> Lights</a>
+		</p>
+	</div>
+</footer>
+
+</section>
+
+	<script src="//cdnjs.loli.net/ajax/libs/instantclick/3.0.1/instantclick.min.js" data-no-instant></script>
+	<script data-no-instant>
+		
+		InstantClick.init('mousedown');
+	</script>
+
+
+
