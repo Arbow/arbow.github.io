@@ -1,0 +1,24 @@
+# Non-site files: never publish agent/workspace/tooling files
+.openclaw/
+AGENTS.md
+HEARTBEAT.md
+IDENTITY.md
+SOUL.md
+TOOLS.md
+USER.md
+memory/
+config/
+state/
+temp/
+scripts/
+blog-drafts/
+node_modules/
+package.json
+package-lock.json
+*.py
+check-blog.js
+fetch-blog-articles.js
+blog-fetch-result.json
+truly-new-articles.json
+daily-check-log-*.md
+.env
