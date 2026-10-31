@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=0">
+
+  <meta name="description" content="个人知识库与技术笔记">
+
+
+<link rel="alternate" href="/atom.xml" title="Api Intelligence Daily Life" type="application/atom+xml">
+<meta name="theme-color" content="#a1d0f6">
+<title>文摘：博客推荐 - 2026-10-31 - Api Intelligence Daily Life</title>
+<!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+<link rel="shortcut icon" href="/favicon.png">
+
+<link rel="stylesheet" href="/css/style.css">
+
+<nav class="main-nav">
+	
+	    <a href="/">← 主页</a>
+	
+	
+	    <a href="/about/">About</a>
+	
+	    <a href="/archives/">Archives</a>
+	
+	<a class="cta" href="/atom.xml" data-no-instant>订阅</a>
+</nav>
+
+<section id="wrapper">
+    <article class="post">
+    <header>
+        
+            <h1>文摘：博客推荐 - 2026-10-31</h1>
+        
+        <h2 class="headline">Oct 31 2026
+        
+            
+            <a href="/categories/博客推荐/#博客推荐">博客推荐</a>
+        
+        </h2>
+    </header>
+</article>
+<section id="post-body"><p>这是一次”补账”式的汇总：博客推荐任务停了近一个月，本篇一次性收录 10 月 6 日至 29 日之间新增的 13 篇文章，来自 Armin Ronacher、李乾坤、卢向东、云风、Anthropic 工程博客、宝玉和 OpenAI 工程博客。几条主线很清晰：<strong>Agent 时代的基础设施正在被重写</strong>（Anthropic 的 Scion、OpenAI 的 Habitat 与广告栈、Codemode）、<strong>具身智能的入门梳理</strong>（李乾坤四篇）、<strong>企业知识工程的落地反思</strong>（卢向东），以及两篇难得的”闲笔”（云风谈游戏与键盘史）。评分上刻意拉开了差距：2 篇 5 星、5 篇 4 星、5 篇 3 星、1 篇 2 星。</p>
+<hr>
+<h2 id="1-What-is-Codemode"><a href="#1-What-is-Codemode" class="headerlink" title="1. What is Codemode"></a>1. What is Codemode</h2><p><strong>来源</strong>：<a target="_blank" rel="noopener" href="https://lucumr.pocoo.org/2026/10/6/codemode/">https://lucumr.pocoo.org/2026/10/6/codemode/</a><br><strong>日期</strong>：2026-10-06</p>
+<h3 id="核心概要"><a href="#核心概要" class="headerlink" title="核心概要"></a>核心概要</h3><p>Armin Ronacher 在这篇文章里为 Pi 1.0 新增的 Codemode 做了一次”补充说明”：去年他主张少加载自定义工具&#x2F;MCP、多写脚本（”Code Is All You Need”），如今 Pi 通过 Codemode 支持了 MCP，看上去像是自我反转，其实是同一条思路的延伸——让模型用代码去编排调用。</p>
+<p>文章的核心框架是”大脑 vs 双手”。Harness（大脑）是受信任的、运行在一台机器上；工具真正执行的环境（双手）可能是另一个文件系统、另一个信任级别。bash 只能组合”能跑起来的程序”，而 <code>read</code> 读图、子 Agent 编排这类”模型原生工具”必须由 Harness 提供。Codemode 就是在 Harness 一侧、一个独立沙箱里（Pi 用的是 WASM 里的 QuickJS：无网络、无文件系统、无定时器、内存受限）用 JavaScript 去组合这些工具调用，大输出不必塞回上下文，还能并发、能把状态 <code>store()</code> 进会话记录。</p>
+<p>作者给了几个真实会话里的例子：调用图像模型生成图片、用分类器模型对 100 个 GitHub issue 做情绪分析、用分类器驱动一个坦克游戏的 30 步调试循环，以及批量调用 Sentry MCP。最后坦率承认：目前 MCP 服务端大多没有为 Codemode 设计，”Codemode 套 Codemode”（Cloudflare 的做法）带来双重转义和小模型易混淆的问题。</p>
+<h3 id="关键洞察"><a href="#关键洞察" class="headerlink" title="关键洞察"></a>关键洞察</h3><ul>
+<li><strong>Codemode 不是 MCP 的附属品，而是 Harness 侧的编排层</strong>：它能调用模型 API（生图、分类）这类放进常规工具里只会浪费上下文的能力，这比”更方便地调 MCP”价值大得多。</li>
+<li><strong>“先探 5-10 条，再写脚本批处理”是 Agent 自发形成的好模式</strong>：这既节省 token，也是对”返回结构不稳定”类问题的天然防御。</li>
+<li><strong>MCP 服务端要想适配，有四件事要做</strong>：返回结构化 JSON（<code>outputSchema</code>）、结果一致（不要按条数动态省 token）、支持大二进制、提供可跨服务器扇出的工具搜索——这是写 MCP server 的人可以直接照抄的清单。</li>
+<li><strong>沙箱的”能力裁剪”是设计重点</strong>：无网络、无文件系统、无定时器，唯一出口是”调用更多工具”，权限边界因此非常清楚。</li>
+<li><strong>持久性仍是开放问题</strong>：作者提到可能需要借鉴 durable workflow 引擎，或改用确定性更强的 Starlark 而非 JavaScript。</li>
+</ul>
+<h3 id="评价"><a href="#评价" class="headerlink" title="评价"></a>评价</h3><p><strong>优点</strong>：把”为什么需要 Codemode”放在 Harness&#x2F;执行环境分离的架构视角下讲，而不是停留在”省 token”层面；所有代码示例都来自真实会话，可信度高；对 MCP 现状的批评具体、可操作。</p>
+<p><strong>不足</strong>：Pi 以外的读者难以复现（文中大量 API 是 Pi 专属，如 <code>models.classify</code>、<code>store()</code>）；缺少对比数据（相比直接 tool call 究竟省多少 token、成功率差多少）；对安全模型（Codemode 脚本被提示注入后会怎样）着墨很少。</p>
+<p><strong>适用场景</strong>：正在设计 Agent Harness、MCP 客户端或服务端的工程师；对”CLI 派 vs MCP 派”之争感到困惑、想看一个折中论证的读者。</p>
+<p><strong>推荐指数</strong>：⭐⭐⭐⭐ (4&#x2F;5) — 论证有框架、有实例、有清单，对 Harness 设计者启发明显；扣一星是因为强依赖 Pi 的具体实现，缺少量化对比，通用性打了折扣。</p>
+<hr>
+<h2 id="2-用户语言如何转换为机器人动作"><a href="#2-用户语言如何转换为机器人动作" class="headerlink" title="2. 用户语言如何转换为机器人动作"></a>2. 用户语言如何转换为机器人动作</h2><p><strong>来源</strong>：<a target="_blank" rel="noopener" href="https://qiankunli.github.io/2026/10/06/thought_to_action.html">https://qiankunli.github.io/2026/10/06/thought_to_action.html</a><br><strong>日期</strong>：2026-10-06</p>
+<h3 id="核心概要-1"><a href="#核心概要-1" class="headerlink" title="核心概要"></a>核心概要</h3><p>这是李乾坤 Microduck 学习系列里的”总纲”，试图回答：自然语言指令怎样一路变成关节动作？作者先抛出难点——机器人”大脑”要同时具备感知（要快）、世界建模（要准）、控制（要稳），三者对架构的要求互相打架；历史记忆多与少、学习单位（chunk&#x2F;事件&#x2F;关键帧）与计算预算之间也存在根本权衡。</p>
+<p>随后列出三条路线：语言 → LLM → 结构化 Command&#x2F;Skill → 运动 Policy 的分层路线；语言 → LLM → 自然语言子任务 → 运动 Policy 的分层路线；以及 Flat VLA（语言 + 图像&#x2F;身体状态直接到动作）。文章最实在的部分是一张”不同 Microduck 差异怎么屏蔽”的表：舵机品牌&#x2F;协议靠 SDK 与 adapter，零点&#x2F;单位&#x2F;关节顺序靠标定，延迟&#x2F;摩擦靠参数辨识与 Domain Randomization，腿长重心变了就要更新身体模型并重训。</p>
+<p>后半讲 VLA，以 SmolVLA（约 450M，SmolVLM 骨干 + 约 100M 的 Action Expert，用 Flow Matching 训练）为例：先用 3×2 的 Action Chunk 小例子说明输出形态，再对比”动作离散成 256 个 bin、H×D 个 token 自回归生成”与”直接生成连续动作矩阵”；介绍 Action Expert 里 Cross-Attention（对齐感知与指令）加因果 Self-Attention（保证时间平滑）的结构，以及同步与异步推理——异步靠”队列低于阈值（如 70%）就提前请求新 chunk、控制与推理线程解耦、重叠动作做 chunk fusion”来消除执行停顿。结尾讨论长期问题：人形机器人与 Microduck 能否共用，结论是框架（数据格式、训练流程、推理服务）可共用，部分 backbone 参数可共用，但动作语义和动力学差异无法靠补齐维度解决。</p>
+<h3 id="关键洞察-1"><a href="#关键洞察-1" class="headerlink" title="关键洞察"></a>关键洞察</h3><ul>
+<li><strong>机器人的”统一”比 NLP 难得多</strong>：NLP 任务共享文本输入输出，而机器人的动作接口、身体参数各不相同，embodiment dependence 是跨身体迁移的真正障碍。</li>
+<li><strong>动作离散化的代价是 H×D 个自回归 token</strong>：逐关节逐时刻串行解码，这正是 Flow Matching 之类连续生成方案被偏爱的工程理由。</li>
+<li><strong>Cross-Attention 管”听话”，因果 Self-Attention 管”平滑”</strong>：把动作 token 对感知特征和对自身历史的注意力分开，是 Action Expert 能输出稳定动作的结构原因。</li>
+<li><strong>异步推理的价值是让推理与执行时间重叠</strong>：不是让模型变快，而是让机器人”不停下来等”，chunk fusion 则负责缝合接缝处的抖动。</li>
+<li><strong>差异屏蔽表可直接当适配清单</strong>：做新机型适配时，按”协议 → 标定 → 动力学 → 身体模型”四层逐一排查。</li>
+</ul>
+<h3 id="评价-1"><a href="#评价-1" class="headerlink" title="评价"></a>评价</h3><p><strong>优点</strong>：一篇文章把路线、差异、VLA 结构、动作生成方式和异步推理串了起来，结构清楚；差异屏蔽表和 3×2 的例子很接地气，对 LLM 背景的读者是不错的桥梁。</p>
+<p><strong>不足</strong>：不少段落是 SmolVLA 官方博客英文原文的直接摘录，作者自己的判断偏少；三条路线只列出名字，没有展开各自的取舍或实测对比；缺少 Microduck 上的真实数据。</p>
+<p><strong>适用场景</strong>：想快速建立”语言到动作”概念地图的 LLM&#x2F;Agent 背景工程师，适合作为系列后几篇的总览。</p>
+<p><strong>推荐指数</strong>：⭐⭐⭐ (3&#x2F;5) — 覆盖面广、结构清楚，但偏资料整理、原创判断与实测不足；先读它建立地图，再去读系列里讲得更透的第 3、6 篇。</p>
+<hr>
+<h2 id="3-机器人是如何动起来的：从舵机转动到-Action-Chunk"><a href="#3-机器人是如何动起来的：从舵机转动到-Action-Chunk" class="headerlink" title="3. 机器人是如何动起来的：从舵机转动到 Action Chunk"></a>3. 机器人是如何动起来的：从舵机转动到 Action Chunk</h2><p><strong>来源</strong>：<a target="_blank" rel="noopener" href="https://qiankunli.github.io/2026/10/07/motion.html">https://qiankunli.github.io/2026/10/07/motion.html</a><br><strong>日期</strong>：2026-10-07</p>
+<h3 id="核心概要-2"><a href="#核心概要-2" class="headerlink" title="核心概要"></a>核心概要</h3><p>这篇从最底层讲起：Linux 下串口也是文件（<code>/dev/ttyUSB0</code>），用户态协议库（如 Dynamixel SDK + pyserial）在其上实现舵机寻址与寄存器读写。作者用”连接 Redis”做类比，列了一张”应用 → 用户态库 → OS 接口 → 内核驱动 → 硬件”的分层对照表，覆盖串口舵机、I²C 的 IMU 和 USB 摄像头，并给出让 1 号舵机多转 10° 的完整 Python 示例。</p>
+<p>往上一层是 robotd：Microduck 的长期运行身体控制进程，监听 Unix socket，接收 JSON-RPC 指令，内部以目标 50 Hz 的控制循环读取反馈、取指令、计算关节目标、经 Safety 检查后下发。作者用 mysqld 与 Linux 文件系统的关系来类比 robotd 与串口驱动的关系，并与 ROS 2 的 Node&#x2F;Topic&#x2F;Service 做了对照表。</p>
+<p>最后落到 Action Chunk：一段有时间含义的目标序列。为什么一次预测多段动作？为了让腿、身体、头配合，降低推理延迟（20 ms 一拍而模型要 100 ms），并利用示范数据的连续片段；但预测越远越容易过时，所以常用”预测一长段、只执行前几步”的滚动时域执行。</p>
+<h3 id="关键洞察-2"><a href="#关键洞察-2" class="headerlink" title="关键洞察"></a>关键洞察</h3><ul>
+<li><strong>“后端工程类比”是这篇最大的亮点</strong>：robotd ≈ mysqld，JSON-RPC over Unix socket ≈ 数据库协议，后端工程师可以零门槛理解机器人软件栈。</li>
+<li><strong>控制循环是”周期任务”而非”请求响应”</strong>：即使没有新指令，也要继续读反馈、维持姿态、处理异常，这与大多数 Web 服务的心智模型不同。</li>
+<li><strong>50 Hz 只是调度目标，不是硬实时保证</strong>：作者特意强调普通 Linux 不是硬实时系统，这对评估安全边界很关键。</li>
+<li><strong>Action Chunk 的核心权衡是”预测长度 vs 时效性”</strong>：滚动时域执行是业界常用的折中。</li>
+<li><strong>ROS 2 对照表可以直接拿来做技术选型讨论</strong>：何时用多 daemon + systemd，何时上 ROS 2 launch。</li>
+</ul>
+<h3 id="评价-2"><a href="#评价-2" class="headerlink" title="评价"></a>评价</h3><p><strong>优点</strong>：层次分明、类比贴切、代码可读，既讲了”怎么通信”也讲了”软件怎么组织”，是系列里工程味最足的一篇之一。</p>
+<p><strong>不足</strong>：robotd 的内部接口文中自己标注为”示意”，读者无法照着直接跑通；Safety 模块只在示例代码的注释里出现、没有展开设计；没有任何实测数据（控制抖动、延迟分布等）。</p>
+<p><strong>适用场景</strong>：有后端&#x2F;系统背景、想理解机器人软件栈全貌的工程师；准备给自家机器人写控制 daemon 的人。</p>
+<p><strong>推荐指数</strong>：⭐⭐⭐ (3&#x2F;5) — 讲解清晰、类比出色，但停留在概念和示意代码层面，缺少实测与可复现细节；作为入门参考很合适，作为工程指南还不够。</p>
+<hr>
+<h2 id="4-走通-Microduck-的-VLA-训练流程"><a href="#4-走通-Microduck-的-VLA-训练流程" class="headerlink" title="4. 走通 Microduck 的 VLA 训练流程"></a>4. 走通 Microduck 的 VLA 训练流程</h2><p><strong>来源</strong>：<a target="_blank" rel="noopener" href="https://qiankunli.github.io/2026/10/07/vla_train.html">https://qiankunli.github.io/2026/10/07/vla_train.html</a><br><strong>日期</strong>：2026-10-07</p>
+<h3 id="核心概要-3"><a href="#核心概要-3" class="headerlink" title="核心概要"></a>核心概要</h3><p>文章标题承诺”走通训练流程”，实际页面内容是一份提纲加前半部分的方案说明：目标是验证”通过训练数据扩展机器人能力”，用 MuJoCo + Microduck 模型搭仿真闭环（语言指令 + 观测 → VLA → Action Chunk → 仿真执行 → 新观测），选择 <a target="_blank" rel="noopener" href="https://github.com/huggingface/lerobot">LeRobot</a> + SmolVLA 作为训练方案，并明确训练属于模仿学习中的行为克隆，Flow Matching 是学习动作序列分布的具体目标。</p>
+<p>数据部分说明了示范数据按 Episode 组织，每个时刻记录 task、observation、action 三类信息，并强调”当前头部角度 0.08 rad 属于 observation，专家要求的 0.12 rad 才是 action”这个容易混淆的区别；随后介绍了 LeRobotDataset 的三部分结构（表格数据、MP4 视频、JSON 元数据）。</p>
+<p>但”训练模型””评估效果与改进””踩坑记录”三个小节在我读到的页面中只有标题，没有正文。也就是说，真正”走通”的部分——命令、超参、loss 曲线、评测结果——目前并不在这篇里。</p>
+<h3 id="关键洞察-3"><a href="#关键洞察-3" class="headerlink" title="关键洞察"></a>关键洞察</h3><ul>
+<li><strong>observation 与 action 必须严格分开</strong>：把”当前状态”误当”目标动作”是 BC 数据准备里最常见的错误之一，文中的 0.08&#x2F;0.12 例子很值得收藏。</li>
+<li><strong>用”原有运动模型”生成示范，是低成本启动 BC 的好办法</strong>：仿真里已有控制器时，不必先搞遥操作。</li>
+<li><strong>LeRobotDataset 把视频压成 MP4 并按相机分组</strong>：这是控制存储体积和文件系统压力的关键设计。</li>
+<li><strong>评估目标定得对</strong>：不只看”能否执行”，还看不同初始状态、等价语言表达下的稳定性。</li>
+</ul>
+<h3 id="评价-3"><a href="#评价-3" class="headerlink" title="评价"></a>评价</h3><p><strong>优点</strong>：任务定义、数据格式部分写得干净；评估目标的设定有工程意识。</p>
+<p><strong>不足</strong>：标题与内容严重不符，训练、评估、踩坑三个核心部分为空；没有任何命令、配置或结果可复现；”走通”二字目前名不副实。</p>
+<p><strong>适用场景</strong>：想了解 LeRobot 数据集结构的读者可以读前半；真想动手训练的话，建议等作者补完后再读，或直接看 LeRobot 官方文档。</p>
+<p><strong>推荐指数</strong>：⭐⭐ (2&#x2F;5) — 数据与方案部分有参考价值，但最关键的训练&#x2F;评估&#x2F;踩坑内容缺失，实际无法按图索骥；等作者补完再回头看会更值。</p>
+<hr>
+<h2 id="5-一家大型企业有几十万份文档，究竟应该怎样交给AI？"><a href="#5-一家大型企业有几十万份文档，究竟应该怎样交给AI？" class="headerlink" title="5. 一家大型企业有几十万份文档，究竟应该怎样交给AI？"></a>5. 一家大型企业有几十万份文档，究竟应该怎样交给AI？</h2><p><strong>来源</strong>：<a target="_blank" rel="noopener" href="https://www.luxiangdong.com/2026/10/08/kchain/">https://www.luxiangdong.com/2026/10/08/kchain/</a><br><strong>日期</strong>：2026-10-08</p>
+<h3 id="核心概要-4"><a href="#核心概要-4" class="headerlink" title="核心概要"></a>核心概要</h3><p>卢向东基于刚完成的上海某大型国企几十万份文档入库项目，回答一个常被问到的问题：”能不能全部放进知识库让 AI 直接用？”他的结论是：技术上当然可以，但”导进去”恰恰是最容易的一步，真正的问题是规模从几千份变成几十万（他提到最多的客户已超过 550 万份）后，问题性质变了——需要的不是更大的”AI 知识库”，而是一条持续把正确知识、在正确时间、以正确权限交给 AI 的”企业知识供应链”。</p>
+<p>文章按七个层面展开：知识分散在 OA、ERP、CRM、IM、NAS 等多处，所以要做 Connect + Sync 而不是一次性 Upload；”文件”不等于”知识”，解析、清洗、结构化、切片、抽取、校验必须在入库前完成（”RAG 的上限在知识进入 RAG 之前就决定了”）；比”找不到”更危险的是”找到了过期版本”；Agent 时代要回答”它代表谁、在做什么、被允许知道什么”，主张检索前权限过滤；上线之后还需要”反馈 → 归因 → 责任人处理 → 更新 → 审核 → 回归验证”的知识运营闭环；最后区分了文件、知识、上下文三个概念。</p>
+<p>需要说明的是，文中多处提到作者团队的产品 AIS 的能力和路线，带有一定产品视角。</p>
+<h3 id="关键洞察-4"><a href="#关键洞察-4" class="headerlink" title="关键洞察"></a>关键洞察</h3><ul>
+<li><strong>“Connect + Sync”优于”Upload”</strong>：上传是一次性动作，知识库从第二天起就在变旧；接入层应该支持自动同步、定时增量、Webhook 与失败重试。</li>
+<li><strong>版本与生效状态是知识的一部分</strong>：2024&#x2F;2025&#x2F;2026 三版差旅制度的例子说明，”检索准确”不等于”业务正确”，来源、发布部门、生效时间、适用范围都应作为元数据管理。</li>
+<li><strong>权限过滤要前置到检索之前</strong>：先召回再过滤，既低效又有泄露风险；Agent 场景还要区分读与写、审计到”哪个 Agent 代表哪个用户在什么任务里改了什么”。</li>
+<li><strong>用点踩驱动闭环而不是只记录</strong>：把点踩追到”没理解表达 &#x2F; 知识不存在 &#x2F; 已过期 &#x2F; 冲突 &#x2F; 召回错 &#x2F; 合规不能答”六类原因，处理动作才对症。</li>
+<li><strong>用”上线一年后还剩多少分”衡量质量</strong>：95 分上线、一年后掉到 70 分，不如一个能长期维持 85 分的运营机制。</li>
+</ul>
+<h3 id="评价-4"><a href="#评价-4" class="headerlink" title="评价"></a>评价</h3><p><strong>优点</strong>：来自一线大项目，问题清单具体、有场景（差旅制度、售后 Agent、薪酬权限），”供应链””文件≠知识≠上下文”的概念框架清晰；对做企业 RAG 的团队有很强的提醒作用。</p>
+<p><strong>不足</strong>：主要是观点与经验陈述，缺少量化数据（解析错误率、入库耗时、权限过滤对召回的影响）；多处落脚在自家产品能力上，读者需要自行区分通用方法与产品宣传；对成本和组织协同（谁是 Owner）的讨论偏轻。</p>
+<p><strong>适用场景</strong>：正在或准备做企业级知识库&#x2F;Agent 项目的架构师与产品经理，可作为立项评审和方案自检的清单。</p>
+<p><strong>推荐指数</strong>：⭐⭐⭐ (3&#x2F;5) — 问题意识很强、框架清晰，但数据与可验证细节不足且带产品视角；适合拿来对照自己的项目查漏补缺，不适合当技术方案直接套用。</p>
+<hr>
+<h2 id="6-模型如何学习多种合理答案：多峰分布与生成模型"><a href="#6-模型如何学习多种合理答案：多峰分布与生成模型" class="headerlink" title="6. 模型如何学习多种合理答案：多峰分布与生成模型"></a>6. 模型如何学习多种合理答案：多峰分布与生成模型</h2><p><strong>来源</strong>：<a target="_blank" rel="noopener" href="https://qiankunli.github.io/2026/10/10/multimodal_distribution.html">https://qiankunli.github.io/2026/10/10/multimodal_distribution.html</a><br><strong>日期</strong>：2026-10-10</p>
+<h3 id="核心概要-5"><a href="#核心概要-5" class="headerlink" title="核心概要"></a>核心概要</h3><p>这篇用”一图多答案”这个直觉问题，把生成模型的几条主线串成一条逻辑链：同一个条件（”猫的图片”）对应很多合理结果，用平方误差训练的确定性网络会学到”条件均值”，也就是一团模糊的影子；所以必须从点估计转向学习分布并从中采样。对机器人同样成立——“向左绕&#x2F;向右绕都合理，中间撞上去不合理”，单高斯表达不了，需要多峰。</p>
+<p>文章接着区分 AR 与 NAR 两种生成顺序，再依次介绍 VAE（潜变量）、GAN（对抗）、Diffusion（逐步去噪）和 Flow Matching（回归速度场）。重点是 Flow Matching：用”河流中的树叶”比喻 time-dependent vector field，给出直线路径 x_t&#x3D;(1-t)x_0+t·x_1、目标速度 u&#x3D;x_1-x_0、对应的简单 loss，还用 3×2 动作矩阵演示训练与推理。这正好与同系列另外两篇里 SmolVLA 的 Action Expert 接上。</p>
+<h3 id="关键洞察-5"><a href="#关键洞察-5" class="headerlink" title="关键洞察"></a>关键洞察</h3><ul>
+<li><strong>“平方误差 → 条件均值”是理解多峰问题的钥匙</strong>：很多”模型输出模糊&#x2F;犹豫”的现象，都能追溯到这里。</li>
+<li><strong>“能采样”与”能算概率密度”是两种不同能力</strong>：GAN 是典型的隐式模型，Diffusion&#x2F;Flow 是否可算密度取决于具体方法，不能一概而论。</li>
+<li><strong>NAR 的难点是位置间的协调</strong>：独立采样每个位置会拼出不合理的整体，共享潜变量、先粗后细、多轮修订是三条补救路线。</li>
+<li><strong>Flow Matching 的训练可以”跳步”</strong>：直接构造随机时刻的中间样本，不必模拟整条轨迹，这是它训练高效的原因。</li>
+<li><strong>去噪网络与采样器要分开看</strong>：网络预测的不是下一张图，而是噪声（或速度），采样器才负责更新状态。</li>
+</ul>
+<h3 id="评价-5"><a href="#评价-5" class="headerlink" title="评价"></a>评价</h3><p><strong>优点</strong>：问题驱动、比喻（整理房间、河流树叶）和小数字例子都非常到位，把原本需要大量数学背景的内容讲成了直觉；与机器人动作生成的联系自然。</p>
+<p><strong>不足</strong>：VAE 小节仍留着一条”TODO”，训练目标未补；RL 部分以对照表的形式列出 RWR、Reward Backpropagation、PPO&#x2F;DDPO&#x2F;GRPO、Diffusion-DPO、DiffusionNFT 等路线，更像提纲，各自的细节和适用条件没有展开；公式与图片较多，篇幅偏长，没有给出基于真实数据的对比实验。</p>
+<p><strong>适用场景</strong>：想从 LLM 视角补齐 Diffusion&#x2F;Flow 直觉、或正在读 SmolVLA 一类动作生成论文的读者。</p>
+<p><strong>推荐指数</strong>：⭐⭐⭐⭐ (4&#x2F;5) — 直觉铺垫扎实、逻辑链完整，是理解”为什么动作要用生成模型”的好材料；扣一星在于 VAE 部分未完成、缺少实证。</p>
+<hr>
+<h2 id="7-点老救世记的深度体验"><a href="#7-点老救世记的深度体验" class="headerlink" title="7. 点老救世记的深度体验"></a>7. 点老救世记的深度体验</h2><p><strong>来源</strong>：<a target="_blank" rel="noopener" href="https://blog.codingnow.com/2026/10/dotage.html">https://blog.codingnow.com/2026/10/dotage.html</a><br><strong>日期</strong>：2026-10-11</p>
+<h3 id="核心概要-6"><a href="#核心概要-6" class="headerlink" title="核心概要"></a>核心概要</h3><p>云风重玩了两百小时《Dotage 点老救世记》（累计近 400 小时），这款由一个人花了十年以上做成的游戏让他逐渐改变了看法。他的核心判断是：这是一款”关于规划和选择”的游戏——标准模式固定 310 回合，玩家无法靠控制节奏决定速通还是慢发展，只能规划整局：是拉长平缓发展，还是快速成长后停在某个规模对抗系统到终局。健康、希望、温度、自然四个维度的点数需求总量确定，于是游戏变成对原料、人力、研究和一次性成本占比的精算。</p>
+<p>作者还谈到对游戏机制看法的转变：早期攻略强调”快速滚雪球堆人口”，但新版本从 30 人口起大幅提高维持成本，使”何时发展到什么规模”成了真正的选择；他起初讨厌的”好表现正反馈、失误负反馈”，后来发现承受部分负面事件也可以是理性的选择，关键在于提前规划 plan B。他最后强调不要永远套用攻略的固定组合，每位长老的玩法都值得学习。</p>
+<h3 id="关键洞察-6"><a href="#关键洞察-6" class="headerlink" title="关键洞察"></a>关键洞察</h3><ul>
+<li><strong>固定回合数改变了最优策略的形状</strong>：没有”无限发展”，一次性成本在整局中的占比不能忽视，科技路线才会出现真正的取舍。</li>
+<li><strong>“刚好够用”是高水平玩法的衡量标准</strong>：看每个工人是否在当前回合数下的最佳岗位，以及事件结算时点数是否刚好不超出。</li>
+<li><strong>提前规划的周期越长，综合成本越低</strong>：高难度下要倒推科技、建筑、人力的回合数，让计划契合事件时间。</li>
+<li><strong>负面事件可以被”利用”</strong>：在承受不可避免的损失时，尽早放弃并把产能转去抵御后果，比”既要又要”更理性。</li>
+<li><strong>版本平衡改动是在塑造策略空间</strong>：提高高人口维持成本，等于把”一味堆人”的退化最优解拿掉了。</li>
+</ul>
+<h3 id="评价-6"><a href="#评价-6" class="headerlink" title="评价"></a>评价</h3><p><strong>优点</strong>：作者有近 400 小时的体验，观察细致，既有数值层面的拆解也有设计层面的思考，读来能看出一个资深开发者玩游戏时的”设计者视角”；文中对自己早期看法的修正很诚实。</p>
+<p><strong>不足</strong>：对没玩过游戏的读者门槛较高，很多术语和机制缺乏图示说明；论述偏流水式，没有明确的结论小结；”玩家水平”的判断依赖主观经验，缺少数据支撑。</p>
+<p><strong>适用场景</strong>：玩过或想玩这款游戏的人；对”限定回合规划类游戏”的设计思路感兴趣的游戏开发者。</p>
+<p><strong>推荐指数</strong>：⭐⭐⭐⭐ (4&#x2F;5) — 对”规划类游戏如何通过约束制造选择”有深入的一手分析，对游戏设计者很有启发；但对未玩过的读者不够友好，所以未给满分。</p>
+<hr>
+<h2 id="8-Redesigning-source-control-at-Anthropic"><a href="#8-Redesigning-source-control-at-Anthropic" class="headerlink" title="8. Redesigning source control at Anthropic"></a>8. Redesigning source control at Anthropic</h2><p><strong>来源</strong>：<a target="_blank" rel="noopener" href="https://www.anthropic.com/engineering/redesigning-source-control">https://www.anthropic.com/engineering/redesigning-source-control</a><br><strong>日期</strong>：2026-10-13</p>
+<h3 id="核心概要-7"><a href="#核心概要-7" class="headerlink" title="核心概要"></a>核心概要</h3><p>Anthropic 的工程师讲述了他们为什么、以及如何用五个月把 monorepo 从 git 完整迁移到自研版本控制系统 Scion。起因是 Claude 让”写代码”不再是瓶颈，瓶颈变成了为人类规模设计的开发基础设施：每天合并的代码变更数从 2026 年 5 月的约 2,500 个涨到 9 月的 3 万多个；主分支历史接近 100 GB，压缩后的工作副本超过 25 GB，每天约 2,500 万次 CI 检出，按 git 的朴素方式拉取要超过 600 PB 的流量，高峰时运营了数百个 git 镜像。</p>
+<p>文章的核心判断是：git 是为”离线、分布式”设计的，而他们的客户端几乎全是永远在线的 Agent 和任务。于是 Scion 的设计原则变成：客户端永远在线、客户端&#x2F;服务端不对称、全面的源码控制服务可以支撑新应用、一切可水平扩展、提交廉价&#x2F;增量&#x2F;无锁、工作副本可选且稀疏。技术上，Scion 以”changeset”（写前日志条目）为单位，派生数据（blame、路径历史、提交图 skip list）用统一的递归机制计算；客户端按树和 blob 递归拉取不可变对象，分层缓存命中率超过 99%，整体基础设施规模比之前的 git 镜像小 200 倍，CI 检出快了两个数量级，CI 单项就节省 25% 的 CPU 容量。</p>
+<p>文章还有一部分是”AI 写基础设施”的经验：7 人团队在五个月里做了 Scion 和代码评审系统 Antique 等多套系统；一个手写的 git 导入流水线原型被模型重写后，内存降到 1&#x2F;20、速度快 4 倍；工程师的角色更多是对 Claude 说”不”；还用 Claude 担任各组件的”superfan”盯监控。作者明确表示 Scion 不适合作为 git 的通用替代，更希望把思路分享给 git 平台与社区。</p>
+<h3 id="关键洞察-7"><a href="#关键洞察-7" class="headerlink" title="关键洞察"></a>关键洞察</h3><ul>
+<li><strong>先问”客户端是谁”</strong>：当客户端 99% 是永远在线的 Agent，git 的”本地完整副本”就从优势变成负担，这是整套设计的出发点。</li>
+<li><strong>把能力暴露为 API，任务就不需要本地仓库</strong>：计算 diff、merge base、blame 都可以直接问服务器，自动 bisect&#x2F;revert 这类工具因此在规模下才可行。</li>
+<li><strong>合并队列在 Agent 规模下会失效</strong>：全局仓库锁无法复制，他们转向合并后&#x2F;部署前的自动化测试，接受并发冲突并让 Claude 来修。</li>
+<li><strong>不可变对象 + 分层缓存是可扩展的老办法</strong>：每个请求针对不会变化的对象，任何缓存都能应答，并严格分层以隔离故障域。</li>
+<li><strong>人的价值在于设计约束与否决</strong>：Agent 为了满足某个模式会违反核心系统约束，工程师要守住这些红线。</li>
+</ul>
+<h3 id="评价-7"><a href="#评价-7" class="headerlink" title="评价"></a>评价</h3><p><strong>优点</strong>：数字具体（2,500→30,000&#x2F;天、200 倍资源缩减、25% CI 收益），原则与实现层层对应；既讲系统设计也讲 AI 参与开发的真实体会；还主动写出了”不适合其他公司”的边界，十分克制。</p>
+<p><strong>不足</strong>：Scion 不开源也难以复现，读者只能借鉴思路；对失败案例、迁移期间的事故着墨少；”工程师都认为 Claude 写代码比自己强”这类结论缺少评估方法说明；对 Anthropic 独有的 token 成本优势只是点到为止。</p>
+<p><strong>适用场景</strong>：超大 monorepo 或 Agent 密集型研发平台的基础设施团队；关心”AI 时代开发流程哪些假设会失效”的技术负责人。</p>
+<p><strong>推荐指数</strong>：⭐⭐⭐⭐⭐ (5&#x2F;5) — 一手工程案例，规模罕见、论证扎实、观点有前瞻性（合并队列、离线假设、API 优先），即使无法复制也值得所有做研发效能和 Agent 基础设施的人通读。</p>
+<hr>
+<h2 id="9-NotebookLM’s-Video-Overview-System-Prompt-The-Full-Creation-Workflow"><a href="#9-NotebookLM’s-Video-Overview-System-Prompt-The-Full-Creation-Workflow" class="headerlink" title="9. NotebookLM’s Video Overview System Prompt: The Full Creation Workflow"></a>9. NotebookLM’s Video Overview System Prompt: The Full Creation Workflow</h2><p><strong>来源</strong>：<a target="_blank" rel="noopener" href="https://baoyu.io/blog/2026-10-20/notebooklm-video-overview-system-prompt">https://baoyu.io/blog/2026-10-20/notebooklm-video-overview-system-prompt</a><br><strong>日期</strong>：2026-10-20</p>
+<h3 id="核心概要-8"><a href="#核心概要-8" class="headerlink" title="核心概要"></a>核心概要</h3><p>宝玉这篇以一份 NotebookLM “Video Overview”（视频概览）创建流程的 skill 文件为主体，开头用几段话点出价值：这份提示词描述的是完整的创作工作流——读取上下文、帮用户选定焦点、确认设置、把请求交给视频生成管线。作者特别关注的是其中大量篇幅花在”理解用户真实意图”上：区分”新建视频请求”和”询问已有视频”，用户重新开始时清除放弃的选择，提交生成请求时逐字保留用户批准的焦点文本。</p>
+<p>原文（保留为一个完整代码块）包括：上下文收集规则（优先使用已有来源摘要，最多只做一次 <code>semantic_search</code>）、意图消歧与”重新开始”的状态清理、本地化规则（哪些展示文案必须翻译、哪些结构化标识符必须保持原样）、Step 0 问卷卡与 Step 1 确认卡的结构、焦点 chip 的写法约束（3-5 个、每个不超过 6 个词、不用祈使动词、不合并多个主题），以及调用示例。作者也提醒这些 schema 和调用依赖 NotebookLM 专有组件，描述的是编排层，不是可以直接粘贴到视频定制框里的提示词。</p>
+<h3 id="关键洞察-8"><a href="#关键洞察-8" class="headerlink" title="关键洞察"></a>关键洞察</h3><ul>
+<li><strong>意图分流先于一切</strong>：先判断用户是在问”已有产物”还是要”新开一轮创作”，再决定是否出卡片、是否调用生成工具，这是减少重复生成和上下文串味的关键。</li>
+<li><strong>“卡片承载开放选择”优于聊天里追问</strong>：用 chip 让用户点选，把一次聊天提问的次数压到最多一次。</li>
+<li><strong>预填一切，让用户一键 Generate</strong>：先从来源摘要、对话历史（尤其最后一条消息）和隐含偏好里推断，工具调用只在信息不足时才用。</li>
+<li><strong>“放弃卡片”要显式清空状态</strong>：不继承被丢弃的格式、焦点和风格，避免旧选择偷偷污染新请求。</li>
+<li><strong>结构化字段与展示文案分离翻译</strong>：id、枚举值原样保留，只翻译用户看得见的文字，是多语言 Agent UI 的稳妥做法。</li>
+</ul>
+<h3 id="评价-8"><a href="#评价-8" class="headerlink" title="评价"></a>评价</h3><p><strong>优点</strong>：难得的商业级 Agent 提示词&#x2F;技能文件全文，可以直接学习其状态管理、消歧、本地化的写法；宝玉的前言点明了值得看的部分，帮助读者快速抓重点。</p>
+<p><strong>不足</strong>：文章主体是原文转载，作者的分析只有开头几段；文件高度依赖 NotebookLM 内部的卡片组件与工具，难以直接复用；没有验证其真实效果或与其他产品的对比。</p>
+<p><strong>适用场景</strong>：设计多步”共创式”Agent 工作流、需要处理意图消歧和 UI 卡片编排的产品与工程团队，可作为提示词写法的参考样本。</p>
+<p><strong>推荐指数</strong>：⭐⭐⭐ (3&#x2F;5) — 素材本身很有参考价值，但文章以转载为主、作者评论偏少且难以直接迁移；对做同类产品的人是好资料，对一般读者吸引力有限。</p>
+<hr>
+<h2 id="10-QWERTY-键盘布局的发展历史"><a href="#10-QWERTY-键盘布局的发展历史" class="headerlink" title="10. QWERTY 键盘布局的发展历史"></a>10. QWERTY 键盘布局的发展历史</h2><p><strong>来源</strong>：<a target="_blank" rel="noopener" href="https://blog.codingnow.com/2026/10/qwerty.html">https://blog.codingnow.com/2026/10/qwerty.html</a><br><strong>日期</strong>：2026-10-20</p>
+<h3 id="核心概要-9"><a href="#核心概要-9" class="headerlink" title="核心概要"></a>核心概要</h3><p>云风从一个老问题谈起：QWERTY 为什么看起来杂乱？流行说法是”为了防止连杆卡住而故意降低打字速度”。他读到 Koichi Yasuoka 与 Motoko Yasuoka 的论文《On the Prehistory of QWERTY》后，认为更可信的解释是一段渐进的演变史，并指出”降速说”源于 1980 年山田尚勇论文中一段话被后人误读——原文说的是排列无意中变得更难快打，而不是有意为之。</p>
+<p>文章接着复述演变脉络：1868 年 Sholes 等人发明打字机，最初按字母表排成类似钢琴的双排键；扩展到 38 键时，数字 1 和 0 用 I 和 O 代替；之后元音集中到一行，T 与 ? 交换位置，Q 被放到最不便的角落；S 与 C、Z 的位置调整则与当时美式摩尔斯电码的收报习惯相关（SE 与 Z、C 与 IE 容易混淆，手指要能悬在 S 键上等待判断）；1873 年定型后由 Remington 商用，1882 年因专利与竞争，ZCX 被改成今天的 ZXC；1893 年联合成立 Union Typewriter，1898 年 QWERTY 成为行业标准，之后进入电传打字机和计算机终端。</p>
+<h3 id="关键洞察-9"><a href="#关键洞察-9" class="headerlink" title="关键洞察"></a>关键洞察</h3><ul>
+<li><strong>流行的”防卡键降速”说法源自一次误读</strong>：转述链上的措辞变化，把”无意中变难”变成了”有意变慢”，这是追溯一手文献的好例子。</li>
+<li><strong>键位是被用途塑造的</strong>：电报员的收报习惯直接影响了 S、C、Z 的位置，说明布局优化的”用户”并不是今天的打字者。</li>
+<li><strong>历史遗迹至今可见</strong>：Z 在左下、FGH JKL 的字母序、MN 的方向，都是最初字母表布局的化石。</li>
+<li><strong>标准的形成靠商业与专利，而非最优性</strong>：Remington 的危机、专利规避和联盟合并，决定了 1898 年的”行业标准”。</li>
+<li><strong>通用启示</strong>：任何”显然不合理”的遗留设计，先查它诞生时的约束，再谈改进。</li>
+</ul>
+<h3 id="评价-9"><a href="#评价-9" class="headerlink" title="评价"></a>评价</h3><p><strong>优点</strong>：篇幅短小、叙事清楚，既纠正了常见误解，又保留了大量可验证的细节（年份、键位变化、公司沿革）；有作者自己的联想（小时候的机械打字机）。</p>
+<p><strong>不足</strong>：基本是对论文的复述，作者没有补充对 Dvorak 等替代布局的比较；部分细节（如电码相似的解释）作者自己也标注为”可以理解为”，缺少原文引用佐证；没有配键位对照图，读者需要脑补布局。</p>
+<p><strong>适用场景</strong>：喜欢技术史、想要纠正”QWERTY 为降速而设计”这一流传很广的说法的读者；也适合当作”遗留设计考古”的课堂小案例。</p>
+<p><strong>推荐指数</strong>：⭐⭐⭐⭐ (4&#x2F;5) — 篇幅小而信息密度高，纠错有力，读来有趣；缺图和延伸比较，所以没到必读级别。</p>
+<hr>
+<h2 id="11-How-we-built-ChatGPT’s-novel-ad-stack-for-user-trust-and-relevance"><a href="#11-How-we-built-ChatGPT’s-novel-ad-stack-for-user-trust-and-relevance" class="headerlink" title="11. How we built ChatGPT’s novel ad stack for user trust and relevance"></a>11. How we built ChatGPT’s novel ad stack for user trust and relevance</h2><p><strong>来源</strong>：<a target="_blank" rel="noopener" href="https://openai.com/index/building-chatgpt-ad-stack">https://openai.com/index/building-chatgpt-ad-stack</a><br><strong>日期</strong>：2026-10-21</p>
+<h3 id="核心概要-10"><a href="#核心概要-10" class="headerlink" title="核心概要"></a>核心概要</h3><p>OpenAI 工程团队介绍了 ChatGPT 广告系统的架构。传统广告系统围绕离散事件（搜索、浏览页面）工作，而 ChatGPT 里用户意图是随多轮对话逐渐成形的，有时根本没有合适的广告时刻。因此他们做了三个关键设计：有状态的广告会话（跨轮次甚至跨会话记忆）；用一个经过后训练的 LLM 作为”orchestrator”，用工具调用方式串起检索、过滤、评估、拍卖和投放；并且广告选择流程在独立服务里与回答生成并行运行，使广告不影响回答、也不会拖垮 ChatGPT。</p>
+<p>流程细节包括：把多轮对话提炼成一个或多个检索查询（例如”Yosemite 行程 + 新款某品牌鞋”被拆成两类意图），用语义向量做 ANN 检索，过滤预算&#x2F;定向&#x2F;政策，再做相关性与质量评估；orchestrator 只”提名”候选进入拍卖，并不直接决定出价或最终胜出；投放后还要经过”在对话里是否合适”和”是否来得及”两道检查，广告用单独的中性引言与创意打包，若晚于回答完成则当轮不展示。作者还写到，这套系统年化收入已超过 10 亿美元，Codex 是搭建速度的重要助力，并用最强模型评审、训练较小的 orchestrator 形成自我改进循环。</p>
+<h3 id="关键洞察-10"><a href="#关键洞察-10" class="headerlink" title="关键洞察"></a>关键洞察</h3><ul>
+<li><strong>“没有广告”是正常成功结果</strong>：系统不为了填充而展示，这条产品原则直接决定了架构（超时不等待、不合适就拦截）。</li>
+<li><strong>服务隔离是信任的架构保证</strong>：独立服务、独立模型、独立代码，ads 宕机不影响回答；这比”承诺不影响”可信得多。</li>
+<li><strong>“投放”与”曝光”是两个事件</strong>：服务端交付不等于用户看到，日志要分层记录每个漏斗阶段，便于分别优化。</li>
+<li><strong>Orchestrator 只提名、不定价</strong>：把 LLM 的判断力限制在候选筛选，价格与最终选择由确定性的拍卖机制完成，是把 LLM 放进高价值系统的稳妥方式。</li>
+<li><strong>小模型干活、强模型评审</strong>：用最强模型的反馈训练低成本 orchestrator，是一种可复用的成本控制套路。</li>
+</ul>
+<h3 id="评价-10"><a href="#评价-10" class="headerlink" title="评价"></a>评价</h3><p><strong>优点</strong>：架构边界清晰，有具体例子，并坦率讲了”来不及就不展示”这类对商业不友好的取舍；对”LLM 作为系统编排者”的落地范式很有参考价值。</p>
+<p><strong>不足</strong>：关键量化指标（延迟预算、检索规模、相关性提升）几乎没有；对隐私与用户数据使用的描述较概括；作为官方文章，对风险与失败案例的披露有限；文章也有一定”产品背书”的意味。</p>
+<p><strong>适用场景</strong>：设计对话式产品商业化链路、或把 LLM 嵌入广告&#x2F;推荐等多阶段系统的工程师与产品经理。</p>
+<p><strong>推荐指数</strong>：⭐⭐⭐⭐ (4&#x2F;5) — 架构思想清晰、原则与实现一致，对”如何让 LLM 在商业系统中守住边界”有直接启发；扣一星是因为缺少量化数据且带官方叙事色彩。</p>
+<hr>
+<h2 id="12-Rapidly-scaling-online-storage-to-serve-over-1-billion-ChatGPT-users-Part-II"><a href="#12-Rapidly-scaling-online-storage-to-serve-over-1-billion-ChatGPT-users-Part-II" class="headerlink" title="12. Rapidly scaling online storage to serve over 1 billion ChatGPT users (Part II)"></a>12. Rapidly scaling online storage to serve over 1 billion ChatGPT users (Part II)</h2><p><strong>来源</strong>：<a target="_blank" rel="noopener" href="https://openai.com/index/scaling-storage-one-billion-users-part-two">https://openai.com/index/scaling-storage-one-billion-users-part-two</a><br><strong>日期</strong>：2026-10-24</p>
+<h3 id="核心概要-11"><a href="#核心概要-11" class="headerlink" title="核心概要"></a>核心概要</h3><p>这是 OpenAI 存储平台 Habitat 系列的第二篇。Habitat 要在毫秒级响应覆盖 40 个地理区域的超过 10 亿用户，管理超过 500 PB 数据；本篇聚焦底层存储 Azure Cosmos DB 的演进。作者把多租户策略的”绕圈史”讲得很坦白：第一阶段直接依赖 Cosmos DB 原语（单容器、10K RU&#x2F;s 的逻辑分区键限制充当背压），遇到分区键碰撞（<code>user_id</code>、<code>workspace_id</code> 在不同业务间共用）、嘈杂邻居和”弱分区”问题；第二阶段为关键业务用独立容器做隔离，却暴露出容量规划无法在组织层面规模化；第三阶段回到”默认多租户 + 可迁移数据”，并和 Azure 团队联合解决热点键限流、QoS 和新的 serverless 模式（每个物理分区可扩到 10K RU&#x2F;s，并按 RU 使用触发分裂）。</p>
+<p>后半段讲”共同管理”的可靠性和全球性能。2024 年底，一次区域断电让他们发现最大账户的跨区域故障切换要数小时；随后切回原区域时又因客户端在故障切换后的连接风暴压垮网关，引发第二次严重故障。此后两个团队联合监控、在生产规模的非生产账户上测试、共同迭代 SDK。性能方面，读请求占 90% 以上，采用”数据靠近用户、只对最小且延迟最敏感的数据集广泛复制、其余依赖集成缓存”的分层策略，缓存失效通过 Cosmos DB 的 change feed（CDC）在数秒内传播；再加上把 Python 代理改写为 Rust，全球读取 p50 从约 120 ms 降到约 10 ms。</p>
+<h3 id="关键洞察-11"><a href="#关键洞察-11" class="headerlink" title="关键洞察"></a>关键洞察</h3><ul>
+<li><strong>多租户没有银弹，只有”默认值”的选择</strong>：单租户隔离看上去安全，但会把容量规划变成每个团队的负担；默认多租户加数据迁移能力，才是组织可扩展的选择。</li>
+<li><strong>别把存储 API 的分区键直接暴露给客户端</strong>：早期的这个决定导致不同业务共享同一热点键的上限，之后很难回撤。</li>
+<li><strong>托管服务在规模足够大时会”变得不那么托管”</strong>：需要共享测试、共享仪表盘、互相可 page，并在生产规模的测试环境验证变更，这是对云服务依赖者的重要提醒。</li>
+<li><strong>故障恢复路径同样要演练</strong>：故障切换需要数小时、切回时发生连接风暴，都是”没在这个规模测过”的典型。</li>
+<li><strong>CDC 驱动的缓存失效配合分层复制</strong>：读多写少场景下，通过 change feed 传播失效，比手工显式失效更可靠；与 Rust 重写合起来带来 12 倍的 p50 提升。</li>
+</ul>
+<h3 id="评价-11"><a href="#评价-11" class="headerlink" title="评价"></a>评价</h3><p><strong>优点</strong>：问题—方案—教训的结构完整，且大胆承认了走过的弯路与两次事故；数据点（120 ms → 10 ms、500 PB、40 区域、数百万次&#x2F;秒变更）具体，对做大规模多租户存储的人价值极高。</p>
+<p><strong>不足</strong>：许多优化是围绕 Azure Cosmos DB 的专有特性（RU、serverless 容量模式），可迁移性有限；分层缓存与 Rust 改写各自的收益没有拆分；Part I 的背景依赖较多，单读本篇稍有跳跃。</p>
+<p><strong>适用场景</strong>：运营大规模多租户数据库&#x2F;存储平台的工程师、关注云服务商深度合作模式的架构师。</p>
+<p><strong>推荐指数</strong>：⭐⭐⭐⭐⭐ (5&#x2F;5) — 极少见的”带着伤疤”的大规模存储实践，复盘诚实、教训可迁移、数据具体，是今年存储架构类文章里的第一梯队。</p>
+<hr>
+<h2 id="13-Custom-Voices-With-Qwen3-TTS"><a href="#13-Custom-Voices-With-Qwen3-TTS" class="headerlink" title="13. Custom Voices With Qwen3-TTS"></a>13. Custom Voices With Qwen3-TTS</h2><p><strong>来源</strong>：<a target="_blank" rel="noopener" href="https://lucumr.pocoo.org/2026/10/29/qwen3-custom-voices/">https://lucumr.pocoo.org/2026/10/29/qwen3-custom-voices/</a><br><strong>日期</strong>：2026-10-29</p>
+<h3 id="核心概要-12"><a href="#核心概要-12" class="headerlink" title="核心概要"></a>核心概要</h3><p>Armin Ronacher 和孩子在做一个小型地下城探险游戏，想给它配旁白和配音，又不想要千篇一律的 AI 声音。他先用过 <a target="_blank" rel="noopener" href="https://github.com/hexgrad/kokoro">Kokoro</a>，之后转向支持声音克隆的 <a target="_blank" rel="noopener" href="https://github.com/QwenLM/Qwen3-TTS">Qwen3-TTS</a>，并把一路摸索整理成这篇实验报告。Qwen3-TTS 有三类模型：Base（几秒参考音频即可克隆）、CustomVoice（九个内置说话人加指令控制）和 VoiceDesign（按文字描述”设计”声音）；官方没有”克隆之后再用指令控制情绪”的路径。</p>
+<p>作者的玩法有三层：其一，用 28 秒自己的演讲录音（用 <a target="_blank" rel="noopener" href="https://github.com/openai/whisper">Whisper</a> 转写）提取说话人嵌入，与 VoiceDesign 设计出的声音按比例混合，生成 11 档不同混合；其二，因为嵌入就是一个 2048 维向量，可以做向量算术，比如用 14 个男声和 14 个女声的平均差构造”性别轴”，让声音沿轴移动；其三，把 Base 提取的嵌入强行交给 CustomVoice 模型，让克隆声音也能响应”用悲伤、低沉的语气说”这类指令，虽然不如内置说话人稳定，但对游戏旁白”已足够好”。文中还顺带测了嵌入用于说话人识别的效果。</p>
+<h3 id="关键洞察-12"><a href="#关键洞察-12" class="headerlink" title="关键洞察"></a>关键洞察</h3><ul>
+<li><strong>声音嵌入是可以做算术的向量</strong>：混合、沿属性轴移动，意味着”设计一个独特声音”可以工程化。</li>
+<li><strong>克隆 + 指令控制可以”嫁接”实现</strong>：Base 的编码器产生嵌入，CustomVoice 的 Transformer 负责按指令生成，两者拼起来绕过了官方限制。</li>
+<li><strong>参考音频不必干净也不必长</strong>：28 秒会议演讲录音就足以得到”半个说服力”的克隆，作者顺势提醒了电话诈骗风险。</li>
+<li><strong>混合时让两个声音特征接近效果更好</strong>：这是实验中得到的经验，值得做声音设计时参考。</li>
+<li><strong>用 TTS 嵌入做说话人识别有一定准确率</strong>：但专为说话人验证训练的模型仍更可靠，别拿生成模型的嵌入当安全凭证。</li>
+</ul>
+<h3 id="评价-12"><a href="#评价-12" class="headerlink" title="评价"></a>评价</h3><p><strong>优点</strong>：实验性强、代码和音频示例齐全，有”和孩子做游戏”的轻松动机，还点出了克隆声音的滥用风险；适合动手玩。</p>
+<p><strong>不足</strong>：绝大多数结论是主观听感，没有客观评测（MOS、相似度）；绕过官方限制的做法依赖私有接口，版本变动时可能失效；部分音频示例需要 JavaScript，无法在纯文本阅读时验证。</p>
+<p><strong>适用场景</strong>：做游戏、有声内容、需要自定义旁白声音的个人开发者；想了解 TTS 嵌入空间”能玩出什么花”的读者。</p>
+<p><strong>推荐指数</strong>：⭐⭐⭐ (3&#x2F;5) — 好玩、可操作、有启发，但结论偏经验性、缺少客观评测，且依赖实现细节；适合周末折腾，不属于必读。</p>
+<hr>
+<p><em>本文为自动生成的博客推荐汇总。原文链接：</em></p>
+<ul>
+<li><em>Armin Ronacher：<a target="_blank" rel="noopener" href="https://lucumr.pocoo.org/2026/10/6/codemode/">What is Codemode</a></em></li>
+<li><em>李乾坤：<a target="_blank" rel="noopener" href="https://qiankunli.github.io/2026/10/06/thought_to_action.html">用户语言如何转换为机器人动作</a></em></li>
+<li><em>李乾坤：<a target="_blank" rel="noopener" href="https://qiankunli.github.io/2026/10/07/motion.html">机器人是如何动起来的：从舵机转动到Action Chunk</a></em></li>
+<li><em>李乾坤：<a target="_blank" rel="noopener" href="https://qiankunli.github.io/2026/10/07/vla_train.html">走通 Microduck 的 VLA 训练流程</a></em></li>
+<li><em>卢向东：<a target="_blank" rel="noopener" href="https://www.luxiangdong.com/2026/10/08/kchain/">一家大型企业有几十万份文档，究竟应该怎样交给AI？</a></em></li>
+<li><em>李乾坤：<a target="_blank" rel="noopener" href="https://qiankunli.github.io/2026/10/10/multimodal_distribution.html">模型如何学习多种合理答案：多峰分布与生成模型</a></em></li>
+<li><em>云风的博客：<a target="_blank" rel="noopener" href="https://blog.codingnow.com/2026/10/dotage.html">点老救世记的深度体验</a></em></li>
+<li><em>Anthropic Engineering：<a target="_blank" rel="noopener" href="https://www.anthropic.com/engineering/redesigning-source-control">Redesigning source control at Anthropic</a></em></li>
+<li><em>宝玉：<a target="_blank" rel="noopener" href="https://baoyu.io/blog/2026-10-20/notebooklm-video-overview-system-prompt">NotebookLM’s Video Overview System Prompt: The Full Creation Workflow</a></em></li>
+<li><em>云风的博客：<a target="_blank" rel="noopener" href="https://blog.codingnow.com/2026/10/qwerty.html">QWERTY 键盘布局的发展历史</a></em></li>
+<li><em>OpenAI Engineering：<a target="_blank" rel="noopener" href="https://openai.com/index/building-chatgpt-ad-stack">How we built ChatGPT’s novel ad stack for user trust and relevance</a></em></li>
+<li><em>OpenAI Engineering：<a target="_blank" rel="noopener" href="https://openai.com/index/scaling-storage-one-billion-users-part-two">Rapidly scaling online storage to serve over 1 billion ChatGPT users (Part II)</a></em></li>
+<li><em>Armin Ronacher：<a target="_blank" rel="noopener" href="https://lucumr.pocoo.org/2026/10/29/qwen3-custom-voices/">Custom Voices With Qwen3-TTS</a></em></li>
+</ul>
+</section>
+    
+
+    <footer id="post-meta" class="clearfix">
+        <a href="/about/">
+        <img class="avatar" src="/images/avatar.png">
+        <div>
+            <span class="dark">Api Intelligence Daily Life</span>
+            <span>知识库 &amp; 博客</span>
+        </div>
+        </a>
+        <section id="sharing">
+            <a title="Share to Twitter" class="twitter" target="_blank" rel="noopener" href="https://twitter.com/intent/tweet?text=https://arbow.github.io/2026/10/31/blog-digest-2026-10-31/ - 文摘：博客推荐 - 2026-10-31 @"><span class="icon-twitter">tweet</span></a>
+            <a title="Share to Facebook" class="facebook" href="#" onclick="
+                window.open(
+                  'https://www.facebook.com/sharer/sharer.php?u='+encodeURIComponent(location.href),
+                  'facebook-share-dialog',
+                  'width=626,height=436');
+                return false;"><span class="icon-facebook-sign">Share</span>
+            </a>
+        </section>
+    </footer>
+
+
+  <section id="comment">
+    <button class="btn" id="loadcmts" onclick="cmts.load();">加载评论</button>
+    <div id="gitment"></div>
+    <script src='/js/gitment.browser.js'></script>
+    <link rel="stylesheet" href=''>
+    <script>
+      var cmts={
+        load:function cmts(){
+          var gitment = new Gitment({
+          
+            id: "文摘：博客推荐 - 2026-10-31",
+          
+            owner: "",
+            repo: "",
+            oauth: {
+              client_id: "",
+              client_secret: "",
+            },
+          })
+          gitment.render('gitment');
+          var loadcmt = document.getElementById("loadcmts");
+          var imyourfather = loadcmt.parentNode;
+          imyourfather.removeChild(loadcmts)
+        }
+      }
+    </script>
+  </section>
+
+
+	<footer id="footer">
+	<div id="social">
+		<p class="small">©  Arbow| Powered by Hexo & 
+			<a target="_blank" rel="noopener" href="https://github.com/F0r3at/Lights"> Lights</a>
+		</p>
+	</div>
+</footer>
+
+</section>
+
+	<script src="//cdnjs.loli.net/ajax/libs/instantclick/3.0.1/instantclick.min.js" data-no-instant></script>
+	<script data-no-instant>
+		
+		InstantClick.init('mousedown');
+	</script>
+
+
+
