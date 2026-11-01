@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=0">
+
+  <meta name="description" content="个人知识库与技术笔记">
+
+
+<link rel="alternate" href="/atom.xml" title="Api Intelligence Daily Life" type="application/atom+xml">
+<meta name="theme-color" content="#a1d0f6">
+<title>把 Go 应用直接编译成鸿蒙原生 App（HAP）：调研记录 - Api Intelligence Daily Life</title>
+<!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+<link rel="shortcut icon" href="/favicon.png">
+
+<link rel="stylesheet" href="/css/style.css">
+
+<nav class="main-nav">
+	
+	    <a href="/">← 主页</a>
+	
+	
+	    <a href="/about/">About</a>
+	
+	    <a href="/archives/">Archives</a>
+	
+	<a class="cta" href="/atom.xml" data-no-instant>订阅</a>
+</nav>
+
+<section id="wrapper">
+    <article class="post">
+    <header>
+        
+            <h1>把 Go 应用直接编译成鸿蒙原生 App（HAP）：调研记录</h1>
+        
+        <h2 class="headline">Nov 01 2026
+        
+            
+            <a href="/categories/技术/#技术">技术</a>
+        
+        </h2>
+    </header>
+</article>
+<section id="post-body"><p>这篇是 2026-11-01 当天一轮调研的记录：能不能把 Go 写的桌面应用，直接编译成可以安装在鸿蒙 PC 上的原生 App（HAP）。结论先放在前面：<strong>路径在纸面和部分模拟环境里走得通，但真机（鸿蒙 PC）端到端还没有验证</strong>，下面所有结论都按这个前提来读。</p>
+<p>文中的证据标记沿用调研时的约定：</p>
+<ul>
+<li><strong>[实跑]</strong>：在自己的电脑上亲手编译、运行验证过（不是鸿蒙真机）。</li>
+<li><strong>[源码] &#x2F; [官方]</strong>：读源码或官方文档确认。</li>
+<li><strong>[摘要] &#x2F; 推断</strong>：来自搜索摘要或推断，可信度最低。</li>
+</ul>
+<h2 id="需求背景"><a href="#需求背景" class="headerlink" title="需求背景"></a>需求背景</h2><p>我现在用的是华为 MateBook Fold（鸿蒙 PC，HarmonyOS 6.x），想把好用的开发 &#x2F; AI 工具搬到鸿蒙上来。</p>
+<p>最先评估的是 egoist 的 <a target="_blank" rel="noopener" href="https://github.com/egoist/mygo">MyGo</a>，一个纯 Go 的 GUI 框架，风格类似 GPUI + Tauri。评估结论是不适合直接用：</p>
+<ul>
+<li>它的 Linux 后端依赖 GTK3 &#x2F; WebKitGTK、X11 &#x2F; Wayland、OpenGL，这些在鸿蒙上都没有；</li>
+<li>如果硬要用，只能编成 wasm 放在浏览器里跑；</li>
+<li>想做成原生，就得给它写一套新的平台后端，工作量是”月级”。</li>
+</ul>
+<p>评估过程中有一个关键认识：鸿蒙 NEXT 的内核是自研的鸿蒙内核（兼容 Linux syscall ABI），C 库是 musl，<strong>并不是普通的 Linux arm64</strong>；而 Go 官方目前还没有 <code>GOOS=openharmony</code>，只能依赖社区 fork。</p>
+<p>所以思路转向了更”薄”的架构：<strong>go-thin-app</strong>（参考实现是 <code>yetone/magpie</code>）。它的结构是：</p>
+<ul>
+<li>Go 写领域逻辑；</li>
+<li><code>net/http</code> 提供 JSON API；</li>
+<li><code>embed</code> 打进去的纯 HTML &#x2F; CSS &#x2F; JS 做界面；</li>
+<li>桌面端只用 Wails 开一个窗口。</li>
+</ul>
+<p>这样平台相关的部分就只剩”窗口外壳”一层，其余代码天然可以复用。</p>
+<p>最终目标很明确：<strong>直接编译成可安装的鸿蒙原生 App（HAP）</strong>，而不是在终端或虚拟机里跑。</p>
+<h2 id="方案"><a href="#方案" class="headerlink" title="方案"></a>方案</h2><p>整体思路是：ArkTS 外壳 + ArkWeb（Web 组件）加载同一套 HTML；Go 后端编成 <code>.so</code>（cgo + 鸿蒙 NDK，<code>-buildmode=c-shared</code>），通过 NAPI 加载，在 App 进程内监听 <code>127.0.0.1</code> 起 HTTP 服务。HTML 与 API 和 Wails 版完全共用。</p>
+<h2 id="调研结果"><a href="#调研结果" class="headerlink" title="调研结果"></a>调研结果</h2><h3 id="1-Go-工具链"><a href="#1-Go-工具链" class="headerlink" title="1. Go 工具链"></a>1. Go 工具链</h3><ul>
+<li><strong>[实跑]</strong> <a target="_blank" rel="noopener" href="https://github.com/star4277/ohos-go">star4277&#x2F;ohos-go</a> 的 tag <code>v1.26.5-beta1</code>（基于 OpenHarmony-SIG 的 ohos_golang_go，合并了 go1.26.5）可以编出工具链，<code>go tool dist list</code> 里包含 <code>openharmony/arm64</code> 和 <code>openharmony/amd64</code>。作为对比，SIG 官方分支只到 go1.24.5。</li>
+<li><strong>[实跑]</strong> 鸿蒙 NDK 可以公开下载，无需登录：<a target="_blank" rel="noopener" href="https://repo.huaweicloud.com/openharmony/os/7.0-Release/ohos-sdk-windows_linux-public_20260829.tar.gz">ohos-sdk-windows_linux-public_20260829.tar.gz</a>，约 3.7GB，内含 <code>native-linux-x64-26.0.0.38</code>，自带 OHOS clang 15.0.4。</li>
+<li><strong>[实跑]</strong> 用一个最小 demo（<code>embed</code> HTML + <code>net/http</code> 监听 <code>127.0.0.1:0</code> + 导出一个 C 函数）验证了构建命令：</li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">CGO_ENABLED=1 GOOS=openharmony GOARCH=arm64 \</span><br><span class="line">CC=<span class="variable">$NDK</span>/llvm/bin/aarch64-unknown-linux-ohos-clang \</span><br><span class="line">CGO_CFLAGS=-ftls-model=global-dynamic \</span><br><span class="line">GOTOOLCHAIN=<span class="built_in">local</span> go build -buildmode=c-shared -o libdemo.so .</span><br></pre></td></tr></table></figure>
+
+<p>  <code>c-shared</code>（约 8.8MB）和 <code>c-archive</code> 都能编出来。用 readelf 检查：NEEDED 是 <code>libc.so</code>（musl），有 <code>PT_TLS</code>，TLS 重定位只有 <code>R_AARCH64_TLSDESC</code>，<strong>没有 initial-exec（TPREL）</strong>。</p>
+<ul>
+<li><strong>[实跑]</strong> 对照实验：官方 Go 1.27.3 编 <code>linux/arm64</code> 的 c-shared，产物里是 <code>R_AARCH64_TLS_TPREL64</code>（initial-exec），musl 的 <code>dlopen</code> 会报 “initial-exec TLS resolves to dynamic definition”。上游的修复 PR 目前仍未合入。</li>
+<li><strong>[实跑]</strong> 在 Alpine musl 1.2.6 上做 <code>dlopen</code>（arm64 用 qemu-user）：fork 编出来的 <code>.so</code> 加载成功，外来 pthread 调用正常，<code>curl 127.0.0.1</code> 能拿到 JSON 和 HTML。<strong>局限要说清楚：这不是鸿蒙自己的 musl，不是真机，也没有经过 NAPI &#x2F; ArkTS。</strong></li>
+<li><strong>[源码]</strong> star4277 源码里，<code>internal/platform/supported.go</code> 允许 openharmony 使用 c-shared &#x2F; c-archive &#x2F; pie；<code>runtime/tls_arm64.h</code> 有 <code>TLS_GD</code>；链接器会生成 TLSDESC 重定位。</li>
+<li><strong>[实跑]</strong> <code>CGO_ENABLED=0</code> 出不了 c-shared（导出符号需要 <code>import &quot;C&quot;</code>）；openharmony 上 <code>net</code> 包依赖 cgo，所以不能加 <code>-tags netgo</code>。</li>
+</ul>
+<h3 id="2-先例"><a href="#2-先例" class="headerlink" title="2. 先例"></a>2. 先例</h3><ul>
+<li><strong>思源笔记鸿蒙版</strong> <a target="_blank" rel="noopener" href="https://github.com/siyuan-note/siyuan-harmony">siyuan-harmony</a> <strong>[源码]</strong>：Go 内核编成 <code>libkernel.so</code>，<code>napi_init.cpp</code> 用 <code>std::thread</code> 调用导出的 <code>StartKernel</code>，内核监听 <code>127.0.0.1:6806</code>，<code>Main.ets</code> 里的 Web 组件用 <code>loadUrl</code> 加载；开了 <code>MixedMode.All</code> 和 <code>ohos.permission.INTERNET</code>；<code>deviceTypes</code> 包含 phone &#x2F; tablet &#x2F; 2in1。要注意它用的是官方 Go + <code>GOOS=android</code>，再手工补丁 TLS。</li>
+<li><strong>Hey（鸿蒙 VPN）</strong> <a target="_blank" rel="noopener" href="https://github.com/popsiclelmlm/Hey">popsiclelmlm&#x2F;Hey</a> <strong>[源码；真机结论为作者自述]</strong>：作者称在 HarmonyOS 6.1 真机上实测，<code>GOOS=android</code> 编的 Go <code>.so</code> 在外来线程会 SIGSEGV；换成 star4277 <code>v1.26.5-beta1</code> + <code>GOOS=openharmony</code>（TLSDESC）后正常。他用 NDK clang 编 libxray &#x2F; libsingbox &#x2F; tun2socks，在 macOS 上用 DevEco + hvigorw 构建，细节见其 <code>docs/harmonyos-go-tls-wall.md</code> 和 <code>docs/building-native-cores.md</code>。这里的真机结论是作者自述，未经复现。</li>
+<li>gomobile 没有官方的鸿蒙支持。</li>
+</ul>
+<h3 id="3-NAPI-接入"><a href="#3-NAPI-接入" class="headerlink" title="3. NAPI 接入"></a>3. NAPI 接入</h3><p>以下内容 <strong>[源码，取自上述两个工程]</strong>：</p>
+<ul>
+<li>CMakeLists：<code>add_library(entry SHARED napi_init.cpp)</code>，<code>target_link_libraries(entry PUBLIC libace_napi.z.so libapp)</code>；预编译好的 <code>.so</code> 放在 <code>entry/libs/arm64-v8a/</code>，用 IMPORTED 方式引用。</li>
+<li>用 <code>napi_module_register</code> + constructor 注册模块；调用 Go 要放在独立线程里（<code>std::thread</code> 或 <code>napi_create_async_work</code>）。</li>
+<li>一个坑（Hey 的记录，<strong>未复现</strong>）：Go <code>.so</code> 加载之后不要再 <code>setenv</code>，会崩；环境变量要在首次 <code>dlopen</code> 之前设好。</li>
+<li><strong>[摘要]</strong> 开启代码签名后，只有随 HAP 一起打包签名的 <code>libs</code> 下的 <code>.so</code> 才能加载；不能 <code>exec</code> 独立的 Go 二进制（W^X）。这一条来自搜索摘要，没有核实。</li>
+</ul>
+<h3 id="4-ArkWeb-与本地服务"><a href="#4-ArkWeb-与本地服务" class="headerlink" title="4. ArkWeb 与本地服务"></a>4. ArkWeb 与本地服务</h3><ul>
+<li>最省事的做法：App 内 Go 监听 <code>127.0.0.1</code>，ArkWeb 里 <code>loadUrl(&quot;http://127.0.0.1:端口/&quot;)</code>，需要 <code>ohos.permission.INTERNET</code>（思源的实例就是这么做的）。如果遇到明文 HTTP 被拦截，可以配置 network security config 的 <code>cleartextTrafficPermitted</code>，但这一条来自论坛资料，<strong>不是官方原文</strong>。</li>
+<li>不走 HTTP 的备选 <strong>[官方文档]</strong>：<code>onInterceptRequest</code>、<code>customizeSchemes</code> &#x2F; SchemeHandler 自定义协议、<code>javaScriptProxy</code> 走 NAPI。参考：<a target="_blank" rel="noopener" href="https://developer.huawei.com/consumer/cn/doc/doccenter-capabilities/web-scheme-handler">web-scheme-handler</a>。</li>
+</ul>
+<h3 id="5-打包签名"><a href="#5-打包签名" class="headerlink" title="5. 打包签名"></a>5. 打包签名</h3><p>以下内容 <strong>[官方]</strong>：</p>
+<ul>
+<li>不一定需要 DevEco Studio：Command Line Tools（含 hvigor &#x2F; ohpm &#x2F; hdc，需要 JDK 17 &#x2F; 21）就够，<code>ohpm install --all</code> 之后用 <code>hvigorw assembleHap --mode module -p product=default -p buildMode=debug --no-daemon</code> 构建，macOS &#x2F; Linux &#x2F; Windows 都可以。参考：<a target="_blank" rel="noopener" href="https://developer.huawei.com/consumer/cn/doc/doccenter-deveco-studio/ide-command-line-building-app">命令行构建应用</a>。</li>
+<li>调试证书和 Profile 在 AppGallery Connect 申请，绑定设备 UDID，需要华为开发者账号；安装用 <code>hdc install -r xxx-signed.hap</code>；鸿蒙 PC 的 <code>deviceTypes</code> 写 <code>2in1</code>。</li>
+</ul>
+<h2 id="完整链路"><a href="#完整链路" class="headerlink" title="完整链路"></a>完整链路</h2><ol>
+<li>在 Linux 构建机 &#x2F; 容器里编译 star4277 <code>v1.26.5-beta1</code> 工具链：<code>cd src &amp;&amp; GOROOT_BOOTSTRAP=... GOTOOLCHAIN=local bash make.bash</code>。</li>
+<li>把 Go 入口改成导出库：<code>//export StartServer</code> 返回端口，保留 <code>embed</code> 和 <code>net/http</code>。</li>
+<li>用前面的命令编出 <code>libapp.so</code>，放进 <code>entry/libs/arm64-v8a/</code>，再用 <code>llvm-readelf</code> 确认重定位里只有 TLSDESC。</li>
+<li>用 DevEco 的 Native C++ 模板写 NAPI 胶水，在线程里调用 Go，并在加载前设好环境变量。</li>
+<li>ArkTS 页面拿到端口后 <code>loadUrl</code>；加上 <code>INTERNET</code> 权限和 <code>2in1</code>。</li>
+<li><code>hvigorw assembleHap</code> → 签名 → <code>hdc install</code>。</li>
+</ol>
+<p>需要强调：这条链路的<strong>第 1～3 步在 Linux 上有 [实跑] 的依据（且仅限模拟环境）</strong>，第 4～6 步目前只有 [源码] &#x2F; [官方] 层面的依据，没有在真机上走通过。</p>
+<h2 id="风险与备选"><a href="#风险与备选" class="headerlink" title="风险与备选"></a>风险与备选</h2><p><strong>风险</strong></p>
+<ul>
+<li>工具链是个人维护的 fork，版本锁在 1.26.5；</li>
+<li>真机上的信号处理、线程限制、W^X 都还没验证；</li>
+<li>调试签名依赖 AppGallery Connect 账号；</li>
+<li>思源和 Hey 两个先例的 TLS 处理方式并不一致（一个是官方 Go + android 手工补丁，一个是 openharmony fork + TLSDESC）。</li>
+</ul>
+<p><strong>建议的第一步</strong>：先在真机上装一个最小 demo HAP，验证 <code>dlopen</code> + HTTP + ArkWeb 这条链路。这一步通了，后面才有意义。</p>
+<p><strong>备选方案</strong></p>
+<ul>
+<li>Go 编成 wasm，跑在 ArkWeb 里；</li>
+<li>后端用 ArkTS 重写；</li>
+<li>核心换成 Rust（有 <code>aarch64-unknown-linux-ohos</code> 目标）；</li>
+<li>或者退回到在 HiShell 里跑 Go 命令行（钉钉 dws 有先例）。</li>
+</ul>
+</section>
+    
+
+    <footer id="post-meta" class="clearfix">
+        <a href="/about/">
+        <img class="avatar" src="/images/avatar.png">
+        <div>
+            <span class="dark">Api Intelligence Daily Life</span>
+            <span>知识库 &amp; 博客</span>
+        </div>
+        </a>
+        <section id="sharing">
+            <a title="Share to Twitter" class="twitter" target="_blank" rel="noopener" href="https://twitter.com/intent/tweet?text=https://arbow.github.io/2026/11/01/harmonyos-go-native-hap-research/ - 把 Go 应用直接编译成鸿蒙原生 App（HAP）：调研记录 @"><span class="icon-twitter">tweet</span></a>
+            <a title="Share to Facebook" class="facebook" href="#" onclick="
+                window.open(
+                  'https://www.facebook.com/sharer/sharer.php?u='+encodeURIComponent(location.href),
+                  'facebook-share-dialog',
+                  'width=626,height=436');
+                return false;"><span class="icon-facebook-sign">Share</span>
+            </a>
+        </section>
+    </footer>
+
+
+  <section id="comment">
+    <button class="btn" id="loadcmts" onclick="cmts.load();">加载评论</button>
+    <div id="gitment"></div>
+    <script src='/js/gitment.browser.js'></script>
+    <link rel="stylesheet" href=''>
+    <script>
+      var cmts={
+        load:function cmts(){
+          var gitment = new Gitment({
+          
+            id: "把 Go 应用直接编译成鸿蒙原生 App（HAP）：调研记录",
+          
+            owner: "",
+            repo: "",
+            oauth: {
+              client_id: "",
+              client_secret: "",
+            },
+          })
+          gitment.render('gitment');
+          var loadcmt = document.getElementById("loadcmts");
+          var imyourfather = loadcmt.parentNode;
+          imyourfather.removeChild(loadcmts)
+        }
+      }
+    </script>
+  </section>
+
+
+	<footer id="footer">
+	<div id="social">
+		<p class="small">©  Arbow| Powered by Hexo & 
+			<a target="_blank" rel="noopener" href="https://github.com/F0r3at/Lights"> Lights</a>
+		</p>
+	</div>
+</footer>
+
+</section>
+
+	<script src="//cdnjs.loli.net/ajax/libs/instantclick/3.0.1/instantclick.min.js" data-no-instant></script>
+	<script data-no-instant>
+		
+		InstantClick.init('mousedown');
+	</script>
+
+
+
