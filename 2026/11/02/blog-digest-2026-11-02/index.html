@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=0">
+
+  <meta name="description" content="个人知识库与技术笔记">
+
+
+<link rel="alternate" href="/atom.xml" title="Api Intelligence Daily Life" type="application/atom+xml">
+<meta name="theme-color" content="#a1d0f6">
+<title>文摘：博客推荐 - 2026-11-02 - Api Intelligence Daily Life</title>
+<!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+<link rel="shortcut icon" href="/favicon.png">
+
+<link rel="stylesheet" href="/css/style.css">
+
+<nav class="main-nav">
+	
+	    <a href="/">← 主页</a>
+	
+	
+	    <a href="/about/">About</a>
+	
+	    <a href="/archives/">Archives</a>
+	
+	<a class="cta" href="/atom.xml" data-no-instant>订阅</a>
+</nav>
+
+<section id="wrapper">
+    <article class="post">
+    <header>
+        
+            <h1>文摘：博客推荐 - 2026-11-02</h1>
+        
+        <h2 class="headline">Nov 02 2026
+        
+            
+            <a href="/categories/博客推荐/#博客推荐">博客推荐</a>
+        
+        </h2>
+    </header>
+</article>
+<section id="post-body"><p>今日新增 1 篇，来自李乾坤的博客：一篇标题为《自进化Agent》、但目前还只是骨架的草稿，正文只有 Super-agent 一节。</p>
+<hr>
+<h2 id="1-自进化Agent"><a href="#1-自进化Agent" class="headerlink" title="1. 自进化Agent"></a>1. 自进化Agent</h2><p><strong>来源</strong>：<a target="_blank" rel="noopener" href="https://qiankunli.github.io/2026/11/01/personal_agent.html">https://qiankunli.github.io/2026/11/01/personal_agent.html</a><br><strong>日期</strong>：2026-11-01</p>
+<h3 id="核心概要"><a href="#核心概要" class="headerlink" title="核心概要"></a>核心概要</h3><p>这篇文章目前是一个明显未完成的草稿：页面标注”少于 1 分钟阅读”，简介一节直接写着”（未整理）”，目录里列了”主动性””主动性的关键在收敛””架构””super-agent”几个小节，但只有最后的 super-agent 一节有正文，前面几节都只有标题。所以下面的分析只能基于这一节，标题里的”自进化”在正文里还没有展开。</p>
+<p>super-agent 一节的论点是：传统 Agent 以单个 Session 为单位工作，Session 之间互相独立，用户并行推进多项工作时要自己切换、自己记住各个会话的上下文，一个人通常只能同时跟进 3 到 5 个活跃 Session。于是”单任务的上限取决于模型能力，多任务的上限取决于人的注意力”。要突破这一点，就得让 Agent 脱离单次手动会话，成为一个跨会话保持上下文、能同时推进多项任务的连续实体，即 Super-agent。文中给出四个特征：连续（在 IM、GitHub 评论等界面交互，感觉始终只有一个 Agent）、高效（不等上一个任务完成就能接下一条指令）、主动（持续观察环境事件，不需要时保持安静）、持久（始终在线、接入真实工作环境、异常自动恢复）。最后一段指出单个 ReAct Loop 撑不起这四点，并认为这类系统会面对很多传统计算机系统早已讨论过的问题，经典设计思想同样适用。</p>
+<p>需要说明的是，这一节用的是”我们把这种 Agent 形态……称为 Super-agent”的第一人称口吻，内容与 DeepSeek Harness 团队的《Super-agent 设计探索》开篇高度一致（3 到 5 个会话、注意力瓶颈、四个特征），但帖子本身没有注明出处。本站昨天正好转了那篇长文，见<a href="/2026/11/01/digest-2026-11-01-deepseek-super-agent/">《文摘：DeepSeek Super-agent 设计探索》</a>，想看完整架构、实验数据和局限的，直接读那篇更合适。</p>
+<h3 id="关键洞察"><a href="#关键洞察" class="headerlink" title="关键洞察"></a>关键洞察</h3><ul>
+<li><strong>瓶颈从模型挪到了人</strong>：多任务场景下真正的天花板是用户在会话间切换和记忆的成本，这是本节最值得记住的一句判断。</li>
+<li><strong>“一个 Agent”的体验比”多个会话”更重要</strong>：在 IM 里定方案 A、在 PR 评论里改成方案 B，它都能接上，这是对”连续”最具体的定义。</li>
+<li><strong>主动但要安静</strong>：目录里”主动性的关键在收敛”这个小标题虽然没写正文，但和”不需要介入时则保持安静”呼应，方向是对的：主动 Agent 首先要学会不打扰。</li>
+<li><strong>老问题新场景</strong>：作者认为这类系统的很多问题是计算机系统的老问题，这给读者一个好用的思考框架，但本文还没有展开具体对应关系。</li>
+</ul>
+<h3 id="评价"><a href="#评价" class="headerlink" title="评价"></a>评价</h3><p><strong>优点</strong>：选题踩在当下 Agent 工程最热的点上，目录结构（主动性、收敛、架构、super-agent）暗示作者想把”个人 Agent 如何自进化”串成一条线，值得等完整版。</p>
+<p><strong>不足</strong>：正文只有一节，且这一节基本是对 DeepSeek 文章开篇的摘录，没有注明来源，也还没有作者自己的分析；标题里的”自进化”完全没有内容支撑。作为文章，现在的信息量很有限。</p>
+<p><strong>适用场景</strong>：只想用两分钟了解 Super-agent 概念的读者可以看一眼；想深入的读者建议直接读原始长文。更值得做的是过几周回来看这篇是否补完。</p>
+<p><strong>推荐指数</strong>：⭐⭐ (2&#x2F;5) — 草稿状态，唯一有正文的一节与已转载的 DeepSeek 原文内容重合，暂时没有增量信息，补完后值得重新评估。</p>
+<hr>
+<p><em>本文为自动生成的博客推荐汇总。原文链接：</em></p>
+<ul>
+<li><em>李乾坤：<a target="_blank" rel="noopener" href="https://qiankunli.github.io/2026/11/01/personal_agent.html">自进化Agent</a></em></li>
+</ul>
+</section>
+    
+
+    <footer id="post-meta" class="clearfix">
+        <a href="/about/">
+        <img class="avatar" src="/images/avatar.png">
+        <div>
+            <span class="dark">Api Intelligence Daily Life</span>
+            <span>知识库 &amp; 博客</span>
+        </div>
+        </a>
+        <section id="sharing">
+            <a title="Share to Twitter" class="twitter" target="_blank" rel="noopener" href="https://twitter.com/intent/tweet?text=https://arbow.github.io/2026/11/02/blog-digest-2026-11-02/ - 文摘：博客推荐 - 2026-11-02 @"><span class="icon-twitter">tweet</span></a>
+            <a title="Share to Facebook" class="facebook" href="#" onclick="
+                window.open(
+                  'https://www.facebook.com/sharer/sharer.php?u='+encodeURIComponent(location.href),
+                  'facebook-share-dialog',
+                  'width=626,height=436');
+                return false;"><span class="icon-facebook-sign">Share</span>
+            </a>
+        </section>
+    </footer>
+
+
+  <section id="comment">
+    <button class="btn" id="loadcmts" onclick="cmts.load();">加载评论</button>
+    <div id="gitment"></div>
+    <script src='/js/gitment.browser.js'></script>
+    <link rel="stylesheet" href=''>
+    <script>
+      var cmts={
+        load:function cmts(){
+          var gitment = new Gitment({
+          
+            id: "文摘：博客推荐 - 2026-11-02",
+          
+            owner: "",
+            repo: "",
+            oauth: {
+              client_id: "",
+              client_secret: "",
+            },
+          })
+          gitment.render('gitment');
+          var loadcmt = document.getElementById("loadcmts");
+          var imyourfather = loadcmt.parentNode;
+          imyourfather.removeChild(loadcmts)
+        }
+      }
+    </script>
+  </section>
+
+
+	<footer id="footer">
+	<div id="social">
+		<p class="small">©  Arbow| Powered by Hexo & 
+			<a target="_blank" rel="noopener" href="https://github.com/F0r3at/Lights"> Lights</a>
+		</p>
+	</div>
+</footer>
+
+</section>
+
+	<script src="//cdnjs.loli.net/ajax/libs/instantclick/3.0.1/instantclick.min.js" data-no-instant></script>
+	<script data-no-instant>
+		
+		InstantClick.init('mousedown');
+	</script>
+
+
+
