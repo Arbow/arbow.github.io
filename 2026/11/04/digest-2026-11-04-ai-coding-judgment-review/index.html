@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=0">
+
+  <meta name="description" content="个人知识库与技术笔记">
+
+
+<link rel="alternate" href="/atom.xml" title="Api Intelligence Daily Life" type="application/atom+xml">
+<meta name="theme-color" content="#a1d0f6">
+<title>文摘：给我这一年半的 AI 编程判断打个分，再预测一波 - Api Intelligence Daily Life</title>
+<!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+<link rel="shortcut icon" href="/favicon.png">
+
+<link rel="stylesheet" href="/css/style.css">
+
+<nav class="main-nav">
+	
+	    <a href="/">← 主页</a>
+	
+	
+	    <a href="/about/">About</a>
+	
+	    <a href="/archives/">Archives</a>
+	
+	<a class="cta" href="/atom.xml" data-no-instant>订阅</a>
+</nav>
+
+<section id="wrapper">
+    <article class="post">
+    <header>
+        
+            <h1>文摘：给我这一年半的 AI 编程判断打个分，再预测一波</h1>
+        
+        <h2 class="headline">Nov 04 2026
+        
+            
+            <a href="/categories/文摘/#文摘">文摘</a>
+        
+        </h2>
+    </header>
+</article>
+<section id="post-body"><h2 id="整体评论"><a href="#整体评论" class="headerlink" title="整体评论"></a>整体评论</h2><p>这是一篇难得的「自我复盘」型文章。作者（公众号「此间山林」，GreptimeDB 团队的负责人之一）把自己 2025 年 11 月到 2026 年 10 月写过的 AI 编程文章和团队规则逐条拉出来，列了九个判断，挨个打分：前四条基本成立，后五条有高估或者已经变了。最后再给出一组新预测。比起又一篇「AI 将改变一切」，这种拿自己旧观点开刀的写法信息密度高得多。</p>
+<p><strong>核心论点只有一个：瓶颈在验证。</strong> 文章最有说服力的不是外部引用，而是 GreptimeDB 自己仓库的数据。2025 年 12 月团队已经全面用 agent 写代码，可到 2026 年 6 月，人均每月合并 PR 还是 6 个左右，跟一年前一样。直到 7 月前后把 review 规则从「两个人看」改成「1+1」（一个 SOTA 模型加一个工程师），人均合并 PR 才从 5.9 跳到 12.8，合并时长中位数没有变长。生成能力早就有了，产出被卡在人的 review 上，改的是流程，不是模型。哈佛那篇基于 72 万工程师数据的论文结论方向一致：PR 多了 36%，解决的 issue 只多了 13.7%，PR 审批时间多了 56%。</p>
+<p><strong>几处修正值得注意：</strong></p>
+<ul>
+<li><strong>100 倍是稀缺的。</strong> 团队人均 feat PR 是去年的 2 倍左右，Anthropic 工程师人均提交量半年涨 5 倍，离 100 倍都很远。代码产出变便宜，不等于商业成本同比例下降。</li>
+<li><strong>重写成本没有降到零。</strong> 每重写一次就要重新验证一次。GreptimeDB 的 refactor PR 两年来一直每月十几个，没有因为「重写变便宜」而变多。想让重写真的便宜，得先有能快速验证的回归设施。</li>
+<li><strong>人没有只剩签字。</strong> 人退出的是逐行验证，review 往上移到了设计和验收，花的时间并不比以前少。BLS 的预测也一样：「programmers」减少 7%，「software developers」增加 10%。收缩的是「把设计翻译成代码」这个工种和初级岗位。</li>
+<li><strong>Token 消耗只能衡量投入，不等于产出</strong>，要加上「有效」两个字。</li>
+</ul>
+<p><strong>我的几点想法：</strong></p>
+<p>第一，「越容易验证的工作，AI 进化和替代得越快」这句话，我认为是全文最有解释力的一句。它同时解释了几件事：为什么编码和数学跑在最前面，为什么 LSCBench 里功能通过率能到 91.3%，而「功能 + 安全」同时通过最高只有 25.1%。安全要求往往没写进测试，agent 就用默认选择补上。没写成可检查标准的东西，AI 就不会替你做好。反过来说，团队的真正资产正在从「代码」变成「可执行的验收标准」：测试用例、不变量文档、CI 规则。作者把抽查发现的问题写回仓库、变成强制 CI，把 AGENTS.md、architecture-invariants.md 放进仓库，就是在把人的判断沉淀成机器能执行的裁判。</p>
+<p>第二，作者劝大家「不要再构建很快会被淘汰的 AI Coding 辅助框架或技巧」，我基本同意，但要分开看。提示词技巧、手搓的多 agent 编排会被模型和官方工具吃掉（作者的例子：他预测多 agent 审查两个月后，Opus 4.6 就带了 agent teams）。可是跟自己业务绑定的验证设施，比如兼容性升级测试、性能回归、来自客户的真实用例，不会被吃掉，反而越来越值钱。作者的预测里也写着：谁手里有来自客户的真实测试用例，谁的定制才敢交出去。</p>
+<p>第三，初级岗位断层是全文最让人不安的部分：Anthropic 技术岗新招人员中初级占比从 27% 降到 9%，Indeed 统计软件开发入门级招聘只占 4.5%。判断力和品味以前是在大量写代码、被 review 的过程中练出来的。当逐行写和逐行看都交给 agent，新人在哪里挨打、在哪里长记性？作者给出了商业层面的推论（三到五年后资深断档、薪资被推高），但没有给出怎么带新人的办法。这大概是下一篇最值得写的题目。</p>
+<p>不足之处：文章的一手数据只来自一个团队（GreptimeDB），而且「改 1+1 review 带来产出翻倍」是作者自己的归因，期间模型本身也在升级（Fable 5 在 6 月发布），两者很难完全拆开。作者自己也用了「是不是很容易得出结论」这样留有余地的说法。另外，第三部分的预测（三年内按 seat 计价的 SaaS 成为少数、两年内人彻底退出实现层验证）跨度很大，属于观点而不是论证，读的时候当作一个从业者的下注就好。</p>
+<p>总体上，这篇文章值得做 AI 编程落地的团队负责人看一看。最有用的不是预测，而是那张「对了的 &#x2F; 错了的」清单，和那条朴素的经验：先找到真正的瓶颈，再改流程。</p>
+<h2 id="原文摘选"><a href="#原文摘选" class="headerlink" title="原文摘选"></a>原文摘选</h2><h3 id="瓶颈在验证"><a href="#瓶颈在验证" class="headerlink" title="瓶颈在验证"></a>瓶颈在验证</h3><blockquote>
+<p>2025 年 12 月起我们已经全面用 agent 写代码，但到 2026 年 6 月，人均每月合并的 PR 还是 6 个左右，和 2025 年同期一样。7 月前后 review 规则改成 1+1 （一个 SOTA 模型，加上一个工程师）以后，人均产出上了台阶</p>
+</blockquote>
+<blockquote>
+<p>一年前 AI 写代码，我会尽量逐行看；几个月后就只看 plan 和关键代码；现在花最多的时间在看最终设计和交付物的测试验证上，代码只做抽查。</p>
+</blockquote>
+<blockquote>
+<p>这一年来，人的 review 的层次一直在提升：从代码行、plan、关键 code 到 design 和验收。</p>
+</blockquote>
+<h3 id="非模型的裁判"><a href="#非模型的裁判" class="headerlink" title="非模型的裁判"></a>非模型的裁判</h3><blockquote>
+<p>测试只检查写进去的要求，没写进去的部分 agent 用默认选择补上。</p>
+</blockquote>
+<blockquote>
+<p>不要再去构建一些很快会被淘汰的 AI Coding 辅助框架或者技巧，这个方向的创业也建议不要去考虑。</p>
+</blockquote>
+<blockquote>
+<p>越容易验证的工作，AI 进化和替代的速度将越快。这在编码、数学领域都已经或者正在发生了。</p>
+</blockquote>
+<h3 id="修正的判断"><a href="#修正的判断" class="headerlink" title="修正的判断"></a>修正的判断</h3><blockquote>
+<p>每家公司都在 x 倍的提交代码，但是实际的业务增长却可能是原地踏步或者 1.x 起步。</p>
+</blockquote>
+<blockquote>
+<p>重写如果考虑到验证成本其实并不便宜：每重写一次都要重新验证一次。重写想变得真正便宜是需要你构建一套可快速验证的基础设施和回归套件。</p>
+</blockquote>
+<blockquote>
+<p>实际发生的是人的 review 往上移了一层：退出的是逐行验证，设计留给人，而且花的时间不比以前少。</p>
+</blockquote>
+<blockquote>
+<p>工作都交给 Agent 之后，新人从哪里积累判断力和 Taste？这可能是每个公司需要考虑的问题。</p>
+</blockquote>
+<h3 id="预测"><a href="#预测" class="headerlink" title="预测"></a>预测</h3><blockquote>
+<p>每家公司都必须建一条面向 AI 产出的研发 pipeline，核心是验证。不建的公司，AI 写得越多，事故越多。一年内，验证基础设施会成为最热的基础设施赛道之一。</p>
+</blockquote>
+<blockquote>
+<p>三到五年后，停招初级的公司会遇到资深工程师断档，资深工程师的薪资会被明显推高。</p>
+</blockquote>
+<p>原文链接：<a target="_blank" rel="noopener" href="https://mp.weixin.qq.com/s/k1PZRg6bG7af6QFsR7PIQA%EF%BC%88%E5%85%AC%E4%BC%97%E5%8F%B7%E3%80%8C%E6%AD%A4%E9%97%B4%E5%B1%B1%E6%9E%97%E3%80%8D%EF%BC%89">https://mp.weixin.qq.com/s/k1PZRg6bG7af6QFsR7PIQA（公众号「此间山林」）</a></p>
+</section>
+    
+
+    <footer id="post-meta" class="clearfix">
+        <a href="/about/">
+        <img class="avatar" src="/images/avatar.png">
+        <div>
+            <span class="dark">Api Intelligence Daily Life</span>
+            <span>知识库 &amp; 博客</span>
+        </div>
+        </a>
+        <section id="sharing">
+            <a title="Share to Twitter" class="twitter" target="_blank" rel="noopener" href="https://twitter.com/intent/tweet?text=https://arbow.github.io/2026/11/04/digest-2026-11-04-ai-coding-judgment-review/ - 文摘：给我这一年半的 AI 编程判断打个分，再预测一波 @"><span class="icon-twitter">tweet</span></a>
+            <a title="Share to Facebook" class="facebook" href="#" onclick="
+                window.open(
+                  'https://www.facebook.com/sharer/sharer.php?u='+encodeURIComponent(location.href),
+                  'facebook-share-dialog',
+                  'width=626,height=436');
+                return false;"><span class="icon-facebook-sign">Share</span>
+            </a>
+        </section>
+    </footer>
+
+
+  <section id="comment">
+    <button class="btn" id="loadcmts" onclick="cmts.load();">加载评论</button>
+    <div id="gitment"></div>
+    <script src='/js/gitment.browser.js'></script>
+    <link rel="stylesheet" href=''>
+    <script>
+      var cmts={
+        load:function cmts(){
+          var gitment = new Gitment({
+          
+            id: "文摘：给我这一年半的 AI 编程判断打个分，再预测一波",
+          
+            owner: "",
+            repo: "",
+            oauth: {
+              client_id: "",
+              client_secret: "",
+            },
+          })
+          gitment.render('gitment');
+          var loadcmt = document.getElementById("loadcmts");
+          var imyourfather = loadcmt.parentNode;
+          imyourfather.removeChild(loadcmts)
+        }
+      }
+    </script>
+  </section>
+
+
+	<footer id="footer">
+	<div id="social">
+		<p class="small">©  Arbow| Powered by Hexo & 
+			<a target="_blank" rel="noopener" href="https://github.com/F0r3at/Lights"> Lights</a>
+		</p>
+	</div>
+</footer>
+
+</section>
+
+	<script src="//cdnjs.loli.net/ajax/libs/instantclick/3.0.1/instantclick.min.js" data-no-instant></script>
+	<script data-no-instant>
+		
+		InstantClick.init('mousedown');
+	</script>
+
+
+
