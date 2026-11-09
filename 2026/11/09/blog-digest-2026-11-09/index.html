@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=0">
+
+  <meta name="description" content="个人知识库与技术笔记">
+
+
+<link rel="alternate" href="/atom.xml" title="Api Intelligence Daily Life" type="application/atom+xml">
+<meta name="theme-color" content="#a1d0f6">
+<title>文摘：博客推荐 - 2026-11-09 - Api Intelligence Daily Life</title>
+<!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+<link rel="shortcut icon" href="/favicon.png">
+
+<link rel="stylesheet" href="/css/style.css">
+
+<nav class="main-nav">
+	
+	    <a href="/">← 主页</a>
+	
+	
+	    <a href="/about/">About</a>
+	
+	    <a href="/archives/">Archives</a>
+	
+	<a class="cta" href="/atom.xml" data-no-instant>订阅</a>
+</nav>
+
+<section id="wrapper">
+    <article class="post">
+    <header>
+        
+            <h1>文摘：博客推荐 - 2026-11-09</h1>
+        
+        <h2 class="headline">Nov 09 2026
+        
+            
+            <a href="/categories/博客推荐/#博客推荐">博客推荐</a>
+        
+        </h2>
+    </header>
+</article>
+<section id="post-body"><p>今日新增 1 篇，来自李乾坤的博客，是一篇关于机器人运动学与四足步态的学习笔记。</p>
+<hr>
+<h2 id="1-机器人运动学"><a href="#1-机器人运动学" class="headerlink" title="1. 机器人运动学"></a>1. 机器人运动学</h2><p><strong>来源</strong>：<a target="_blank" rel="noopener" href="https://qiankunli.github.io/2026/11/08/locomotion.html">https://qiankunli.github.io/2026/11/08/locomotion.html</a><br><strong>日期</strong>：2026-11-08</p>
+<h3 id="核心概要"><a href="#核心概要" class="headerlink" title="核心概要"></a>核心概要</h3><p>这篇文章是作者学习机器人运动控制时的笔记，明显还在整理中。前半部分很短，讲运动学基础：位姿 &#x3D; 位置 + 姿态，机器人状态可以用关节空间或笛卡尔空间表示，正运动学是关节空间到笛卡尔空间，逆运动学反过来；姿态的表示则以无人机为例，介绍了物体坐标系、欧拉角（roll&#x2F;pitch&#x2F;yaw，且转动顺序会影响结果）和旋转矩阵。这一段偏要点罗列，旋转矩阵、坐标变换都没有展开。</p>
+<p>后半部分的 locomotion 才是重头，篇幅最大。作者用步态周期（gait cycle）作为最小分析单位：一个周期由支撑相和摆动相组成，T &#x3D; t_stance + t_swing；再用占空比 β、相对相位 φ、步幅与步频（v &#x3D; λ·f）三个量去描述任意步态。人行走时支撑相约占 60%，所以有约 20% 的双支撑期；β 是否大于 0.5 是区分行走与奔跑的标准判据。</p>
+<p>接着是四足步态：慢步是四拍步态，小跑是两拍步态（对角腿同步），文中提到小跑是目前机器人领域最受青睐的步态。最后讲稳定性：静态稳定看质心投影是否落在支撑多边形内，并用稳定裕度量化；小跑时支撑多边形退化为线段，靠的是整个周期上的动态稳定性。文末列出了步态图的读法，但这一节在抓取到的正文中只有开头。</p>
+<h3 id="关键洞察"><a href="#关键洞察" class="headerlink" title="关键洞察"></a>关键洞察</h3><ul>
+<li><strong>步态可以只用三个量描述</strong>：占空比 β、各腿相对相位 φ、步幅与步频，先把这三个量算清楚，再去看具体步态，比背步态名称有用得多。</li>
+<li><strong>β &#x3D; 0.5 是行走与奔跑的分界</strong>：支撑相超过半个周期就是行走，低于则会出现腾空相，这个判据也适合拿来检查自己机器人的步态。</li>
+<li><strong>静态稳定限制速度</strong>：始终保持三足着地的爬行步态，每条腿的摆动时间不能超过周期的 1&#x2F;4，所以天然很慢；想快就必须接受动态稳定。</li>
+<li><strong>小跑受欢迎是有工程原因的</strong>：对角腿成组运动，左右平衡容易维持，和后面用强化学习把稳定性当作奖励的思路也能衔接上。</li>
+<li><strong>欧拉角不能只看名字互换</strong>：不同软件里的 roll&#x2F;pitch&#x2F;yaw 约定和旋转顺序可能不同，做仿真到实机的迁移时要特别留意。</li>
+</ul>
+<h3 id="评价"><a href="#评价" class="headerlink" title="评价"></a>评价</h3><p><strong>优点</strong>：步态部分把概念之间的依赖关系梳理得比较清楚，有具体的数值例子（比如 0.56 秒触地、0.24 秒腾空的狗腿算周期与相位），从步态周期一路讲到稳定裕度，逻辑是连贯的。开头那段关于“顺序设计是教育的一半”的话也点出了这类笔记想做的事。</p>
+<p><strong>不足</strong>：整体仍像未完成的草稿：运动学一节过于简略，文中中英文混杂，部分内容看起来是对外文资料的直接翻译或摘录，行文不够统一；没有图（步态图、支撑多边形都靠文字描述），对初学者不友好；也没有讲到真正的控制实现，例如逆运动学怎么解、步态怎么落到关节控制上。</p>
+<p><strong>适用场景</strong>：已经对机器人有基本概念、想快速建立四足步态分析框架的读者。想系统学运动学的话，这篇只能当提纲，需要配合教材或后续更新使用。</p>
+<p><strong>推荐指数</strong>：⭐⭐⭐ (3&#x2F;5) — 步态与稳定性部分有参考价值，但整体是未打磨的笔记，运动学基础太薄且缺少图示，适合参考而不是精读。</p>
+<hr>
+<p><em>本文为自动生成的博客推荐汇总。原文链接：</em></p>
+<ul>
+<li><em>李乾坤：<a target="_blank" rel="noopener" href="https://qiankunli.github.io/2026/11/08/locomotion.html">机器人运动学</a></em></li>
+</ul>
+</section>
+    
+
+    <footer id="post-meta" class="clearfix">
+        <a href="/about/">
+        <img class="avatar" src="/images/avatar.png">
+        <div>
+            <span class="dark">Api Intelligence Daily Life</span>
+            <span>知识库 &amp; 博客</span>
+        </div>
+        </a>
+        <section id="sharing">
+            <a title="Share to Twitter" class="twitter" target="_blank" rel="noopener" href="https://twitter.com/intent/tweet?text=https://arbow.github.io/2026/11/09/blog-digest-2026-11-09/ - 文摘：博客推荐 - 2026-11-09 @"><span class="icon-twitter">tweet</span></a>
+            <a title="Share to Facebook" class="facebook" href="#" onclick="
+                window.open(
+                  'https://www.facebook.com/sharer/sharer.php?u='+encodeURIComponent(location.href),
+                  'facebook-share-dialog',
+                  'width=626,height=436');
+                return false;"><span class="icon-facebook-sign">Share</span>
+            </a>
+        </section>
+    </footer>
+
+
+  <section id="comment">
+    <button class="btn" id="loadcmts" onclick="cmts.load();">加载评论</button>
+    <div id="gitment"></div>
+    <script src='/js/gitment.browser.js'></script>
+    <link rel="stylesheet" href=''>
+    <script>
+      var cmts={
+        load:function cmts(){
+          var gitment = new Gitment({
+          
+            id: "文摘：博客推荐 - 2026-11-09",
+          
+            owner: "",
+            repo: "",
+            oauth: {
+              client_id: "",
+              client_secret: "",
+            },
+          })
+          gitment.render('gitment');
+          var loadcmt = document.getElementById("loadcmts");
+          var imyourfather = loadcmt.parentNode;
+          imyourfather.removeChild(loadcmts)
+        }
+      }
+    </script>
+  </section>
+
+
+	<footer id="footer">
+	<div id="social">
+		<p class="small">©  Arbow| Powered by Hexo & 
+			<a target="_blank" rel="noopener" href="https://github.com/F0r3at/Lights"> Lights</a>
+		</p>
+	</div>
+</footer>
+
+</section>
+
+	<script src="//cdnjs.loli.net/ajax/libs/instantclick/3.0.1/instantclick.min.js" data-no-instant></script>
+	<script data-no-instant>
+		
+		InstantClick.init('mousedown');
+	</script>
+
+
+
