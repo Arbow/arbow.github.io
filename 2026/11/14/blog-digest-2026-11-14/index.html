@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=0">
+
+  <meta name="description" content="个人知识库与技术笔记">
+
+
+<link rel="alternate" href="/atom.xml" title="Api Intelligence Daily Life" type="application/atom+xml">
+<meta name="theme-color" content="#a1d0f6">
+<title>文摘：博客推荐 - 2026-11-14 - Api Intelligence Daily Life</title>
+<!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+<link rel="shortcut icon" href="/favicon.png">
+
+<link rel="stylesheet" href="/css/style.css">
+
+<nav class="main-nav">
+	
+	    <a href="/">← 主页</a>
+	
+	
+	    <a href="/about/">About</a>
+	
+	    <a href="/archives/">Archives</a>
+	
+	<a class="cta" href="/atom.xml" data-no-instant>订阅</a>
+</nav>
+
+<section id="wrapper">
+    <article class="post">
+    <header>
+        
+            <h1>文摘：博客推荐 - 2026-11-14</h1>
+        
+        <h2 class="headline">Nov 14 2026
+        
+            
+            <a href="/categories/博客推荐/#博客推荐">博客推荐</a>
+        
+        </h2>
+    </header>
+</article>
+<section id="post-body"><p>今日新增 1 篇，来自 Anthropic 官方博客，讲如何构建可靠的 AI 安全评测（safety evals）。</p>
+<hr>
+<h2 id="1-Building-strong-safety-evaluations"><a href="#1-Building-strong-safety-evaluations" class="headerlink" title="1. Building strong safety evaluations"></a>1. Building strong safety evaluations</h2><p><strong>来源</strong>：<a target="_blank" rel="noopener" href="https://www.anthropic.com/research/building-strong-safety-evaluations">https://www.anthropic.com/research/building-strong-safety-evaluations</a><br><strong>日期</strong>：2026-11-13</p>
+<h3 id="核心概要"><a href="#核心概要" class="headerlink" title="核心概要"></a>核心概要</h3><p>文章从一个朴素的观察出发：当我们说“新模型比旧模型更安全”，其实只是说它在某套人写的评测上得分更高，所以结论的可靠程度完全取决于评测本身。作者借鉴心理学十年前“复现危机”之后的改革（预注册、更好的测量、更严格的统计），结合 Anthropic 自己做评测的经验和 system card 里的例子，给出一套构建安全评测的建议，分为设计、运行、报告三大块。</p>
+<p>设计部分的核心是“测你真正想测的东西”。以自伤话题为例，拒答率不是合适的构念：一个对所有相关提问都拒绝的模型能拿满分，却谈不上更安全，因为用户处于危机时一味拒绝本身就是失败。Anthropic 因此改用多轮对话评测，报告“适当响应率”：整段对话中每一轮都符合领域专家写的 rubric 才算通过，任何一轮出问题整段判负。生物、网络安全这类双用途领域，理想响应也不是一刀切拒绝，而是帮助合法需求、扣住可提供实质助力的操作细节；同时要成对地放入有害提示和良性提示，既测合规也测过度拒绝。</p>
+<p>泛化与内部效度方面，文章强调多轮模拟（由领域专家写规格，固定第一轮，另一个 Claude 模型按规格扮演用户，每个场景多次运行）、从真实使用数据出发构造场景、覆盖多语言和产品界面；并提醒数据污染、reward hacking、单轮评测饱和（API 上单轮无害率在 94%–98%）等问题。报告部分则强调预注册、样本量下限（复杂多轮至少约 100 条，单轮至少约 1000 条）、给出置信区间，以及完整记录配置：同一模型在 API 与 claude.ai 的多轮安全评测上，适当响应率差距最高达 34 个百分点。</p>
+<h3 id="关键洞察"><a href="#关键洞察" class="headerlink" title="关键洞察"></a>关键洞察</h3><ul>
+<li><strong>先写下构念，再收集数据</strong>：别默认“拒答率”就是安全；先定义“什么叫适当响应”，由领域专家写 rubric，再设计指标。</li>
+<li><strong>用多轮模拟代替单轮提示</strong>：伤害往往在逐步升级或上下文累积中出现，单轮评测容易饱和，更适合当回归检查。</li>
+<li><strong>LLM 评分器必须先对齐人类标注</strong>：用经偶然性校正的一致性指标（如 Cohen’s kappa）比较，并以人类标注者之间的一致性为基准；评分器坏了要“大声失败”，而不是悄悄记分。</li>
+<li><strong>评分标准要原子化、二元化</strong>：用一组是&#x2F;否问题取代一个总分，并明确写出什么不算满足标准（比如免责声明不会让有害内容变无害）。</li>
+<li><strong>报告不确定性与配置</strong>：文中例子里 98% 与 94% 的差异在统计上并不显著，不能据此说某个模型更好；API 与带系统提示的产品形态也要分开报告。</li>
+</ul>
+<h3 id="评价"><a href="#评价" class="headerlink" title="评价"></a>评价</h3><p><strong>优点</strong>：把评测当成一门有方法论的测量科学来写，既有原则又有具体例子（如浪漫诈骗场景的多轮模拟、98% vs 94% 不显著的案例），可操作性强；“只做三件事”的收尾建议（写下构念、用人类判断校验评分器、报告不确定性）很实用。对安全评测的运行风险（沙箱、无网络、实时监控）也有交代，比较诚实。</p>
+<p><strong>不足</strong>：示例几乎都来自 Anthropic 自家的评测和 system card，外部读者无法复现具体数据；很多做法（专家团队、内部模拟工具、大样本）成本高，小团队难以照搬；对如何降低评分器自身偏差，给出的更多是检查清单而非定量方案。</p>
+<p><strong>适用场景</strong>：做模型评测、红队或安全对齐的研究者与工程师，以及需要看懂厂商“更安全”声明的产品和采购方。做 agent 或应用级评测的开发者也能借用其中的评分器校准和报告规范。</p>
+<p><strong>推荐指数</strong>：⭐⭐⭐⭐ (4&#x2F;5) — 方法论扎实、例子具体，对任何做 LLM 评测的人都有直接参考价值；但偏向大团队流程且数据不可复现，所以没有给到满分。</p>
+<hr>
+<p><em>本文为自动生成的博客推荐汇总。原文链接：</em></p>
+<ul>
+<li><em>Anthropic Engineering：<a target="_blank" rel="noopener" href="https://www.anthropic.com/research/building-strong-safety-evaluations">Building strong safety evaluations</a></em></li>
+</ul>
+</section>
+    
+
+    <footer id="post-meta" class="clearfix">
+        <a href="/about/">
+        <img class="avatar" src="/images/avatar.png">
+        <div>
+            <span class="dark">Api Intelligence Daily Life</span>
+            <span>知识库 &amp; 博客</span>
+        </div>
+        </a>
+        <section id="sharing">
+            <a title="Share to Twitter" class="twitter" target="_blank" rel="noopener" href="https://twitter.com/intent/tweet?text=https://arbow.github.io/2026/11/14/blog-digest-2026-11-14/ - 文摘：博客推荐 - 2026-11-14 @"><span class="icon-twitter">tweet</span></a>
+            <a title="Share to Facebook" class="facebook" href="#" onclick="
+                window.open(
+                  'https://www.facebook.com/sharer/sharer.php?u='+encodeURIComponent(location.href),
+                  'facebook-share-dialog',
+                  'width=626,height=436');
+                return false;"><span class="icon-facebook-sign">Share</span>
+            </a>
+        </section>
+    </footer>
+
+
+  <section id="comment">
+    <button class="btn" id="loadcmts" onclick="cmts.load();">加载评论</button>
+    <div id="gitment"></div>
+    <script src='/js/gitment.browser.js'></script>
+    <link rel="stylesheet" href=''>
+    <script>
+      var cmts={
+        load:function cmts(){
+          var gitment = new Gitment({
+          
+            id: "文摘：博客推荐 - 2026-11-14",
+          
+            owner: "",
+            repo: "",
+            oauth: {
+              client_id: "",
+              client_secret: "",
+            },
+          })
+          gitment.render('gitment');
+          var loadcmt = document.getElementById("loadcmts");
+          var imyourfather = loadcmt.parentNode;
+          imyourfather.removeChild(loadcmts)
+        }
+      }
+    </script>
+  </section>
+
+
+	<footer id="footer">
+	<div id="social">
+		<p class="small">©  Arbow| Powered by Hexo & 
+			<a target="_blank" rel="noopener" href="https://github.com/F0r3at/Lights"> Lights</a>
+		</p>
+	</div>
+</footer>
+
+</section>
+
+	<script src="//cdnjs.loli.net/ajax/libs/instantclick/3.0.1/instantclick.min.js" data-no-instant></script>
+	<script data-no-instant>
+		
+		InstantClick.init('mousedown');
+	</script>
+
+
+
