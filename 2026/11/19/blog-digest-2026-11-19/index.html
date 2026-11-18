@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=0">
+
+  <meta name="description" content="个人知识库与技术笔记">
+
+
+<link rel="alternate" href="/atom.xml" title="Api Intelligence Daily Life" type="application/atom+xml">
+<meta name="theme-color" content="#a1d0f6">
+<title>文摘：博客推荐 - 2026-11-19 - Api Intelligence Daily Life</title>
+<!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+<link rel="shortcut icon" href="/favicon.png">
+
+<link rel="stylesheet" href="/css/style.css">
+
+<nav class="main-nav">
+	
+	    <a href="/">← 主页</a>
+	
+	
+	    <a href="/about/">About</a>
+	
+	    <a href="/archives/">Archives</a>
+	
+	<a class="cta" href="/atom.xml" data-no-instant>订阅</a>
+</nav>
+
+<section id="wrapper">
+    <article class="post">
+    <header>
+        
+            <h1>文摘：博客推荐 - 2026-11-19</h1>
+        
+        <h2 class="headline">Nov 19 2026
+        
+            
+            <a href="/categories/博客推荐/#博客推荐">博客推荐</a>
+        
+        </h2>
+    </header>
+</article>
+<section id="post-body"><p>今日新增 1 篇，来自 OpenAI Engineering，讲 Codex 如何在用户本机用操作系统级沙箱约束 agent 执行的命令。</p>
+<hr>
+<h2 id="1-Inside-the-Codex-sandbox"><a href="#1-Inside-the-Codex-sandbox" class="headerlink" title="1. Inside the Codex sandbox"></a>1. Inside the Codex sandbox</h2><p><strong>来源</strong>：<a target="_blank" rel="noopener" href="https://openai.com/index/inside-the-codex-sandbox">https://openai.com/index/inside-the-codex-sandbox</a><br><strong>日期</strong>：2026-11-18</p>
+<h3 id="核心概要"><a href="#核心概要" class="headerlink" title="核心概要"></a>核心概要</h3><p>这篇文章把 <a target="_blank" rel="noopener" href="https://github.com/openai/codex">Codex</a> 的本机沙箱讲清楚了：OpenAI 采用 defense in depth，训练和对齐管“模型愿不愿意做坏事”，沙箱管“就算做了也碰不到什么”。因为 Codex 最常见、也最危险的动作就是在你电脑上跑命令，他们没有把计算搬进虚拟机或 <a target="_blank" rel="noopener" href="https://opencontainers.org/">容器</a>，而是用各平台原生隔离机制，直接限制命令在用户现有环境里的文件系统和网络访问。用户通过 <a target="_blank" rel="noopener" href="https://learn.chatgpt.com/docs/permissions">permission profiles</a> 配置这些边界。</p>
+<p>设计选择很务实。开发者笔记本往往是一套随手改过的环境，复刻进 Docker 成本高，有些工作流还依赖宿主机工具。文章举了在 Mac 上做 iOS 开发的例子：容器里跑不了原生工具链和模拟器；若把构建“委托”给宿主机，那段又跑出了容器沙箱，还得另做限制。所以他们押注 OS 级沙箱，并用一套跨 macOS、Linux、Windows 的 API（命令 + permission profile，需要时再加网络代理）把平台差异藏起来。子进程会继承约束，即使原进程退出后仍活着的后代也不例外。</p>
+<p>默认的 <code>:workspace</code> 画像是“能干活，但偏保守”：工作区内可写，但 <code>.git</code> 和 <code>.codex</code> 只读，避免直接改 <code>config.toml</code> 或 <code>.git/hooks</code>；读权限却很宽，因为编译器、SDK 通常在仓库外面——代价是机器上含 API key 的配置也可能被读到；网络默认关闭，能挡住直接外传，同时也会挡住下载依赖。文章自己举了一个很扎心的残留风险：agent 往常被 gitignore 的 <code>node_modules/prettier</code> 里注入恶意代码，编辑器保存时在沙箱外执行，<code>git status</code> 还看不出来。沙箱限制的是访问范围，不是意图本身。企业侧的搭配建议见 <a target="_blank" rel="noopener" href="https://learn.chatgpt.com/docs/enterprise/security-cookbook">Codex security cookbook</a>。</p>
+<p>中间大部分是可配置性与实现。<code>config.toml</code> 里可用命名 profile 扩展 <code>:workspace</code>（<code>read</code> &#x2F; <code>write</code> &#x2F; <code>deny</code>，<code>:workspace_roots</code> 会把相对路径套到每个 workspace）。网络有三种：全关、全开（<code>:danger-full-access</code>），或走代理按域名放行。配置可分层合并，管理员再用 <code>requirements.toml</code> 的 <code>allowed_permission_profiles</code> 直接禁掉危险选项。模型可以在单条命令上申请额外权限，甚至 <code>require_escalated</code> 要求出沙箱，但由 harness 决定——可能问用户，或交给 <a target="_blank" rel="noopener" href="https://learn.chatgpt.com/docs/sandboxing/auto-review">auto-review</a>。<code>codex sandbox</code> 还把这套机制从 agent 会话里拆出来，文章用给 <a target="_blank" rel="noopener" href="https://www.npmjs.com/package/@modelcontextprotocol/server-memory"><code>@modelcontextprotocol/server-memory</code></a> 套沙箱当例子：Codex 默认并不隔离 stdio MCP 进程，这一点很容易被忽略。</p>
+<p>实现上，共享的 <a target="_blank" rel="noopener" href="https://github.com/openai/codex/blob/main/codex-rs/network-proxy/README.md"><code>codex-network-proxy</code></a> 同时开 HTTP 和 SOCKS5，注入 <code>HTTP_PROXY</code>、<code>PIP_PROXY</code> 等变量；域名未获准前先不解析 DNS，避免主机名本身泄密（宽泛通配或直接访问 DNS 服务仍可能被用来外传）。平台层各不相同：macOS 走已标记 deprecated、但仍被 Chrome 使用的 Seatbelt &#x2F; <code>sandbox-exec</code>；Linux 是 <a target="_blank" rel="noopener" href="https://github.com/containers/bubblewrap">bubblewrap</a> 加 <a target="_blank" rel="noopener" href="https://en.wikipedia.org/wiki/Seccomp">seccomp-bpf</a>，并自带一份 <code>bwrap</code>（有的发行版默认关掉用户命名空间，只给系统 <code>bwrap</code> 开例外），网络命名空间里再通过文件描述符把 loopback 监听器交给沙箱外的 bridge 去连代理；Windows 正在从他们<a target="_blank" rel="noopener" href="https://openai.com/index/building-codex-windows-sandbox/">年初那套方案</a>迁到微软的 <a target="_blank" rel="noopener" href="https://github.com/microsoft/mxc">MXC</a>，主要是为了摆脱提权、慢 ACL，以及留在主机上的防火墙规则和沙箱用户等残留状态。</p>
+<h3 id="关键洞察"><a href="#关键洞察" class="headerlink" title="关键洞察"></a>关键洞察</h3><ul>
+<li><strong>默认策略是权衡，不是安全边界</strong>：宽读、禁写 <code>.git</code> &#x2F; <code>.codex</code>、默认断网，是为了“能编译”同时挡住最常见的外传；密钥文件可读、对 <code>node_modules</code> 的投毒，文章自己都承认还在。</li>
+<li><strong>权限提升必须由 harness 裁决</strong>：模型可以请求更多权限或出沙箱，但请求不等于授权；真正落地的是用户确认或 auto-review。</li>
+<li><strong>沙箱要能离开 agent 会话单独用</strong>：<code>codex sandbox</code> 让同一套 profile 可以罩住 MCP 等默认不受控的进程，否则“会话内很严、旁边进程全开”只是假安全感。</li>
+<li><strong>网络策略要做在 DNS 解析之前</strong>：即便允许列表本身，主机名也可以变成隐蔽信道；代理放行后再解析，比先查 DNS 再拦截更干净。</li>
+<li><strong>“在用户本机隔离”比容器更脏，必须跟 OS 能力绑定</strong>：Linux 的网络命名空间加 FD 桥、Windows 迁 MXC、macOS 继续赌已 deprecated 的 Seatbelt，都说明统一 API 才是可维护的关键，底层无法一套方案打天下。</li>
+</ul>
+<h3 id="评价"><a href="#评价" class="headerlink" title="评价"></a>评价</h3><p><strong>优点</strong>：少有的把 agent 本机沙箱从产品默认、配置模型讲到三平台实现细节的文章，而且对默认策略的缺口写得很诚实。<code>codex sandbox</code> 和企业 requirements 说明他们把沙箱当成可复用原语，而不只是 Codex 内部实现。对做 coding agent 或要在企业里收紧权限的人，信息密度很高。</p>
+<p><strong>不足</strong>：叙述大量依赖文中的代码块和示意图，单独抽出原则后，完整的 SBPL &#x2F; MXC JSON 仍不好直接照抄。Seatbelt 已被官方标记 deprecated；Windows 的 MXC 方案还在迁移，且只覆盖兼容机型。默认宽读对密钥几乎没有防护，要靠用户自己收紧 profile；deny glob 也只在启动前展开，命令运行期间新出现的匹配路径不会自动纳入限制。</p>
+<p><strong>适用场景</strong>：做 coding agent 或本机工具调用沙箱的工程师，要给企业落地 Codex 权限策略的管理员，以及想给 MCP 或自建工具套同一套隔离的开发者。</p>
+<p><strong>推荐指数</strong>：⭐⭐⭐⭐ (4&#x2F;5) — 工程细节扎实、权衡写得诚实，对做 agent 运行时隔离几乎是必读级材料；但默认策略仍有明显缺口，Windows 方案尚未完全落地，所以不到满分。</p>
+<hr>
+<p><em>本文为自动生成的博客推荐汇总。原文链接：</em></p>
+<ul>
+<li><em>OpenAI Engineering：<a target="_blank" rel="noopener" href="https://openai.com/index/inside-the-codex-sandbox">Inside the Codex sandbox</a></em></li>
+</ul>
+</section>
+    
+
+    <footer id="post-meta" class="clearfix">
+        <a href="/about/">
+        <img class="avatar" src="/images/avatar.png">
+        <div>
+            <span class="dark">Api Intelligence Daily Life</span>
+            <span>知识库 &amp; 博客</span>
+        </div>
+        </a>
+        <section id="sharing">
+            <a title="Share to Twitter" class="twitter" target="_blank" rel="noopener" href="https://twitter.com/intent/tweet?text=https://arbow.github.io/2026/11/19/blog-digest-2026-11-19/ - 文摘：博客推荐 - 2026-11-19 @"><span class="icon-twitter">tweet</span></a>
+            <a title="Share to Facebook" class="facebook" href="#" onclick="
+                window.open(
+                  'https://www.facebook.com/sharer/sharer.php?u='+encodeURIComponent(location.href),
+                  'facebook-share-dialog',
+                  'width=626,height=436');
+                return false;"><span class="icon-facebook-sign">Share</span>
+            </a>
+        </section>
+    </footer>
+
+
+  <section id="comment">
+    <button class="btn" id="loadcmts" onclick="cmts.load();">加载评论</button>
+    <div id="gitment"></div>
+    <script src='/js/gitment.browser.js'></script>
+    <link rel="stylesheet" href=''>
+    <script>
+      var cmts={
+        load:function cmts(){
+          var gitment = new Gitment({
+          
+            id: "文摘：博客推荐 - 2026-11-19",
+          
+            owner: "",
+            repo: "",
+            oauth: {
+              client_id: "",
+              client_secret: "",
+            },
+          })
+          gitment.render('gitment');
+          var loadcmt = document.getElementById("loadcmts");
+          var imyourfather = loadcmt.parentNode;
+          imyourfather.removeChild(loadcmts)
+        }
+      }
+    </script>
+  </section>
+
+
+	<footer id="footer">
+	<div id="social">
+		<p class="small">©  Arbow| Powered by Hexo & 
+			<a target="_blank" rel="noopener" href="https://github.com/F0r3at/Lights"> Lights</a>
+		</p>
+	</div>
+</footer>
+
+</section>
+
+	<script src="//cdnjs.loli.net/ajax/libs/instantclick/3.0.1/instantclick.min.js" data-no-instant></script>
+	<script data-no-instant>
+		
+		InstantClick.init('mousedown');
+	</script>
+
+
+
