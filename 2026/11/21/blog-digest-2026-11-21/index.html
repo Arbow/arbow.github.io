@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=0">
+
+  <meta name="description" content="个人知识库与技术笔记">
+
+
+<link rel="alternate" href="/atom.xml" title="Api Intelligence Daily Life" type="application/atom+xml">
+<meta name="theme-color" content="#a1d0f6">
+<title>文摘：博客推荐 - 2026-11-21 - Api Intelligence Daily Life</title>
+<!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+<link rel="shortcut icon" href="/favicon.png">
+
+<link rel="stylesheet" href="/css/style.css">
+
+<nav class="main-nav">
+	
+	    <a href="/">← 主页</a>
+	
+	
+	    <a href="/about/">About</a>
+	
+	    <a href="/archives/">Archives</a>
+	
+	<a class="cta" href="/atom.xml" data-no-instant>订阅</a>
+</nav>
+
+<section id="wrapper">
+    <article class="post">
+    <header>
+        
+            <h1>文摘：博客推荐 - 2026-11-21</h1>
+        
+        <h2 class="headline">Nov 21 2026
+        
+            
+            <a href="/categories/博客推荐/#博客推荐">博客推荐</a>
+        
+        </h2>
+    </header>
+</article>
+<section id="post-body"><p>今日新增 1 篇，来自云风的博客，是一篇涵盖写代码、读书和育儿的随笔。</p>
+<hr>
+<h2 id="1-碎碎念"><a href="#1-碎碎念" class="headerlink" title="1. 碎碎念"></a>1. 碎碎念</h2><p><strong>来源</strong>：<a target="_blank" rel="noopener" href="https://blog.codingnow.com/2026/11/random_notes.html">https://blog.codingnow.com/2026/11/random_notes.html</a><br><strong>日期</strong>：2026-11-20</p>
+<h3 id="核心概要"><a href="#核心概要" class="headerlink" title="核心概要"></a>核心概要</h3><p>云风自述最近从写输入法开始恢复写代码。他给 <a target="_blank" rel="noopener" href="https://github.com/rime/librime">RIME</a> 写 Lua 插件，把拼音改成音形码，并且复用 RIME 自带的全拼字典，没有另建字典。花了近一周排查“用户造词无法写回词库”的 bug。他最终定位到根因：RIME 反查选词时只解开一层 ShadowCandidate 包装，看不到真正的 Phrase，造词信息因此丢失。他已把问题写进 Issue，并说现在应该已经修正。</p>
+<p>第二部分写他和 yuchanns 合作给 soluna 引擎加 render target 支持。sokol 在 10 月底大改了资源管理 API，必须通过 staging buffer 上传数据。sokol 的 Mac 实现也不允许同一帧对 swapchain 多次提交。他借机把管线重构成 C 层的多 render pass，并把 uniform 设置从 Lua 挪进 C 的材质实现。他认为 soluna 目前定位为简单 2D 引擎，缺的是真实需求驱动的项目。</p>
+<p>最后是读书和育儿。他一天读完杉山正明的《忽必烈的挑战》，对元朝的看法有所改变。他提到白银成为世界贸易货币这一点。关于孩子的数学学习，他认为不要急着给答案，让孩子试错、自己想明白，再引入成熟的公式。</p>
+<h3 id="关键洞察"><a href="#关键洞察" class="headerlink" title="关键洞察"></a>关键洞察</h3><ul>
+<li><strong>LLM 适合当“小黄鸭”</strong>：LLM 能缩短陌生系统的上手时间，但他被 AI 的误导带偏了很久。他的结论是让 AI 当你的小黄鸭，不要变成你给 AI 当小黄鸭。</li>
+<li><strong>复用基础设施要付出理解成本</strong>：复用 RIME 的字典和机制省了维护量，但需要读懂候选包装链（SimpleCandidate、ShadowCandidate、Phrase）。</li>
+<li><strong>依赖大版本升级会逼出重构</strong>：sokol 的 API 转向现代图形 API 风格，没有简单的兼容绕法。他的做法是把数据通道收敛到一个点，这对后续做资源线程和局部更新有利。</li>
+<li><strong>需求驱动而不是特性驱动</strong>：已有特性都是当下用得到的，用不上的先放进计划。</li>
+<li><strong>教学重过程</strong>：先让孩子自己推导、试错，再给公式，避免变成背书。</li>
+</ul>
+<h3 id="评价"><a href="#评价" class="headerlink" title="评价"></a>评价</h3><p><strong>优点</strong>：这是一篇真实的第一手经验记录。技术细节具体，比如反查时没有递归解包的 bug，也有对 AI 辅助编程的克制判断。非技术部分有个人视角。</p>
+<p><strong>不足</strong>：这是随笔，结构松散，各主题之间没有关联。RIME 部分对不熟悉其内部机制的读者门槛较高。文中的 Issue 链接在原文页面里，这里未核实其内容。</p>
+<p><strong>适用场景</strong>：适合关注 AI 辅助编程利弊、RIME 输入法定制、小型游戏引擎开发的读者，也适合想看独立开发者生活状态的读者。</p>
+<p><strong>推荐指数</strong>：⭐⭐⭐ (3&#x2F;5) — “AI 当小黄鸭”的体会和 RIME 的排查过程有参考价值，但整体是杂记，信息密度和可迁移性有限。</p>
+<hr>
+<p><em>本文为自动生成的博客推荐汇总。原文链接：</em></p>
+<ul>
+<li><em>云风的博客：<a target="_blank" rel="noopener" href="https://blog.codingnow.com/2026/11/random_notes.html">碎碎念</a></em></li>
+</ul>
+</section>
+    
+
+    <footer id="post-meta" class="clearfix">
+        <a href="/about/">
+        <img class="avatar" src="/images/avatar.png">
+        <div>
+            <span class="dark">Api Intelligence Daily Life</span>
+            <span>知识库 &amp; 博客</span>
+        </div>
+        </a>
+        <section id="sharing">
+            <a title="Share to Twitter" class="twitter" target="_blank" rel="noopener" href="https://twitter.com/intent/tweet?text=https://arbow.github.io/2026/11/21/blog-digest-2026-11-21/ - 文摘：博客推荐 - 2026-11-21 @"><span class="icon-twitter">tweet</span></a>
+            <a title="Share to Facebook" class="facebook" href="#" onclick="
+                window.open(
+                  'https://www.facebook.com/sharer/sharer.php?u='+encodeURIComponent(location.href),
+                  'facebook-share-dialog',
+                  'width=626,height=436');
+                return false;"><span class="icon-facebook-sign">Share</span>
+            </a>
+        </section>
+    </footer>
+
+
+  <section id="comment">
+    <button class="btn" id="loadcmts" onclick="cmts.load();">加载评论</button>
+    <div id="gitment"></div>
+    <script src='/js/gitment.browser.js'></script>
+    <link rel="stylesheet" href=''>
+    <script>
+      var cmts={
+        load:function cmts(){
+          var gitment = new Gitment({
+          
+            id: "文摘：博客推荐 - 2026-11-21",
+          
+            owner: "",
+            repo: "",
+            oauth: {
+              client_id: "",
+              client_secret: "",
+            },
+          })
+          gitment.render('gitment');
+          var loadcmt = document.getElementById("loadcmts");
+          var imyourfather = loadcmt.parentNode;
+          imyourfather.removeChild(loadcmts)
+        }
+      }
+    </script>
+  </section>
+
+
+	<footer id="footer">
+	<div id="social">
+		<p class="small">©  Arbow| Powered by Hexo & 
+			<a target="_blank" rel="noopener" href="https://github.com/F0r3at/Lights"> Lights</a>
+		</p>
+	</div>
+</footer>
+
+</section>
+
+	<script src="//cdnjs.loli.net/ajax/libs/instantclick/3.0.1/instantclick.min.js" data-no-instant></script>
+	<script data-no-instant>
+		
+		InstantClick.init('mousedown');
+	</script>
+
+
+
