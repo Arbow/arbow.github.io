@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=0">
+
+  <meta name="description" content="个人知识库与技术笔记">
+
+
+<link rel="alternate" href="/atom.xml" title="Api Intelligence Daily Life" type="application/atom+xml">
+<meta name="theme-color" content="#a1d0f6">
+<title>文摘：博客推荐 - 2026-11-23 - Api Intelligence Daily Life</title>
+<!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+<link rel="shortcut icon" href="/favicon.png">
+
+<link rel="stylesheet" href="/css/style.css">
+
+<nav class="main-nav">
+	
+	    <a href="/">← 主页</a>
+	
+	
+	    <a href="/about/">About</a>
+	
+	    <a href="/archives/">Archives</a>
+	
+	<a class="cta" href="/atom.xml" data-no-instant>订阅</a>
+</nav>
+
+<section id="wrapper">
+    <article class="post">
+    <header>
+        
+            <h1>文摘：博客推荐 - 2026-11-23</h1>
+        
+        <h2 class="headline">Nov 23 2026
+        
+            
+            <a href="/categories/博客推荐/#博客推荐">博客推荐</a>
+        
+        </h2>
+    </header>
+</article>
+<section id="post-body"><p>今日新增 1 篇，来自李乾坤的博客，是一篇关于机器人运动学基础的读书笔记：从位姿、旋转矩阵讲到机械臂的 TCP 与坐标系。</p>
+<hr>
+<h2 id="1-运动学"><a href="#1-运动学" class="headerlink" title="1. 运动学"></a>1. 运动学</h2><p><strong>来源</strong>：<a target="_blank" rel="noopener" href="https://qiankunli.github.io/2026/11/22/kinematics.html">https://qiankunli.github.io/2026/11/22/kinematics.html</a><br><strong>日期</strong>：2026-11-22</p>
+<h3 id="核心概要"><a href="#核心概要" class="headerlink" title="核心概要"></a>核心概要</h3><p>这不是一篇完整教材，更像一份把“高中质点运动学”接到“刚体和机械臂”上的笔记。作者一开始就点明差别：质点运动学把物体看成一个点，只关心轨迹；描述刚体则需要位姿（Pose），也就是位置（xyz）加上姿态（旋转矩阵、欧拉角等）。无人机的例子很清楚：位置回答“在房间哪里”，姿态回答“机头朝哪、有没有抬头、机身有没有侧倾”。</p>
+<p>接下来他把机器人状态拆成两套语言。关节空间用各个关节角描述整臂状态，笛卡尔空间则描述末端的位置和姿态；对应的控制也分成关节空间运动（move j）和笛卡尔直线运动（move line）。理论上，正运动学是关节空间到笛卡尔空间，逆运动学则相反。需要注意的是，简介里这两条的举例写反了：他把“目标位置到六个关节角”写在了正运动学下面，把“当前关节角到空间位置”写在了逆运动学下面。方向定义本身是对的，例子必须对调，不能当速查表抄。</p>
+<p>文章的主体在旋转。作者先引入世界坐标系和固连在物体上的局部坐标系（body frame），再用滚转、俯仰、偏航解释欧拉角，并强调三维旋转顺序会影响结果，不同软件里的 roll、pitch、yaw 不能只看名字互换。随后从二维绕原点旋转推到三维轴角旋转，得到绕单位轴转动的旋转矩阵，再把绕固定 x、y、z 轴的旋转当作特例收回来，说明矩阵连乘可以表达多步运动、且乘法不可交换。欧拉角部分补充了外旋 XYZ、内旋 ZYX 和经典 ZYZ，以及中间角到 ±90° 时出现的万向锁，并提到工程上会限制角度范围或改用四元数。后半部分转到机械臂：示教器、控制器、轨迹规划和安全监控写得比较提纲化；相对更有内容的是 TCP（Tool Center Point）。作者用“法兰上的笔要在纸上从 A 画到 B”说明：控制器能从关节角算出法兰位姿，但笔尖相对法兰的偏移必须标定，任务真正关心的是笔尖，而不是法兰原点。四点触碰同一固定尖点用来标定原点；若还要控制钢笔正面朝向和与纸面的夹角，还得给工具坐标系定义轴向。最后列出关节坐标系、基坐标系和工具坐标系，收束得比较快。</p>
+<h3 id="关键洞察"><a href="#关键洞察" class="headerlink" title="关键洞察"></a>关键洞察</h3><ul>
+<li><strong>先分清“点”和“刚体”</strong>：只有位置时，焊枪到同一点既可以垂直也可以倾斜，工艺效果完全不同。完整描述需要 6 个自由度：3 个位置分量加 3 个姿态分量。</li>
+<li><strong>旋转顺序是定义的一部分</strong>：同样三个角度，先转哪一轴，结果可以完全不同。定义姿态时必须同时给出角度和顺序，跨软件复用欧拉角时尤其不能想当然。</li>
+<li><strong>旋转矩阵的价值是保留计算规律</strong>：从几何关系整理出矩阵后，多步运动变成矩阵连乘，不必每次展开代数式。先执行的旋转写在最右边。</li>
+<li><strong>万向锁是参数化缺陷，不是机械偶发</strong>：中间转角到 ±90° 时，首尾两轴共线，丢失一个自由度。这是欧拉角的数学问题，不是某一款机器人独有的毛病。</li>
+<li><strong>TCP 把“要做什么”和“工具怎么装”拆开</strong>：画线关心的是笔尖轨迹。四点法标定的是工具原点相对法兰的偏移；绕笔杆旋转时笔尖不动、正面却会翻面，所以完整姿态还要定义工具轴。配置成 140 mm、实际伸出 150 mm，看起来“已经到位”，笔尖却会多伸出 10 mm。</li>
+</ul>
+<h3 id="评价"><a href="#评价" class="headerlink" title="评价"></a>评价</h3><p><strong>优点</strong>：直觉例子选得好。无人机说明姿态、焊枪说明“到位不等于姿态对”、钢笔说明 TCP 不只是一个点，这些比直接甩公式更适合入门。中间从二维旋转推到轴角公式、再回收到 (R_x, R_y, R_z) 的路径，是这篇笔记里最扎实的部分。</p>
+<p><strong>不足</strong>：这是学习笔记，不是系统教程。简介里正逆运动学的举例左右对调，还有“运功”“xyx”这类笔误，会误导快速浏览的读者。机械臂与坐标系两节偏提纲，DH 参数、雅可比、解析&#x2F;数值逆解、奇异形位等都没有展开。页面标注约 2 分钟阅读，实际密度主要集中在旋转矩阵那一段，前后厚度不均。</p>
+<p><strong>适用场景</strong>：适合刚开始看机械臂或机器人控制、需要先建立位姿和坐标系直觉的读者，也可作为阅读更完整运动学教材前的提纲。已经熟悉旋转矩阵和 TCP 标定的人，收获有限。若只看简介就动手写控制，务必先自行核对正逆运动学的方向。</p>
+<p><strong>推荐指数</strong>：⭐⭐⭐ (3&#x2F;5) — 旋转和 TCP 的直觉讲得清楚，有参考价值；但作为笔记结构不完整，开篇举例还有错误，达不到推荐必读。</p>
+<hr>
+<p><em>本文为自动生成的博客推荐汇总。原文链接：</em></p>
+<ul>
+<li><em>李乾坤：<a target="_blank" rel="noopener" href="https://qiankunli.github.io/2026/11/22/kinematics.html">运动学</a></em></li>
+</ul>
+</section>
+    
+
+    <footer id="post-meta" class="clearfix">
+        <a href="/about/">
+        <img class="avatar" src="/images/avatar.png">
+        <div>
+            <span class="dark">Api Intelligence Daily Life</span>
+            <span>知识库 &amp; 博客</span>
+        </div>
+        </a>
+        <section id="sharing">
+            <a title="Share to Twitter" class="twitter" target="_blank" rel="noopener" href="https://twitter.com/intent/tweet?text=https://arbow.github.io/2026/11/23/blog-digest-2026-11-23/ - 文摘：博客推荐 - 2026-11-23 @"><span class="icon-twitter">tweet</span></a>
+            <a title="Share to Facebook" class="facebook" href="#" onclick="
+                window.open(
+                  'https://www.facebook.com/sharer/sharer.php?u='+encodeURIComponent(location.href),
+                  'facebook-share-dialog',
+                  'width=626,height=436');
+                return false;"><span class="icon-facebook-sign">Share</span>
+            </a>
+        </section>
+    </footer>
+
+
+  <section id="comment">
+    <button class="btn" id="loadcmts" onclick="cmts.load();">加载评论</button>
+    <div id="gitment"></div>
+    <script src='/js/gitment.browser.js'></script>
+    <link rel="stylesheet" href=''>
+    <script>
+      var cmts={
+        load:function cmts(){
+          var gitment = new Gitment({
+          
+            id: "文摘：博客推荐 - 2026-11-23",
+          
+            owner: "",
+            repo: "",
+            oauth: {
+              client_id: "",
+              client_secret: "",
+            },
+          })
+          gitment.render('gitment');
+          var loadcmt = document.getElementById("loadcmts");
+          var imyourfather = loadcmt.parentNode;
+          imyourfather.removeChild(loadcmts)
+        }
+      }
+    </script>
+  </section>
+
+
+	<footer id="footer">
+	<div id="social">
+		<p class="small">©  Arbow| Powered by Hexo & 
+			<a target="_blank" rel="noopener" href="https://github.com/F0r3at/Lights"> Lights</a>
+		</p>
+	</div>
+</footer>
+
+</section>
+
+	<script src="//cdnjs.loli.net/ajax/libs/instantclick/3.0.1/instantclick.min.js" data-no-instant></script>
+	<script data-no-instant>
+		
+		InstantClick.init('mousedown');
+	</script>
+
+
+
