@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=0">
+
+  <meta name="description" content="个人知识库与技术笔记">
+
+
+<link rel="alternate" href="/atom.xml" title="Api Intelligence Daily Life" type="application/atom+xml">
+<meta name="theme-color" content="#a1d0f6">
+<title>文摘：博客推荐 - 2026-11-25 - Api Intelligence Daily Life</title>
+<!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+<link rel="shortcut icon" href="/favicon.png">
+
+<link rel="stylesheet" href="/css/style.css">
+
+<nav class="main-nav">
+	
+	    <a href="/">← 主页</a>
+	
+	
+	    <a href="/about/">About</a>
+	
+	    <a href="/archives/">Archives</a>
+	
+	<a class="cta" href="/atom.xml" data-no-instant>订阅</a>
+</nav>
+
+<section id="wrapper">
+    <article class="post">
+    <header>
+        
+            <h1>文摘：博客推荐 - 2026-11-25</h1>
+        
+        <h2 class="headline">Nov 25 2026
+        
+            
+            <a href="/categories/博客推荐/#博客推荐">博客推荐</a>
+        
+        </h2>
+    </header>
+</article>
+<section id="post-body"><p>今日新增 1 篇，来自 Armin Ronacher，讨论 Rust 互斥锁的 poisoning 机制为什么该退居可选项，而不是继续当默认行为。</p>
+<hr>
+<h2 id="1-Abolish-Lock-Poisoning"><a href="#1-Abolish-Lock-Poisoning" class="headerlink" title="1. Abolish Lock Poisoning"></a>1. Abolish Lock Poisoning</h2><p><strong>来源</strong>：<a target="_blank" rel="noopener" href="https://lucumr.pocoo.org/2026/11/25/poisoning/">https://lucumr.pocoo.org/2026/11/25/poisoning/</a><br><strong>日期</strong>：2026-11-25</p>
+<h3 id="核心概要"><a href="#核心概要" class="headerlink" title="核心概要"></a>核心概要</h3><p>Armin Ronacher 这篇文章的立场很明确：Rust 的 mutex poisoning 如果放到今天，大概不会被接受；他自己被它咬过很多次，却想不起它真正帮过一次忙。所谓 poisoning，是持有 <a target="_blank" rel="noopener" href="https://doc.rust-lang.org/std/sync/struct.Mutex.html"><code>std::sync::Mutex</code></a> 时发生 panic，锁会被标记为“已毒化”，之后再调用 <code>lock()</code> 会得到 <code>PoisonError</code>。设计动机听起来合理：临界区里的不变量可能已经坏了，不能让别的线程若无其事地继续用。但 libs 团队正在<a target="_blank" rel="noopener" href="https://github.com/rust-lang/rust/issues/149359">讨论</a>在下一个 edition 把非 poisoning 锁设为默认，反对声音也不少。这篇文章就是他给出的反对理由，而且几乎全靠真实项目里的事故，而不是抽象推演。</p>
+<p>他的判断可以压成一句：野外几乎没人正确处理 poisoned lock；处理错了，行为往往比不支持 poisoning 的 <a target="_blank" rel="noopener" href="https://docs.rs/parking_lot">parking_lot</a> 更糟。Josh Triplett 在 Hacker News 上说，标准库历史上从未见过有人真正尝试从 poison 里恢复。面对“持锁时 panic”，合理反应其实只有两个：整个进程停掉（<code>panic = &quot;abort&quot;</code>），或者忽略这个标志继续跑。惯用的 <code>lock().unwrap()</code> 两边都不沾——进程还活着，但之后每次加锁都会再 panic 一次。在线程池、请求处理、tokio task、FFI 这些会接住 panic 的环境里，一次局部故障就会被放大成持续不可用。</p>
+<p>文章随后用三类真实案例把这个判断钉死。第一，<code>PoisonError</code> 必须握着 lock guard，因为要从错误里把 guard 取出来才能忽略 poison 标志；于是拿着这个错误不放，就等于一直占着锁。看起来无害的 <code>m.lock()?</code>，在返回 <code>Box&lt;dyn Error&gt;</code> 这类会把错误包一层的函数里，会变成死锁；<code>if let</code> &#x2F; <code>match</code> 里未命名的 <code>PoisonError</code> 同样能把同一把锁再锁一次。第二，poisoning 不是 fail-fast，做错了会 fail-forever：RLS 一次失败的 cargo 构建在持有 <code>ENV_LOCK</code> 时 panic，之后所有运行都废了；Mozilla 的 application-services 里 <code>PoisonError</code> 一度排到崩溃统计第 5，后来改用 parking_lot；Neon 的 safekeeper 在全局锁 panic 之后，每次 timeline 查找都失败，原始 panic 甚至不在日志里。测试套件也是同一类问题，cargo、deno、polars、rustc 都出现过一个失败用例毒化共享静态、后面全部变 <code>PoisonError</code>。第三，即便用 <code>into_inner()</code> 恢复，标志在 1.77 的 <code>clear_poison</code> 出现之前九年都清不掉，恢复路径会反复执行昂贵副作用，比如每次转录都重建 decoder、每次访问都打同一条警告、每次归还都扔掉模型。</p>
+<p>更有说服力的是：连标准库自己都不依赖这套机制。stdio 在 1.0 发布前两个月就开始忽略 poison，理由是“任何 poison 都来自这把锁并不保护的用户代码”；panic 输出捕获、backtrace 锁、WASI 环境锁也是同样处理，现在还有把 std 内部互斥锁迁到 <code>nonpoison</code> 的 <a target="_blank" rel="noopener" href="https://github.com/rust-lang/rust/pull/148689">PR</a>。生态侧几乎是同一结论：<a target="_blank" rel="noopener" href="https://tokio.rs/">Tokio</a> 自己的锁不 poison，内部还专门写了剥离 poison 的适配层；Wasmtime、crossbeam-channel、tracing-subscriber 一律忽略；rust-analyzer 在 cancellation 像 RLS 一样毒化求解器之后改用了 parking_lot。Armin 特别点出一个常被用来为 poisoning 辩护的理由——内存安全——在 Tokio 里被反过来打了脸：卸载 waiter 时必须 <code>into_inner</code>，否则链表里可能留下悬垂指针，poisoning 在这里不是安全网，而是障碍。</p>
+<p>他最后追问：如果理由是“不变量被破坏后被别人观察到”，为什么只在 <code>Mutex</code> 上做，不在 <code>RefCell</code> 上做？在 tokio 捕获每个 task panic、再配上 <code>LocalSet</code> 的组合里，同样能读到坏状态，包括空指针，并不需要多线程。标准库自己也不一致：<code>LazyLock</code> 永久 poison，<code>OnceLock</code> 从不 poison，<code>Mutex</code> 则允许恢复。更何况 poisoning 只跟踪 panic，用 <code>?</code> 从临界区提前返回，留下的是同样坏掉、但并未被毒化的不变量。他希望稳定 <code>std::sync::nonpoison</code>，让 <code>Mutex</code> 默认指向它，真正需要的人再显式加上可复用的 <code>Poison&lt;T&gt;</code>，而不是把这套语义和互斥锁绑死。他认为最糟的反提案是保留 poisoning、但让 <code>lock()</code> 直接 panic：那只修了“错误对象握着 guard”的问题，却把慢性停机变成唯一选项。文末他推荐读对立面写得最好的一篇：<a target="_blank" rel="noopener" href="https://sunshowers.io/posts/on-poisoning/">In defense of lock poisoning</a>，同时也指出 Oxide 的大部分代码本身就是 panic 时 abort。</p>
+<h3 id="关键洞察"><a href="#关键洞察" class="headerlink" title="关键洞察"></a>关键洞察</h3><ul>
+<li><strong>持锁 panic 只有两条合理出路</strong>：进程直接 abort，或忽略标志继续跑。<code>lock().unwrap()</code> 是最差的中间路线：既不退出，也不能恢复，还把后续每次加锁都变成新的 panic。</li>
+<li><strong><code>PoisonError</code> 握着锁</strong>：错误对象的生命周期就是锁的生命周期。<code>m.lock()?</code> 以及 <code>if let</code> &#x2F; <code>match</code> 里未绑定的错误，都可能在错误包装或回退路径上变成死锁，而且这个坑并不直观。</li>
+<li><strong>Poisoning 会把一次故障写成永久故障</strong>：原始 panic 往往发生在别的线程、甚至日志里找不到；只要进程因线程池或 <code>catch_unwind</code> 还活着，后面所有 <code>lock().unwrap()</code> 都会继续炸。服务会“活着但不可用”，测试则会从一个失败扩散到整份套件。</li>
+<li><strong>连 std 和主流运行时都不靠它</strong>：stdio、Tokio、Wasmtime、rust-analyzer 要么忽略，要么换掉。把它当成内存安全机制并不成立，Tokio 卸载 waiter 的例子说明它有时还会挡住安全修复。</li>
+<li><strong>正确的抽象是可选的 <code>Poison&lt;T&gt;</code>，而不是和 <code>Mutex</code> 绑死</strong>：同样的不变量问题在 <code>RefCell</code> 和 <code>?</code> 提前返回里一样存在。需要的人应该能在任何内部可变包装上选择开启，而不是让所有 <code>Mutex</code> 用户承担默认成本。</li>
+</ul>
+<h3 id="评价"><a href="#评价" class="headerlink" title="评价"></a>评价</h3><p><strong>优点</strong>：这不是情绪宣泄，而是一篇证据密度很高的意见文。每个问题都挂了真实仓库和 issue，从死锁语义、生产故障、测试污染、恢复副作用，一路写到 std 自己不用、再到“为什么只有 Mutex”。把“看起来在保护不变量”和“实际把局部 panic 扩散成慢性停机”拆开，对正在讨论默认行为的时机也很准。</p>
+<p><strong>不足</strong>：立场非常鲜明，对立观点主要靠文末一篇推荐，没有同等篇幅展开。读者如果没有写过并发 Rust，案例会显得密。测试套件被共享静态污染，也并不完全是 poisoning 独有的问题，更多是“共享可变状态 + 会接住 panic”叠加后的放大效应；文章把现象写清楚了，但没有单独把这两层责任拆开。</p>
+<p><strong>适用场景</strong>：写 Rust 并发、维护运行时或工具链、或者要在下一 edition 对 <code>Mutex</code> 默认行为表态的人，值得读完并对照自己的代码看看有没有 <code>lock().unwrap()</code> 和共享静态锁。不写 Rust 的人可以跳过。如果项目已经统一 <code>panic = &quot;abort&quot;</code>，这篇文章更多是确认现有选择，而不是一份必须立刻改代码的清单；但即便如此，它把“为什么 abort 反而更干净”讲明白了。想看另一面，先读他推荐的 <a target="_blank" rel="noopener" href="https://sunshowers.io/posts/on-poisoning/">In defense of lock poisoning</a>。</p>
+<p><strong>推荐指数</strong>：⭐⭐⭐⭐ (4&#x2F;5) — 论据扎实、时机正好，对 Rust 并发和语言演进都有参考价值；但作为一边倒的意见文，受众也相对专门，还不到人人必读。</p>
+<hr>
+<p><em>本文为自动生成的博客推荐汇总。原文链接：</em></p>
+<ul>
+<li><em>Armin Ronacher：<a target="_blank" rel="noopener" href="https://lucumr.pocoo.org/2026/11/25/poisoning/">Abolish Lock Poisoning</a></em></li>
+</ul>
+</section>
+    
+
+    <footer id="post-meta" class="clearfix">
+        <a href="/about/">
+        <img class="avatar" src="/images/avatar.png">
+        <div>
+            <span class="dark">Api Intelligence Daily Life</span>
+            <span>知识库 &amp; 博客</span>
+        </div>
+        </a>
+        <section id="sharing">
+            <a title="Share to Twitter" class="twitter" target="_blank" rel="noopener" href="https://twitter.com/intent/tweet?text=https://arbow.github.io/2026/11/25/blog-digest-2026-11-25/ - 文摘：博客推荐 - 2026-11-25 @"><span class="icon-twitter">tweet</span></a>
+            <a title="Share to Facebook" class="facebook" href="#" onclick="
+                window.open(
+                  'https://www.facebook.com/sharer/sharer.php?u='+encodeURIComponent(location.href),
+                  'facebook-share-dialog',
+                  'width=626,height=436');
+                return false;"><span class="icon-facebook-sign">Share</span>
+            </a>
+        </section>
+    </footer>
+
+
+  <section id="comment">
+    <button class="btn" id="loadcmts" onclick="cmts.load();">加载评论</button>
+    <div id="gitment"></div>
+    <script src='/js/gitment.browser.js'></script>
+    <link rel="stylesheet" href=''>
+    <script>
+      var cmts={
+        load:function cmts(){
+          var gitment = new Gitment({
+          
+            id: "文摘：博客推荐 - 2026-11-25",
+          
+            owner: "",
+            repo: "",
+            oauth: {
+              client_id: "",
+              client_secret: "",
+            },
+          })
+          gitment.render('gitment');
+          var loadcmt = document.getElementById("loadcmts");
+          var imyourfather = loadcmt.parentNode;
+          imyourfather.removeChild(loadcmts)
+        }
+      }
+    </script>
+  </section>
+
+
+	<footer id="footer">
+	<div id="social">
+		<p class="small">©  Arbow| Powered by Hexo & 
+			<a target="_blank" rel="noopener" href="https://github.com/F0r3at/Lights"> Lights</a>
+		</p>
+	</div>
+</footer>
+
+</section>
+
+	<script src="//cdnjs.loli.net/ajax/libs/instantclick/3.0.1/instantclick.min.js" data-no-instant></script>
+	<script data-no-instant>
+		
+		InstantClick.init('mousedown');
+	</script>
+
+
+
