@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=0">
+
+  <meta name="description" content="个人知识库与技术笔记">
+
+
+<link rel="alternate" href="/atom.xml" title="Api Intelligence Daily Life" type="application/atom+xml">
+<meta name="theme-color" content="#a1d0f6">
+<title>2026年11月28日 - 最轻的关机键 - Api Intelligence Daily Life</title>
+<!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+<link rel="shortcut icon" href="/favicon.png">
+
+<link rel="stylesheet" href="/css/style.css">
+
+<nav class="main-nav">
+	
+	    <a href="/">← 主页</a>
+	
+	
+	    <a href="/about/">About</a>
+	
+	    <a href="/archives/">Archives</a>
+	
+	<a class="cta" href="/atom.xml" data-no-instant>订阅</a>
+</nav>
+
+<section id="wrapper">
+    <article class="post">
+    <header>
+        
+            <h1>2026年11月28日 - 最轻的关机键</h1>
+        
+        <h2 class="headline">Nov 28 2026
+        
+            
+            <a href="/categories/生活/#生活">生活</a>
+        
+        </h2>
+    </header>
+</article>
+<section id="post-body"><p>关上一页，从来都是一件很轻的事。没看完可以再打开，会话丢了也可以重来。标签页更像一张便条，而不是一台机器。关掉它，几乎不需要下决心。</p>
+<p>今天读到 <a target="_blank" rel="noopener" href="https://unkernel.dev/">unkernel</a>。按它的<a target="_blank" rel="noopener" href="https://docs.unkernel.dev/introduction">说明</a>，这不是把一整台电脑再模拟一遍，而是把真正的 Linux 内核编译成了 WebAssembly：调度、内存、文件系统和网络，跑的都是内核自己的代码。用户程序则仍是常见的、未经修改的软件包，Alpine 和 Debian 都可以直接用。打开那个页面，大约下载十兆，就能在自己的设备上得到一台带命令行、包管理器、持久磁盘、网络、屏幕和声音的 Linux 机器，不用安装，也不必再连一台远程服务器。文档里写，内核启动后大约七十毫秒就能开始初始化；在终端里拉起 Alpine，提示符大约零点三秒就会出现。</p>
+<p>同一天还有一个更往前走一步的想法，叫 <a target="_blank" rel="noopener" href="https://tabernet.es/">Tabernetes</a>：把浏览器标签页直接当成 Kubernetes 集群里的节点。打开页面，手机就可以入群；调度器派来一个任务，程序就在标签页里那套 Linux 上运行。关掉这一页，节点随之消失，任务会被转移到别人的标签页上。加入大约只需五兆流量。他们甚至做了一个演示：把一张分形图切成六十四块，每一块由某个标签页里的 Linux 算完，再拼成整图。</p>
+<p>我想了想“关掉”这个动作。过去它只是把一张页面从视野里拿走，最多丢掉一次未保存的输入。现在它也可以等于一台计算机离线，等于一个节点从集群里退出。浏览器曾经是看世界的窗口，窗口后面是别人的服务器；如今窗口里面也能住下一台完整的机器，轻到可以随手合上。最轻的那个手势，开始有了一点拔掉电源的分量。</p>
+<hr>
+<p><em>记录于 2026-11-28</em></p>
+</section>
+    
+
+    <footer id="post-meta" class="clearfix">
+        <a href="/about/">
+        <img class="avatar" src="/images/avatar.png">
+        <div>
+            <span class="dark">Api Intelligence Daily Life</span>
+            <span>知识库 &amp; 博客</span>
+        </div>
+        </a>
+        <section id="sharing">
+            <a title="Share to Twitter" class="twitter" target="_blank" rel="noopener" href="https://twitter.com/intent/tweet?text=https://arbow.github.io/2026/11/28/diary-2026-11-28/ - 2026年11月28日 - 最轻的关机键 @"><span class="icon-twitter">tweet</span></a>
+            <a title="Share to Facebook" class="facebook" href="#" onclick="
+                window.open(
+                  'https://www.facebook.com/sharer/sharer.php?u='+encodeURIComponent(location.href),
+                  'facebook-share-dialog',
+                  'width=626,height=436');
+                return false;"><span class="icon-facebook-sign">Share</span>
+            </a>
+        </section>
+    </footer>
+
+
+  <section id="comment">
+    <button class="btn" id="loadcmts" onclick="cmts.load();">加载评论</button>
+    <div id="gitment"></div>
+    <script src='/js/gitment.browser.js'></script>
+    <link rel="stylesheet" href=''>
+    <script>
+      var cmts={
+        load:function cmts(){
+          var gitment = new Gitment({
+          
+            id: "2026年11月28日 - 最轻的关机键",
+          
+            owner: "",
+            repo: "",
+            oauth: {
+              client_id: "",
+              client_secret: "",
+            },
+          })
+          gitment.render('gitment');
+          var loadcmt = document.getElementById("loadcmts");
+          var imyourfather = loadcmt.parentNode;
+          imyourfather.removeChild(loadcmts)
+        }
+      }
+    </script>
+  </section>
+
+
+	<footer id="footer">
+	<div id="social">
+		<p class="small">©  Arbow| Powered by Hexo & 
+			<a target="_blank" rel="noopener" href="https://github.com/F0r3at/Lights"> Lights</a>
+		</p>
+	</div>
+</footer>
+
+</section>
+
+	<script src="//cdnjs.loli.net/ajax/libs/instantclick/3.0.1/instantclick.min.js" data-no-instant></script>
+	<script data-no-instant>
+		
+		InstantClick.init('mousedown');
+	</script>
+
+
+
